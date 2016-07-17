@@ -1,0 +1,69 @@
+# Please note that REDSTONE_ORE and GLOWING_REDSTONE_ORE are the same blocks, but both are necessary in the list in order for it to work. 
+# |-->  Reason: Touching a redstone block turns it into a glowing redstone ore, and the plugin needs to be able to detect both
+
+# ActivationMode values are as followed:
+# |--> 'SNEAK': Activated upon breaking block whilst sneaking
+# |--> 'STAND': Activated upon breaking block whilst standing up
+
+# Specifying block data values:
+# |--> Simply specify your block ID, and use a semi-colon to promptly place your data value
+# |--> Example: "STONE;1" will specify granite
+
+# For a list of valid material values, please view https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+
+MetricsEnabled: true
+ActivationMode: 'SNEAK'
+DisabledWorlds:
+- WorldName
+Tools:
+  Pickaxe:
+    MaxVeinSize: 64
+    UsesDurability: true
+  Axe:
+    MaxVeinSize: 64
+    UsesDurability: true
+  Shovel:
+    MaxVeinSize: 64
+    UsesDurability: true
+  Hoe:
+    MaxVeinSize: 64
+    UsesDurability: true
+  Shears:
+    MaxVeinSize: 64
+    UsesDurability: true
+BlockList:
+  Pickaxe:
+    - COAL_ORE
+    - IRON_ORE
+    - GOLD_ORE
+    - LAPIS_ORE
+    - REDSTONE_ORE
+    - GLOWING_REDSTONE_ORE
+    - DIAMOND_ORE
+    - EMERALD_ORE
+    - QUARTZ_ORE
+  Axe:
+    - LOG
+    - LOG_2
+    - MELON_BLOCK
+    - PUMPKIN
+    - HUGE_MUSHROOM_1
+    - HUGE_MUSHROOM_2
+  Shovel:
+    - SAND
+    - GRAVEL
+  Hoe:
+    - CROPS
+    - POTATO
+    - CARROT
+    - BEETROOT_BLOCK
+    - RED_MUSHROOM
+    - BROWN_MUSHROOM
+  Shears:
+    - WOOL
+    - WEB
+    - LEAVES
+    - LEAVES_2
+  All:
+    - ICE
+    - PACKED_ICE
