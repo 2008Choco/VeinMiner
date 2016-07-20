@@ -4,6 +4,8 @@ import org.bukkit.Material;
 
 import me.choco.veinminer.VeinMiner;
 
+/** Tools recognized by VeinMiner and it's code. Tools are limited to those listed in the enumeration
+ */
 public enum VeinTool {
 	
 	/** Represents a pickaxe of various materials. This includes:

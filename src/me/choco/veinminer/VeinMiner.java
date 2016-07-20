@@ -9,7 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.events.BreakBlockListener;
 import me.choco.veinminer.utils.Metrics;
+import me.choco.veinminer.utils.Metrics.Graph;
 import me.choco.veinminer.utils.VeinMinerManager;
+import me.choco.veinminer.utils.VeinsBrokenPlotter;
 import me.choco.veinminer.utils.commands.VeinMinerCmd;
 import me.choco.veinminer.utils.commands.VeinMinerCmdTabCompleter;
 import me.choco.veinminer.utils.versions.VersionBreaker;
@@ -55,7 +57,13 @@ public class VeinMiner extends JavaPlugin{
 			this.getLogger().info("Enabling Plugin Metrics");
 		    try{
 		        Metrics metrics = new Metrics(this);
-		        metrics.start();
+		        
+		        // Custom graph registration
+		        Graph graph = metrics.createGraph("Veins Broken");
+		        graph.addPlotter(new VeinsBrokenPlotter());
+		        
+		        if (metrics.start())
+		        	this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
 		    }
 		    catch (IOException e){
 		    	e.printStackTrace();
@@ -140,13 +148,10 @@ public class VeinMiner extends JavaPlugin{
 	}
 }
 
-// TODO: Command auto-completion
-
-/* CHANGELOG 1.10.1:
- * VeinMiner is now VERSION INDEPENDENT!!! Anything version 1.8.2+ is now supported (Anything 1.8.1 and below is unobtainable to me)
- * Added tab completion for most aspects of the VeinMiner command. Results are permission based
- *   - (i.e. you cannot tab /veinminer reload if you do not have the "veinminer.reload" permission)
- * Fixed incompatibility issues with McMMO's WoodCutter ability
- * 
- * (Keep a lookout for the main page, as VeinMiner will soon be open-sourced)
+/* CHANGELOG 1.10.2:
+ * Added Javadoc documentation to the VersionBreaker class (Should only be used for VeinMiner purposes, but it's available for public API)
+ * Added a bit more Javadoc documentation to the VeinBlock and VeinTool classes. Just in case
+ * Added a new custom "Veins Broken" graph to the Metrics website to display how many veins have been broken using VeinMiner. 
+ *     - This is obviously a test, but it might be interesting statistics :) I have never made a custom graph before
+ * Added a little message for those who enable Metrics in the console on startup (<3 Thanks to you owners that do have it enabled :D)
  */

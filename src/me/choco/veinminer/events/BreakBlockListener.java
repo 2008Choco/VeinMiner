@@ -21,6 +21,7 @@ import me.choco.veinminer.api.PlayerVeinMineEvent;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.utils.VeinMinerManager;
+import me.choco.veinminer.utils.VeinsBrokenPlotter;
 import me.choco.veinminer.utils.versions.VersionBreaker;
 
 public class BreakBlockListener implements Listener{
@@ -107,6 +108,7 @@ public class BreakBlockListener implements Listener{
 				itemUsed.setDurability((short) (itemUsed.getDurability() - 1));
 		}
 		
+		VeinsBrokenPlotter.veinsBroken++;
 		blocks.clear();
 	}
 	

@@ -2,6 +2,14 @@ package me.choco.veinminer.api.veinutils;
 
 import org.bukkit.Material;
 
+/** General information regarding material and byte data is stored in this class. Every
+ * material listed in the configuration file creates a new VeinBlock for easy researchability
+ * in the VeinMiner API
+ * <br>
+ * <br>Obviously this is subject to change sometime in the future when Mojang decides 
+ * that magic byte numbers are not suitable for data values, however in the meantime, 
+ * this class will manage that
+ */
 public class VeinBlock {
 	
 	private final Material material;
