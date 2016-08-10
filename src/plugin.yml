@@ -1,6 +1,6 @@
 name: VeinMiner
 main: me.choco.veinminer.VeinMiner
-version: 1.10.2
+version: 1.10.3
 description: VeinMiner for CraftBukkit, Bukkit, and Spigot
 author: 2008Choco
 softdepend: [NoCheatPlus, AAC]

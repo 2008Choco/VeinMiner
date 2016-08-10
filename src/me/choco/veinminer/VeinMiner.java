@@ -41,6 +41,10 @@ public class VeinMiner extends JavaPlugin{
 			this.getLogger().severe("PLEASE UPDATE YOUR SERVER AS SOON AS POSSIBLE");
 		}
 		
+		// Check for soft-dependencies
+		this.ncpEnabled = Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null;
+		this.aacEnabled = Bukkit.getPluginManager().getPlugin("AAC") != null;
+		
 		instance = this;
 		saveDefaultConfig();
 		this.manager = new VeinMinerManager(this);
@@ -48,7 +52,7 @@ public class VeinMiner extends JavaPlugin{
 		//Register events
 		this.getLogger().info("Registering events");
 		Bukkit.getServer().getPluginManager().registerEvents(new BreakBlockListener(this), this);
-		Bukkit.getServer().getPluginManager().registerEvents((antiCheatSupport = new AntiCheatSupport()), this);
+		if (aacEnabled) Bukkit.getServer().getPluginManager().registerEvents((antiCheatSupport = new AntiCheatSupport()), this);
 		
 		//Register commands
 		this.getLogger().info("Registering commands");
@@ -89,10 +93,6 @@ public class VeinMiner extends JavaPlugin{
 		this.getLogger().info("Loading configuration options to local memory");
 		manager.loadVeinableBlocks();
 		manager.loadDisabledWorlds();
-		
-		// Check for soft-dependencies
-		if (Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null) this.ncpEnabled = true;
-		if (Bukkit.getPluginManager().getPlugin("AAC") != null) this.aacEnabled = true;
 	}
 	
 	@Override
@@ -103,7 +103,8 @@ public class VeinMiner extends JavaPlugin{
 			manager.getPlayersWithVeinMinerDisabled(tool).clear();
 		}
 		manager.getDisabledWorlds().clear();
-		antiCheatSupport.getExemptedUsers().clear();
+		
+		if (antiCheatSupport != null) antiCheatSupport.getExemptedUsers().clear();
 	}
 	
 	/** Get an instance of the main VeinMiner class (for VeinMiner API usages)
@@ -173,10 +174,7 @@ public class VeinMiner extends JavaPlugin{
 	}
 }
 
-/* CHANGELOG 1.10.2:
- * Added Javadoc documentation to the VersionBreaker class (Should only be used for VeinMiner purposes, but it's available for public API)
- * Added a bit more Javadoc documentation to the VeinBlock and VeinTool classes. Just in case
- * Added a little message for those who enable Metrics in the console on startup (<3 Thanks to you owners that do have it enabled :D)
- * Fixed support for a couple Anti-Cheat plugins: NoCheatPlus and Advanced Anti-Cheat. (Suggest more if required, please)
- * Added a few methods to help support the new Anti-Cheat. Developers may use them if they would like, but there's no need to, really
+/* CHANGELOG 1.10.3:
+ * Fixed potential API NullPointerExceptions when VeinMining
+ * Fixed a startup error regarding the registration of an AAC event if you did not have AAC installed
  */
