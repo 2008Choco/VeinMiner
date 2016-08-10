@@ -16,12 +16,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import fr.neatmonster.nocheatplus.checks.CheckType;
+import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.PlayerVeinMineEvent;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.utils.VeinMinerManager;
-import me.choco.veinminer.utils.VeinsBrokenPlotter;
 import me.choco.veinminer.utils.versions.VersionBreaker;
 
 public class BreakBlockListener implements Listener{
@@ -95,6 +96,18 @@ public class BreakBlockListener implements Listener{
 		if (vmEvent.isCancelled()) return;
 		blocks = vmEvent.getBlocks(); //Just in case it's modified in the event
 		
+		/* Anti Cheat support start */
+		boolean unexemptNCP = false;
+		if (plugin.isNCPEnabled()){
+			if (!NCPExemptionManager.isExempted(player, CheckType.BLOCKBREAK)){
+				NCPExemptionManager.exemptPermanently(player, CheckType.BLOCKBREAK);
+				unexemptNCP = true;
+			}
+		}
+		if (plugin.isAACEnabled())
+			plugin.getAntiCheatSupport().exemptFromViolation(player);
+		/* Anti Cheat support end */
+		
 		// Actually destroying the allocated blocks
 		boolean usesDurability = usedTool.usesDurability();
 		for (Block b : blocks){
@@ -108,8 +121,15 @@ public class BreakBlockListener implements Listener{
 				itemUsed.setDurability((short) (itemUsed.getDurability() - 1));
 		}
 		
-		VeinsBrokenPlotter.veinsBroken++;
 		blocks.clear();
+		
+		// VEINMINER - DONE
+		
+		/* Anti Cheat Support ... Check if need to unexempt, in case they had been exempted prior to VeinMining */
+		if (plugin.isNCPEnabled())
+			if (unexemptNCP) NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
+		if (plugin.isAACEnabled())
+			plugin.getAntiCheatSupport().unexemptFromViolation(player);
 	}
 	
 	@SuppressWarnings("deprecation")

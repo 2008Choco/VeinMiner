@@ -7,11 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.events.AntiCheatSupport;
 import me.choco.veinminer.events.BreakBlockListener;
 import me.choco.veinminer.utils.Metrics;
-import me.choco.veinminer.utils.Metrics.Graph;
 import me.choco.veinminer.utils.VeinMinerManager;
-import me.choco.veinminer.utils.VeinsBrokenPlotter;
 import me.choco.veinminer.utils.commands.VeinMinerCmd;
 import me.choco.veinminer.utils.commands.VeinMinerCmdTabCompleter;
 import me.choco.veinminer.utils.versions.VersionBreaker;
@@ -27,6 +26,9 @@ import me.choco.veinminer.utils.versions.v1_9.VersionBreaker1_9_R2;
 public class VeinMiner extends JavaPlugin{
 	
 	private static VeinMiner instance;
+	private AntiCheatSupport antiCheatSupport;
+	
+	private boolean ncpEnabled, aacEnabled;
 	
 	private VeinMinerManager manager;
 	private VersionBreaker versionBreaker;
@@ -46,6 +48,7 @@ public class VeinMiner extends JavaPlugin{
 		//Register events
 		this.getLogger().info("Registering events");
 		Bukkit.getServer().getPluginManager().registerEvents(new BreakBlockListener(this), this);
+		Bukkit.getServer().getPluginManager().registerEvents((antiCheatSupport = new AntiCheatSupport()), this);
 		
 		//Register commands
 		this.getLogger().info("Registering commands");
@@ -57,13 +60,7 @@ public class VeinMiner extends JavaPlugin{
 			this.getLogger().info("Enabling Plugin Metrics");
 		    try{
 		        Metrics metrics = new Metrics(this);
-		        
-		        // Custom graph registration
-		        Graph graph = metrics.createGraph("Veins Broken");
-		        graph.addPlotter(new VeinsBrokenPlotter());
-		        
-		        if (metrics.start())
-		        	this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
+		        if (metrics.start()) this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
 		    }
 		    catch (IOException e){
 		    	e.printStackTrace();
@@ -92,15 +89,21 @@ public class VeinMiner extends JavaPlugin{
 		this.getLogger().info("Loading configuration options to local memory");
 		manager.loadVeinableBlocks();
 		manager.loadDisabledWorlds();
+		
+		// Check for soft-dependencies
+		if (Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null) this.ncpEnabled = true;
+		if (Bukkit.getPluginManager().getPlugin("AAC") != null) this.aacEnabled = true;
 	}
 	
 	@Override
 	public void onDisable() {
+		this.getLogger().info("Clearing localized data");
 		for (VeinTool tool : VeinTool.values()){
 			manager.getVeinminableBlocks(tool).clear();
 			manager.getPlayersWithVeinMinerDisabled(tool).clear();
 		}
 		manager.getDisabledWorlds().clear();
+		antiCheatSupport.getExemptedUsers().clear();
 	}
 	
 	/** Get an instance of the main VeinMiner class (for VeinMiner API usages)
@@ -124,6 +127,28 @@ public class VeinMiner extends JavaPlugin{
 	 */
 	public VersionBreaker getVersionBreaker() {
 		return versionBreaker;
+	}
+	
+	/** Get an instance of the listener used to prevent false-positives on
+	 * anti-cheat plugins (Only Konsolas' Advanced Anti-Cheat is supported in this class as of now)
+	 * @return an instance of the anti cheat listener
+	 */
+	public AntiCheatSupport getAntiCheatSupport() {
+		return antiCheatSupport;
+	}
+	
+	/** Check whether NoCheatPlus is currently enabled on the server or not
+	 * @return true if NCP is enabled
+	 */
+	public boolean isNCPEnabled() {
+		return ncpEnabled;
+	}
+	
+	/** Check whether Advanced Anti-Cheat is currently enabled on the server or not
+	 * @return true if AAC is enabled
+	 */
+	public boolean isAACEnabled() {
+		return aacEnabled;
 	}
 	
 	private final boolean setupVersionBreaker(){
@@ -151,7 +176,7 @@ public class VeinMiner extends JavaPlugin{
 /* CHANGELOG 1.10.2:
  * Added Javadoc documentation to the VersionBreaker class (Should only be used for VeinMiner purposes, but it's available for public API)
  * Added a bit more Javadoc documentation to the VeinBlock and VeinTool classes. Just in case
- * Added a new custom "Veins Broken" graph to the Metrics website to display how many veins have been broken using VeinMiner. 
- *     - This is obviously a test, but it might be interesting statistics :) I have never made a custom graph before
  * Added a little message for those who enable Metrics in the console on startup (<3 Thanks to you owners that do have it enabled :D)
+ * Fixed support for a couple Anti-Cheat plugins: NoCheatPlus and Advanced Anti-Cheat. (Suggest more if required, please)
+ * Added a few methods to help support the new Anti-Cheat. Developers may use them if they would like, but there's no need to, really
  */

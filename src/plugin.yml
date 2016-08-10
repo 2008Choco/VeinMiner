@@ -3,6 +3,7 @@ main: me.choco.veinminer.VeinMiner
 version: 1.10.2
 description: VeinMiner for CraftBukkit, Bukkit, and Spigot
 author: 2008Choco
+softdepend: [NoCheatPlus, AAC]
 commands:
     veinminer:
       description: The main command for veinminer
