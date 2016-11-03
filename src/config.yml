@@ -53,10 +53,10 @@ BlockList:
     - SAND
     - GRAVEL
   Hoe:
-    - CROPS
-    - POTATO
-    - CARROT
-    - BEETROOT_BLOCK
+    - CROPS;7
+    - POTATO;7
+    - CARROT;7
+    - BEETROOT_BLOCK;3
     - RED_MUSHROOM
     - BROWN_MUSHROOM
   Shears:

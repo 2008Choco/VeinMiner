@@ -27,8 +27,13 @@ import me.choco.veinminer.utils.versions.VersionBreaker;
 
 public class BreakBlockListener implements Listener{
 	
+	private static final BlockFace[] faces = {
+		BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST,
+		BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.NORTH_EAST
+	};
+	
 	private static final int MAX_ITERATIONS = 15;
-	private Set<Block> blocks = new HashSet<>();
+	private Set<Block> blocks = new HashSet<>(), blocksToAdd = new HashSet<>();
 
 	private VeinMiner plugin;
 	private VeinMinerManager manager;
@@ -56,26 +61,25 @@ public class BreakBlockListener implements Listener{
 		
 		// Invalid player state check
 		if (manager.isDisabledInWorld(eBlock.getWorld())) return;
-		else if ((player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE)) return;
-		else if (!player.hasPermission("veinminer.veinmine." + usedTool.getName().toLowerCase())) return;
-		else if ((!manager.isVeinable(usedTool, eBlock.getType(), eBlock.getData()) 
+		if ((player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE)) return;
+		if (!player.hasPermission("veinminer.veinmine." + usedTool.getName().toLowerCase())) return;
+		if ((!manager.isVeinable(usedTool, eBlock.getType(), eBlock.getData()) 
 				&& !(manager.isVeinable(VeinTool.ALL, eBlock.getType(), eBlock.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
-		else if (manager.hasVeinMinerDisabled(player, usedTool)) return;
-		else if (!isProperlySneaking(player)) return;
+		if (manager.hasVeinMinerDisabled(player, usedTool)) return;
+		if (!isProperlySneaking(player)) return;
 		
 		// TIME TO VEINMINE
 		Block initialBlock = eBlock;
 		int maxVeinSize = usedTool.getMaxVeinSize();
 		
 		blocks.add(initialBlock);
-		Set<Block> blocksToAdd = new HashSet<>();
 		
 		// New VeinMiner algorithm- Allocate blocks to break
 		for (int i = 0; i < MAX_ITERATIONS; i++){
 			Iterator<Block> trackedBlocks = blocks.iterator();
 			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize){
 				Block b = trackedBlocks.next();
-				for (BlockFace face : BlockFace.values()){
+				for (BlockFace face : faces){
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
 					Block nextBlock = b.getRelative(face);
@@ -84,6 +88,7 @@ public class BreakBlockListener implements Listener{
 					blocksToAdd.add(nextBlock);
 				}
 			}
+			
 			blocks.addAll(blocksToAdd);
 			blocksToAdd.clear();
 			

@@ -182,5 +182,7 @@ public class VeinMiner extends JavaPlugin{
 
 /* CHANGELOG 1.10.4:
  * Added support for Minecraft versions 1.8.0 - 1.8.3, as well as support for future versions. Updates are not technically required
- * 
+ * Crops are only vein minable at their ripe stage by default
+ * Fixed veins one block apart from that of the original vein being broken
+ * Minor efficiency improvements to the algorithm
  */
