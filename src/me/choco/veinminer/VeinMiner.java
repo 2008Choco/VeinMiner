@@ -13,11 +13,12 @@ import me.choco.veinminer.utils.Metrics;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.commands.VeinMinerCmd;
 import me.choco.veinminer.utils.commands.VeinMinerCmdTabCompleter;
-import me.choco.veinminer.utils.versions.VersionBreaker;
 /* ----------------
  * Version breakers
  */
+import me.choco.veinminer.utils.versions.VersionBreaker;
 import me.choco.veinminer.utils.versions.v1_10.VersionBreaker1_10_R1;
+import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R1;
 import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R2;
 import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R3;
 import me.choco.veinminer.utils.versions.v1_9.VersionBreaker1_9_R1;
@@ -37,8 +38,8 @@ public class VeinMiner extends JavaPlugin{
 	public void onEnable(){
 		// Attempt to set up the version independence manager
 		if (!setupVersionBreaker()){
-			this.getLogger().severe("VEINMINER WILL NOT WORK ON YOUR SERVER VERSION");
-			this.getLogger().severe("PLEASE UPDATE YOUR SERVER AS SOON AS POSSIBLE");
+			this.getLogger().severe("VeinMiner is not officially supported on this version of Minecraft");
+			this.getLogger().severe("Some features may not work properly");
 		}
 		
 		// Check for soft-dependencies
@@ -154,7 +155,10 @@ public class VeinMiner extends JavaPlugin{
 	
 	private final boolean setupVersionBreaker(){
 		String version = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
-        if (version.equals("v1_8_R2")){ // 1.8.2 - 1.8.6
+		if (version.equals("v1_8_R1")){ // 1.8.0 - 1.8.3
+			this.versionBreaker = new VersionBreaker1_8_R1();
+			return true;
+		}else if (version.equals("v1_8_R2")){ // 1.8.4 - 1.8.6
         	this.versionBreaker = new VersionBreaker1_8_R2();
         	return true;
         }else if (version.equals("v1_8_R3")){ // 1.8.7 - 1.8.9
@@ -169,12 +173,14 @@ public class VeinMiner extends JavaPlugin{
         }else if (version.equalsIgnoreCase("v1_10_R1")){ // 1.10.0 - 1.10.2
         	this.versionBreaker = new VersionBreaker1_10_R1();
         	return true;
+        }else{
+        	this.versionBreaker = new VersionBreaker1_10_R1();
         }
         return false;
 	}
 }
 
-/* CHANGELOG 1.10.3:
- * Fixed potential API NullPointerExceptions when VeinMining
- * Fixed a startup error regarding the registration of an AAC event if you did not have AAC installed
+/* CHANGELOG 1.10.4:
+ * Added support for Minecraft versions 1.8.0 - 1.8.3, as well as support for future versions. Updates are not technically required
+ * 
  */
