@@ -13,6 +13,7 @@
 
 MetricsEnabled: true
 ActivationMode: 'SNEAK'
+RepairFriendlyVeinminer: false
 DisabledWorlds:
 - WorldName
 Tools:

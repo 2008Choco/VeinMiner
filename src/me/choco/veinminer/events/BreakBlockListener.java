@@ -119,6 +119,7 @@ public class BreakBlockListener implements Listener{
 		
 		// Actually destroying the allocated blocks
 		boolean usesDurability = usedTool.usesDurability();
+		int maxDurability = itemUsed.getType().getMaxDurability() - (ConfigOption.REPAIR_FRIENDLY_VEINMINER ? 1 : 0);
 		for (Block b : blocks){
 			short priorDurability = itemUsed.getDurability();
 			breaker.breakBlock(player, b);
@@ -129,7 +130,7 @@ public class BreakBlockListener implements Listener{
 				itemUsed.setDurability((short) (newDurability - 1));
 			
 			// Durability check
-			if (newDurability >= itemUsed.getType().getMaxDurability()) break;
+			if (newDurability >= maxDurability) break;
 		}
 		
 		this.blocks.clear();
