@@ -1,6 +1,5 @@
 package me.choco.veinminer.events;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -16,12 +15,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.google.common.collect.Sets;
+
 import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.PlayerVeinMineEvent;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.versions.VersionBreaker;
 
@@ -33,7 +35,7 @@ public class BreakBlockListener implements Listener{
 	};
 	
 	private static final int MAX_ITERATIONS = 15;
-	private Set<Block> blocks = new HashSet<>(), blocksToAdd = new HashSet<>();
+	private Set<Block> blocks = Sets.newHashSet(), blocksToAdd = Sets.newHashSet();
 
 	private VeinMiner plugin;
 	private VeinMinerManager manager;
@@ -49,7 +51,7 @@ public class BreakBlockListener implements Listener{
 	private void onBlockBreak(BlockBreakEvent event){
 		if (!event.getClass().equals(BlockBreakEvent.class)) return;
 		if (blocks.contains(event.getBlock())) return;
-		Block eBlock = event.getBlock();
+		Block block = event.getBlock();
 		
 		Player player = event.getPlayer();
 		if (breaker.getItemInHand(player) == null) return;
@@ -60,19 +62,18 @@ public class BreakBlockListener implements Listener{
 		if (usedTool == null) usedTool = VeinTool.ALL;
 		
 		// Invalid player state check
-		if (manager.isDisabledInWorld(eBlock.getWorld())) return;
+		if (manager.isDisabledInWorld(block.getWorld())) return;
 		if ((player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE)) return;
 		if (!player.hasPermission("veinminer.veinmine." + usedTool.getName().toLowerCase())) return;
-		if ((!manager.isVeinable(usedTool, eBlock.getType(), eBlock.getData()) 
-				&& !(manager.isVeinable(VeinTool.ALL, eBlock.getType(), eBlock.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
+		if ((!manager.isVeinable(usedTool, block.getType(), block.getData()) 
+				&& !(manager.isVeinable(VeinTool.ALL, block.getType(), block.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
 		if (manager.hasVeinMinerDisabled(player, usedTool)) return;
-		if (!isProperlySneaking(player)) return;
+		if (!canActivate(player)) return;
+		if (block.getDrops(itemUsed).isEmpty()) return;
 		
 		// TIME TO VEINMINE
-		Block initialBlock = eBlock;
+		blocks.add(block);
 		int maxVeinSize = usedTool.getMaxVeinSize();
-		
-		blocks.add(initialBlock);
 		
 		// New VeinMiner algorithm- Allocate blocks to break
 		for (int i = 0; i < MAX_ITERATIONS; i++){
@@ -83,7 +84,7 @@ public class BreakBlockListener implements Listener{
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
 					Block nextBlock = b.getRelative(face);
-					if (!blockIsSameMaterial(initialBlock, nextBlock)
+					if (!blockIsSameMaterial(block, nextBlock)
 							|| blocks.contains(nextBlock)) continue;
 					blocksToAdd.add(nextBlock);
 				}
@@ -96,9 +97,12 @@ public class BreakBlockListener implements Listener{
 		}
 		
 		// Fire a new PlayerVeinMineEvent
-		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, new VeinBlock(initialBlock.getType(), initialBlock.getData()), blocks);
+		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, new VeinBlock(block.getType(), block.getData()), blocks);
 		Bukkit.getPluginManager().callEvent(vmEvent);
-		if (vmEvent.isCancelled()) return;
+		if (vmEvent.isCancelled()){
+			this.blocks.clear();
+			return;
+		}
 		blocks = vmEvent.getBlocks(); //Just in case it's modified in the event
 		
 		/* Anti Cheat support start */
@@ -116,17 +120,19 @@ public class BreakBlockListener implements Listener{
 		// Actually destroying the allocated blocks
 		boolean usesDurability = usedTool.usesDurability();
 		for (Block b : blocks){
-			if (b.equals(eBlock)) continue;
-			
-			int priorDurability = itemUsed.getDurability();
+			short priorDurability = itemUsed.getDurability();
 			breaker.breakBlock(player, b);
+			short newDurability = itemUsed.getDurability();
 			
 			// Unbreaking enchantment precaution
-			if (!usesDurability && priorDurability < itemUsed.getDurability())
-				itemUsed.setDurability((short) (itemUsed.getDurability() - 1));
+			if (!usesDurability && priorDurability < newDurability)
+				itemUsed.setDurability((short) (newDurability - 1));
+			
+			// Durability check
+			if (newDurability >= itemUsed.getType().getMaxDurability()) break;
 		}
 		
-		blocks.clear();
+		this.blocks.clear();
 		
 		// VEINMINER - DONE
 		
@@ -150,11 +156,11 @@ public class BreakBlockListener implements Listener{
 		return (blockType.equals(originalType) && block.getData() == original.getData());
 	}
 	
-	private boolean isProperlySneaking(Player player){
-		String value = plugin.getConfig().getString("ActivationMode");
+	private boolean canActivate(Player player){
+		String mode = ConfigOption.ACTIVATION_MODE;
 		return (
-				(value.equalsIgnoreCase("SNEAK") && player.isSneaking()) ||
-				(value.equalsIgnoreCase("STAND") && !player.isSneaking())
+				(mode.equalsIgnoreCase("SNEAK") && player.isSneaking()) ||
+				(mode.equalsIgnoreCase("STAND") && !player.isSneaking())
 			);
 	}
 }

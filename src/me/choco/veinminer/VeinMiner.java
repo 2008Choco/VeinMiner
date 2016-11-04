@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.events.AntiCheatSupport;
 import me.choco.veinminer.events.BreakBlockListener;
+import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.Metrics;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.commands.VeinMinerCmd;
@@ -48,6 +49,7 @@ public class VeinMiner extends JavaPlugin{
 		
 		instance = this;
 		saveDefaultConfig();
+		ConfigOption.loadConfigurationValues(this);
 		this.manager = new VeinMinerManager(this);
 		
 		//Register events
@@ -61,7 +63,7 @@ public class VeinMiner extends JavaPlugin{
 		Bukkit.getPluginCommand("veinminer").setTabCompleter(new VeinMinerCmdTabCompleter());
 		
 		//Metrics
-		if (getConfig().getBoolean("MetricsEnabled")){
+		if (ConfigOption.METRICS_ENABLED){
 			this.getLogger().info("Enabling Plugin Metrics");
 		    try{
 		        Metrics metrics = new Metrics(this);
@@ -182,7 +184,11 @@ public class VeinMiner extends JavaPlugin{
 
 /* CHANGELOG 1.10.4:
  * Added support for Minecraft versions 1.8.0 - 1.8.3, as well as support for future versions. Updates are not technically required
+ * Added a new ConfigOption class to improve the efficiency of grabbing configuration values
  * Crops are only vein minable at their ripe stage by default
  * Fixed veins one block apart from that of the original vein being broken
- * Minor efficiency improvements to the algorithm
+ * Minor efficiency improvements and changes to the algorithm
+ * Fixed blocks being held in the queue if the PlayerVeinMineEvent was cancelled
+ * Fixed vein miner continuing to mine the ores, even if the pickaxe has broken
+ * Fixed veins being mined, even if blocks were not able to be dropped (i.e. breaking diamond ore with wooden pickaxe)
  */

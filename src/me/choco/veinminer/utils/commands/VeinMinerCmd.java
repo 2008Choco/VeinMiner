@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.VeinMinerManager;
 
 public class VeinMinerCmd implements CommandExecutor{
@@ -34,6 +35,7 @@ public class VeinMinerCmd implements CommandExecutor{
 				}
 				
 				plugin.reloadConfig();
+				ConfigOption.loadConfigurationValues(plugin);
 				manager.loadVeinableBlocks();
 				sendMessage(sender, ChatColor.GREEN + "Configuration Successfully Reloaded");
 			}
