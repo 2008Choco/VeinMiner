@@ -18,7 +18,9 @@ import me.choco.veinminer.utils.commands.VeinMinerCmdTabCompleter;
  * Version breakers
  */
 import me.choco.veinminer.utils.versions.VersionBreaker;
+import me.choco.veinminer.utils.versions.VersionBreakerDefault;
 import me.choco.veinminer.utils.versions.v1_10.VersionBreaker1_10_R1;
+import me.choco.veinminer.utils.versions.v1_11.VersionBreaker1_11_R1;
 import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R1;
 import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R2;
 import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R3;
@@ -175,20 +177,17 @@ public class VeinMiner extends JavaPlugin{
         }else if (version.equalsIgnoreCase("v1_10_R1")){ // 1.10.0 - 1.10.2
         	this.versionBreaker = new VersionBreaker1_10_R1();
         	return true;
+        }else if (version.equalsIgnoreCase("v1_11_R1")){
+        	this.versionBreaker = new VersionBreaker1_11_R1();
+        	return true;
         }else{
-        	this.versionBreaker = new VersionBreaker1_10_R1();
+        	this.versionBreaker = new VersionBreakerDefault();
         }
         return false;
 	}
 }
 
-/* CHANGELOG 1.10.4:
- * Added support for Minecraft versions 1.8.0 - 1.8.3, as well as support for future versions. Updates are not technically required
- * Added a new ConfigOption class to improve the efficiency of grabbing configuration values
- * Crops are only vein minable at their ripe stage by default
- * Fixed veins one block apart from that of the original vein being broken
- * Minor efficiency improvements and changes to the algorithm
- * Fixed blocks being held in the queue if the PlayerVeinMineEvent was cancelled
- * Fixed vein miner continuing to mine the ores, even if the pickaxe has broken
- * Fixed veins being mined, even if blocks were not able to be dropped (i.e. breaking diamond ore with wooden pickaxe)
+/* CHANGELOG 1.10.5:
+ * Added official support for version 1.11 of Minecraft
+ * Fixed the default not actually being a default. Updates should now not be 100% required
  */
