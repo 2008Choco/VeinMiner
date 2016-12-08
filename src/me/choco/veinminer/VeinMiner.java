@@ -158,7 +158,7 @@ public class VeinMiner extends JavaPlugin{
 	}
 	
 	private final boolean setupVersionBreaker(){
-		String version = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
+		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 		if (version.equals("v1_8_R1")){ // 1.8.0 - 1.8.3
 			this.versionBreaker = new VersionBreaker1_8_R1();
 			return true;
@@ -181,13 +181,14 @@ public class VeinMiner extends JavaPlugin{
         	this.versionBreaker = new VersionBreaker1_11_R1();
         	return true;
         }else{
-        	this.versionBreaker = new VersionBreakerDefault();
+        	this.versionBreaker = new VersionBreakerDefault(version);
+        	return false;
         }
-        return false;
 	}
 }
 
-/* CHANGELOG 1.10.5:
- * Added official support for version 1.11 of Minecraft
- * Fixed the default not actually being a default. Updates should now not be 100% required
+/* CHANGELOG 1.10.6:
+ * Added a new configuration option, "IncludeEdges", which will allow corners of ores to be mined. Default: false
+ * The default (non-officially supported) versions now use reflection to execute version independent methods. Full functionality should be fine without official updates
+ * Fixed default version inaccuracies with current in-hand item
  */

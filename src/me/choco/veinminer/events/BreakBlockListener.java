@@ -29,11 +29,6 @@ import me.choco.veinminer.utils.versions.VersionBreaker;
 
 public class BreakBlockListener implements Listener{
 	
-	private static final BlockFace[] faces = {
-		BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST,
-		BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.NORTH_EAST
-	};
-	
 	private static final int MAX_ITERATIONS = 15;
 	private Set<Block> blocks = Sets.newHashSet(), blocksToAdd = Sets.newHashSet();
 
@@ -80,7 +75,7 @@ public class BreakBlockListener implements Listener{
 			Iterator<Block> trackedBlocks = blocks.iterator();
 			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize){
 				Block b = trackedBlocks.next();
-				for (BlockFace face : faces){
+				for (BlockFace face : ConfigOption.FACES_TO_MINE){
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
 					Block nextBlock = b.getRelative(face);

@@ -2,6 +2,7 @@ package me.choco.veinminer.utils;
 
 import java.util.List;
 
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import me.choco.veinminer.VeinMiner;
@@ -20,6 +21,10 @@ public class ConfigOption {
 	/** Whether vein mining will stop to allow for a tool repair or not
 	 */
 	public static boolean REPAIR_FRIENDLY_VEINMINER;
+
+	/** The faces that VeinMiner is going to search for when mining
+	 */
+	public static BlockFace[] FACES_TO_MINE;
 	
 	/** A list of all world names in which VeinMiner is disabled
 	 */
@@ -74,6 +79,11 @@ public class ConfigOption {
 		METRICS_ENABLED = config.getBoolean("MetricsEnabled", true);
 		ACTIVATION_MODE = config.getString("ActivationMode", "SNEAK");
 		REPAIR_FRIENDLY_VEINMINER = config.getBoolean("RepairFriendlyVeinminer", false);
+		FACES_TO_MINE = (!config.getBoolean("IncludeEdges") 
+				? new BlockFace[] {
+					BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST,
+					BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.NORTH_EAST
+				} : BlockFace.values());
 		DISABLED_WORLDS = config.getStringList("DisabledWorlds");
 		
 		PICKAXE_MAX_VEIN_SIZE = config.getInt("Tools.Pickaxe.MaxVeinSize", 64);
