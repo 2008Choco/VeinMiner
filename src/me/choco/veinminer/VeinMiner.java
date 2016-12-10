@@ -187,8 +187,9 @@ public class VeinMiner extends JavaPlugin{
 	}
 }
 
-/* CHANGELOG 1.10.6:
- * Added a new configuration option, "IncludeEdges", which will allow corners of ores to be mined. Default: false
- * The default (non-officially supported) versions now use reflection to execute version independent methods. Full functionality should be fine without official updates
- * Fixed default version inaccuracies with current in-hand item
+/* CHANGELOG 1.10.7:
+ * Added my own implementation of BlockFace, VBlockFace, to allow for more flexibility in relative blocks
+ * Fixed "IncludeEdges" only working along the horizonal (x & z) axis, and not along the vertical (y) axis
+ * Fixed BlockFace.NORTH_EAST being enumerated twice in the face values, and missing BlockFace.SOUTH_WEST
+ * "IncludeEdges" is now set to true as a default value
  */

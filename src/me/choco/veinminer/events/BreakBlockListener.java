@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,6 +23,7 @@ import me.choco.veinminer.api.PlayerVeinMineEvent;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.utils.ConfigOption;
+import me.choco.veinminer.utils.VBlockFace;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.versions.VersionBreaker;
 
@@ -75,10 +75,10 @@ public class BreakBlockListener implements Listener{
 			Iterator<Block> trackedBlocks = blocks.iterator();
 			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize){
 				Block b = trackedBlocks.next();
-				for (BlockFace face : ConfigOption.FACES_TO_MINE){
+				for (VBlockFace face : ConfigOption.FACES_TO_MINE){
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
-					Block nextBlock = b.getRelative(face);
+					Block nextBlock = face.getRelative(b);
 					if (!blockIsSameMaterial(block, nextBlock)
 							|| blocks.contains(nextBlock)) continue;
 					blocksToAdd.add(nextBlock);
