@@ -3,6 +3,8 @@ package me.choco.veinminer.events;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -13,8 +15,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.google.common.collect.Sets;
 
 import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
@@ -110,6 +110,9 @@ public class BreakBlockListener implements Listener{
 		}
 		if (plugin.isAACEnabled())
 			plugin.getAntiCheatSupport().exemptFromViolation(player);
+		
+		if (plugin.isAntiAuraEnabled())
+			AntiAuraAPI.API.toggleExemptFromFastBreak(player);
 		/* Anti Cheat support end */
 		
 		// Actually destroying the allocated blocks
@@ -137,6 +140,8 @@ public class BreakBlockListener implements Listener{
 			if (unexemptNCP) NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
 		if (plugin.isAACEnabled())
 			plugin.getAntiCheatSupport().unexemptFromViolation(player);
+		if (plugin.isAntiAuraEnabled())
+			AntiAuraAPI.API.toggleExemptFromFastBreak(player);
 	}
 	
 	@SuppressWarnings("deprecation")

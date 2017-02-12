@@ -5,8 +5,9 @@ import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import me.choco.veinminer.utils.versions.VersionBreaker;
 import net.minecraft.server.v1_11_R1.BlockPosition;
+
+import me.choco.veinminer.utils.versions.VersionBreaker;
 
 public class VersionBreaker1_11_R1 implements VersionBreaker {
 

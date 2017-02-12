@@ -3,6 +3,7 @@ package me.choco.veinminer;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,7 +33,8 @@ public class VeinMiner extends JavaPlugin{
 	private static VeinMiner instance;
 	private AntiCheatSupport antiCheatSupport;
 	
-	private boolean ncpEnabled, aacEnabled;
+	private boolean ncpEnabled, aacEnabled, antiAuraEnabled;
+	private double antiAuraVersion = -1;
 	
 	private VeinMinerManager manager;
 	private VersionBreaker versionBreaker;
@@ -48,6 +50,7 @@ public class VeinMiner extends JavaPlugin{
 		// Check for soft-dependencies
 		this.ncpEnabled = Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null;
 		this.aacEnabled = Bukkit.getPluginManager().getPlugin("AAC") != null;
+		this.antiAuraEnabled = Bukkit.getPluginManager().getPlugin("AntiAura") != null;
 		
 		instance = this;
 		saveDefaultConfig();
@@ -157,6 +160,16 @@ public class VeinMiner extends JavaPlugin{
 		return aacEnabled;
 	}
 	
+	/** Check whether Anti Aura is currently enabled on the server or not
+	 * @return true if Anti Aura is enabled
+	 */
+	public boolean isAntiAuraEnabled() {
+		if (antiAuraEnabled && antiAuraVersion == -1)
+			this.antiAuraVersion = NumberUtils.toDouble(Bukkit.getPluginManager().getPlugin("AntiAura").getDescription().getVersion(), Double.NaN);
+		
+		return antiAuraEnabled && this.antiAuraVersion >= 10.83; // API implemented in 10.83
+	}
+	
 	private final boolean setupVersionBreaker(){
 		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 		if (version.equals("v1_8_R1")){ // 1.8.0 - 1.8.3
@@ -187,9 +200,7 @@ public class VeinMiner extends JavaPlugin{
 	}
 }
 
-/* CHANGELOG 1.10.7:
- * Added my own implementation of BlockFace, VBlockFace, to allow for more flexibility in relative blocks
- * Fixed "IncludeEdges" only working along the horizonal (x & z) axis, and not along the vertical (y) axis
- * Fixed BlockFace.NORTH_EAST being enumerated twice in the face values, and missing BlockFace.SOUTH_WEST
- * "IncludeEdges" is now set to true as a default value
+/* CHANGELOG 1.10.8:
+ * Added support for later versions of AntiAura (10.83 and above)
+ * Fixed support for Advanced AntiCheat
  */
