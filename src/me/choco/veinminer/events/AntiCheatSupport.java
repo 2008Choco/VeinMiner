@@ -18,7 +18,7 @@ public class AntiCheatSupport implements Listener {
 	// Prevent Advanced Anti-Cheat to flag VeinMiner users
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void onAACViolation(PlayerViolationEvent event){
-		if (event.getHackType() != HackType.FASTBREAK || event.getHackType() != HackType.NUKER) return;
+		if (event.getHackType() != HackType.FASTBREAK && event.getHackType() != HackType.NUKER) return;
 		if (!exemptedUsers.contains(event.getPlayer())) return;
 		
 		event.setCancelled(true);

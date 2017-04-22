@@ -11,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,9 +31,10 @@ public class BreakBlockListener implements Listener{
 	private static final int MAX_ITERATIONS = 15;
 	private Set<Block> blocks = Sets.newHashSet(), blocksToAdd = Sets.newHashSet();
 
-	private VeinMiner plugin;
-	private VeinMinerManager manager;
-	private VersionBreaker breaker;
+	private final VeinMiner plugin;
+	private final VeinMinerManager manager;
+	private final VersionBreaker breaker;
+	
 	public BreakBlockListener(VeinMiner plugin){
 		this.plugin = plugin;
 		this.manager = plugin.getVeinMinerManager();
@@ -42,7 +42,7 @@ public class BreakBlockListener implements Listener{
 	}
 	
 	@SuppressWarnings("deprecation")
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	@EventHandler(ignoreCancelled = true)
 	private void onBlockBreak(BlockBreakEvent event){
 		if (!event.getClass().equals(BlockBreakEvent.class)) return;
 		if (blocks.contains(event.getBlock())) return;
