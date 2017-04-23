@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import me.konsolas.aac.api.HackType;
 import me.konsolas.aac.api.PlayerViolationEvent;
 
 public class AntiCheatSupport implements Listener {
@@ -18,9 +17,7 @@ public class AntiCheatSupport implements Listener {
 	// Prevent Advanced Anti-Cheat to flag VeinMiner users
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void onAACViolation(PlayerViolationEvent event){
-		if (event.getHackType() != HackType.FASTBREAK && event.getHackType() != HackType.NUKER) return;
 		if (!exemptedUsers.contains(event.getPlayer())) return;
-		
 		event.setCancelled(true);
 	}
 	
