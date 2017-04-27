@@ -24,7 +24,7 @@ import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.VBlockFace;
 import me.choco.veinminer.utils.VeinMinerManager;
-import me.choco.veinminer.utils.versions.VersionBreaker;
+import me.choco.veinminer.utils.versions.NMSAbstract;
 
 public class BreakBlockListener implements Listener {
 	
@@ -33,12 +33,12 @@ public class BreakBlockListener implements Listener {
 
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
-	private final VersionBreaker breaker;
+	private final NMSAbstract breaker;
 	
 	public BreakBlockListener(VeinMiner plugin){
 		this.plugin = plugin;
 		this.manager = plugin.getVeinMinerManager();
-		this.breaker = plugin.getVersionBreaker();
+		this.breaker = plugin.getNMSAbstract();
 	}
 	
 	@SuppressWarnings("deprecation")

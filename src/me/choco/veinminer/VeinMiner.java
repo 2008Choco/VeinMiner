@@ -7,7 +7,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.events.AntiCheatSupport;
 import me.choco.veinminer.events.BreakBlockListener;
 import me.choco.veinminer.utils.ConfigOption;
@@ -18,15 +17,15 @@ import me.choco.veinminer.utils.commands.VeinMinerCmdTabCompleter;
 /* ----------------
  * Version breakers
  */
-import me.choco.veinminer.utils.versions.VersionBreaker;
-import me.choco.veinminer.utils.versions.VersionBreakerDefault;
-import me.choco.veinminer.utils.versions.v1_10.VersionBreaker1_10_R1;
-import me.choco.veinminer.utils.versions.v1_11.VersionBreaker1_11_R1;
-import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R1;
-import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R2;
-import me.choco.veinminer.utils.versions.v1_8.VersionBreaker1_8_R3;
-import me.choco.veinminer.utils.versions.v1_9.VersionBreaker1_9_R1;
-import me.choco.veinminer.utils.versions.v1_9.VersionBreaker1_9_R2;
+import me.choco.veinminer.utils.versions.NMSAbstract;
+import me.choco.veinminer.utils.versions.NMSAbstractDefault;
+import me.choco.veinminer.utils.versions.v1_10.NMSAbstract1_10_R1;
+import me.choco.veinminer.utils.versions.v1_11.NMSAbstract1_11_R1;
+import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R1;
+import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R2;
+import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R3;
+import me.choco.veinminer.utils.versions.v1_9.NMSAbstract1_9_R1;
+import me.choco.veinminer.utils.versions.v1_9.NMSAbstract1_9_R2;
 
 public class VeinMiner extends JavaPlugin{
 	
@@ -37,12 +36,12 @@ public class VeinMiner extends JavaPlugin{
 	private double antiAuraVersion = -1;
 	
 	private VeinMinerManager manager;
-	private VersionBreaker versionBreaker;
+	private NMSAbstract nmsAbstract;
 	
 	@Override
 	public void onEnable(){
 		// Attempt to set up the version independence manager
-		if (!setupVersionBreaker()){
+		if (!setupNMSAbstract()){
 			this.getLogger().severe("VeinMiner is not officially supported on this version of Minecraft");
 			this.getLogger().severe("Some features may not work properly");
 		}
@@ -53,7 +52,7 @@ public class VeinMiner extends JavaPlugin{
 		this.antiAuraEnabled = Bukkit.getPluginManager().getPlugin("AntiAura") != null;
 		
 		instance = this;
-		saveDefaultConfig();
+		this.saveDefaultConfig();
 		ConfigOption.loadConfigurationValues(this);
 		this.manager = new VeinMinerManager(this);
 		
@@ -95,7 +94,8 @@ public class VeinMiner extends JavaPlugin{
 			}
 			getConfig().set("BlockList." + tool, list);
 		}
-		saveConfig(); reloadConfig();
+		this.saveConfig(); 
+		this.reloadConfig();
 		
 		//Load blocks to the veinable list
 		this.getLogger().info("Loading configuration options to local memory");
@@ -134,10 +134,10 @@ public class VeinMiner extends JavaPlugin{
 	 * <li> Breaking blocks
 	 * <li> Getting item in hand
 	 * 
-	 * @return the VersionBreaker interface
+	 * @return the current NMSAbstract implementation
 	 */
-	public VersionBreaker getVersionBreaker() {
-		return versionBreaker;
+	public NMSAbstract getNMSAbstract() {
+		return nmsAbstract;
 	}
 	
 	/** 
@@ -180,31 +180,31 @@ public class VeinMiner extends JavaPlugin{
 		return antiAuraEnabled && this.antiAuraVersion >= 10.83; // API implemented in 10.83
 	}
 	
-	private final boolean setupVersionBreaker(){
+	private final boolean setupNMSAbstract(){
 		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-		if (version.equals("v1_8_R1")){ // 1.8.0 - 1.8.2
-			this.versionBreaker = new VersionBreaker1_8_R1();
+		if (version.equals("v1_8_R1")) { // 1.8.0 - 1.8.2
+			this.nmsAbstract = new NMSAbstract1_8_R1();
 			return true;
-		}else if (version.equals("v1_8_R2")){ // 1.8.3
-        	this.versionBreaker = new VersionBreaker1_8_R2();
+		} else if (version.equals("v1_8_R2")) { // 1.8.3
+        	this.nmsAbstract = new NMSAbstract1_8_R2();
         	return true;
-        }else if (version.equals("v1_8_R3")){ // 1.8.4 - 1.8.8
-        	this.versionBreaker = new VersionBreaker1_8_R3();
+        } else if (version.equals("v1_8_R3")) { // 1.8.4 - 1.8.8
+        	this.nmsAbstract = new NMSAbstract1_8_R3();
         	return true;
-        }else if (version.equalsIgnoreCase("v1_9_R1")){ // 1.9.0 - 1.9.3
-        	this.versionBreaker = new VersionBreaker1_9_R1();
+        } else if (version.equals("v1_9_R1")) { // 1.9.0 - 1.9.3
+        	this.nmsAbstract = new NMSAbstract1_9_R1();
         	return true;
-        }else if (version.equalsIgnoreCase("v1_9_R2")){ // 1.9.4
-        	this.versionBreaker = new VersionBreaker1_9_R2();
+        } else if (version.equals("v1_9_R2")) { // 1.9.4
+        	this.nmsAbstract = new NMSAbstract1_9_R2();
         	return true;
-        }else if (version.equalsIgnoreCase("v1_10_R1")){ // 1.10.0 - 1.10.2
-        	this.versionBreaker = new VersionBreaker1_10_R1();
+        } else if (version.equals("v1_10_R1")) { // 1.10.0 - 1.10.2
+        	this.nmsAbstract = new NMSAbstract1_10_R1();
         	return true;
-        }else if (version.equalsIgnoreCase("v1_11_R1")){ // 1.11.0 - 1.11.2
-        	this.versionBreaker = new VersionBreaker1_11_R1();
+        } else if (version.equals("v1_11_R1")) { // 1.11.0 - 1.11.2
+        	this.nmsAbstract = new NMSAbstract1_11_R1();
         	return true;
-        }else{
-        	this.versionBreaker = new VersionBreakerDefault(version);
+        } else {
+        	this.nmsAbstract = new NMSAbstractDefault(version);
         	return false;
         }
 	}

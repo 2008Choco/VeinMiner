@@ -8,9 +8,9 @@ import org.bukkit.inventory.ItemStack;
  * Used to allow for version independent code. Not intended for public use, but may
  * be used if absolutely necessary
  * 
- * @see {@link VeinMiner#getVersionBreaker()}
+ * @see {@link VeinMiner#getNMSAbstract()}
  */
-public interface VersionBreaker {
+public interface NMSAbstract {
 	
 	/** 
 	 * Force a player to break a block
