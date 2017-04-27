@@ -77,24 +77,25 @@ public class VeinMinerCmd implements CommandExecutor {
 						return true;
 					}
 
-					manager.toggleVeinMiner(player, tool);
-					boolean toggle = manager.hasVeinMinerDisabled(player, tool);
-					sendMessage(player, "VeinMiner successfully toggled " + (toggle ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
-									+ ChatColor.GRAY + " for tool " + tool.name());
+					tool.toggleVeinMiner(player);
+					sendMessage(player, "VeinMiner successfully toggled " + 
+							(tool.hasVeinMinerDisabled(player) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
+							+ ChatColor.GRAY + " for tool " + tool.name());
 				}
 				
 				// TOGGLE ALL TOOLS
 				else{
 					boolean hasAllDisabled = true;
 					for (VeinTool tool : VeinTool.values()){
-						if (manager.hasVeinMinerEnabled(player, tool)){
+						if (tool.hasVeinMinerEnabled(player)){
 							hasAllDisabled = false;
 							break;
 						}
 					}
 					
 					for (VeinTool tool : VeinTool.values())
-						manager.toggleVeinMiner(player, tool, hasAllDisabled);
+						tool.toggleVeinMiner(player, hasAllDisabled);
+					
 					sendMessage(player, "VeinMiner successfully toggled " + (hasAllDisabled ? ChatColor.GREEN + "on" : ChatColor.RED + "off")
 									+ ChatColor.GRAY + " for all tools!");
 				}
@@ -144,6 +145,7 @@ public class VeinMinerCmd implements CommandExecutor {
 									}
 								}
 								
+								
 								if (manager.isVeinable(tool, materialToAdd, data)){
 									sendMessage(sender, "Block Id " + matName + " is already on the list");
 									return true;
@@ -152,7 +154,7 @@ public class VeinMinerCmd implements CommandExecutor {
 								blocklist.add(matName + (data != -1 ? ";" + data : ""));
 								plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 								plugin.saveConfig(); plugin.reloadConfig();
-								manager.registerVeinminableBlock(tool, new VeinBlock(materialToAdd, data));
+								manager.registerVeinminableBlock(new VeinBlock(materialToAdd, data), tool);
 								sendMessage(sender, "Block Id " + matName + (data != -1 ? " (Data: " + data + ")" : "") + " successfully added to the list");
 							}else{
 								 sendMessage(sender, "/veinminer blocklist add <id> [data]"); 

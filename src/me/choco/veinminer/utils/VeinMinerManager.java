@@ -1,12 +1,11 @@
 package me.choco.veinminer.utils;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,46 +22,40 @@ import me.choco.veinminer.api.veinutils.VeinTool;
  */
 public class VeinMinerManager {
 	
-	private Map<VeinTool, Set<VeinBlock>> veinable = new HashMap<>();
-	private Map<VeinTool, Set<UUID>> veinminerOff = new HashMap<>();
-	private Set<World> disabledWorlds = new HashSet<>();
+	private Set<UUID> disabledWorlds = new HashSet<>();
+	private Set<VeinBlock> veinable = new HashSet<>();
 	
 	private VeinMiner plugin;
 	
 	public VeinMinerManager(VeinMiner plugin) {
 		this.plugin = plugin;
-		
-		// Fill up HashMaps will raw values
-		for (VeinTool tool : VeinTool.values()){
-			this.veinable.put(tool, new HashSet<VeinBlock>());
-			this.veinminerOff.put(tool, new HashSet<UUID>());
-		}
 	}
 	
 	/** 
-	 * Register a VeinBlock to a specified VeinTool. The specified tool will be able 
-	 * to break the registered block
+	 * Register a VeinBlock with all possible tools that can veinmine it
 	 * 
-	 * @param tool - The parent tool to register the block to
 	 * @param block - The block to register
+	 * @param tools - The tools that are capable of mining the block
 	 */
-	public void registerVeinminableBlock(VeinTool tool, VeinBlock block){
-		this.veinable.get(tool).add(block);
+	public void registerVeinminableBlock(VeinBlock block, VeinTool... tools) {
+		if (this.veinable.contains(block)) return;
+		
+		block.addMineableBy(tools);
+		this.veinable.add(block);
 	}
 	
 	/** 
-	 * Unregister a specific material (with data). The specified tool will no longer 
-	 * be able to break the unregistered block
+	 * Unregister a specific material (with data)
 	 * 
-	 * @param tool - The parent tool to unregister the block from
 	 * @param material - The material that should be unregistered
 	 * @param data - The data that should be unregistered (-1 if none)
 	 */
 	public void unregisterVeinminableBlock(VeinTool tool, Material material, byte data){
-		Iterator<VeinBlock> it = veinable.get(tool).iterator();
+		Iterator<VeinBlock> it = veinable.iterator();
 		while (it.hasNext()){
 			VeinBlock block = it.next();
-			if (block.getMaterial().equals(material) && (!block.hasSpecficData() || data == -1 || block.getData() == data)){
+			if (block.getMaterial() == material && (!block.hasSpecficData() || data == -1 || block.getData() == data)
+					&& block.isMineableBy(tool)){
 				it.remove();
 				break;
 			}
@@ -70,29 +63,42 @@ public class VeinMinerManager {
 	}
 	
 	/** 
-	 * Unregister a specific material (with no specified data). The specified tool will
-	 * no longer be able to break the unregistered block
+	 * Unregister a specific material (with no specified data)
 	 * 
-	 * @param tool - The parent tool to unregister the block from
+	 * @param tool - The tool to unregister the tool for
 	 * @param material - The material that should be unregistered
 	 */
 	public void unregisterVeinminableBlock(VeinTool tool, Material material){
-		unregisterVeinminableBlock(tool, material, (byte) -1);
+		this.unregisterVeinminableBlock(tool, material, (byte) -1);
 	}
 	
-	/** 
-	 * Whether a material is able to be broken using VeinMiner with the specified tool
+	/**
+	 * Get a registered VeinBlock instance of the specified type and data
 	 * 
-	 * @param tool - The tool to check
-	 * @param material - The material to check
-	 * @return true if it is breakable with VeinMiner
+	 * @param material - The material to search for
+	 * @param data - The data to search for
+	 * 
+	 * @return the registered vein block. null if none registered
 	 */
-	public boolean isVeinable(VeinTool tool, Material material){
-		return isVeinable(tool, material, (byte) -1);
+	public VeinBlock getVeinminableBlock(Material material, byte data) {
+		return this.veinable.stream()
+			.filter(b -> b.getMaterial() == material)
+			.filter(b -> (!b.hasSpecficData() || data == -1 || b.getData() == data))
+			.findFirst().orElse(null);
+	}
+	
+	/**
+	 * Get a registered VeinBlock instance without any specific byte data
+	 * 
+	 * @param material - The material to search for
+	 * @return the registered vein block. null if none registered
+	 */
+	public VeinBlock getVeinminableBlock(Material material) {
+		return this.getVeinminableBlock(material, (byte) -1);
 	}
 	
 	/** 
-	 * Whether a material (with data) is able to be broken using VeinMiner with the specified tool
+	 * Whether a material (with data) is able to be broken using a specific VeinMiner tool
 	 * 
 	 * @param tool - The tool to check
 	 * @param material - The material to check
@@ -100,12 +106,43 @@ public class VeinMinerManager {
 	 * 
 	 * @return true if it is breakable with VeinMiner
 	 */
-	public boolean isVeinable(VeinTool tool, Material material, byte data){
-		if (!tool.equals(VeinTool.ALL) && isVeinable(VeinTool.ALL, material, data)) return true;
-		
-		for (VeinBlock block : veinable.get(tool))
-			if (block.getMaterial().equals(material) && (!block.hasSpecficData() || data == -1 || block.getData() == data)) return true;
-		return false;
+	public boolean isVeinable(VeinTool tool, Material material, byte data) {
+		VeinBlock block = this.getVeinminableBlock(material, data);
+		return block != null && block.isMineableBy(tool);
+	}
+	
+	/** 
+	 * Whether a material is able to be broken using a specific VeinMiner tool
+	 * 
+	 * @param tool - The tool to check
+	 * @param material - The material to check
+	 * 
+	 * @return true if it is breakable with VeinMiner
+	 */
+	public boolean isVeinable(VeinTool tool, Material material){
+		return this.isVeinable(tool, material, (byte) -1);
+	}
+	
+	/**
+	 * Check whether a material (with data) is able to be broken using any VeinMiner tool
+	 * 
+	 * @param material - The material to check
+	 * @param data - The data to check
+	 * 
+	 * @return true if it is breakable with VeinMiner
+	 */
+	public boolean isVeinable(Material material, byte data) {
+		return this.isVeinable(null, material, data);
+	}
+	
+	/**
+	 * Check whether a material is able to be broken using any VeinMiner tool
+	 * 
+	 * @param material - The material to check
+	 * @return true if it is breakable with VeinMiner
+	 */
+	public boolean isVeinable(Material material) {
+		return this.isVeinable(null, material);
 	}
 	
 	/** 
@@ -115,17 +152,16 @@ public class VeinMinerManager {
 	 * @return A set of all VeinMineable blocks from the tool
 	 */
 	public Set<VeinBlock> getVeinminableBlocks(VeinTool tool){
-		return veinable.get(tool);
+		return this.veinable.stream()
+				.filter(b -> b.isMineableBy(tool))
+				.collect(Collectors.toSet());
 	}
 	
 	/** 
-	 * Load all veinable blocks from the configuration file to memory without overriding current blocks
-	 * 
-	 * @see #loadVeinableBlocks(boolean)
+	 * Load all veinable blocks from the configuration file to memory
 	 */
-	public void loadVeinableBlocks(){ 
-		for (Set<VeinBlock> blocks : veinable.values()) 
-			blocks.clear();
+	public void loadVeinableBlocks(){
+		this.veinable.clear();
 		
 		for (String tool : plugin.getConfig().getConfigurationSection("BlockList").getKeys(false)){
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
@@ -137,7 +173,7 @@ public class VeinMinerManager {
 				String[] ids = value.split(";");
 				
 				//Material information
-				material = Material.getMaterial(ids[0]);
+				material = Material.getMaterial(ids[0].toUpperCase());
 				if (material == null){
 					plugin.getLogger().warning("Block id " + ids[0] + " not found! Ignoring");
 					continue;
@@ -153,7 +189,13 @@ public class VeinMinerManager {
 					}
 				}
 				
-				registerVeinminableBlock(VeinTool.getByName(tool), new VeinBlock(material, data));
+				// Registration
+				VeinTool veinTool = VeinTool.getByName(tool);
+				if (isVeinable(veinTool, material, data)) {
+					this.getVeinminableBlock(material).addMineableBy(veinTool);
+				} else {
+					this.registerVeinminableBlock(new VeinBlock(material, data), veinTool);
+				}
 			}
 		}
 	}
@@ -163,21 +205,26 @@ public class VeinMinerManager {
 	 * 
 	 * @param tool - The tool to get disabled players for
 	 * @return a set of all disabled UUID's
+	 * 
+	 * @deprecated See {@link VeinTool#getDisabledBy()}
 	 */
-	public Set<UUID> getPlayersWithVeinMinerDisabled(VeinTool tool){
-		return veinminerOff.get(tool);
+	@Deprecated
+	public Set<OfflinePlayer> getPlayersWithVeinMinerDisabled(VeinTool tool){
+		return tool.getDisabledBy();
 	}
 	
-	/** 
+	/**
 	 * Check whether a player has VeinMiner currently disabled or not
 	 * 
 	 * @param player - The player to check
 	 * @param tool - The tool to check disabled players for
 	 * 
 	 * @return true if VeinMiner is disabled for the player
+	 * @deprecated See {@link VeinTool#hasVeinMinerDisabled(OfflinePlayer)}
 	 */
+	@Deprecated
 	public boolean hasVeinMinerDisabled(OfflinePlayer player, VeinTool tool){
-		return hasVeinMinerDisabled(player.getUniqueId(), tool);
+		return tool.hasVeinMinerDisabled(player);
 	}
 	
 	/** 
@@ -187,9 +234,11 @@ public class VeinMinerManager {
 	 * @param tool - The tool to check disabled UUID's for
 	 * 
 	 * @return true if VeinMiner is disabled for the UUID
+	 * @deprecated See {@link VeinTool#hasVeinMinerDisabled(OfflinePlayer)}
 	 */
+	@Deprecated
 	public boolean hasVeinMinerDisabled(UUID uuid, VeinTool tool){
-		return veinminerOff.get(tool).contains(uuid);
+		return tool.hasVeinMinerDisabled(Bukkit.getOfflinePlayer(uuid));
 	}
 	
 	/** 
@@ -199,9 +248,11 @@ public class VeinMinerManager {
 	 * @param tool - The tool to check enabled players for
 	 * 
 	 * @return true if VeinMiner is enabled for the player
+	 * @deprecated See {@link VeinTool#hasVeinMinerEnabled(OfflinePlayer)}
 	 */
+	@Deprecated
 	public boolean hasVeinMinerEnabled(OfflinePlayer player, VeinTool tool){
-		return hasVeinMinerEnabled(player.getUniqueId(), tool);
+		return tool.hasVeinMinerEnabled(player);
 	}
 	
 	/** 
@@ -211,9 +262,11 @@ public class VeinMinerManager {
 	 * @param tool - The tool to check enabled UUID's for
 	 * 
 	 * @return true if VeinMiner is enabled for the UUID
+	 * @deprecated See {@link VeinTool#hasVeinMinerEnabled(OfflinePlayer)}
 	 */
+	@Deprecated
 	public boolean hasVeinMinerEnabled(UUID uuid, VeinTool tool){
-		return !hasVeinMinerDisabled(uuid, tool);
+		return tool.hasVeinMinerEnabled(Bukkit.getOfflinePlayer(uuid));
 	}
 	
 	/** 
@@ -221,9 +274,12 @@ public class VeinMinerManager {
 	 * 
 	 * @param player - The player to toggle
 	 * @param tool - The tool in which should be toggled
+	 * 
+	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
 	 */
+	@Deprecated
 	public void toggleVeinMiner(OfflinePlayer player, VeinTool tool){
-		toggleVeinMiner(player.getUniqueId(), tool);
+		tool.toggleVeinMiner(player);
 	}
 	
 	/** 
@@ -231,10 +287,12 @@ public class VeinMinerManager {
 	 * 
 	 * @param uuid - The UUID to toggle
 	 * @param tool - The tool in which should be toggled
+	 * 
+	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
 	 */
+	@Deprecated
 	public void toggleVeinMiner(UUID uuid, VeinTool tool){
-		if (hasVeinMinerDisabled(uuid, tool)) veinminerOff.get(tool).remove(uuid);
-		else veinminerOff.get(tool).add(uuid);
+		tool.toggleVeinMiner(Bukkit.getOfflinePlayer(uuid));
 	}
 	
 	/** 
@@ -243,9 +301,12 @@ public class VeinMinerManager {
 	 * @param player - The player to toggle
 	 * @param tool - The tool to affect
 	 * @param toggle - Whether it should be enabled (true) or disabled (false)
+	 * 
+	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
 	 */
+	@Deprecated
 	public void toggleVeinMiner(OfflinePlayer player, VeinTool tool, boolean toggle){
-		toggleVeinMiner(player.getUniqueId(), tool, toggle);
+		tool.toggleVeinMiner(player, toggle);
 	}
 	
 	/** 
@@ -254,10 +315,12 @@ public class VeinMinerManager {
 	 * @param uuid - The UUID to toggle
 	 * @param tool - The tool to affect
 	 * @param toggle - Whether it should be enabled (true) or disabled (false)
+	 * 
+	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
 	 */
+	@Deprecated
 	public void toggleVeinMiner(UUID uuid, VeinTool tool, boolean toggle){
-		if (toggle && hasVeinMinerDisabled(uuid, tool)) veinminerOff.get(tool).remove(uuid);
-		else if (!toggle && hasVeinMinerEnabled(uuid, tool)) veinminerOff.get(tool).add(uuid);
+		tool.toggleVeinMiner(Bukkit.getOfflinePlayer(uuid), toggle);
 	}
 	
 	/** 
@@ -272,7 +335,8 @@ public class VeinMinerManager {
 				plugin.getLogger().info("Unknown world found... \"" + worldName + "\". Ignoring...");
 				continue;
 			}
-			disabledWorlds.add(world);
+			
+			disabledWorlds.add(world.getUID());
 		}
 	}
 	
@@ -283,7 +347,7 @@ public class VeinMinerManager {
 	 * @return true if the world has VeinMiner disabled
 	 */
 	public boolean isDisabledInWorld(World world){
-		return disabledWorlds.contains(world);
+		return disabledWorlds.contains(world.getUID());
 	}
 	
 	/** 
@@ -292,16 +356,16 @@ public class VeinMinerManager {
 	 * @return a list of all disabled worlds
 	 */
 	public Set<World> getDisabledWorlds(){
-		return disabledWorlds;
+		return disabledWorlds.stream().map(w -> Bukkit.getWorld(w)).collect(Collectors.toSet());
 	}
 	
 	/** 
-	 * Disable veinminer in a specific world
+	 * Disable vein miner in a specific world
 	 * 
 	 * @param world - The world to disable
 	 */
 	public void setDisabledInWorld(World world){
-		if (!isDisabledInWorld(world)) disabledWorlds.add(world);
+		if (!isDisabledInWorld(world)) disabledWorlds.add(world.getUID());
 	}
 	
 	/** 
@@ -310,6 +374,17 @@ public class VeinMinerManager {
 	 * @param world - The world to disable
 	 */
 	public void setEnabledInWorld(World world){
-		if (isDisabledInWorld(world)) disabledWorlds.remove(world);
+		if (isDisabledInWorld(world)) disabledWorlds.remove(world.getUID());
+	}
+
+	/**
+	 * Clear all localised data in the VeinMiner Manager
+	 */
+	public void clearLocalisedData() {
+		this.disabledWorlds.clear();
+		this.veinable.clear();
+		
+		for (VeinTool tool : VeinTool.values())
+			tool.clearPlayerInformation();
 	}
 }

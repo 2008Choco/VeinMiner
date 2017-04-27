@@ -1,5 +1,8 @@
 package me.choco.veinminer.api.veinutils;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 
 /**
@@ -11,6 +14,8 @@ import org.bukkit.Material;
  */
 public class VeinBlock {
 	
+	private VeinTool[] mineableBy = new VeinTool[0];
+	
 	private final Material material;
 	private final byte data;
 	
@@ -20,8 +25,7 @@ public class VeinBlock {
 	}
 	
 	public VeinBlock(Material material){
-		this.material = material;
-		this.data = -1;
+		this(material, (byte) -1);
 	}
 	
 	/** 
@@ -51,5 +55,60 @@ public class VeinBlock {
 	 */
 	public boolean hasSpecficData(){
 		return data != -1;
+	}
+	
+	/**
+	 * Add a tool that is capable of mining this block
+	 * 
+	 * @param tool - The tool to add
+	 */
+	public void addMineableBy(VeinTool tool) {
+		if (isMineableBy(tool)) return;
+		ArrayUtils.add(mineableBy, tool);
+	}
+	
+	/**
+	 * Add a list of tools that are capable of mining this block
+	 * 
+	 * @param tools - The tools to add
+	 */
+	public void addMineableBy(VeinTool... tools) {
+		mineableBy = Arrays.stream(ArrayUtils.addAll(mineableBy, tools)).distinct().toArray(VeinTool[]::new);
+	}
+	
+	/**
+	 * Remove a tool from the list of tools capable of mining this block
+	 * 
+	 * @param tool - The tool to remove
+	 */
+	public void removeMineableBy(VeinTool tool) {
+		ArrayUtils.removeElement(mineableBy, tool);
+	}
+	
+	/**
+	 * Check whether a tool is capable of mining this block or not
+	 * 
+	 * @param tool - The tool to check
+	 * @return true if it is capable of mining it
+	 */
+	public boolean isMineableBy(VeinTool tool) {
+		return ArrayUtils.contains(mineableBy, tool);
+	}
+	
+	/**
+	 * Get all tools that are capable of mining this block
+	 * 
+	 * @return all tools capable of mining
+	 */
+	public VeinTool[] getMineableBy() {
+		return mineableBy;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof VeinBlock)) return false;
+		
+		VeinBlock block = (VeinBlock) object;
+		return (material == block.material && data == block.data);
 	}
 }

@@ -1,6 +1,13 @@
 package me.choco.veinminer.api.veinutils;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 
 import me.choco.veinminer.VeinMiner;
 
@@ -60,6 +67,8 @@ public enum VeinTool {
 	ALL("All");
 	
 	private static final VeinMiner plugin = VeinMiner.getPlugin();
+	
+	private final Set<UUID> disabledBy = new HashSet<>();
 	
 	private final String name;
 	private final Material[] materials;
@@ -131,5 +140,86 @@ public enum VeinTool {
 			for (Material mat : tool.getMaterials())
 				if (mat.equals(material)) return tool;
 		return null;
+	}
+	
+	/**
+	 * Disable VeinMiner for this tool for a specific player
+	 * 
+	 * @param player - The player to disable it for
+	 */
+	public void disableVeinMiner(OfflinePlayer player) {
+		this.disabledBy.add(player.getUniqueId());
+	}
+	
+	/**
+	 * Enable VeinMiner for this tool for a specific player
+	 * 
+	 * @param player - The player to enable it for
+	 */
+	public void enableVeinMiner(OfflinePlayer player) {
+		this.disabledBy.remove(player.getUniqueId());
+	}
+	
+	/**
+	 * Check whether this vein tool is disabled for a specific player
+	 * 
+	 * @param player - The player to check
+	 */
+	public boolean hasVeinMinerDisabled(OfflinePlayer player) {
+		return this.disabledBy.contains(player.getUniqueId());
+	}
+	
+	/**
+	 * Check whether this vein tool is enabled for a specific player
+	 * 
+	 * @param player - The player to check
+	 */
+	public boolean hasVeinMinerEnabled(OfflinePlayer player) {
+		return !this.hasVeinMinerDisabled(player);
+	}
+	
+	/**
+	 * Toggle the enable state for this tool for a specific player
+	 * 
+	 * @param player - The player to toggle this tool for
+	 */
+	public void toggleVeinMiner(OfflinePlayer player) {
+		if (hasVeinMinerDisabled(player)) {
+			this.disabledBy.add(player.getUniqueId());
+		}
+		else {
+			this.disabledBy.remove(player.getUniqueId());
+		}
+	}
+	
+	/**
+	 * Toggle the enable state for this tool for a specific player
+	 * 
+	 * @param player - The player to toggle this tool for
+	 * @param enabled - The new enable state
+	 */
+	public void toggleVeinMiner(OfflinePlayer player, boolean enabled) {
+		if (hasVeinMinerDisabled(player) && enabled) {
+			this.disabledBy.add(player.getUniqueId());
+		}
+		else if (hasVeinMinerEnabled(player) && !enabled) {
+			this.disabledBy.remove(player.getUniqueId());
+		}
+	}
+	
+	/**
+	 * Get a list of all players that have this tool disabled
+	 * 
+	 * @return all players disabling this tool
+	 */
+	public Set<OfflinePlayer> getDisabledBy() {
+		return this.disabledBy.stream().map(p -> Bukkit.getOfflinePlayer(p)).collect(Collectors.toSet());
+	}
+	
+	/**
+	 * Clear all information regarding players that have VeinMiner disabled
+	 */
+	public void clearPlayerInformation() {
+		this.disabledBy.clear();
 	}
 }
