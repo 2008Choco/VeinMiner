@@ -33,12 +33,12 @@ public class BreakBlockListener implements Listener {
 
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
-	private final NMSAbstract breaker;
+	private final NMSAbstract nmsAbstract;
 	
 	public BreakBlockListener(VeinMiner plugin){
 		this.plugin = plugin;
 		this.manager = plugin.getVeinMinerManager();
-		this.breaker = plugin.getNMSAbstract();
+		this.nmsAbstract = plugin.getNMSAbstract();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -49,26 +49,25 @@ public class BreakBlockListener implements Listener {
 		Block block = event.getBlock();
 		
 		Player player = event.getPlayer();
-		if (breaker.getItemInHand(player) == null) return;
+		ItemStack itemUsed = nmsAbstract.getItemInHand(player);
+		if (itemUsed == null) return;
 		
 		// VeinTool used check
-		ItemStack itemUsed = breaker.getItemInHand(player);
-		VeinTool usedTool = VeinTool.fromMaterial(itemUsed.getType());
-		if (usedTool == null) usedTool = VeinTool.ALL;
+		VeinTool tool = VeinTool.fromMaterial(itemUsed.getType());
+		if (tool == null) tool = VeinTool.ALL;
 		
 		// Invalid player state check
 		if (manager.isDisabledInWorld(block.getWorld())) return;
 		if ((player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE)) return;
-		if (!player.hasPermission("veinminer.veinmine." + usedTool.getName().toLowerCase())) return;
-		if ((!manager.isVeinable(usedTool, block.getType(), block.getData()) 
+		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
+		if ((!manager.isVeinable(tool, block.getType(), block.getData()) 
 				&& !(manager.isVeinable(VeinTool.ALL, block.getType(), block.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
-		if (manager.hasVeinMinerDisabled(player, usedTool)) return;
+		if (tool.hasVeinMinerDisabled(player)) return;
 		if (!canActivate(player)) return;
-		if (block.getDrops(itemUsed).isEmpty()) return;
 		
 		// TIME TO VEINMINE
 		blocks.add(block);
-		int maxVeinSize = usedTool.getMaxVeinSize();
+		int maxVeinSize = tool.getMaxVeinSize();
 		
 		// New VeinMiner algorithm- Allocate blocks to break
 		for (int i = 0; i < MAX_ITERATIONS; i++){
@@ -116,11 +115,11 @@ public class BreakBlockListener implements Listener {
 		/* Anti Cheat support end */
 		
 		// Actually destroying the allocated blocks
-		boolean usesDurability = usedTool.usesDurability();
+		boolean usesDurability = tool.usesDurability();
 		int maxDurability = itemUsed.getType().getMaxDurability() - (ConfigOption.REPAIR_FRIENDLY_VEINMINER ? 1 : 0);
 		for (Block b : blocks){
 			short priorDurability = itemUsed.getDurability();
-			breaker.breakBlock(player, b);
+			nmsAbstract.breakBlock(player, b);
 			short newDurability = itemUsed.getDurability();
 			
 			// Unbreaking enchantment precaution
