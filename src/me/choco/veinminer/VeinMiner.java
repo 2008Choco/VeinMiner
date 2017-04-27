@@ -115,52 +115,66 @@ public class VeinMiner extends JavaPlugin{
 		if (antiCheatSupport != null) antiCheatSupport.getExemptedUsers().clear();
 	}
 	
-	/** Get an instance of the main VeinMiner class (for VeinMiner API usages)
+	/** 
+	 * Get an instance of the main VeinMiner class (for VeinMiner API usages)
+	 * 
 	 * @return an instance of the VeinMiner class
 	 */
 	public static VeinMiner getPlugin(){
 		return instance;
 	}
 	
-	/** Get the VeinMiner Manager used to keep track of veinminable blocks, and other utilities
+	/** 
+	 * Get the VeinMiner Manager used to keep track of veinminable blocks, and other utilities
+	 * 
 	 * @return an instance of the VeinMiner manager
 	 */
 	public VeinMinerManager getVeinMinerManager() {
 		return manager;
 	}
 	
-	/** Get the interface that manages all things related to version independence
+	/** 
+	 * Get the interface that manages all things related to version independence
 	 * <li> Breaking blocks
 	 * <li> Getting item in hand
+	 * 
 	 * @return the VersionBreaker interface
 	 */
 	public VersionBreaker getVersionBreaker() {
 		return versionBreaker;
 	}
 	
-	/** Get an instance of the listener used to prevent false-positives on
-	 * anti-cheat plugins (Only Konsolas' Advanced Anti-Cheat is supported in this class as of now)
+	/** 
+	 * Get an instance of the listener used to prevent false-positives on anti-cheat plugins 
+	 * (Only Konsolas' Advanced Anti-Cheat is supported in this class as of now)
+	 * 
 	 * @return an instance of the anti cheat listener
 	 */
 	public AntiCheatSupport getAntiCheatSupport() {
 		return antiCheatSupport;
 	}
 	
-	/** Check whether NoCheatPlus is currently enabled on the server or not
+	/** 
+	 * Check whether NoCheatPlus is currently enabled on the server or not
+	 * 
 	 * @return true if NCP is enabled
 	 */
 	public boolean isNCPEnabled() {
 		return ncpEnabled;
 	}
 	
-	/** Check whether Advanced Anti-Cheat is currently enabled on the server or not
+	/** 
+	 * Check whether Advanced Anti-Cheat is currently enabled on the server or not
+	 * 
 	 * @return true if AAC is enabled
 	 */
 	public boolean isAACEnabled() {
 		return aacEnabled;
 	}
 	
-	/** Check whether Anti Aura is currently enabled on the server or not
+	/** 
+	 * Check whether Anti Aura is currently enabled on the server or not
+	 * 
 	 * @return true if Anti Aura is enabled
 	 */
 	public boolean isAntiAuraEnabled() {
@@ -172,13 +186,13 @@ public class VeinMiner extends JavaPlugin{
 	
 	private final boolean setupVersionBreaker(){
 		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-		if (version.equals("v1_8_R1")){ // 1.8.0 - 1.8.3
+		if (version.equals("v1_8_R1")){ // 1.8.0 - 1.8.2
 			this.versionBreaker = new VersionBreaker1_8_R1();
 			return true;
-		}else if (version.equals("v1_8_R2")){ // 1.8.4 - 1.8.6
+		}else if (version.equals("v1_8_R2")){ // 1.8.3
         	this.versionBreaker = new VersionBreaker1_8_R2();
         	return true;
-        }else if (version.equals("v1_8_R3")){ // 1.8.7 - 1.8.9
+        }else if (version.equals("v1_8_R3")){ // 1.8.4 - 1.8.8
         	this.versionBreaker = new VersionBreaker1_8_R3();
         	return true;
         }else if (version.equalsIgnoreCase("v1_9_R1")){ // 1.9.0 - 1.9.3
@@ -190,7 +204,7 @@ public class VeinMiner extends JavaPlugin{
         }else if (version.equalsIgnoreCase("v1_10_R1")){ // 1.10.0 - 1.10.2
         	this.versionBreaker = new VersionBreaker1_10_R1();
         	return true;
-        }else if (version.equalsIgnoreCase("v1_11_R1")){
+        }else if (version.equalsIgnoreCase("v1_11_R1")){ // 1.11.0 - 1.11.2
         	this.versionBreaker = new VersionBreaker1_11_R1();
         	return true;
         }else{
@@ -199,8 +213,3 @@ public class VeinMiner extends JavaPlugin{
         }
 	}
 }
-
-/* CHANGELOG 1.10.8:
- * Added support for later versions of AntiAura (10.83 and above)
- * Fixed support for Advanced AntiCheat
- */

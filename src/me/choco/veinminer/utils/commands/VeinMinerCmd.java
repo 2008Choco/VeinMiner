@@ -16,10 +16,11 @@ import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.VeinMinerManager;
 
-public class VeinMinerCmd implements CommandExecutor{
+public class VeinMinerCmd implements CommandExecutor {
 	
 	private VeinMiner plugin;
 	private VeinMinerManager manager;
+	
 	public VeinMinerCmd(VeinMiner plugin){
 		this.plugin = plugin;
 		this.manager = plugin.getVeinMinerManager();

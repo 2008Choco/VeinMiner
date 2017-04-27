@@ -8,6 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import me.choco.veinminer.utils.versions.VersionBreaker;
 import net.minecraft.server.v1_9_R2.BlockPosition;
 
+/**
+ * The Minecraft 1.9.4 implementation of {@link VersionBreaker}. This class should
+ * not be instantiated anywhere other than VeinMiner's main class
+ */
 public class VersionBreaker1_9_R2 implements VersionBreaker {
 
 	@Override

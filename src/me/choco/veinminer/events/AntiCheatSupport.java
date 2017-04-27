@@ -21,14 +21,18 @@ public class AntiCheatSupport implements Listener {
 		event.setCancelled(true);
 	}
 	
-	/** Exempt a user from Anti Cheat violation
+	/** 
+	 * Exempt a user from Advanced Anti Cheat violation
+	 * 
 	 * @param player - The player to exempt
 	 */
 	public void exemptFromViolation(Player player){
 		this.exemptedUsers.add(player);
 	}
 	
-	/** Check whether a user is exempted from Anti Cheat violation or not
+	/** 
+	 * Check whether a user is exempted from Advanced Anti Cheat violation or not
+	 * 
 	 * @param player - The player to check
 	 * @return true if the user is exempted
 	 */
@@ -36,14 +40,18 @@ public class AntiCheatSupport implements Listener {
 		return this.exemptedUsers.contains(player);
 	}
 	
-	/** Unexempt a user from Anti Cheat violation
+	/** 
+	 * Unexempt a user from Advanced Anti Cheat violation
+	 * 
 	 * @param player - The player to unexempt
 	 */
 	public void unexemptFromViolation(Player player){
 		this.exemptedUsers.remove(player);
 	}
 	
-	/** Get a list of exempted users
+	/** 
+	 * Get a list of exempted users
+	 * 
 	 * @return a list of exempted users
 	 */
 	public List<Player> getExemptedUsers() {

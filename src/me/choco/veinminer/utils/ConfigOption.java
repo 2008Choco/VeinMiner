@@ -6,70 +6,90 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import me.choco.veinminer.VeinMiner;
 
+/**
+ * A list of all configurable values in VeinMiner
+ */
 public class ConfigOption {
 	
-	/** Whether information should be sent to http://mcstats.org/plugin/VeinMiner/ or not
+	/** 
+	 * Whether information should be sent to http://mcstats.org/plugin/VeinMiner/ or not
 	 */
 	public static boolean METRICS_ENABLED;
 	
-	/** The mode that will cause VeinMiner to activate whilst mining.
+	/** 
+	 * The mode that will cause VeinMiner to activate whilst mining.
 	 * <br><b>Possible Values:</b> "STAND", "SNEAK"
 	 */
 	public static String ACTIVATION_MODE;
 	
-	/** Whether vein mining will stop to allow for a tool repair or not
+	/** 
+	 * Whether vein mining will stop to allow for a tool repair or not
 	 */
 	public static boolean REPAIR_FRIENDLY_VEINMINER;
 
-	/** The faces that VeinMiner is going to search for when mining
+	/** 
+	 * The faces that VeinMiner is going to search for when mining
 	 */
 	public static VBlockFace[] FACES_TO_MINE;
 	
-	/** A list of all world names in which VeinMiner is disabled
+	/** 
+	 * A list of all world names in which VeinMiner is disabled
 	 */
 	public static List<String> DISABLED_WORLDS;
 	
-	/** The maximum vein size that a VeinMine from a pickaxe can destroy
+	/** 
+	 * The maximum vein size that a VeinMine from a pickaxe can destroy
 	 */
 	public static int PICKAXE_MAX_VEIN_SIZE;
 	
-	/** Whether VeinMiner uses durability on a pickaxe or not
+	/** 
+	 * Whether VeinMiner uses durability on a pickaxe or not
 	 */
 	public static boolean PICKAXE_USES_DURABILITY;
 	
-	/** The maximum vein size that a VeinMine from an axe can destroy
+	/** 
+	 * The maximum vein size that a VeinMine from an axe can destroy
 	 */
 	public static int AXE_MAX_VEIN_SIZE;
 	
-	/** Whether VeinMiner uses durability on an axe or not
+	/** 
+	 * Whether VeinMiner uses durability on an axe or not
 	 */
 	public static boolean AXE_USES_DURABILITY;
 	
-	/** The maximum vein size that a VeinMine from a shovel can destroy
+	/** 
+	 * The maximum vein size that a VeinMine from a shovel can destroy
 	 */
 	public static int SHOVEL_MAX_VEIN_SIZE;
 	
-	/** Whether VeinMiner uses durability on a shovel or not
+	/** 
+	 * Whether VeinMiner uses durability on a shovel or not
 	 */
 	public static boolean SHOVEL_USES_DURABILITY;
 	
-	/** The maximum vein size that a VeinMine from a hoe can destroy
+	/** 
+	 * The maximum vein size that a VeinMine from a hoe can destroy
 	 */
 	public static int HOE_MAX_VEIN_SIZE;
 	
-	/** Whether VeinMiner uses durability on a hoe or not
+	/** 
+	 * Whether VeinMiner uses durability on a hoe or not
 	 */
 	public static boolean HOE_USES_DURABILITY;
 	
-	/** The maximum vein size that a VeinMine from shears can destroy
+	/** 
+	 * The maximum vein size that a VeinMine from shears can destroy
 	 */
 	public static int SHEARS_MAX_VEIN_SIZE;
 	
-	/** Whether VeinMiner uses durability on shears or not
+	/** 
+	 * Whether VeinMiner uses durability on shears or not
 	 */
 	public static boolean SHEARS_USES_DURABILITY;
 	
-	/** Load all values from the configuration file to the fields provided in this class
+	/** 
+	 * Load all values from the configuration file to the fields provided in this class
+	 * 
 	 * @param plugin - The instance of the VeinMiner plugin
 	 */
 	public static void loadConfigurationValues(VeinMiner plugin){

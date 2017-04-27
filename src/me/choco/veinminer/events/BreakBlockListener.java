@@ -26,7 +26,7 @@ import me.choco.veinminer.utils.VBlockFace;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.versions.VersionBreaker;
 
-public class BreakBlockListener implements Listener{
+public class BreakBlockListener implements Listener {
 	
 	private static final int MAX_ITERATIONS = 15;
 	private Set<Block> blocks = Sets.newHashSet(), blocksToAdd = Sets.newHashSet();
@@ -42,9 +42,9 @@ public class BreakBlockListener implements Listener{
 	}
 	
 	@SuppressWarnings("deprecation")
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler
 	private void onBlockBreak(BlockBreakEvent event){
-		if (!event.getClass().equals(BlockBreakEvent.class)) return;
+		if (!event.getClass().equals(BlockBreakEvent.class)) return; // For plugins such as McMMO, who fire custom events
 		if (blocks.contains(event.getBlock())) return;
 		Block block = event.getBlock();
 		

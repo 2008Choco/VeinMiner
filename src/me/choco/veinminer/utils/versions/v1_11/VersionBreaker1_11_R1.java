@@ -9,6 +9,10 @@ import net.minecraft.server.v1_11_R1.BlockPosition;
 
 import me.choco.veinminer.utils.versions.VersionBreaker;
 
+/**
+ * The Minecraft 1.11.0 - 1.11.2 implementation of {@link VersionBreaker}. This class should
+ * not be instantiated anywhere other than VeinMiner's main class
+ */
 public class VersionBreaker1_11_R1 implements VersionBreaker {
 
 	@Override

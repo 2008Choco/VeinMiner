@@ -9,6 +9,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * The default fallback implementation of {@link VersionBreaker} using reflection
+ * to prevent the need to update, assuming no changes to NMS obfuscation were made.
+ * This implementation is a last resort if all else fails and there is no alternative
+ * implementation provided by VeinMiner
+ */
 public class VersionBreakerDefault implements VersionBreaker {
 	
 	private boolean wasSuccessful = true;

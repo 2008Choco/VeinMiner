@@ -10,29 +10,36 @@ import org.bukkit.event.player.PlayerEvent;
 
 import me.choco.veinminer.api.veinutils.VeinBlock;
 
-/** Called when VeinMiner is activated for a specific set of blocks
+/**
+ * Called when VeinMiner is activated for a specific set of blocks
  */
-public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable{
-	public static HandlerList handlers = new HandlerList();
+public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
+	
+	private static HandlerList handlers = new HandlerList();
 	private boolean cancelled = false;
-
+	
 	private final VeinBlock type;
 	private final Set<Block> blocks;
+	
 	public PlayerVeinMineEvent(Player who, VeinBlock type, Set<Block> blocks) {
 		super(who);
 		this.type = type;
 		this.blocks = blocks;
 	}
 	
-	/** Get a list of all blocks affected by this event. 
-	 * This list is mutable, you are able to modify it
-	 * @return the blocks affected by this event
+	/**
+	 * Get a list of all blocks affected by this event. This list is mutable, you are able to modify
+	 * it and manipulate what blocks are and are not modified
+	 * 
+	 * @return the blocks to be affected by this event
 	 */
-	public Set<Block> getBlocks(){
+	public Set<Block> getBlocks() {
 		return blocks;
 	}
 	
-	/** Get the block affected by the VeinMiner action
+	/**
+	 * Get the block affected by the VeinMine
+	 * 
 	 * @return the block affected
 	 */
 	public VeinBlock getAffectedBlock() {
@@ -45,7 +52,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable{
 	}
 	
 	@Override
-	public void setCancelled(boolean cancel){
+	public void setCancelled(boolean cancel) {
 		this.cancelled = cancel;
 	}
 	
@@ -54,7 +61,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable{
 		return handlers;
 	}
 	
-	public static HandlerList getHandlerList(){
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 }

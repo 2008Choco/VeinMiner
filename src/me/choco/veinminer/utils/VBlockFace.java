@@ -2,6 +2,9 @@ package me.choco.veinminer.utils;
 
 import org.bukkit.block.Block;
 
+/**
+ * Represents all possible relative directions of a block supported by VeinMiner
+ */
 public enum VBlockFace {
 
 	// CORE DIRECTIONS
@@ -46,18 +49,39 @@ public enum VBlockFace {
 		this.zTranslation = zTranslation;
 	}
 
+	/**
+	 * Get the X value translation of this block face
+	 * 
+	 * @return the X translation
+	 */
 	public int getXTranslation() {
 		return xTranslation;
 	}
 
+	/**
+	 * Get the Y value translation of this block face
+	 * 
+	 * @return the Y translation
+	 */
 	public int getYTranslation() {
 		return yTranslation;
 	}
 
+	/**
+	 * Get the Z value translation of this block face
+	 * 
+	 * @return the Z translation
+	 */
 	public int getZTranslation() {
 		return zTranslation;
 	}
 	
+	/**
+	 * Get the block relative to the specified block based on the current block face
+	 * 
+	 * @param block - The block of reference
+	 * @return the relative block
+	 */
 	public Block getRelative(Block block) {
 		return block.getWorld().getBlockAt(block.getX() + xTranslation, block.getY() + yTranslation, block.getZ() + zTranslation);
 	}
