@@ -28,7 +28,6 @@ import me.choco.veinminer.utils.versions.NMSAbstract;
 
 public class BreakBlockListener implements Listener {
 	
-	private static final int MAX_ITERATIONS = 15;
 	private Set<Block> blocks = Sets.newHashSet(), blocksToAdd = Sets.newHashSet();
 
 	private final VeinMiner plugin;
@@ -70,7 +69,7 @@ public class BreakBlockListener implements Listener {
 		int maxVeinSize = tool.getMaxVeinSize();
 		
 		// New VeinMiner algorithm- Allocate blocks to break
-		for (int i = 0; i < MAX_ITERATIONS; i++){
+		while (blocks.size() < maxVeinSize) {
 			Iterator<Block> trackedBlocks = blocks.iterator();
 			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize){
 				Block b = trackedBlocks.next();
@@ -86,8 +85,6 @@ public class BreakBlockListener implements Listener {
 			
 			blocks.addAll(blocksToAdd);
 			blocksToAdd.clear();
-			
-			if (blocks.size() >= maxVeinSize) break;
 		}
 		
 		// Fire a new PlayerVeinMineEvent
