@@ -184,7 +184,7 @@ public enum VeinTool {
 	 * @param player - The player to toggle this tool for
 	 */
 	public void toggleVeinMiner(OfflinePlayer player) {
-		if (hasVeinMinerDisabled(player)) {
+		if (hasVeinMinerEnabled(player)) {
 			this.disabledBy.add(player.getUniqueId());
 		}
 		else {
@@ -200,10 +200,10 @@ public enum VeinTool {
 	 */
 	public void toggleVeinMiner(OfflinePlayer player, boolean enabled) {
 		if (hasVeinMinerDisabled(player) && enabled) {
-			this.disabledBy.add(player.getUniqueId());
+			this.disabledBy.remove(player.getUniqueId());
 		}
 		else if (hasVeinMinerEnabled(player) && !enabled) {
-			this.disabledBy.remove(player.getUniqueId());
+			this.disabledBy.add(player.getUniqueId());
 		}
 	}
 	
