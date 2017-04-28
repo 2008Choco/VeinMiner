@@ -7,13 +7,13 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.choco.veinminer.commands.VeinMinerCmd;
+import me.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import me.choco.veinminer.events.AntiCheatSupport;
 import me.choco.veinminer.events.BreakBlockListener;
 import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.Metrics;
 import me.choco.veinminer.utils.VeinMinerManager;
-import me.choco.veinminer.utils.commands.VeinMinerCmd;
-import me.choco.veinminer.utils.commands.VeinMinerCmdTabCompleter;
 /* ----------------
  * Version breakers
  */

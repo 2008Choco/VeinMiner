@@ -1,4 +1,4 @@
-package me.choco.veinminer.utils.commands;
+package me.choco.veinminer.commands;
 
 import java.util.List;
 import java.util.Set;
