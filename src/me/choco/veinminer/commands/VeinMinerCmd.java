@@ -38,6 +38,8 @@ public class VeinMinerCmd implements CommandExecutor {
 				plugin.reloadConfig();
 				ConfigOption.loadConfigurationValues(plugin);
 				manager.loadVeinableBlocks();
+				manager.loadDisabledWorlds();
+				manager.loadMaterialAliases();
 				sendMessage(sender, ChatColor.GREEN + "Configuration Successfully Reloaded");
 			}
 			

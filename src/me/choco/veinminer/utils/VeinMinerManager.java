@@ -1,5 +1,6 @@
 package me.choco.veinminer.utils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
 import me.choco.veinminer.VeinMiner;
+import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 
@@ -22,8 +24,10 @@ import me.choco.veinminer.api.veinutils.VeinTool;
  */
 public class VeinMinerManager {
 	
-	private Set<UUID> disabledWorlds = new HashSet<>();
-	private Set<VeinBlock> veinable = new HashSet<>();
+	private final List<MaterialAlias> aliases = new ArrayList<>();
+	
+	private final Set<UUID> disabledWorlds = new HashSet<>();
+	private final Set<VeinBlock> veinable = new HashSet<>();
 	
 	private VeinMiner plugin;
 	
@@ -180,7 +184,7 @@ public class VeinMinerManager {
 				}
 				
 				//Data value information
-				if (value.contains(";")){
+				if (ids.length > 1){
 					try{
 						data = Byte.parseByte(ids[1]);
 					}catch(NumberFormatException e){ 
@@ -191,7 +195,7 @@ public class VeinMinerManager {
 				
 				// Registration
 				VeinTool veinTool = VeinTool.getByName(tool);
-				if (isVeinable(veinTool, material, data)) {
+				if (isVeinable(material, data)) {
 					this.getVeinminableBlock(material).addMineableBy(veinTool);
 				} else {
 					this.registerVeinminableBlock(new VeinBlock(material, data), veinTool);
@@ -376,6 +380,86 @@ public class VeinMinerManager {
 	public void setEnabledInWorld(World world){
 		if (isDisabledInWorld(world)) disabledWorlds.remove(world.getUID());
 	}
+	
+	/**
+	 * Register a new MaterialAlias
+	 * 
+	 * @param alias - The alias to register
+	 */
+	public void registerAlias(MaterialAlias alias) {
+		this.aliases.add(alias);
+	}
+	
+	/**
+	 * Unregister a MaterialAlias
+	 * 
+	 * @param alias - The alias to unregister
+	 */
+	public void unregisterAlias(MaterialAlias alias) {
+		this.aliases.remove(alias);
+	}
+	
+	/**
+	 * Get the alias associated with a specific material and byte data
+	 * 
+	 * @param material - The material to reference
+	 * @param data - The byte data to reference
+	 *  
+	 * @return the associated alias. null if none
+	 */
+	public MaterialAlias getAliasFor(Material material, byte data) {
+		return this.aliases.stream()
+			.filter(a -> a.isAliased(material, data))
+			.findFirst().orElse(null);
+	}
+	
+	/**
+	 * Get the alias associated with a specific material
+	 * 
+	 * @param material - The material to reference
+	 * @return the associated alias. null if none
+	 */
+	public MaterialAlias getAliasFor(Material material) {
+		return this.getAliasFor(material, (byte) -1);
+	}
+	
+	/**
+	 * Load all material aliases from config to memory
+	 */
+	public void loadMaterialAliases() {
+		this.aliases.clear();
+		for (String aliasList : plugin.getConfig().getStringList("Aliases")) {
+			MaterialAlias alias = new MaterialAlias();
+			
+			for (String aliasMaterial : aliasList.split("\\s,\\s")) {
+				Material material = null;
+				byte data = -1;
+				
+				String[] ids = aliasMaterial.split(";");
+				
+				//Material information
+				material = Material.getMaterial(ids[0].toUpperCase());
+				if (material == null){
+					plugin.getLogger().warning("Block id " + ids[0] + " not found! Ignoring");
+					continue;
+				}
+				
+				//Data value information
+				if (ids.length > 1){
+					try{
+						data = Byte.parseByte(ids[1]);
+					}catch(NumberFormatException e){ 
+						data = -1;
+						plugin.getLogger().warning("Data value " + ids[1] + " could not be parsed to a byte. Assuming all data values");
+					}
+				}
+				
+				alias.addAlias(material, data);
+			}
+			
+			this.aliases.add(alias);
+		}
+	}
 
 	/**
 	 * Clear all localised data in the VeinMiner Manager
@@ -383,6 +467,7 @@ public class VeinMinerManager {
 	public void clearLocalisedData() {
 		this.disabledWorlds.clear();
 		this.veinable.clear();
+		this.aliases.clear();
 		
 		for (VeinTool tool : VeinTool.values())
 			tool.clearPlayerInformation();

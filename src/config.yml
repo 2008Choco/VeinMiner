@@ -17,6 +17,7 @@ RepairFriendlyVeinminer: false
 IncludeEdges: true
 DisabledWorlds:
 - WorldName
+
 Tools:
   Pickaxe:
     MaxVeinSize: 64
@@ -33,6 +34,7 @@ Tools:
   Shears:
     MaxVeinSize: 64
     UsesDurability: true
+
 BlockList:
   Pickaxe:
     - COAL_ORE
@@ -69,3 +71,8 @@ BlockList:
   All:
     - ICE
     - PACKED_ICE
+    
+Aliases:
+- REDSTONE_ORE,GLOWING_REDSTONE_ORE
+- HUGE_MUSHROOM_1,HUGE_MUSHROOM_2
+- LONG_GRASS,DOUBLE_PLANT

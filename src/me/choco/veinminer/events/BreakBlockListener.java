@@ -7,7 +7,6 @@ import com.google.common.collect.Sets;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +18,7 @@ import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.PlayerVeinMineEvent;
+import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.utils.ConfigOption;
@@ -67,6 +67,7 @@ public class BreakBlockListener implements Listener {
 		// TIME TO VEINMINE
 		blocks.add(block);
 		int maxVeinSize = tool.getMaxVeinSize();
+		MaterialAlias alias = this.manager.getAliasFor(block.getType(), block.getData());
 		
 		// New VeinMiner algorithm- Allocate blocks to break
 		while (blocks.size() <= maxVeinSize) {
@@ -77,7 +78,7 @@ public class BreakBlockListener implements Listener {
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
 					Block nextBlock = face.getRelative(b);
-					if (blocks.contains(nextBlock) || !blockIsSameMaterial(block, nextBlock)) 
+					if (blocks.contains(nextBlock) || !blockIsSameMaterial(block, nextBlock, alias)) 
 						continue;
 					
 					blocksToAdd.add(nextBlock);
@@ -142,16 +143,11 @@ public class BreakBlockListener implements Listener {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private boolean blockIsSameMaterial(Block original, Block block) {
-		Material originalType = original.getType(), blockType = block.getType();
-		if (blockType.equals(Material.GLOWING_REDSTONE_ORE) || blockType.equals(Material.REDSTONE_ORE)){
-			if ((blockType.equals(originalType))
-					|| (blockType.equals(Material.REDSTONE_ORE) && originalType.equals(Material.GLOWING_REDSTONE_ORE))
-					|| (blockType.equals(Material.GLOWING_REDSTONE_ORE) && originalType.equals(Material.REDSTONE_ORE))){
-				return true;
-			}
-		}
-		return (blockType.equals(originalType) && block.getData() == original.getData());
+	private boolean blockIsSameMaterial(Block original, Block block, MaterialAlias alias) {
+		if (original.getType() == block.getType() && original.getData() == block.getData()) return true;
+		
+		// Check instead for aliases
+		return alias != null && alias.isAliased(block.getType(), block.getData());
 	}
 	
 	private boolean canActivate(Player player){

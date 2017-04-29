@@ -1,7 +1,6 @@
 package me.choco.veinminer;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -79,28 +78,12 @@ public class VeinMiner extends JavaPlugin{
 		        	+ "VeinMiner development page");
 		    }
 		}
-		
-		//Block list modifications
-		this.getLogger().info("Running last minute blocklist modifications");
-		for (String tool : getConfig().getConfigurationSection("BlockList").getKeys(false)){
-			List<String> list = getConfig().getStringList("BlockList." + tool);
-			if (list.contains("REDSTONE_ORE") && !(list.contains("GLOWING_REDSTONE_ORE"))){
-				list.add("GLOWING_REDSTONE_ORE");
-				this.getLogger().info("Adding \"GLOWING_REDSTONE_ORE\" to the list of breakable blocks");
-			}
-			else if (list.contains("GLOWING_REDSTONE_ORE") && !(list.contains("REDSTONE_ORE"))){
-				list.add("REDSTONE_ORE");
-				this.getLogger().info("Adding \"REDSTONE_ORE\" to the list of breakable blocks");
-			}
-			getConfig().set("BlockList." + tool, list);
-		}
-		this.saveConfig(); 
-		this.reloadConfig();
-		
+
 		//Load blocks to the veinable list
 		this.getLogger().info("Loading configuration options to local memory");
-		manager.loadVeinableBlocks();
-		manager.loadDisabledWorlds();
+		this.manager.loadVeinableBlocks();
+		this.manager.loadDisabledWorlds();
+		this.manager.loadMaterialAliases();
 	}
 	
 	@Override
