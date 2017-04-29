@@ -28,7 +28,7 @@ import me.choco.veinminer.utils.versions.NMSAbstract;
 
 public class BreakBlockListener implements Listener {
 	
-	private Set<Block> blocks = Sets.newHashSet(), blocksToAdd = Sets.newHashSet();
+	private final Set<Block> blocks = Sets.newHashSet(), blocksToAdd = Sets.newHashSet();
 
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
@@ -69,7 +69,7 @@ public class BreakBlockListener implements Listener {
 		int maxVeinSize = tool.getMaxVeinSize();
 		
 		// New VeinMiner algorithm- Allocate blocks to break
-		while (blocks.size() < maxVeinSize) {
+		while (blocks.size() <= maxVeinSize) {
 			Iterator<Block> trackedBlocks = blocks.iterator();
 			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize){
 				Block b = trackedBlocks.next();
@@ -77,13 +77,15 @@ public class BreakBlockListener implements Listener {
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
 					Block nextBlock = face.getRelative(b);
-					if (!blockIsSameMaterial(block, nextBlock)
-							|| blocks.contains(nextBlock)) continue;
+					if (blocks.contains(nextBlock) || !blockIsSameMaterial(block, nextBlock)) 
+						continue;
+					
 					blocksToAdd.add(nextBlock);
 				}
 			}
 			
 			blocks.addAll(blocksToAdd);
+			if (blocksToAdd.size() == 0) break;
 			blocksToAdd.clear();
 		}
 		
@@ -94,7 +96,6 @@ public class BreakBlockListener implements Listener {
 			this.blocks.clear();
 			return;
 		}
-		blocks = vmEvent.getBlocks(); //Just in case it's modified in the event
 		
 		/* Anti Cheat support start */
 		boolean unexemptNCP = false;
