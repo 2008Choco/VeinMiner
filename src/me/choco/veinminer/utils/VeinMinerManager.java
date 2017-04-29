@@ -26,7 +26,6 @@ public class VeinMinerManager {
 	private final List<MaterialAlias> aliases = new ArrayList<>();
 	
 	private final Set<UUID> disabledWorlds = new HashSet<>();
-	private final Set<VeinBlock> veinable = new HashSet<>();
 	
 	private VeinMiner plugin;
 	
@@ -38,8 +37,6 @@ public class VeinMinerManager {
 	 * Load all veinable blocks from the configuration file to memory
 	 */
 	public void loadVeinableBlocks(){
-		this.veinable.clear();
-		
 		for (String tool : plugin.getConfig().getConfigurationSection("BlockList").getKeys(false)){
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 			
@@ -304,7 +301,7 @@ public class VeinMinerManager {
 		for (String aliasList : plugin.getConfig().getStringList("Aliases")) {
 			MaterialAlias alias = new MaterialAlias();
 			
-			for (String aliasMaterial : aliasList.split("\\s,\\s")) {
+			for (String aliasMaterial : aliasList.split("\\s*,\\s*")) {
 				Material material = null;
 				byte data = -1;
 				
@@ -339,7 +336,7 @@ public class VeinMinerManager {
 	 */
 	public void clearLocalisedData() {
 		this.disabledWorlds.clear();
-		this.veinable.clear();
+		VeinBlock.clearVeinableBlocks();
 		this.aliases.clear();
 		
 		for (VeinTool tool : VeinTool.values())

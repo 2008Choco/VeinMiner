@@ -70,7 +70,7 @@ public class VeinBlock {
 	 */
 	public void addMineableBy(VeinTool tool) {
 		if (isMineableBy(tool)) return;
-		ArrayUtils.add(mineableBy, tool);
+		mineableBy = ArrayUtils.add(mineableBy, tool);
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class VeinBlock {
 	 * @param tool - The tool to remove
 	 */
 	public void removeMineableBy(VeinTool tool) {
-		ArrayUtils.removeElement(mineableBy, tool);
+		mineableBy = ArrayUtils.removeElement(mineableBy, tool);
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public class VeinBlock {
 		Iterator<VeinBlock> it = veinable.iterator();
 		while (it.hasNext()){
 			VeinBlock block = it.next();
-			if (block.material == material && (!block.hasSpecficData() || data == -1 || block.data == data)
+			if (block.material == material && (!block.hasSpecficData() || block.data == data)
 					&& block.isMineableBy(tool)){
 				it.remove();
 				break;
@@ -184,7 +184,7 @@ public class VeinBlock {
 	public static VeinBlock getVeinminableBlock(Material material, byte data) {
 		return veinable.stream()
 			.filter(b -> b.material == material)
-			.filter(b -> (!b.hasSpecficData() || data == -1 || b.data == data))
+			.filter(b -> b.data == data)
 			.findFirst()
 			.orElseGet(() -> {
 				VeinBlock block = new VeinBlock(material, data);
@@ -216,7 +216,7 @@ public class VeinBlock {
 		return veinable.stream()
 			.anyMatch(b -> 
 				b.material == material 
-				&& (!b.hasSpecficData() || data == -1 || b.data == data)
+				&& (!b.hasSpecficData() || b.data == data)
 				&& b.isMineableBy(tool)
 			);
 	}
@@ -265,5 +265,12 @@ public class VeinBlock {
 		return veinable.stream()
 				.filter(b -> b.isMineableBy(tool))
 				.collect(Collectors.toSet());
+	}
+	
+	/**
+	 * Clear all veinable blocks
+	 */
+	public static void clearVeinableBlocks() {
+		veinable.clear();
 	}
 }

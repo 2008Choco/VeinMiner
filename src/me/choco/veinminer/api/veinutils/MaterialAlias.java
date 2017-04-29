@@ -13,7 +13,7 @@ import me.choco.veinminer.utils.VeinMinerManager;
  */
 public class MaterialAlias {
 	
-	private final VeinBlock[] blocks;
+	private VeinBlock[] blocks;
 	
 	/**
 	 * Construct a new alias between varying vein blocks
@@ -34,7 +34,7 @@ public class MaterialAlias {
 	 */
 	public void addAlias(VeinBlock block) {
 		if (ArrayUtils.contains(blocks, block)) return;
-		ArrayUtils.add(blocks, block);
+		blocks = ArrayUtils.add(blocks, block);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class MaterialAlias {
 	 */
 	public void removeAlias(VeinBlock block) {
 		if (!ArrayUtils.contains(blocks, block)) return;
-		ArrayUtils.removeElement(blocks, block);
+		blocks = ArrayUtils.removeElement(blocks, block);
 	}
 	
 	/**
@@ -116,7 +116,10 @@ public class MaterialAlias {
 	 * @return true if aliased
 	 */
 	public boolean isAliased(Material material, byte data) {
-		return Arrays.stream(blocks).anyMatch(b -> b.getMaterial() == material && b.getData() == data);
+		return Arrays.stream(blocks)
+				.anyMatch(b -> b.getMaterial() == material 
+					&& (!b.hasSpecficData() || b.getData() == data)
+				);
 	}
 	
 	/**

@@ -67,7 +67,8 @@ public class BreakBlockListener implements Listener {
 		// TIME TO VEINMINE
 		blocks.add(block);
 		int maxVeinSize = tool.getMaxVeinSize();
-		MaterialAlias alias = this.manager.getAliasFor(block.getType(), block.getData());
+		MaterialAlias alias = this.manager.getAliasFor(block.getType());
+		if (alias == null) alias = this.manager.getAliasFor(block.getType(), block.getData());
 		
 		// New VeinMiner algorithm- Allocate blocks to break
 		while (blocks.size() <= maxVeinSize) {
@@ -146,7 +147,6 @@ public class BreakBlockListener implements Listener {
 	private boolean blockIsSameMaterial(Block original, Block block, MaterialAlias alias) {
 		if (original.getType() == block.getType() && original.getData() == block.getData()) return true;
 		
-		// Check instead for aliases
 		return alias != null && alias.isAliased(block.getType(), block.getData());
 	}
 	
