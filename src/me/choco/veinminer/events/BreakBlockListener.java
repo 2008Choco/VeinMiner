@@ -59,8 +59,8 @@ public class BreakBlockListener implements Listener {
 		if (manager.isDisabledInWorld(block.getWorld())) return;
 		if ((player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE)) return;
 		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
-		if ((!manager.isVeinable(tool, block.getType(), block.getData()) 
-				&& !(manager.isVeinable(VeinTool.ALL, block.getType(), block.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
+		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getData()) 
+				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
 		if (tool.hasVeinMinerDisabled(player)) return;
 		if (!canActivate(player)) return;
 		
@@ -91,7 +91,7 @@ public class BreakBlockListener implements Listener {
 		}
 		
 		// Fire a new PlayerVeinMineEvent
-		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, new VeinBlock(block.getType(), block.getData()), blocks);
+		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getData()), blocks);
 		Bukkit.getPluginManager().callEvent(vmEvent);
 		if (vmEvent.isCancelled()){
 			this.blocks.clear();

@@ -148,7 +148,7 @@ public class VeinMinerCmd implements CommandExecutor {
 								}
 								
 								
-								if (manager.isVeinable(tool, materialToAdd, data)){
+								if (VeinBlock.isVeinable(tool, materialToAdd, data)){
 									sendMessage(sender, "Block Id " + matName + " is already on the list");
 									return true;
 								}
@@ -156,7 +156,7 @@ public class VeinMinerCmd implements CommandExecutor {
 								blocklist.add(matName + (data != -1 ? ";" + data : ""));
 								plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 								plugin.saveConfig(); plugin.reloadConfig();
-								manager.registerVeinminableBlock(new VeinBlock(materialToAdd, data), tool);
+								VeinBlock.registerVeinminableBlock(materialToAdd, data, tool);
 								sendMessage(sender, "Block Id " + matName + (data != -1 ? " (Data: " + data + ")" : "") + " successfully added to the list");
 							}else{
 								 sendMessage(sender, "/veinminer blocklist add <id> [data]"); 
@@ -197,7 +197,7 @@ public class VeinMinerCmd implements CommandExecutor {
 									}
 								}
 								
-								if (!manager.isVeinable(tool, materialToRemove, data)){
+								if (!VeinBlock.isVeinable(tool, materialToRemove, data)){
 									sendMessage(sender, "Block Id " + matName + " is not on the list");
 									return true;
 								}
@@ -205,7 +205,7 @@ public class VeinMinerCmd implements CommandExecutor {
 								blocklist.remove(matName + (data != -1 ? ";" + data : ""));
 								plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 								plugin.saveConfig(); plugin.reloadConfig();
-								manager.unregisterVeinminableBlock(tool, materialToRemove, data);
+								VeinBlock.unregisterVeinminableBlock(tool, materialToRemove, data);
 								sendMessage(sender, "Block Id " + matName + (data != -1 ? " (Data: " + data + ")" : "") + " successfully removed from the list");
 							}else{
 								 sendMessage(sender, "/veinminer blocklist remove <id> [data]"); 
@@ -218,7 +218,7 @@ public class VeinMinerCmd implements CommandExecutor {
 								return true;
 							}
 							
-							Set<VeinBlock> blocklist = manager.getVeinminableBlocks(tool);
+							Set<VeinBlock> blocklist = VeinBlock.getVeinminableBlocks(tool);
 							sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 							for (VeinBlock block : blocklist){
 								Material material = block.getMaterial();

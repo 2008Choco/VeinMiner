@@ -5,7 +5,6 @@ import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 
-import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.utils.VeinMinerManager;
 
 /**
@@ -13,8 +12,6 @@ import me.choco.veinminer.utils.VeinMinerManager;
  * can recognise as a single material value when being vein mined
  */
 public class MaterialAlias {
-	
-	private static final VeinMinerManager MANAGER = VeinMiner.getPlugin().getVeinMinerManager();
 	
 	private final VeinBlock[] blocks;
 	
@@ -51,17 +48,7 @@ public class MaterialAlias {
 	 * @return the newly aliased added
 	 */
 	public VeinBlock addAlias(Material material, byte data) {
-		VeinBlock block = MANAGER.getVeinminableBlock(material, data);
-		if (block == null) {
-			block = new VeinBlock(material, data);
-			
-			if (blocks.length > 0) {
-				VeinBlock original = this.blocks[0];
-				block.addMineableBy(original.getMineableBy());
-			}
-			
-			MANAGER.registerVeinminableBlock(block);
-		}
+		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
 		
 		this.addAlias(block);
 		return block;
@@ -96,9 +83,7 @@ public class MaterialAlias {
 	 * @param data - The data to remove
 	 */
 	public void removeAlias(Material material, byte data) {
-		VeinBlock block = MANAGER.getVeinminableBlock(material, data);
-		if (block == null) return;
-		
+		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
 		this.removeAlias(block);
 	}
 	
