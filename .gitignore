@@ -48,5 +48,6 @@ Temporary Items
 /bin/
 
 /.settings/
+/docs/
 .project
 .classpath

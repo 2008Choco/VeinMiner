@@ -18,41 +18,41 @@ public enum VeinTool {
 	
 	/**
 	 * Represents a pickaxe of various materials. This includes:
-	 * <li> Wooden Pickaxe
-	 * <li> Stone Pickaxe
-	 * <li> Gold Pickaxe
-	 * <li> Iron Pickaxe
-	 * <li> Diamond Pickaxe
+	 * <br> - Wooden Pickaxe
+	 * <br> - Stone Pickaxe
+	 * <br> - Gold Pickaxe
+	 * <br> - Iron Pickaxe
+	 * <br> - Diamond Pickaxe
 	 */
 	PICKAXE("Pickaxe", Material.WOOD_PICKAXE, Material.STONE_PICKAXE, Material.GOLD_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE),
 	
 	/**
 	 * Represents an axe of various materials. This includes:
-	 * <li> Wooden Axe
-	 * <li> Stone Axe
-	 * <li> Gold Axe
-	 * <li> Iron Axe
-	 * <li> Diamond Axe
+	 * <br> - Wooden Axe
+	 * <br> - Stone Axe
+	 * <br> - Gold Axe
+	 * <br> - Iron Axe
+	 * <br> - Diamond Axe
 	 */
 	AXE("Axe", Material.WOOD_AXE, Material.STONE_AXE, Material.GOLD_AXE, Material.IRON_AXE, Material.DIAMOND_AXE),
 	
 	/**
 	 * Represents a shovel of various materials. This includes:
-	 * <li> Wooden Shovel
-	 * <li> Stone Shovel
-	 * <li> Gold Shovel
-	 * <li> Iron Shovel
-	 * <li> Diamond Shovel
+	 * <br> - Wooden Shovel
+	 * <br> - Stone Shovel
+	 * <br> - Gold Shovel
+	 * <br> - Iron Shovel
+	 * <br> - Diamond Shovel
 	 */
 	SHOVEL("Shovel", Material.WOOD_SPADE, Material.STONE_SPADE, Material.GOLD_SPADE, Material.IRON_SPADE, Material.DIAMOND_SPADE),
 	
 	/**
 	 * Represents a hoe of various materials. This includes:
-	 * <li> Wooden Hoe
-	 * <li> Stone Hoe
-	 * <li> Gold Hoe
-	 * <li> Iron Hoe
-	 * <li> Diamond Hoe
+	 * <br> - Wooden Hoe
+	 * <br> - Stone Hoe
+	 * <br> - Gold Hoe
+	 * <br> - Iron Hoe
+	 * <br> - Diamond Hoe
 	 */
 	HOE("Hoe", Material.WOOD_HOE, Material.STONE_HOE, Material.GOLD_HOE, Material.IRON_HOE, Material.DIAMOND_HOE),
 	
@@ -119,7 +119,7 @@ public enum VeinTool {
 	 * Get a VeinTool based on its name used in the configuration file. Null if no VeinTool with the
 	 * given name exists
 	 * 
-	 * @param name - the name of the tool
+	 * @param name the name of the tool
 	 * @return the VeinTool with the given name
 	 */
 	public static VeinTool getByName(String name) {
@@ -132,7 +132,7 @@ public enum VeinTool {
 	 * Get a VeinTool based on a categorised material. null if no VeinTool with the given 
 	 * material exists
 	 * 
-	 * @param material - the material to search for
+	 * @param material the material to search for
 	 * @return the VeinTool with the given categorised material
 	 */
 	public static VeinTool fromMaterial(Material material) {
@@ -145,7 +145,7 @@ public enum VeinTool {
 	/**
 	 * Disable VeinMiner for this tool for a specific player
 	 * 
-	 * @param player - The player to disable it for
+	 * @param player the player to disable it for
 	 */
 	public void disableVeinMiner(OfflinePlayer player) {
 		this.disabledBy.add(player.getUniqueId());
@@ -154,7 +154,7 @@ public enum VeinTool {
 	/**
 	 * Enable VeinMiner for this tool for a specific player
 	 * 
-	 * @param player - The player to enable it for
+	 * @param player the player to enable it for
 	 */
 	public void enableVeinMiner(OfflinePlayer player) {
 		this.disabledBy.remove(player.getUniqueId());
@@ -163,7 +163,8 @@ public enum VeinTool {
 	/**
 	 * Check whether this vein tool is disabled for a specific player
 	 * 
-	 * @param player - The player to check
+	 * @param player the player to check
+	 * @return true if veinminer disabled
 	 */
 	public boolean hasVeinMinerDisabled(OfflinePlayer player) {
 		return this.disabledBy.contains(player.getUniqueId());
@@ -172,7 +173,8 @@ public enum VeinTool {
 	/**
 	 * Check whether this vein tool is enabled for a specific player
 	 * 
-	 * @param player - The player to check
+	 * @param player the player to check
+	 * @return true if veinminer enabled
 	 */
 	public boolean hasVeinMinerEnabled(OfflinePlayer player) {
 		return !this.hasVeinMinerDisabled(player);
@@ -181,7 +183,7 @@ public enum VeinTool {
 	/**
 	 * Toggle the enable state for this tool for a specific player
 	 * 
-	 * @param player - The player to toggle this tool for
+	 * @param player the player to toggle this tool for
 	 */
 	public void toggleVeinMiner(OfflinePlayer player) {
 		if (hasVeinMinerEnabled(player)) {
@@ -195,8 +197,8 @@ public enum VeinTool {
 	/**
 	 * Toggle the enable state for this tool for a specific player
 	 * 
-	 * @param player - The player to toggle this tool for
-	 * @param enabled - The new enable state
+	 * @param player the player to toggle this tool for
+	 * @param enabled the new enable state
 	 */
 	public void toggleVeinMiner(OfflinePlayer player, boolean enabled) {
 		if (hasVeinMinerDisabled(player) && enabled) {

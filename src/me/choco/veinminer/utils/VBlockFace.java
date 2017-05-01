@@ -79,7 +79,7 @@ public enum VBlockFace {
 	/**
 	 * Get the block relative to the specified block based on the current block face
 	 * 
-	 * @param block - The block of reference
+	 * @param block the block of reference
 	 * @return the relative block
 	 */
 	public Block getRelative(Block block) {

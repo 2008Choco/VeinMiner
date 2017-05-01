@@ -77,7 +77,7 @@ public class VeinMinerManager {
 	/** 
 	 * Get a set of all UUID's that currently have VeinMiner disabled
 	 * 
-	 * @param tool - The tool to get disabled players for
+	 * @param tool the tool to get disabled players for
 	 * @return a set of all disabled UUID's
 	 * 
 	 * @deprecated See {@link VeinTool#getDisabledBy()}
@@ -90,8 +90,8 @@ public class VeinMinerManager {
 	/**
 	 * Check whether a player has VeinMiner currently disabled or not
 	 * 
-	 * @param player - The player to check
-	 * @param tool - The tool to check disabled players for
+	 * @param player the player to check
+	 * @param tool the tool to check disabled players for
 	 * 
 	 * @return true if VeinMiner is disabled for the player
 	 * @deprecated See {@link VeinTool#hasVeinMinerDisabled(OfflinePlayer)}
@@ -104,8 +104,8 @@ public class VeinMinerManager {
 	/** 
 	 * Check whether a UUID has VeinMiner currently disabled or not
 	 * 
-	 * @param uuid - The UUID to check
-	 * @param tool - The tool to check disabled UUID's for
+	 * @param uuid the UUID to check
+	 * @param tool the tool to check disabled UUID's for
 	 * 
 	 * @return true if VeinMiner is disabled for the UUID
 	 * @deprecated See {@link VeinTool#hasVeinMinerDisabled(OfflinePlayer)}
@@ -118,8 +118,8 @@ public class VeinMinerManager {
 	/** 
 	 * Check whether a player has VeinMiner currently enabled or not
 	 * 
-	 * @param player - The player to check
-	 * @param tool - The tool to check enabled players for
+	 * @param player the player to check
+	 * @param tool the tool to check enabled players for
 	 * 
 	 * @return true if VeinMiner is enabled for the player
 	 * @deprecated See {@link VeinTool#hasVeinMinerEnabled(OfflinePlayer)}
@@ -132,8 +132,8 @@ public class VeinMinerManager {
 	/** 
 	 * Check whether a UUID has VeinMiner currently enabled or not
 	 * 
-	 * @param uuid - The UUID to check
-	 * @param tool - The tool to check enabled UUID's for
+	 * @param uuid the UUID to check
+	 * @param tool the tool to check enabled UUID's for
 	 * 
 	 * @return true if VeinMiner is enabled for the UUID
 	 * @deprecated See {@link VeinTool#hasVeinMinerEnabled(OfflinePlayer)}
@@ -146,8 +146,8 @@ public class VeinMinerManager {
 	/** 
 	 * Toggle whether VeinMiner is enabled or disabled for a specific player
 	 * 
-	 * @param player - The player to toggle
-	 * @param tool - The tool in which should be toggled
+	 * @param player the player to toggle
+	 * @param tool the tool in which should be toggled
 	 * 
 	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
 	 */
@@ -159,8 +159,8 @@ public class VeinMinerManager {
 	/** 
 	 * Toggle whether VeinMiner is enabled or disabled for a specific UUID
 	 * 
-	 * @param uuid - The UUID to toggle
-	 * @param tool - The tool in which should be toggled
+	 * @param uuid the UUID to toggle
+	 * @param tool the tool in which should be toggled
 	 * 
 	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
 	 */
@@ -172,9 +172,9 @@ public class VeinMinerManager {
 	/** 
 	 * Set whether a players VeinMiner should be enabled or not
 	 * 
-	 * @param player - The player to toggle
-	 * @param tool - The tool to affect
-	 * @param toggle - Whether it should be enabled (true) or disabled (false)
+	 * @param player the player to toggle
+	 * @param tool the tool to affect
+	 * @param toggle whether it should be enabled (true) or disabled (false)
 	 * 
 	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
 	 */
@@ -186,9 +186,9 @@ public class VeinMinerManager {
 	/** 
 	 * Set whether a UUID's VeinMiner should be enabled or not
 	 * 
-	 * @param uuid - The UUID to toggle
-	 * @param tool - The tool to affect
-	 * @param toggle - Whether it should be enabled (true) or disabled (false)
+	 * @param uuid the UUID to toggle
+	 * @param tool the tool to affect
+	 * @param toggle whether it should be enabled (true) or disabled (false)
 	 * 
 	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
 	 */
@@ -217,7 +217,7 @@ public class VeinMinerManager {
 	/** 
 	 * Check whether a world has VeinMiner disabled or not
 	 * 
-	 * @param world - The world to check
+	 * @param world the world to check
 	 * @return true if the world has VeinMiner disabled
 	 */
 	public boolean isDisabledInWorld(World world){
@@ -236,7 +236,7 @@ public class VeinMinerManager {
 	/** 
 	 * Disable vein miner in a specific world
 	 * 
-	 * @param world - The world to disable
+	 * @param world the world to disable
 	 */
 	public void setDisabledInWorld(World world){
 		if (!isDisabledInWorld(world)) disabledWorlds.add(world.getUID());
@@ -245,7 +245,7 @@ public class VeinMinerManager {
 	/** 
 	 * Enable VeinMiner in a specific world
 	 * 
-	 * @param world - The world to disable
+	 * @param world the world to disable
 	 */
 	public void setEnabledInWorld(World world){
 		if (isDisabledInWorld(world)) disabledWorlds.remove(world.getUID());
@@ -254,7 +254,7 @@ public class VeinMinerManager {
 	/**
 	 * Register a new MaterialAlias
 	 * 
-	 * @param alias - The alias to register
+	 * @param alias the alias to register
 	 */
 	public void registerAlias(MaterialAlias alias) {
 		this.aliases.add(alias);
@@ -263,7 +263,7 @@ public class VeinMinerManager {
 	/**
 	 * Unregister a MaterialAlias
 	 * 
-	 * @param alias - The alias to unregister
+	 * @param alias the alias to unregister
 	 */
 	public void unregisterAlias(MaterialAlias alias) {
 		this.aliases.remove(alias);
@@ -272,8 +272,8 @@ public class VeinMinerManager {
 	/**
 	 * Get the alias associated with a specific material and byte data
 	 * 
-	 * @param material - The material to reference
-	 * @param data - The byte data to reference
+	 * @param material the material to reference
+	 * @param data the byte data to reference
 	 *  
 	 * @return the associated alias. null if none
 	 */
@@ -286,7 +286,7 @@ public class VeinMinerManager {
 	/**
 	 * Get the alias associated with a specific material
 	 * 
-	 * @param material - The material to reference
+	 * @param material the material to reference
 	 * @return the associated alias. null if none
 	 */
 	public MaterialAlias getAliasFor(Material material) {

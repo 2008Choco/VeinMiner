@@ -15,15 +15,15 @@ public interface NMSAbstract {
 	/** 
 	 * Force a player to break a block
 	 * 
-	 * @param player - The player to force
-	 * @param block - The block to break
+	 * @param player the player to force
+	 * @param block the block to break
 	 */
 	public void breakBlock(Player player, Block block);
 	
 	/** 
 	 * Get the item in hand for a player
 	 * 
-	 * @param player - The player
+	 * @param player the player
 	 * @return the item in hand
 	 */
 	public ItemStack getItemInHand(Player player);

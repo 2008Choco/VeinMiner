@@ -24,7 +24,7 @@ public class AntiCheatSupport implements Listener {
 	/** 
 	 * Exempt a user from Advanced Anti Cheat violation
 	 * 
-	 * @param player - The player to exempt
+	 * @param player the player to exempt
 	 */
 	public void exemptFromViolation(Player player){
 		this.exemptedUsers.add(player);
@@ -33,7 +33,7 @@ public class AntiCheatSupport implements Listener {
 	/** 
 	 * Check whether a user is exempted from Advanced Anti Cheat violation or not
 	 * 
-	 * @param player - The player to check
+	 * @param player the player to check
 	 * @return true if the user is exempted
 	 */
 	public boolean isExempted(Player player){
@@ -43,7 +43,7 @@ public class AntiCheatSupport implements Listener {
 	/** 
 	 * Unexempt a user from Advanced Anti Cheat violation
 	 * 
-	 * @param player - The player to unexempt
+	 * @param player the player to unexempt
 	 */
 	public void unexemptFromViolation(Player player){
 		this.exemptedUsers.remove(player);

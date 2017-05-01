@@ -114,8 +114,6 @@ public class VeinMiner extends JavaPlugin{
 	
 	/** 
 	 * Get the interface that manages all things related to version independence
-	 * <li> Breaking blocks
-	 * <li> Getting item in hand
 	 * 
 	 * @return the current NMSAbstract implementation
 	 */

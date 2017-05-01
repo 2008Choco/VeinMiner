@@ -18,10 +18,10 @@ public class MaterialAlias {
 	/**
 	 * Construct a new alias between varying vein blocks
 	 * 
-	 * @param blocks - The blocks to alias
+	 * @param blocks the blocks to alias
 	 * 
-	 * @see VeinMinerManager#getVeinminableBlock(Material, byte)
-	 * @see VeinMinerManager#getVeinminableBlock(Material)
+	 * @see VeinBlock#getVeinminableBlock(Material, byte)
+	 * @see VeinBlock#getVeinminableBlock(Material)
 	 */
 	public MaterialAlias(VeinBlock... blocks) {
 		this.blocks = blocks;
@@ -30,7 +30,7 @@ public class MaterialAlias {
 	/**
 	 * Add a block to this alias
 	 * 
-	 * @param block - The block to add
+	 * @param block the block to add
 	 */
 	public void addAlias(VeinBlock block) {
 		if (ArrayUtils.contains(blocks, block)) return;
@@ -42,8 +42,8 @@ public class MaterialAlias {
 	 * not already exist, it will be registered to the {@link VeinMinerManager}
 	 * with the same {@link VeinTool}s as the dominant {@link VeinBlock}
 	 * 
-	 * @param material - The material to add
-	 * @param data - The data to add
+	 * @param material the material to add
+	 * @param data the data to add
 	 * 
 	 * @return the newly aliased added
 	 */
@@ -59,7 +59,7 @@ public class MaterialAlias {
 	 * not already exist, it will be registered to the {@link VeinMinerManager}
 	 * with the same {@link VeinTool}s as the dominant {@link VeinBlock}
 	 * 
-	 * @param material - The material to add
+	 * @param material the material to add
 	 * @return the newly aliased added
 	 */
 	public VeinBlock addAlias(Material material) {
@@ -69,7 +69,7 @@ public class MaterialAlias {
 	/**
 	 * Remove a block from this alias
 	 * 
-	 * @param block - The block to remove
+	 * @param block the block to remove
 	 */
 	public void removeAlias(VeinBlock block) {
 		if (!ArrayUtils.contains(blocks, block)) return;
@@ -79,8 +79,8 @@ public class MaterialAlias {
 	/**
 	 * Remove a material with byte data from this alias
 	 * 
-	 * @param material - The material to remove
-	 * @param data - The data to remove
+	 * @param material the material to remove
+	 * @param data the data to remove
 	 */
 	public void removeAlias(Material material, byte data) {
 		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
@@ -90,7 +90,7 @@ public class MaterialAlias {
 	/**
 	 * Remove a material with no byte data from this alias
 	 * 
-	 * @param material - The material to remove
+	 * @param material the material to remove
 	 */
 	public void removeAlias(Material material) {
 		this.removeAlias(material, (byte) -1);
@@ -99,7 +99,7 @@ public class MaterialAlias {
 	/**
 	 * Check whether a block is aliased under this material alias
 	 * 
-	 * @param block - The block to check
+	 * @param block the block to check
 	 * @return true if aliased
 	 */
 	public boolean isAliased(VeinBlock block) {
@@ -110,8 +110,8 @@ public class MaterialAlias {
 	 * Check whether a material with byte data is aliased under this
 	 * material alias
 	 * 
-	 * @param material - The material to check
-	 * @param data - The data to check
+	 * @param material the material to check
+	 * @param data the data to check
 	 * 
 	 * @return true if aliased
 	 */
@@ -126,7 +126,7 @@ public class MaterialAlias {
 	 * Check whether a material with no byte data is aliased under this
 	 * material alias
 	 * 
-	 * @param material - The material to check
+	 * @param material the material to check
 	 * @return true if aliased
 	 */
 	public boolean isAliased(Material material) {

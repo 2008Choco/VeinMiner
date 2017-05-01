@@ -90,7 +90,7 @@ public class ConfigOption {
 	/** 
 	 * Load all values from the configuration file to the fields provided in this class
 	 * 
-	 * @param plugin - The instance of the VeinMiner plugin
+	 * @param plugin the instance of the VeinMiner plugin
 	 */
 	public static void loadConfigurationValues(VeinMiner plugin){
 		FileConfiguration config = plugin.getConfig();
