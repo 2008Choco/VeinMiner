@@ -62,7 +62,7 @@ public class BreakBlockListener implements Listener {
 		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getData()) 
 				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
 		if (tool.hasVeinMinerDisabled(player)) return;
-		if (!canActivate(player)) return;
+		if (!ConfigOption.ACTIVATION_MODE.isValid(player)) return;
 		
 		// TIME TO VEINMINE
 		blocks.add(block);
@@ -150,11 +150,4 @@ public class BreakBlockListener implements Listener {
 		return alias != null && alias.isAliased(block.getType(), block.getData());
 	}
 	
-	private boolean canActivate(Player player){
-		String mode = ConfigOption.ACTIVATION_MODE;
-		return (
-				(mode.equalsIgnoreCase("SNEAK") && player.isSneaking()) ||
-				(mode.equalsIgnoreCase("STAND") && !player.isSneaking())
-			);
-	}
 }

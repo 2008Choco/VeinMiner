@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import me.choco.veinminer.VeinMiner;
+import me.choco.veinminer.api.MineActivation;
 
 /**
  * A list of all configurable values in VeinMiner
@@ -18,9 +19,8 @@ public class ConfigOption {
 	
 	/** 
 	 * The mode that will cause VeinMiner to activate whilst mining.
-	 * <br><b>Possible Values:</b> "STAND", "SNEAK"
 	 */
-	public static String ACTIVATION_MODE;
+	public static MineActivation ACTIVATION_MODE;
 	
 	/** 
 	 * Whether vein mining will stop to allow for a tool repair or not
@@ -96,7 +96,8 @@ public class ConfigOption {
 		FileConfiguration config = plugin.getConfig();
 		
 		METRICS_ENABLED = config.getBoolean("MetricsEnabled", true);
-		ACTIVATION_MODE = config.getString("ActivationMode", "SNEAK");
+		ACTIVATION_MODE = MineActivation.getByName(config.getString("ActivationMode", "SNEAK"));
+		if (ACTIVATION_MODE == null) ACTIVATION_MODE = MineActivation.SNEAK;
 		REPAIR_FRIENDLY_VEINMINER = config.getBoolean("RepairFriendlyVeinminer", false);
 		FACES_TO_MINE = (!config.getBoolean("IncludeEdges") 
 				? new VBlockFace[] {
