@@ -9,6 +9,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
 import me.choco.veinminer.api.veinutils.VeinBlock;
+import me.choco.veinminer.api.veinutils.VeinTool;
 
 /**
  * Called when VeinMiner is activated for a specific set of blocks
@@ -19,11 +20,13 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	private boolean cancelled = false;
 	
 	private final VeinBlock type;
+	private final VeinTool tool;
 	private final Set<Block> blocks;
 	
-	public PlayerVeinMineEvent(Player who, VeinBlock type, Set<Block> blocks) {
+	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, Set<Block> blocks) {
 		super(who);
 		this.type = type;
+		this.tool = tool;
 		this.blocks = blocks;
 	}
 	
@@ -44,6 +47,15 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 */
 	public VeinBlock getAffectedBlock() {
 		return type;
+	}
+	
+	/**
+	 * Get the tool used to initiate this VeinMine
+	 * 
+	 * @return the tool used
+	 */
+	public VeinTool getTool() {
+		return tool;
 	}
 	
 	@Override

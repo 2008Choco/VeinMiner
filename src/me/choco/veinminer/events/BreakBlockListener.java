@@ -92,7 +92,7 @@ public class BreakBlockListener implements Listener {
 		}
 		
 		// Fire a new PlayerVeinMineEvent
-		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getData()), blocks);
+		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getData()), tool, blocks);
 		Bukkit.getPluginManager().callEvent(vmEvent);
 		if (vmEvent.isCancelled()){
 			this.blocks.clear();
