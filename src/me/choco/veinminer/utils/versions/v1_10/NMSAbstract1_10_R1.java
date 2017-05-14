@@ -5,8 +5,9 @@ import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import me.choco.veinminer.utils.versions.NMSAbstract;
 import net.minecraft.server.v1_10_R1.BlockPosition;
+
+import me.choco.veinminer.utils.versions.NMSAbstract;
 
 /**
  * The Minecraft 1.10.0 - 1.10.2 implementation of {@link NMSAbstract}. This class should

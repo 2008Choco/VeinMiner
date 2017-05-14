@@ -20,6 +20,7 @@ import me.choco.veinminer.utils.versions.NMSAbstract;
 import me.choco.veinminer.utils.versions.NMSAbstractDefault;
 import me.choco.veinminer.utils.versions.v1_10.NMSAbstract1_10_R1;
 import me.choco.veinminer.utils.versions.v1_11.NMSAbstract1_11_R1;
+import me.choco.veinminer.utils.versions.v1_12.NMSAbstract1_12_R1;
 import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R1;
 import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R2;
 import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R3;
@@ -183,6 +184,9 @@ public class VeinMiner extends JavaPlugin{
         	return true;
         } else if (version.equals("v1_11_R1")) { // 1.11.0 - 1.11.2
         	this.nmsAbstract = new NMSAbstract1_11_R1();
+        	return true;
+        } else if (version.equals("v1_12_R1")) { // 1.12.0-Pre2 +
+        	this.nmsAbstract = new NMSAbstract1_12_R1();
         	return true;
         } else {
         	this.nmsAbstract = new NMSAbstractDefault(version);
