@@ -45,16 +45,17 @@ public class VeinMiner extends JavaPlugin{
 			this.getLogger().severe("VeinMiner is not officially supported on this version of Minecraft");
 			this.getLogger().severe("Some features may not work properly");
 		}
+
+		instance = this;
+		this.manager = new VeinMinerManager(this);
 		
 		// Check for soft-dependencies
 		this.ncpEnabled = Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null;
 		this.aacEnabled = Bukkit.getPluginManager().getPlugin("AAC") != null;
 		this.antiAuraEnabled = Bukkit.getPluginManager().getPlugin("AntiAura") != null;
 		
-		instance = this;
 		this.saveDefaultConfig();
 		ConfigOption.loadConfigurationValues(this);
-		this.manager = new VeinMinerManager(this);
 		
 		//Register events
 		this.getLogger().info("Registering events");
