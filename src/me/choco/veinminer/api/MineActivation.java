@@ -12,18 +12,16 @@ public enum MineActivation {
 	/**
 	 * Activated when a Player is holding sneak
 	 */
-	SNEAK("Sneak", Player::isSneaking),
+	SNEAK(Player::isSneaking),
 	
 	/**
 	 * Activated when a Player is standing up (not sneaking)
 	 */
-	STAND("Stand", p -> !p.isSneaking());
+	STAND(p -> !p.isSneaking());
 	
-	private final String label;
 	private final Predicate<Player> condition;
 	
-	private MineActivation(String label, Predicate<Player> condition) {
-		this.label = label;
+	private MineActivation(Predicate<Player> condition) {
 		this.condition = condition;
 	}
 	
@@ -45,7 +43,7 @@ public enum MineActivation {
 	 */
 	public static MineActivation getByName(String name) {
 		for (MineActivation activation : values())
-			if (activation.label.equals(name)) return activation;
+			if (activation.name().equalsIgnoreCase(name)) return activation;
 		return null;
 	}
 	
