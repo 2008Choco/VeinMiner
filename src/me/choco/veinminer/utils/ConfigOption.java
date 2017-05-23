@@ -2,6 +2,8 @@ package me.choco.veinminer.utils;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import me.choco.veinminer.VeinMiner;
@@ -116,5 +118,19 @@ public class ConfigOption {
 		HOE_USES_DURABILITY = config.getBoolean("Tools.Hoe.UsesDurability", true);
 		SHEARS_MAX_VEIN_SIZE = config.getInt("Tools.Shears.MaxVeinSize", 64);
 		SHEARS_USES_DURABILITY = config.getBoolean("Tools.Shears.UsesDurability", true);
+		
+		// Load information
+		VeinMinerManager manager = plugin.getVeinMinerManager();
+		manager.clearDisabledWorlds();
+		for (String worldName : DISABLED_WORLDS) {
+			World world = Bukkit.getWorld(worldName);
+			
+			if (world == null) {
+				plugin.getLogger().info("Unknown world, \"" + worldName + "\"");
+				continue;
+			}
+			
+			manager.setDisabledInWorld(world);
+		}
 	}
 }

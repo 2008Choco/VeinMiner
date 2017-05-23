@@ -252,6 +252,13 @@ public class VeinMinerManager {
 	}
 	
 	/**
+	 * Clear all worlds from the blacklist
+	 */
+	public void clearDisabledWorlds() {
+		this.disabledWorlds.clear();
+	}
+	
+	/**
 	 * Register a new MaterialAlias
 	 * 
 	 * @param alias the alias to register
