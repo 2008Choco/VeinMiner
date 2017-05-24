@@ -202,7 +202,7 @@ public class VeinMinerManager {
 	 */
 	public void loadDisabledWorlds(){
 		disabledWorlds.clear();
-		for (String worldName : plugin.getConfig().getStringList("DisabledWorlds")){
+		for (String worldName : ConfigOption.DISABLED_WORLDS){
 			World world = Bukkit.getWorld(worldName);
 			
 			if (world == null){
@@ -239,7 +239,7 @@ public class VeinMinerManager {
 	 * @param world the world to disable
 	 */
 	public void setDisabledInWorld(World world){
-		if (!isDisabledInWorld(world)) disabledWorlds.add(world.getUID());
+		disabledWorlds.add(world.getUID());
 	}
 	
 	/** 
@@ -248,7 +248,7 @@ public class VeinMinerManager {
 	 * @param world the world to disable
 	 */
 	public void setEnabledInWorld(World world){
-		if (isDisabledInWorld(world)) disabledWorlds.remove(world.getUID());
+		disabledWorlds.remove(world.getUID());
 	}
 	
 	/**
