@@ -119,15 +119,14 @@ public class BreakBlockListener implements Listener {
 		int maxDurability = itemUsed.getType().getMaxDurability() - (ConfigOption.REPAIR_FRIENDLY_VEINMINER ? 1 : 0);
 		for (Block b : blocks){
 			short priorDurability = itemUsed.getDurability();
+			if (priorDurability >= maxDurability) break;
+			
 			nmsAbstract.breakBlock(player, b);
 			short newDurability = itemUsed.getDurability();
 			
 			// Unbreaking enchantment precaution
 			if (!usesDurability && priorDurability < newDurability)
 				itemUsed.setDurability((short) (newDurability - 1));
-			
-			// Durability check
-			if (newDurability >= maxDurability) break;
 		}
 		
 		this.blocks.clear();
