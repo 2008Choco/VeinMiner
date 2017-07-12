@@ -4,11 +4,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.choco.veinminer.VeinMiner;
+
 /** 
  * Used to allow for version independent code. Not intended for public use, but may
  * be used if absolutely necessary
  * 
- * @see {@link VeinMiner#getNMSAbstract()}
+ * @see VeinMiner#getNMSAbstract()
  */
 public interface NMSAbstract {
 	
