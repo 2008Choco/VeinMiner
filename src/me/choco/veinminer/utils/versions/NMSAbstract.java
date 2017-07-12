@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
  * Used to allow for version independent code. Not intended for public use, but may
  * be used if absolutely necessary
  * 
- * @see {@link VeinMiner#getNMSAbstract()}
+ * @see VeinMiner#getNMSAbstract()
  */
 public interface NMSAbstract {
 	
