@@ -1,9 +1,7 @@
 package me.choco.veinminer.events;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -21,14 +19,14 @@ import me.choco.veinminer.api.PlayerVeinMineEvent;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.pattern.VeinMiningPattern;
 import me.choco.veinminer.utils.ConfigOption;
-import me.choco.veinminer.utils.VBlockFace;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.versions.NMSAbstract;
 
 public class BreakBlockListener implements Listener {
 	
-	private final Set<Block> blocks = Sets.newHashSet(), blocksToAdd = Sets.newHashSet();
+	private final List<Block> blocks = new ArrayList<>();
 
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
@@ -65,31 +63,12 @@ public class BreakBlockListener implements Listener {
 		if (!ConfigOption.ACTIVATION_MODE.isValid(player)) return;
 		
 		// TIME TO VEINMINE
-		blocks.add(block);
-		int maxVeinSize = tool.getMaxVeinSize();
 		MaterialAlias alias = this.manager.getAliasFor(block.getType());
 		if (alias == null) alias = this.manager.getAliasFor(block.getType(), block.getData());
 		
-		// New VeinMiner algorithm- Allocate blocks to break
-		while (blocks.size() <= maxVeinSize) {
-			Iterator<Block> trackedBlocks = blocks.iterator();
-			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize){
-				Block b = trackedBlocks.next();
-				for (VBlockFace face : ConfigOption.FACES_TO_MINE){
-					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
-					
-					Block nextBlock = face.getRelative(b);
-					if (blocks.contains(nextBlock) || !blockIsSameMaterial(block, nextBlock, alias)) 
-						continue;
-					
-					blocksToAdd.add(nextBlock);
-				}
-			}
-			
-			blocks.addAll(blocksToAdd);
-			if (blocksToAdd.size() == 0) break;
-			blocksToAdd.clear();
-		}
+		this.blocks.add(block);
+		VeinMiningPattern pattern = manager.getPatternFor(player);
+		pattern.computeBlocks(blocks, block, tool, alias);
 		
 		// Fire a new PlayerVeinMineEvent
 		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getData()), tool, blocks);
@@ -140,13 +119,6 @@ public class BreakBlockListener implements Listener {
 			plugin.getAntiCheatSupport().unexemptFromViolation(player);
 		if (plugin.isAntiAuraEnabled())
 			AntiAuraAPI.API.toggleExemptFromFastBreak(player);
-	}
-	
-	@SuppressWarnings("deprecation")
-	private boolean blockIsSameMaterial(Block original, Block block, MaterialAlias alias) {
-		if (original.getType() == block.getType() && original.getData() == block.getData()) return true;
-		
-		return alias != null && alias.isAliased(block.getType(), block.getData());
 	}
 	
 }

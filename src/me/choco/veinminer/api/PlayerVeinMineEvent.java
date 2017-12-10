@@ -1,6 +1,6 @@
 package me.choco.veinminer.api;
 
-import java.util.Set;
+import java.util.List;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -21,9 +21,9 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	
 	private final VeinBlock type;
 	private final VeinTool tool;
-	private final Set<Block> blocks;
+	private final List<Block> blocks;
 	
-	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, Set<Block> blocks) {
+	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, List<Block> blocks) {
 		super(who);
 		this.type = type;
 		this.tool = tool;
@@ -36,7 +36,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 * 
 	 * @return the blocks to be affected by this event
 	 */
-	public Set<Block> getBlocks() {
+	public List<Block> getBlocks() {
 		return blocks;
 	}
 	

@@ -1,8 +1,10 @@
 package me.choco.veinminer.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,11 +13,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.pattern.PatternDefault;
+import me.choco.veinminer.pattern.VeinMiningPattern;
 
 /**
  * The central management for VeinMiner to handle everything regarding
@@ -23,9 +28,14 @@ import me.choco.veinminer.api.veinutils.VeinTool;
  */
 public class VeinMinerManager {
 	
-	private final List<MaterialAlias> aliases = new ArrayList<>();
+	/**
+	 * The default mining pattern for VeinMiner
+	 */
+	public static final VeinMiningPattern VEINMINER_PATTERN_DEFAULT = new PatternDefault();
 	
+	private final List<MaterialAlias> aliases = new ArrayList<>();
 	private final Set<UUID> disabledWorlds = new HashSet<>();
+	private final Map<UUID, VeinMiningPattern> playerMiningPattern = new HashMap<>();
 	
 	private VeinMiner plugin;
 	
@@ -337,16 +347,42 @@ public class VeinMinerManager {
 			this.aliases.add(alias);
 		}
 	}
-
+	
+	/**
+	 * Get the pattern used by the specified player. If the player is not using any specific pattern,
+	 * {@link #VEINMINER_PATTERN_DEFAULT} will be returned
+	 * 
+	 * @param player the player to get the pattern for
+	 * @return the player's mining pattern
+	 */
+	public VeinMiningPattern getPatternFor(Player player) {
+		return playerMiningPattern.getOrDefault(player.getUniqueId(), VEINMINER_PATTERN_DEFAULT);
+	}
+	
+	/**
+	 * Set the pattern to use for the specified player
+	 * 
+	 * @param player the player whose pattern to set
+	 * @param pattern the new pattern
+	 */
+	public void setPattern(Player player, VeinMiningPattern pattern) {
+		if (pattern == null)
+			throw new IllegalArgumentException("Cannot set the pattern of a player to null");
+		
+		this.playerMiningPattern.put(player.getUniqueId(), pattern);
+	}
+	
 	/**
 	 * Clear all localised data in the VeinMiner Manager
 	 */
 	public void clearLocalisedData() {
 		this.disabledWorlds.clear();
 		VeinBlock.clearVeinableBlocks();
+		this.playerMiningPattern.clear();
 		this.aliases.clear();
 		
 		for (VeinTool tool : VeinTool.values())
 			tool.clearPlayerInformation();
 	}
+	
 }
