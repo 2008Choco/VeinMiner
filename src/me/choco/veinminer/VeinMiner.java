@@ -91,9 +91,9 @@ public class VeinMiner extends JavaPlugin{
 	@Override
 	public void onDisable() {
 		this.getLogger().info("Clearing localized data");
-		manager.clearLocalisedData();
+		this.manager.clearLocalisedData();
 		
-		if (antiCheatSupport != null) antiCheatSupport.getExemptedUsers().clear();
+		if (antiCheatSupport != null) antiCheatSupport.clearExemptedUsers();
 	}
 	
 	/** 

@@ -2,6 +2,9 @@ package me.choco.veinminer.events;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import com.google.common.collect.ImmutableList;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,12 +15,12 @@ import me.konsolas.aac.api.PlayerViolationEvent;
 
 public class AntiCheatSupport implements Listener {
 	
-	private final List<Player> exemptedUsers = new ArrayList<>();
+	private final List<UUID> exemptedUsers = new ArrayList<>();
 	
 	// Prevent Advanced Anti-Cheat to flag VeinMiner users
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void onAACViolation(PlayerViolationEvent event){
-		if (!exemptedUsers.contains(event.getPlayer())) return;
+		if (!exemptedUsers.contains(event.getPlayer().getUniqueId())) return;
 		event.setCancelled(true);
 	}
 	
@@ -27,7 +30,7 @@ public class AntiCheatSupport implements Listener {
 	 * @param player the player to exempt
 	 */
 	public void exemptFromViolation(Player player){
-		this.exemptedUsers.add(player);
+		this.exemptedUsers.add(player.getUniqueId());
 	}
 	
 	/** 
@@ -37,7 +40,7 @@ public class AntiCheatSupport implements Listener {
 	 * @return true if the user is exempted
 	 */
 	public boolean isExempted(Player player){
-		return this.exemptedUsers.contains(player);
+		return this.exemptedUsers.contains(player.getUniqueId());
 	}
 	
 	/** 
@@ -46,7 +49,14 @@ public class AntiCheatSupport implements Listener {
 	 * @param player the player to unexempt
 	 */
 	public void unexemptFromViolation(Player player){
-		this.exemptedUsers.remove(player);
+		this.exemptedUsers.remove(player.getUniqueId());
+	}
+	
+	/**
+	 * Clear all exempted anti cheat users
+	 */
+	public void clearExemptedUsers() {
+		this.exemptedUsers.clear();
 	}
 	
 	/** 
@@ -54,7 +64,7 @@ public class AntiCheatSupport implements Listener {
 	 * 
 	 * @return a list of exempted users
 	 */
-	public List<Player> getExemptedUsers() {
-		return exemptedUsers;
+	public List<UUID> getExemptedUsers() {
+		return ImmutableList.copyOf(exemptedUsers);
 	}
 }
