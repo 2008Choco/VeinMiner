@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -82,129 +81,6 @@ public class VeinMinerManager {
 				}
 			}
 		}
-	}
-	
-	/** 
-	 * Get a set of all UUID's that currently have VeinMiner disabled
-	 * 
-	 * @param tool the tool to get disabled players for
-	 * @return a set of all disabled UUID's
-	 * 
-	 * @deprecated See {@link VeinTool#getDisabledBy()}
-	 */
-	@Deprecated
-	public Set<OfflinePlayer> getPlayersWithVeinMinerDisabled(VeinTool tool){
-		return tool.getDisabledBy();
-	}
-	
-	/**
-	 * Check whether a player has VeinMiner currently disabled or not
-	 * 
-	 * @param player the player to check
-	 * @param tool the tool to check disabled players for
-	 * 
-	 * @return true if VeinMiner is disabled for the player
-	 * @deprecated See {@link VeinTool#hasVeinMinerDisabled(OfflinePlayer)}
-	 */
-	@Deprecated
-	public boolean hasVeinMinerDisabled(OfflinePlayer player, VeinTool tool){
-		return tool.hasVeinMinerDisabled(player);
-	}
-	
-	/** 
-	 * Check whether a UUID has VeinMiner currently disabled or not
-	 * 
-	 * @param uuid the UUID to check
-	 * @param tool the tool to check disabled UUID's for
-	 * 
-	 * @return true if VeinMiner is disabled for the UUID
-	 * @deprecated See {@link VeinTool#hasVeinMinerDisabled(OfflinePlayer)}
-	 */
-	@Deprecated
-	public boolean hasVeinMinerDisabled(UUID uuid, VeinTool tool){
-		return tool.hasVeinMinerDisabled(Bukkit.getOfflinePlayer(uuid));
-	}
-	
-	/** 
-	 * Check whether a player has VeinMiner currently enabled or not
-	 * 
-	 * @param player the player to check
-	 * @param tool the tool to check enabled players for
-	 * 
-	 * @return true if VeinMiner is enabled for the player
-	 * @deprecated See {@link VeinTool#hasVeinMinerEnabled(OfflinePlayer)}
-	 */
-	@Deprecated
-	public boolean hasVeinMinerEnabled(OfflinePlayer player, VeinTool tool){
-		return tool.hasVeinMinerEnabled(player);
-	}
-	
-	/** 
-	 * Check whether a UUID has VeinMiner currently enabled or not
-	 * 
-	 * @param uuid the UUID to check
-	 * @param tool the tool to check enabled UUID's for
-	 * 
-	 * @return true if VeinMiner is enabled for the UUID
-	 * @deprecated See {@link VeinTool#hasVeinMinerEnabled(OfflinePlayer)}
-	 */
-	@Deprecated
-	public boolean hasVeinMinerEnabled(UUID uuid, VeinTool tool){
-		return tool.hasVeinMinerEnabled(Bukkit.getOfflinePlayer(uuid));
-	}
-	
-	/** 
-	 * Toggle whether VeinMiner is enabled or disabled for a specific player
-	 * 
-	 * @param player the player to toggle
-	 * @param tool the tool in which should be toggled
-	 * 
-	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
-	 */
-	@Deprecated
-	public void toggleVeinMiner(OfflinePlayer player, VeinTool tool){
-		tool.toggleVeinMiner(player);
-	}
-	
-	/** 
-	 * Toggle whether VeinMiner is enabled or disabled for a specific UUID
-	 * 
-	 * @param uuid the UUID to toggle
-	 * @param tool the tool in which should be toggled
-	 * 
-	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
-	 */
-	@Deprecated
-	public void toggleVeinMiner(UUID uuid, VeinTool tool){
-		tool.toggleVeinMiner(Bukkit.getOfflinePlayer(uuid));
-	}
-	
-	/** 
-	 * Set whether a players VeinMiner should be enabled or not
-	 * 
-	 * @param player the player to toggle
-	 * @param tool the tool to affect
-	 * @param toggle whether it should be enabled (true) or disabled (false)
-	 * 
-	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
-	 */
-	@Deprecated
-	public void toggleVeinMiner(OfflinePlayer player, VeinTool tool, boolean toggle){
-		tool.toggleVeinMiner(player, toggle);
-	}
-	
-	/** 
-	 * Set whether a UUID's VeinMiner should be enabled or not
-	 * 
-	 * @param uuid the UUID to toggle
-	 * @param tool the tool to affect
-	 * @param toggle whether it should be enabled (true) or disabled (false)
-	 * 
-	 * @deprecated See {@link VeinTool#toggleVeinMiner(OfflinePlayer)}
-	 */
-	@Deprecated
-	public void toggleVeinMiner(UUID uuid, VeinTool tool, boolean toggle){
-		tool.toggleVeinMiner(Bukkit.getOfflinePlayer(uuid), toggle);
 	}
 	
 	/** 
