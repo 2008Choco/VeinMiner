@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.google.common.base.Preconditions;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,7 +38,10 @@ public class NMSAbstractDefault implements NMSAbstract {
 	
 	@Override
 	public void breakBlock(Player player, Block block) {
-		if (!wasSuccessful){
+		Preconditions.checkArgument(player != null, "A null player is incapable of breaking blocks");
+		Preconditions.checkArgument(block != null, "Cannot break a null block");
+		
+		if (!wasSuccessful) {
 			block.breakNaturally(this.getItemInHand(player));
 			return;
 		}
@@ -51,6 +56,7 @@ public class NMSAbstractDefault implements NMSAbstract {
 	
 	@Override
 	public ItemStack getItemInHand(Player player) {
+		if (player == null) return null;
 		return player.getInventory().getItem(player.getInventory().getHeldItemSlot());
 	}
 	

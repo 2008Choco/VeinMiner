@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -148,6 +150,7 @@ public enum VeinTool {
 	 * @param player the player to disable it for
 	 */
 	public void disableVeinMiner(OfflinePlayer player) {
+		Preconditions.checkArgument(player != null, "Cannot disable veinminer for a null player");
 		this.disabledBy.add(player.getUniqueId());
 	}
 	
@@ -157,6 +160,7 @@ public enum VeinTool {
 	 * @param player the player to enable it for
 	 */
 	public void enableVeinMiner(OfflinePlayer player) {
+		Preconditions.checkArgument(player != null, "Cannot enable veinminer for a null player");
 		this.disabledBy.remove(player.getUniqueId());
 	}
 	
@@ -167,6 +171,7 @@ public enum VeinTool {
 	 * @return true if veinminer disabled
 	 */
 	public boolean hasVeinMinerDisabled(OfflinePlayer player) {
+		Preconditions.checkArgument(player != null, "Cannot check veinminer state for a null player");
 		return this.disabledBy.contains(player.getUniqueId());
 	}
 	
@@ -186,6 +191,8 @@ public enum VeinTool {
 	 * @param player the player to toggle this tool for
 	 */
 	public void toggleVeinMiner(OfflinePlayer player) {
+		Preconditions.checkArgument(player != null, "Cannot toggle veinminer for a null player");
+		
 		if (hasVeinMinerEnabled(player)) {
 			this.disabledBy.add(player.getUniqueId());
 		}
@@ -201,6 +208,8 @@ public enum VeinTool {
 	 * @param enabled the new enable state
 	 */
 	public void toggleVeinMiner(OfflinePlayer player, boolean enabled) {
+		Preconditions.checkArgument(player != null, "Cannot toggle veinminer for a null player");
+		
 		if (hasVeinMinerDisabled(player) && enabled) {
 			this.disabledBy.remove(player.getUniqueId());
 		}

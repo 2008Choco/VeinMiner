@@ -1,5 +1,7 @@
 package me.choco.veinminer.utils;
 
+import com.google.common.base.Preconditions;
+
 import org.bukkit.block.Block;
 
 /**
@@ -83,6 +85,7 @@ public enum VBlockFace {
 	 * @return the relative block
 	 */
 	public Block getRelative(Block block) {
+		Preconditions.checkArgument(block != null, "Cannot get the relative block of a null block");
 		return block.getWorld().getBlockAt(block.getX() + xTranslation, block.getY() + yTranslation, block.getZ() + zTranslation);
 	}
 	

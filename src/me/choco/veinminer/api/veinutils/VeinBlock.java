@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 
@@ -25,12 +27,15 @@ public class VeinBlock {
 	private final Material material;
 	private final byte data;
 	
-	private VeinBlock(Material material, byte data){
+	private VeinBlock(Material material, byte data) {
+		Preconditions.checkArgument(material != null, "Cannot add a null material alias");
+		Preconditions.checkArgument(data >= -1, "Data values lower than 0 are unsupported (excluding the wildcard, -1)");
+		
 		this.material = material;
 		this.data = data;
 	}
 	
-	private VeinBlock(Material material){
+	private VeinBlock(Material material) {
 		this(material, (byte) -1);
 	}
 	
@@ -39,7 +44,7 @@ public class VeinBlock {
 	 * 
 	 * @return the base material
 	 */
-	public Material getMaterial(){
+	public Material getMaterial() {
 		return material;
 	}
 	
@@ -48,7 +53,7 @@ public class VeinBlock {
 	 * 
 	 * @return the byte data
 	 */
-	public byte getData(){
+	public byte getData() {
 		return data;
 	}
 	
@@ -59,7 +64,7 @@ public class VeinBlock {
 	 * 
 	 * @return true if data is specified (i.e. not -1)
 	 */
-	public boolean hasSpecficData(){
+	public boolean hasSpecficData() {
 		return data != -1;
 	}
 	
@@ -69,8 +74,10 @@ public class VeinBlock {
 	 * @param tool the tool to add
 	 */
 	public void addMineableBy(VeinTool tool) {
+		Preconditions.checkArgument(tool != null, "Cannot add a null vein tool");
 		if (isMineableBy(tool)) return;
-		mineableBy = ArrayUtils.add(mineableBy, tool);
+		
+		this.mineableBy = ArrayUtils.add(mineableBy, tool);
 	}
 	
 	/**
@@ -79,7 +86,7 @@ public class VeinBlock {
 	 * @param tools the tools to add
 	 */
 	public void addMineableBy(VeinTool... tools) {
-		mineableBy = Arrays.stream(ArrayUtils.addAll(mineableBy, tools)).distinct().toArray(VeinTool[]::new);
+		this.mineableBy = Arrays.stream(ArrayUtils.addAll(mineableBy, tools)).filter(t -> t != null).distinct().toArray(VeinTool[]::new);
 	}
 	
 	/**
@@ -88,7 +95,7 @@ public class VeinBlock {
 	 * @param tool the tool to remove
 	 */
 	public void removeMineableBy(VeinTool tool) {
-		mineableBy = ArrayUtils.removeElement(mineableBy, tool);
+		this.mineableBy = ArrayUtils.removeElement(mineableBy, tool);
 	}
 	
 	/**
@@ -107,7 +114,7 @@ public class VeinBlock {
 	 * @return all tools capable of mining
 	 */
 	public VeinTool[] getMineableBy() {
-		return mineableBy;
+		return Arrays.copyOf(mineableBy, mineableBy.length);
 	}
 	
 	@Override
@@ -127,6 +134,8 @@ public class VeinBlock {
 	 * @param tools the tools that are capable of mining the block
 	 */
 	public static void registerVeinminableBlock(Material material, byte data, VeinTool... tools) {
+		Preconditions.checkArgument(material != null, "Cannot add a null material alias");
+		Preconditions.checkArgument(data >= -1, "Data values lower than 0 are unsupported (excluding the wildcard, -1)");
 		if (isVeinable(material, data)) return;
 		
 		VeinBlock block = new VeinBlock(material, data);
@@ -152,12 +161,12 @@ public class VeinBlock {
 	 * @param material the material that should be unregistered
 	 * @param data the data that should be unregistered (-1 if none)
 	 */
-	public static void unregisterVeinminableBlock(VeinTool tool, Material material, byte data){
+	public static void unregisterVeinminableBlock(VeinTool tool, Material material, byte data) {
 		Iterator<VeinBlock> it = veinable.iterator();
-		while (it.hasNext()){
+		
+		while (it.hasNext()) {
 			VeinBlock block = it.next();
-			if (block.material == material && (!block.hasSpecficData() || block.data == data)
-					&& block.isMineableBy(tool)){
+			if (block.material == material && (!block.hasSpecficData() || block.data == data) && block.isMineableBy(tool)){
 				it.remove();
 				break;
 			}
@@ -170,7 +179,7 @@ public class VeinBlock {
 	 * @param tool the tool to unregister the material for
 	 * @param material the material that should be unregistered
 	 */
-	public static void unregisterVeinminableBlock(VeinTool tool, Material material){
+	public static void unregisterVeinminableBlock(VeinTool tool, Material material) {
 		unregisterVeinminableBlock(tool, material, (byte) -1);
 	}
 	
@@ -215,12 +224,7 @@ public class VeinBlock {
 	 * @return true if it is breakable with VeinMiner
 	 */
 	public static boolean isVeinable(VeinTool tool, Material material, byte data) {
-		return veinable.stream()
-			.anyMatch(b -> 
-				b.material == material 
-				&& (!b.hasSpecficData() || b.data == data)
-				&& b.isMineableBy(tool)
-			);
+		return veinable.stream().anyMatch(b -> b.material == material && (!b.hasSpecficData() || b.data == data) && b.isMineableBy(tool));
 	}
 	
 	/** 
@@ -231,7 +235,7 @@ public class VeinBlock {
 	 * 
 	 * @return true if it is breakable with VeinMiner
 	 */
-	public static boolean isVeinable(VeinTool tool, Material material){
+	public static boolean isVeinable(VeinTool tool, Material material) {
 		return isVeinable(tool, material, (byte) -1);
 	}
 	
@@ -263,7 +267,7 @@ public class VeinBlock {
 	 * @param tool the tool to check
 	 * @return A set of all VeinMineable blocks from the tool
 	 */
-	public static Set<VeinBlock> getVeinminableBlocks(VeinTool tool){
+	public static Set<VeinBlock> getVeinminableBlocks(VeinTool tool) {
 		return veinable.stream()
 				.filter(b -> b.isMineableBy(tool))
 				.collect(Collectors.toSet());

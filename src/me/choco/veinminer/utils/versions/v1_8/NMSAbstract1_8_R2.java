@@ -1,5 +1,7 @@
 package me.choco.veinminer.utils.versions.v1_8;
 
+import com.google.common.base.Preconditions;
+
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -17,12 +19,16 @@ public class NMSAbstract1_8_R2 implements NMSAbstract {
 
 	@Override
 	public void breakBlock(Player player, Block block) {
+		Preconditions.checkArgument(player != null, "A null player is incapable of breaking blocks");
+		Preconditions.checkArgument(block != null, "Cannot break a null block");
+		
 		((CraftPlayer) player).getHandle().playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public ItemStack getItemInHand(Player player) {
+		if (player == null) return null;
 		return player.getItemInHand();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class AntiCheatSupport implements Listener {
 	
 	// Prevent Advanced Anti-Cheat to flag VeinMiner users
 	@EventHandler(priority=EventPriority.LOWEST)
-	public void onAACViolation(PlayerViolationEvent event){
+	public void onAACViolation(PlayerViolationEvent event) {
 		if (!exemptedUsers.contains(event.getPlayer().getUniqueId())) return;
 		event.setCancelled(true);
 	}
@@ -29,7 +30,8 @@ public class AntiCheatSupport implements Listener {
 	 * 
 	 * @param player the player to exempt
 	 */
-	public void exemptFromViolation(Player player){
+	public void exemptFromViolation(Player player) {
+		Preconditions.checkArgument(player != null, "Cannot exempt null player from violation checks");
 		this.exemptedUsers.add(player.getUniqueId());
 	}
 	
@@ -39,7 +41,8 @@ public class AntiCheatSupport implements Listener {
 	 * @param player the player to check
 	 * @return true if the user is exempted
 	 */
-	public boolean isExempted(Player player){
+	public boolean isExempted(Player player) {
+		Preconditions.checkArgument(player != null, "Cannot check for exemption of a null player");
 		return this.exemptedUsers.contains(player.getUniqueId());
 	}
 	
@@ -48,7 +51,8 @@ public class AntiCheatSupport implements Listener {
 	 * 
 	 * @param player the player to unexempt
 	 */
-	public void unexemptFromViolation(Player player){
+	public void unexemptFromViolation(Player player) {
+		Preconditions.checkArgument(player != null, "Cannot unexempt null player from violation checks");
 		this.exemptedUsers.remove(player.getUniqueId());
 	}
 	

@@ -25,6 +25,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	
 	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, List<Block> blocks) {
 		super(who);
+		
 		this.type = type;
 		this.tool = tool;
 		this.blocks = blocks;

@@ -92,7 +92,7 @@ public class ConfigOption {
 	 * 
 	 * @param plugin the instance of the VeinMiner plugin
 	 */
-	public static void loadConfigurationValues(VeinMiner plugin){
+	public static void loadConfigurationValues(VeinMiner plugin) {
 		FileConfiguration config = plugin.getConfig();
 		
 		METRICS_ENABLED = config.getBoolean("MetricsEnabled", true);

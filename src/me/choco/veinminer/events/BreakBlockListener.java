@@ -32,7 +32,7 @@ public class BreakBlockListener implements Listener {
 	private final VeinMinerManager manager;
 	private final NMSAbstract nmsAbstract;
 	
-	public BreakBlockListener(VeinMiner plugin){
+	public BreakBlockListener(VeinMiner plugin) {
 		this.plugin = plugin;
 		this.manager = plugin.getVeinMinerManager();
 		this.nmsAbstract = plugin.getNMSAbstract();
@@ -40,7 +40,7 @@ public class BreakBlockListener implements Listener {
 	
 	@SuppressWarnings("deprecation")
 	@EventHandler
-	private void onBlockBreak(BlockBreakEvent event){
+	private void onBlockBreak(BlockBreakEvent event) {
 		if (!event.getClass().equals(BlockBreakEvent.class)) return; // For plugins such as McMMO, who fire custom events
 		if (blocks.contains(event.getBlock())) return;
 		Block block = event.getBlock();
@@ -73,15 +73,15 @@ public class BreakBlockListener implements Listener {
 		// Fire a new PlayerVeinMineEvent
 		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getData()), tool, blocks);
 		Bukkit.getPluginManager().callEvent(vmEvent);
-		if (vmEvent.isCancelled()){
+		if (vmEvent.isCancelled()) {
 			this.blocks.clear();
 			return;
 		}
 		
 		/* Anti Cheat support start */
 		boolean unexemptNCP = false;
-		if (plugin.isNCPEnabled()){
-			if (!NCPExemptionManager.isExempted(player, CheckType.BLOCKBREAK)){
+		if (plugin.isNCPEnabled()) {
+			if (!NCPExemptionManager.isExempted(player, CheckType.BLOCKBREAK)) {
 				NCPExemptionManager.exemptPermanently(player, CheckType.BLOCKBREAK);
 				unexemptNCP = true;
 			}
@@ -96,7 +96,7 @@ public class BreakBlockListener implements Listener {
 		// Actually destroying the allocated blocks
 		boolean usesDurability = tool.usesDurability();
 		int maxDurability = itemUsed.getType().getMaxDurability() - (ConfigOption.REPAIR_FRIENDLY_VEINMINER ? 1 : 0);
-		for (Block b : blocks){
+		for (Block b : blocks) {
 			short priorDurability = itemUsed.getDurability();
 			if (priorDurability >= maxDurability) break;
 			

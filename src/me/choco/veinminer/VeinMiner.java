@@ -2,6 +2,8 @@ package me.choco.veinminer;
 
 import java.io.IOException;
 
+import com.google.common.base.Preconditions;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,9 +15,6 @@ import me.choco.veinminer.events.BreakBlockListener;
 import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.Metrics;
 import me.choco.veinminer.utils.VeinMinerManager;
-/* ----------------
- * Version breakers
- */
 import me.choco.veinminer.utils.versions.NMSAbstract;
 import me.choco.veinminer.utils.versions.NMSAbstractDefault;
 import me.choco.veinminer.utils.versions.v1_10.NMSAbstract1_10_R1;
@@ -27,7 +26,7 @@ import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R3;
 import me.choco.veinminer.utils.versions.v1_9.NMSAbstract1_9_R1;
 import me.choco.veinminer.utils.versions.v1_9.NMSAbstract1_9_R2;
 
-public class VeinMiner extends JavaPlugin{
+public class VeinMiner extends JavaPlugin {
 	
 	private static VeinMiner instance;
 	private AntiCheatSupport antiCheatSupport;
@@ -39,9 +38,9 @@ public class VeinMiner extends JavaPlugin{
 	private NMSAbstract nmsAbstract;
 	
 	@Override
-	public void onEnable(){
+	public void onEnable() {
 		// Attempt to set up the version independence manager
-		if (!setupNMSAbstract()){
+		if (!setupNMSAbstract()) {
 			this.getLogger().severe("VeinMiner is not officially supported on this version of Minecraft");
 			this.getLogger().severe("Some features may not work properly");
 		}
@@ -68,13 +67,13 @@ public class VeinMiner extends JavaPlugin{
 		Bukkit.getPluginCommand("veinminer").setTabCompleter(new VeinMinerCmdTabCompleter());
 		
 		//Metrics
-		if (ConfigOption.METRICS_ENABLED){
+		if (ConfigOption.METRICS_ENABLED) {
 			this.getLogger().info("Enabling Plugin Metrics");
 		    try{
 		        Metrics metrics = new Metrics(this);
 		        if (metrics.start()) this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
 		    }
-		    catch (IOException e){
+		    catch (IOException e) {
 		    	e.printStackTrace();
 		        getLogger().warning("Could not enable Plugin Metrics. If issues continue, please put in a ticket on the "
 		        	+ "VeinMiner development page");
@@ -101,7 +100,7 @@ public class VeinMiner extends JavaPlugin{
 	 * 
 	 * @return an instance of the VeinMiner class
 	 */
-	public static VeinMiner getPlugin(){
+	public static VeinMiner getPlugin() {
 		return instance;
 	}
 	
@@ -163,7 +162,9 @@ public class VeinMiner extends JavaPlugin{
 		return antiAuraEnabled && this.antiAuraVersion >= 10.83; // API implemented in 10.83
 	}
 	
-	private final boolean setupNMSAbstract(){
+	private final boolean setupNMSAbstract() {
+		Preconditions.checkArgument(nmsAbstract != null, "Cannot setup NMSAbstract implementation more than once");
+		
 		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 		if (version.equals("v1_8_R1")) { // 1.8.0 - 1.8.2
 			this.nmsAbstract = new NMSAbstract1_8_R1();
@@ -194,4 +195,5 @@ public class VeinMiner extends JavaPlugin{
         	return false;
         }
 	}
+	
 }

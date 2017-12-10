@@ -32,7 +32,7 @@ public enum MineActivation {
 	 * @return true if valid to vein mine
 	 */
 	public boolean isValid(Player player) {
-		return this.condition.test(player);
+		return player != null && this.condition.test(player);
 	}
 	
 	/**

@@ -20,9 +20,9 @@ public class PatternDefault implements VeinMiningPattern {
 		
 		while (blocks.size() <= maxVeinSize) {
 			Iterator<Block> trackedBlocks = blocks.iterator();
-			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize){
+			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize) {
 				Block b = trackedBlocks.next();
-				for (VBlockFace face : ConfigOption.FACES_TO_MINE){
+				for (VBlockFace face : ConfigOption.FACES_TO_MINE) {
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
 					Block nextBlock = face.getRelative(b);

@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -45,11 +47,11 @@ public class VeinMinerManager {
 	/** 
 	 * Load all veinable blocks from the configuration file to memory
 	 */
-	public void loadVeinableBlocks(){
-		for (String tool : plugin.getConfig().getConfigurationSection("BlockList").getKeys(false)){
+	public void loadVeinableBlocks() {
+		for (String tool : plugin.getConfig().getConfigurationSection("BlockList").getKeys(false)) {
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 			
-			for (String value : blocks){
+			for (String value : blocks) {
 				Material material = null;
 				byte data = -1;
 				
@@ -57,18 +59,18 @@ public class VeinMinerManager {
 				
 				//Material information
 				material = Material.getMaterial(ids[0].toUpperCase());
-				if (material == null){
-					plugin.getLogger().warning("Block id " + ids[0] + " not found! Ignoring");
+				if (material == null) {
+					this.plugin.getLogger().warning("Block id " + ids[0] + " not found! Ignoring");
 					continue;
 				}
 				
 				//Data value information
-				if (ids.length > 1){
+				if (ids.length > 1) {
 					try{
 						data = Byte.parseByte(ids[1]);
-					}catch(NumberFormatException e){ 
+					} catch (NumberFormatException e) { 
 						data = -1;
-						plugin.getLogger().warning("Data value " + ids[1] + " could not be parsed to a byte. Assuming all data values");
+						this.plugin.getLogger().warning("Data value " + ids[1] + " could not be parsed to a byte. Assuming all data values");
 					}
 				}
 				
@@ -86,17 +88,18 @@ public class VeinMinerManager {
 	/** 
 	 * Load all disabled worlds from the configuration file to memory 
 	 */
-	public void loadDisabledWorlds(){
-		disabledWorlds.clear();
-		for (String worldName : ConfigOption.DISABLED_WORLDS){
+	public void loadDisabledWorlds() {
+		this.disabledWorlds.clear();
+		
+		for (String worldName : ConfigOption.DISABLED_WORLDS) {
 			World world = Bukkit.getWorld(worldName);
 			
-			if (world == null){
-				plugin.getLogger().info("Unknown world found... \"" + worldName + "\". Ignoring...");
+			if (world == null) {
+				this.plugin.getLogger().info("Unknown world found... \"" + worldName + "\". Ignoring...");
 				continue;
 			}
 			
-			disabledWorlds.add(world.getUID());
+			this.disabledWorlds.add(world.getUID());
 		}
 	}
 	
@@ -106,7 +109,8 @@ public class VeinMinerManager {
 	 * @param world the world to check
 	 * @return true if the world has VeinMiner disabled
 	 */
-	public boolean isDisabledInWorld(World world){
+	public boolean isDisabledInWorld(World world) {
+		Preconditions.checkArgument(world != null, "Cannot check state of veinminer in null world");
 		return disabledWorlds.contains(world.getUID());
 	}
 	
@@ -115,7 +119,7 @@ public class VeinMinerManager {
 	 * 
 	 * @return a list of all disabled worlds
 	 */
-	public Set<World> getDisabledWorlds(){
+	public Set<World> getDisabledWorlds() {
 		return disabledWorlds.stream().map(w -> Bukkit.getWorld(w)).collect(Collectors.toSet());
 	}
 	
@@ -124,8 +128,9 @@ public class VeinMinerManager {
 	 * 
 	 * @param world the world to disable
 	 */
-	public void setDisabledInWorld(World world){
-		disabledWorlds.add(world.getUID());
+	public void setDisabledInWorld(World world) {
+		Preconditions.checkArgument(world != null, "Cannot disable veinminer in null world");
+		this.disabledWorlds.add(world.getUID());
 	}
 	
 	/** 
@@ -133,8 +138,9 @@ public class VeinMinerManager {
 	 * 
 	 * @param world the world to disable
 	 */
-	public void setEnabledInWorld(World world){
-		disabledWorlds.remove(world.getUID());
+	public void setEnabledInWorld(World world) {
+		Preconditions.checkArgument(world != null, "Cannot enable veinminer in null world");
+		this.disabledWorlds.remove(world.getUID());
 	}
 	
 	/**
@@ -150,6 +156,7 @@ public class VeinMinerManager {
 	 * @param alias the alias to register
 	 */
 	public void registerAlias(MaterialAlias alias) {
+		Preconditions.checkArgument(alias != null, "Cannot register a null alias");
 		this.aliases.add(alias);
 	}
 	
@@ -191,6 +198,7 @@ public class VeinMinerManager {
 	 */
 	public void loadMaterialAliases() {
 		this.aliases.clear();
+		
 		for (String aliasList : plugin.getConfig().getStringList("Aliases")) {
 			MaterialAlias alias = new MaterialAlias();
 			
@@ -202,16 +210,16 @@ public class VeinMinerManager {
 				
 				//Material information
 				material = Material.getMaterial(ids[0].toUpperCase());
-				if (material == null){
+				if (material == null) {
 					plugin.getLogger().warning("Block id " + ids[0] + " not found! Ignoring");
 					continue;
 				}
 				
 				//Data value information
-				if (ids.length > 1){
+				if (ids.length > 1) {
 					try{
 						data = Byte.parseByte(ids[1]);
-					}catch(NumberFormatException e){ 
+					} catch (NumberFormatException e) { 
 						data = -1;
 						plugin.getLogger().warning("Data value " + ids[1] + " could not be parsed to a byte. Assuming all data values");
 					}
@@ -232,6 +240,7 @@ public class VeinMinerManager {
 	 * @return the player's mining pattern
 	 */
 	public VeinMiningPattern getPatternFor(Player player) {
+		Preconditions.checkArgument(player != null, "Cannot get the mining pattern for a null player");
 		return playerMiningPattern.getOrDefault(player.getUniqueId(), VEINMINER_PATTERN_DEFAULT);
 	}
 	
@@ -242,8 +251,8 @@ public class VeinMinerManager {
 	 * @param pattern the new pattern
 	 */
 	public void setPattern(Player player, VeinMiningPattern pattern) {
-		if (pattern == null)
-			throw new IllegalArgumentException("Cannot set the pattern of a player to null");
+		Preconditions.checkArgument(player != null, "Cannot set the mining pattern for a null player");
+		Preconditions.checkArgument(pattern != null, "Setting a null pattern is unsupported. Use the default pattern");
 		
 		this.playerMiningPattern.put(player.getUniqueId(), pattern);
 	}
