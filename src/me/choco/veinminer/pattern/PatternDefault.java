@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
+import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.VBlockFace;
 
 public class PatternDefault implements VeinMiningPattern {
+	
+	private static final NamespacedKey KEY = new NamespacedKey(VeinMiner.getPlugin(), "default");
 	
 	@Override
 	public void computeBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
@@ -40,8 +44,8 @@ public class PatternDefault implements VeinMiningPattern {
 	}
 	
 	@Override
-	public String getId() {
-		return "default";
+	public NamespacedKey getKey() {
+		return KEY;
 	}
 	
 	@SuppressWarnings("deprecation")

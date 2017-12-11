@@ -2,6 +2,7 @@ package me.choco.veinminer.pattern;
 
 import java.util.List;
 
+import org.bukkit.Keyed;
 import org.bukkit.block.Block;
 
 import me.choco.veinminer.api.veinutils.MaterialAlias;
@@ -11,7 +12,7 @@ import me.choco.veinminer.api.veinutils.VeinTool;
  * Represents a mining algorithm capable of computing which blocks should be broken
  * by VeinMiner when a successful veinmine will occur
  */
-public interface VeinMiningPattern {
+public interface VeinMiningPattern extends Keyed {
 	
 	/**
 	 * Compute the blocks that should be broken by the vein mining pattern. Note
@@ -41,12 +42,5 @@ public interface VeinMiningPattern {
 	public default void computeBlocks(List<Block> blocks, Block origin, VeinTool tool) {
 		this.computeBlocks(blocks, origin, tool, null);
 	}
-	
-	/**
-	 * Get the unique String ID for this vein mining pattern
-	 * 
-	 * @return the unique String ID
-	 */
-	public String getId();
 	
 }
