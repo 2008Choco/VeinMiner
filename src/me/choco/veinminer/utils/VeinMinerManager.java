@@ -20,7 +20,7 @@ import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
-import me.choco.veinminer.pattern.PatternDefault;
+import me.choco.veinminer.pattern.PatternRegistry;
 import me.choco.veinminer.pattern.VeinMiningPattern;
 
 /**
@@ -28,11 +28,6 @@ import me.choco.veinminer.pattern.VeinMiningPattern;
  * veinminer and its features
  */
 public class VeinMinerManager {
-	
-	/**
-	 * The default mining pattern for VeinMiner
-	 */
-	public static final VeinMiningPattern VEINMINER_PATTERN_DEFAULT = new PatternDefault();
 	
 	private final List<MaterialAlias> aliases = new ArrayList<>();
 	private final Set<UUID> disabledWorlds = new HashSet<>();
@@ -234,27 +229,31 @@ public class VeinMinerManager {
 	
 	/**
 	 * Get the pattern used by the specified player. If the player is not using any specific pattern,
-	 * {@link #VEINMINER_PATTERN_DEFAULT} will be returned
+	 * {@link PatternRegistry#VEINMINER_PATTERN_DEFAULT} will be returned
 	 * 
 	 * @param player the player to get the pattern for
 	 * @return the player's mining pattern
 	 */
 	public VeinMiningPattern getPatternFor(Player player) {
 		Preconditions.checkArgument(player != null, "Cannot get the mining pattern for a null player");
-		return playerMiningPattern.getOrDefault(player.getUniqueId(), VEINMINER_PATTERN_DEFAULT);
+		return playerMiningPattern.getOrDefault(player.getUniqueId(), PatternRegistry.VEINMINER_PATTERN_DEFAULT);
 	}
 	
 	/**
 	 * Set the pattern to use for the specified player
 	 * 
 	 * @param player the player whose pattern to set
-	 * @param pattern the new pattern
+	 * @param pattern the new pattern. null if default
 	 */
 	public void setPattern(Player player, VeinMiningPattern pattern) {
 		Preconditions.checkArgument(player != null, "Cannot set the mining pattern for a null player");
-		Preconditions.checkArgument(pattern != null, "Setting a null pattern is unsupported. Use the default pattern");
 		
-		this.playerMiningPattern.put(player.getUniqueId(), pattern);
+		if (pattern == null) {
+			this.playerMiningPattern.remove(player.getUniqueId());
+		}
+		else {
+			this.playerMiningPattern.put(player.getUniqueId(), pattern);
+		}
 	}
 	
 	/**

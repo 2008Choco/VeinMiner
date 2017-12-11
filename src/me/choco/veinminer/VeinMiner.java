@@ -12,6 +12,7 @@ import me.choco.veinminer.commands.VeinMinerCmd;
 import me.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import me.choco.veinminer.events.AntiCheatSupport;
 import me.choco.veinminer.events.BreakBlockListener;
+import me.choco.veinminer.pattern.PatternRegistry;
 import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.Metrics;
 import me.choco.veinminer.utils.VeinMinerManager;
@@ -35,6 +36,7 @@ public class VeinMiner extends JavaPlugin {
 	private double antiAuraVersion = -1;
 	
 	private VeinMinerManager manager;
+	private PatternRegistry patternRegistry;
 	private NMSAbstract nmsAbstract;
 	
 	@Override
@@ -47,6 +49,7 @@ public class VeinMiner extends JavaPlugin {
 
 		instance = this;
 		this.manager = new VeinMinerManager(this);
+		this.patternRegistry = new PatternRegistry();
 		
 		// Check for soft-dependencies
 		this.ncpEnabled = Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null;
@@ -91,6 +94,7 @@ public class VeinMiner extends JavaPlugin {
 	public void onDisable() {
 		this.getLogger().info("Clearing localized data");
 		this.manager.clearLocalisedData();
+		this.patternRegistry.clearPatterns();
 		
 		if (antiCheatSupport != null) antiCheatSupport.clearExemptedUsers();
 	}
@@ -111,6 +115,15 @@ public class VeinMiner extends JavaPlugin {
 	 */
 	public VeinMinerManager getVeinMinerManager() {
 		return manager;
+	}
+	
+	/**
+	 * Get the pattern registry used to register custom vein mining patterns
+	 * 
+	 * @return an instance of the pattern registry
+	 */
+	public PatternRegistry getPatternRegistry() {
+		return patternRegistry;
 	}
 	
 	/** 
