@@ -67,7 +67,7 @@ public class VeinMiner extends JavaPlugin {
 		//Register commands
 		this.getLogger().info("Registering commands");
 		Bukkit.getPluginCommand("veinminer").setExecutor(new VeinMinerCmd(this));
-		Bukkit.getPluginCommand("veinminer").setTabCompleter(new VeinMinerCmdTabCompleter());
+		Bukkit.getPluginCommand("veinminer").setTabCompleter(new VeinMinerCmdTabCompleter(this));
 		
 		//Metrics
 		if (ConfigOption.METRICS_ENABLED) {
