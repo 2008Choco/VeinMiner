@@ -56,7 +56,7 @@ public class VeinMinerCmd implements CommandExecutor {
 			sender.sendMessage("");
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY  + plugin.getDescription().getVersion());
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Developer / Maintainer: " + ChatColor.RESET + ChatColor.GRAY + "2008Choco");
-			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Development Page: " + ChatColor.RESET + ChatColor.GRAY + "http://dev.bukkit.org/bukkit-plugins/vein-miner");
+			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Development Page: " + ChatColor.RESET + ChatColor.GRAY + "https://www.spigotmc.org/resources/vein-miner.12038/");
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Report Bugs To: " + ChatColor.RESET + ChatColor.GRAY + "http://dev.bukkit.org/bukkit-plugins/vein-miner/tickets");
 			sender.sendMessage("");
 			sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
@@ -199,7 +199,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				
 				Material material = Material.getMaterial(args[3].toUpperCase());
 				if (material == null) {
-					this.sendMessage(sender, "Block Id " + args[0] + " does not exist");
+					this.sendMessage(sender, "Block Id " + args[3] + " does not exist");
 					return true;
 				}
 				
