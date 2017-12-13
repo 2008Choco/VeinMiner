@@ -2,6 +2,7 @@ package me.choco.veinminer.pattern;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
@@ -45,7 +46,7 @@ public class PatternRegistry {
 	 * @return the pattern. null if no pattern matches the given key
 	 */
 	public VeinMiningPattern getPattern(NamespacedKey key) {
-		return this.patterns.get(key);
+		return patterns.get(key);
 	}
 	
 	/**
@@ -58,6 +59,35 @@ public class PatternRegistry {
 	 */
 	public VeinMiningPattern getPatternOrDefault(NamespacedKey key, VeinMiningPattern defaultPattern) {
 		return patterns.getOrDefault(key, defaultPattern);
+	}
+	
+	/**
+	 * Get a pattern associated with the given key (in the form of a String)
+	 * 
+	 * @param key the key of the pattern to retrieve
+	 * @return the pattern. null if no pattern matches the given key
+	 */
+	public VeinMiningPattern getPattern(String key) {
+		return getPatternOrDefault(key, null);
+	}
+	
+	/**
+	 * Get the pattern associated with the given key (in the form of a String) or default if
+	 * one is not registered
+	 * 
+	 * @param key the key of the pattern to retrieve
+	 * @param defaultPattern the default pattern in the case the key is not registered
+	 * 
+	 * @return the pattern. The default pattern if no pattern matches the given key
+	 */
+	public VeinMiningPattern getPatternOrDefault(String key, VeinMiningPattern defaultPattern) {
+		for (Entry<NamespacedKey, VeinMiningPattern> entry : patterns.entrySet()) {
+			if (entry.getKey().toString().equals(key)) {
+				return entry.getValue();
+			}
+		}
+		
+		return defaultPattern;
 	}
 	
 	/**
