@@ -7,7 +7,7 @@ softdepend: [NoCheatPlus, AAC, AntiAura]
 commands:
     veinminer:
       description: The main command for veinminer
-      usage: /<command> <version|reload|blocklist|toggle>
+      usage: /<command> <version|reload|blocklist|toggle|pattern>
       aliases: [vm]
 permissions:
     veinminer.reload:
@@ -91,3 +91,7 @@ permissions:
     veinminer.blocklist.list.all:
       description: Allow the use of the "/veinminer blocklist list all" subcommand
       default: op
+    
+    veinminer.pattern:
+      description: Allow the use of the "/veinminer pattern" subcommand
+      default: true

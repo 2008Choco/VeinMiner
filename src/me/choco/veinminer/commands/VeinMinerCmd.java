@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.pattern.VeinMiningPattern;
 import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.VeinMinerManager;
 
@@ -87,7 +88,7 @@ public class VeinMinerCmd implements CommandExecutor {
 					this.sendMessage(sender, "Invalid tool name, \"" + ChatColor.AQUA + args[1] + ChatColor.GRAY + "\"");
 					return true;
 				}
-
+				
 				tool.toggleVeinMiner(player);
 				this.sendMessage(player, "VeinMiner successfully toggled "
 						+ (tool.hasVeinMinerDisabled(player) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
@@ -262,9 +263,46 @@ public class VeinMinerCmd implements CommandExecutor {
 			}
 		}
 		
+		else if (args[0].equalsIgnoreCase("pattern")) {
+			if (!(sender instanceof Player)) {
+				this.sendMessage(sender, "Only players are permitted to change their veinmining pattern");
+				return true;
+			}
+			
+			if (!sender.hasPermission("veinminer.pattern")) {
+				this.sendMessage(sender, "You don't have sufficient permissions to run this command!");
+				return true;
+			}
+			
+			if (args.length < 2) {
+				this.sendMessage(sender, "/veinminer pattern <pattern_id>");
+				return true;
+			}
+			
+			Player player = (Player) sender;
+			String patternNamespace = args[1].toLowerCase();
+			
+			if (!patternNamespace.contains(":")) {
+				patternNamespace = plugin.getName().toLowerCase() + patternNamespace;
+			}
+			else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
+				this.sendMessage(player, "Invalid namespace. Pattern IDs should be formatted as namespace:id (i.e. \"veinminer:default\"");
+				return true;
+			}
+			
+			VeinMiningPattern pattern = this.plugin.getPatternRegistry().getPattern(patternNamespace);
+			if (pattern == null) {
+				this.sendMessage(player, "Unknown pattern found with ID " + patternNamespace + ". Perhaps you meant \"default\"");
+				return true;
+			}
+			
+			this.manager.setPattern(player, pattern);
+			this.sendMessage(player, ChatColor.GREEN + "Pattern successfully changed to " + ChatColor.YELLOW + patternNamespace);
+		}
+		
 		// Unkown command usage
 		else{
-			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle>");
+			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle|pattern>");
 			return true;
 		}
 		
