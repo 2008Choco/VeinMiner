@@ -176,7 +176,7 @@ public class VeinMiner extends JavaPlugin {
 	}
 	
 	private final boolean setupNMSAbstract() {
-		Preconditions.checkArgument(nmsAbstract != null, "Cannot setup NMSAbstract implementation more than once");
+		Preconditions.checkArgument(nmsAbstract == null, "Cannot setup NMSAbstract implementation more than once");
 		
 		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 		if (version.equals("v1_8_R1")) { // 1.8.0 - 1.8.2

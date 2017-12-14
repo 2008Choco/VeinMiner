@@ -283,7 +283,7 @@ public class VeinMinerCmd implements CommandExecutor {
 			String patternNamespace = args[1].toLowerCase();
 			
 			if (!patternNamespace.contains(":")) {
-				patternNamespace = plugin.getName().toLowerCase() + patternNamespace;
+				patternNamespace = plugin.getName().toLowerCase() + ":" + patternNamespace;
 			}
 			else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
 				this.sendMessage(player, "Invalid namespace. Pattern IDs should be formatted as namespace:id (i.e. \"veinminer:default\"");
