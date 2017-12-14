@@ -286,13 +286,14 @@ public class VeinMinerCmd implements CommandExecutor {
 				patternNamespace = plugin.getName().toLowerCase() + ":" + patternNamespace;
 			}
 			else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
-				this.sendMessage(player, "Invalid namespace. Pattern IDs should be formatted as namespace:id (i.e. \"veinminer:default\"");
+				this.sendMessage(player, "Invalid namespace. Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id"
+						+ ChatColor.GRAY + " (i.e. " + ChatColor.YELLOW + "\"veinminer:default\"" + ChatColor.GRAY + ")");
 				return true;
 			}
 			
 			VeinMiningPattern pattern = this.plugin.getPatternRegistry().getPattern(patternNamespace);
 			if (pattern == null) {
-				this.sendMessage(player, "Unknown pattern found with ID " + patternNamespace + ". Perhaps you meant \"default\"");
+				this.sendMessage(player, "Unknown pattern found with ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + ". Perhaps you meant \"default\"");
 				return true;
 			}
 			
