@@ -2,6 +2,7 @@ package me.choco.veinminer.events;
 
 import java.util.List;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -14,12 +15,12 @@ import org.bukkit.inventory.ItemStack;
 import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 import me.choco.veinminer.VeinMiner;
+import me.choco.veinminer.api.MineActivation;
 import me.choco.veinminer.api.PlayerVeinMineEvent;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.pattern.VeinMiningPattern;
-import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.NonNullArrayList;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.versions.NMSAbstract;
@@ -53,14 +54,18 @@ public class BreakBlockListener implements Listener {
 		VeinTool tool = VeinTool.fromMaterial(itemUsed.getType());
 		if (tool == null) tool = VeinTool.ALL;
 		
+		// Activation check
+		MineActivation activation = EnumUtils.getEnum(MineActivation.class, plugin.getConfig().getString("ActivationMode", "SNEAK").toUpperCase());
+		if (activation == null) activation = MineActivation.SNEAK;
+		
 		// Invalid player state check
+		if (!activation.isValid(player)) return;
 		if (manager.isDisabledInWorld(block.getWorld())) return;
 		if ((player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE)) return;
 		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
 		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getData()) 
 				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
 		if (tool.hasVeinMinerDisabled(player)) return;
-		if (!ConfigOption.ACTIVATION_MODE.isValid(player)) return;
 		
 		// TIME TO VEINMINE
 		MaterialAlias alias = this.manager.getAliasFor(block.getType());
@@ -95,7 +100,7 @@ public class BreakBlockListener implements Listener {
 		
 		// Actually destroying the allocated blocks
 		boolean usesDurability = tool.usesDurability();
-		int maxDurability = itemUsed.getType().getMaxDurability() - (ConfigOption.REPAIR_FRIENDLY_VEINMINER ? 1 : 0);
+		int maxDurability = itemUsed.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
 		for (Block b : blocks) {
 			short priorDurability = itemUsed.getDurability();
 			if (priorDurability >= maxDurability) break;

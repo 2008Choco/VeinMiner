@@ -10,6 +10,8 @@ import com.google.common.collect.ImmutableSet;
 
 import org.bukkit.NamespacedKey;
 
+import me.choco.veinminer.VeinMiner;
+
 /**
  * A registry to register any custom implementations of {@link VeinMiningPattern}
  */
@@ -18,7 +20,7 @@ public class PatternRegistry {
 	/**
 	 * The default mining pattern for VeinMiner
 	 */
-	public static final VeinMiningPattern VEINMINER_PATTERN_DEFAULT = new PatternDefault();
+	public static final VeinMiningPattern VEINMINER_PATTERN_DEFAULT = new PatternDefault(VeinMiner.getPlugin());
 	
 	private Map<NamespacedKey, VeinMiningPattern> patterns = new HashMap<>();
 	

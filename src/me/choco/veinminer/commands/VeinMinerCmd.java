@@ -14,7 +14,6 @@ import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.pattern.VeinMiningPattern;
-import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.VeinMinerManager;
 
 public class VeinMinerCmd implements CommandExecutor {
@@ -42,8 +41,6 @@ public class VeinMinerCmd implements CommandExecutor {
 			}
 			
 			this.plugin.reloadConfig();
-			ConfigOption.loadConfigurationValues(plugin);
-			
 			this.manager.loadVeinableBlocks();
 			this.manager.loadDisabledWorlds();
 			this.manager.loadMaterialAliases();

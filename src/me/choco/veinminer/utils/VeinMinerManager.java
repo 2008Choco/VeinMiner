@@ -86,7 +86,7 @@ public class VeinMinerManager {
 	public void loadDisabledWorlds() {
 		this.disabledWorlds.clear();
 		
-		for (String worldName : ConfigOption.DISABLED_WORLDS) {
+		for (String worldName : plugin.getConfig().getStringList("DisabledWorlds")) {
 			World world = Bukkit.getWorld(worldName);
 			
 			if (world == null) {

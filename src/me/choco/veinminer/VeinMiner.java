@@ -11,7 +11,6 @@ import me.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import me.choco.veinminer.events.AntiCheatSupport;
 import me.choco.veinminer.events.BreakBlockListener;
 import me.choco.veinminer.pattern.PatternRegistry;
-import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.Metrics;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.versions.NMSAbstract;
@@ -55,7 +54,6 @@ public class VeinMiner extends JavaPlugin {
 		this.antiAuraEnabled = Bukkit.getPluginManager().getPlugin("AntiAura") != null;
 		
 		this.saveDefaultConfig();
-		ConfigOption.loadConfigurationValues(this);
 		
 		//Register events
 		this.getLogger().info("Registering events");
@@ -68,7 +66,7 @@ public class VeinMiner extends JavaPlugin {
 		Bukkit.getPluginCommand("veinminer").setTabCompleter(new VeinMinerCmdTabCompleter(this));
 		
 		//Metrics
-		if (ConfigOption.METRICS_ENABLED) {
+		if (getConfig().getBoolean("MetricsEnabled", true)) {
 			this.getLogger().info("Enabling Plugin Metrics");
 			new Metrics(this);
 			this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");

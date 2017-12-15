@@ -10,12 +10,22 @@ import org.bukkit.block.Block;
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinTool;
-import me.choco.veinminer.utils.ConfigOption;
 import me.choco.veinminer.utils.VBlockFace;
 
 public class PatternDefault implements VeinMiningPattern {
 	
-	private static final NamespacedKey KEY = new NamespacedKey(VeinMiner.getPlugin(), "default");
+	private static final VBlockFace[] LIMITED_FACES = new VBlockFace[] {
+			VBlockFace.UP, VBlockFace.DOWN, VBlockFace.NORTH, VBlockFace.SOUTH, VBlockFace.EAST, VBlockFace.WEST,
+			VBlockFace.NORTH_EAST, VBlockFace.NORTH_WEST, VBlockFace.SOUTH_EAST, VBlockFace.SOUTH_WEST
+		};
+	
+	private final VeinMiner plugin;
+	private final NamespacedKey key;
+	
+	public PatternDefault(VeinMiner plugin) {
+		this.plugin = plugin;
+		this.key = new NamespacedKey(plugin, "default");
+	}
 	
 	@Override
 	public void computeBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
@@ -26,7 +36,7 @@ public class PatternDefault implements VeinMiningPattern {
 			Iterator<Block> trackedBlocks = blocks.iterator();
 			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize) {
 				Block b = trackedBlocks.next();
-				for (VBlockFace face : ConfigOption.FACES_TO_MINE) {
+				for (VBlockFace face : getFacesToMine()) {
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
 					Block nextBlock = face.getRelative(b);
@@ -45,13 +55,17 @@ public class PatternDefault implements VeinMiningPattern {
 	
 	@Override
 	public NamespacedKey getKey() {
-		return KEY;
+		return key;
 	}
 	
 	@SuppressWarnings("deprecation")
 	private boolean blockIsSameMaterial(Block original, Block block, MaterialAlias alias) {
 		if (original.getType() == block.getType() && original.getData() == block.getData()) return true;
 		return alias != null && alias.isAliased(block.getType(), block.getData());
+	}
+	
+	private VBlockFace[] getFacesToMine() {
+		return plugin.getConfig().getBoolean("IncludeEdges") ? VBlockFace.values() : LIMITED_FACES;
 	}
 	
 }
