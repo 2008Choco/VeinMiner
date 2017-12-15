@@ -18,7 +18,10 @@ public interface VeinMiningPattern extends Keyed {
 	 * Compute the blocks that should be broken by the vein mining pattern. Note
 	 * that the breaking of the blocks should not be handled by the pattern, but
 	 * rather the plugin itself. This method serves primarily to search for valid
-	 * blocks to break in a vein
+	 * blocks to break in a vein.
+	 * <p>
+	 * <b>NOTE:</b> If null is added to the "blocks" list, a NullPointerException
+	 * will be thrown and the method will fail.
 	 * 
 	 * @param blocks a list of all blocks to break. Valid blocks should be added here.
 	 * The "origin" block passed to this method will be added automatically
@@ -32,7 +35,10 @@ public interface VeinMiningPattern extends Keyed {
 	 * Compute the blocks that should be broken by the vein mining pattern. Note
 	 * that the breaking of the blocks should not be handled by the pattern, but
 	 * rather the plugin itself. This method serves primarily to search for valid
-	 * blocks to break in a vein
+	 * blocks to break in a vein.
+	 * <p>
+	 * <b>NOTE:</b> If null is added to the "blocks" list, a NullPointerException
+	 * will be thrown and the method will fail.
 	 * 
 	 * @param blocks a list of all blocks to break. Valid blocks should be added here.
 	 * The "origin" block passed to this method will be added automatically

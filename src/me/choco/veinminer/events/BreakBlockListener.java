@@ -1,6 +1,5 @@
 package me.choco.veinminer.events;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -21,12 +20,13 @@ import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.pattern.VeinMiningPattern;
 import me.choco.veinminer.utils.ConfigOption;
+import me.choco.veinminer.utils.NonNullArrayList;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.versions.NMSAbstract;
 
 public class BreakBlockListener implements Listener {
 	
-	private final List<Block> blocks = new ArrayList<>();
+	private final List<Block> blocks = new NonNullArrayList<>();
 
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
