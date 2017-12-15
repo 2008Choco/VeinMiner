@@ -72,15 +72,15 @@ public class VeinMiner extends JavaPlugin {
 		//Metrics
 		if (ConfigOption.METRICS_ENABLED) {
 			this.getLogger().info("Enabling Plugin Metrics");
-		    try{
-		        Metrics metrics = new Metrics(this);
-		        if (metrics.start()) this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
-		    }
-		    catch (IOException e) {
-		    	e.printStackTrace();
-		        getLogger().warning("Could not enable Plugin Metrics. If issues continue, please put in a ticket on the "
-		        	+ "VeinMiner development page");
-		    }
+			try{
+				Metrics metrics = new Metrics(this);
+				if (metrics.start()) this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+				getLogger().warning("Could not enable Plugin Metrics. If issues continue, please put in a ticket on the "
+					+ "VeinMiner development page");
+			}
 		}
 
 		//Load blocks to the veinable list
@@ -183,30 +183,30 @@ public class VeinMiner extends JavaPlugin {
 			this.nmsAbstract = new NMSAbstract1_8_R1();
 			return true;
 		} else if (version.equals("v1_8_R2")) { // 1.8.3
-        	this.nmsAbstract = new NMSAbstract1_8_R2();
-        	return true;
-        } else if (version.equals("v1_8_R3")) { // 1.8.4 - 1.8.8
-        	this.nmsAbstract = new NMSAbstract1_8_R3();
-        	return true;
-        } else if (version.equals("v1_9_R1")) { // 1.9.0 - 1.9.3
-        	this.nmsAbstract = new NMSAbstract1_9_R1();
-        	return true;
-        } else if (version.equals("v1_9_R2")) { // 1.9.4
-        	this.nmsAbstract = new NMSAbstract1_9_R2();
-        	return true;
-        } else if (version.equals("v1_10_R1")) { // 1.10.0 - 1.10.2
-        	this.nmsAbstract = new NMSAbstract1_10_R1();
-        	return true;
-        } else if (version.equals("v1_11_R1")) { // 1.11.0 - 1.11.2
-        	this.nmsAbstract = new NMSAbstract1_11_R1();
-        	return true;
-        } else if (version.equals("v1_12_R1")) { // 1.12.0-Pre2 +
-        	this.nmsAbstract = new NMSAbstract1_12_R1();
-        	return true;
-        } else {
-        	this.nmsAbstract = new NMSAbstractDefault(version);
-        	return false;
-        }
+			this.nmsAbstract = new NMSAbstract1_8_R2();
+			return true;
+		} else if (version.equals("v1_8_R3")) { // 1.8.4 - 1.8.8
+			this.nmsAbstract = new NMSAbstract1_8_R3();
+			return true;
+		} else if (version.equals("v1_9_R1")) { // 1.9.0 - 1.9.3
+			this.nmsAbstract = new NMSAbstract1_9_R1();
+			return true;
+		} else if (version.equals("v1_9_R2")) { // 1.9.4
+			this.nmsAbstract = new NMSAbstract1_9_R2();
+			return true;
+		} else if (version.equals("v1_10_R1")) { // 1.10.0 - 1.10.2
+			this.nmsAbstract = new NMSAbstract1_10_R1();
+			return true;
+		} else if (version.equals("v1_11_R1")) { // 1.11.0 - 1.11.2
+			this.nmsAbstract = new NMSAbstract1_11_R1();
+			return true;
+		} else if (version.equals("v1_12_R1")) { // 1.12.0-Pre2 +
+			this.nmsAbstract = new NMSAbstract1_12_R1();
+			return true;
+		} else {
+			this.nmsAbstract = new NMSAbstractDefault(version);
+			return false;
+		}
 	}
 	
 }

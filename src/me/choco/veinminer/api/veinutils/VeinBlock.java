@@ -166,7 +166,7 @@ public class VeinBlock {
 		
 		while (it.hasNext()) {
 			VeinBlock block = it.next();
-			if (block.material == material && (!block.hasSpecficData() || block.data == data) && block.isMineableBy(tool)){
+			if (block.material == material && (!block.hasSpecficData() || block.data == data) && block.isMineableBy(tool)) {
 				it.remove();
 				break;
 			}

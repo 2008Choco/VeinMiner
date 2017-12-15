@@ -22,18 +22,18 @@ public class NMSAbstractDefault implements NMSAbstract {
 	private boolean wasSuccessful = true;
 	private final String version;
 	
-    private static Class<?> nmsPlayer;
-    private static Class<?> playerInteractManager;
-    private static Field fieldPlayerInteractManager;
-    private static Class<?> blockPosition;
-    private static Constructor<?> constructorBlockPosition;
-    private static Class<?> craftPlayer;
-    private static Method methodGetHandle;
-    private static Method methodBreakBlock;
-    
-    public NMSAbstractDefault(String version) {
-    	this.version = version + ".";
-    	this.loadNMSClasses();
+	private static Class<?> nmsPlayer;
+	private static Class<?> playerInteractManager;
+	private static Field fieldPlayerInteractManager;
+	private static Class<?> blockPosition;
+	private static Constructor<?> constructorBlockPosition;
+	private static Class<?> craftPlayer;
+	private static Method methodGetHandle;
+	private static Method methodBreakBlock;
+	
+	public NMSAbstractDefault(String version) {
+		this.version = version + ".";
+		this.loadNMSClasses();
 	}
 	
 	@Override
@@ -84,16 +84,16 @@ public class NMSAbstractDefault implements NMSAbstract {
 	}
 	
 	private Field getField(Class<?> clazz, String name) {
-        try {
-            Field field = clazz.getDeclaredField(name);
-            field.setAccessible(true);
-            return field;
-        } catch (Exception e) {
-        	System.out.println("Could not find field " + name + " in " + clazz.getSimpleName());
+		try {
+			Field field = clazz.getDeclaredField(name);
+			field.setAccessible(true);
+			return field;
+		} catch (Exception e) {
+			System.out.println("Could not find field " + name + " in " + clazz.getSimpleName());
 			this.wasSuccessful = false;
-        }
-        return null;
-    }
+		}
+		return null;
+	}
 	
 	private Constructor<?> getConstructor(Class<?> clazz, Class<?>... parameters) {
 		try {
@@ -105,23 +105,23 @@ public class NMSAbstractDefault implements NMSAbstract {
 		return null;
 	}
 	
-    private Class<?> getNMSClass(String className) {
-        try {
-        	return Class.forName("net.minecraft.server." + version + className);
-        } catch (Exception e) {
+	private Class<?> getNMSClass(String className) {
+		try {
+			return Class.forName("net.minecraft.server." + version + className);
+		} catch (Exception e) {
 			System.out.println("Could not find class " + className);
 			this.wasSuccessful = false;
-        }
-        return null;
-    }
-    
-    private Class<?> getCBClass(String className) {
-        try {
-        	return Class.forName("org.bukkit.craftbukkit." + version + className);
-        } catch (Exception e) {
+		}
+		return null;
+	}
+	
+	private Class<?> getCBClass(String className) {
+		try {
+			return Class.forName("org.bukkit.craftbukkit." + version + className);
+		} catch (Exception e) {
 			System.out.println("Could not find class " + className);
 			this.wasSuccessful = false;
-        }
-        return null;
-    }
+		}
+		return null;
+	}
 }
