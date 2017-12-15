@@ -1,7 +1,5 @@
 package me.choco.veinminer;
 
-import java.io.IOException;
-
 import com.google.common.base.Preconditions;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -72,15 +70,8 @@ public class VeinMiner extends JavaPlugin {
 		//Metrics
 		if (ConfigOption.METRICS_ENABLED) {
 			this.getLogger().info("Enabling Plugin Metrics");
-			try{
-				Metrics metrics = new Metrics(this);
-				if (metrics.start()) this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-				getLogger().warning("Could not enable Plugin Metrics. If issues continue, please put in a ticket on the "
-					+ "VeinMiner development page");
-			}
+			new Metrics(this);
+			this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
 		}
 
 		//Load blocks to the veinable list
