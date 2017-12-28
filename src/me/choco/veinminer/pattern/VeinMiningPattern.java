@@ -2,7 +2,10 @@ package me.choco.veinminer.pattern;
 
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
 import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
 import me.choco.veinminer.api.veinutils.MaterialAlias;
@@ -47,6 +50,31 @@ public interface VeinMiningPattern extends Keyed {
 	 */
 	public default void computeBlocks(List<Block> blocks, Block origin, VeinTool tool) {
 		this.computeBlocks(blocks, origin, tool, null);
+	}
+	
+	/**
+	 * Create a new VeinMiningPattern using a custom {@link Computer}
+	 * 
+	 * @param key the key of the vein mining pattern. Must be unique and not null
+	 * @param blockComputer the computer to allocate breakable blocks. Must not be null
+	 * 
+	 * @return the resulting VeinMiningPattern instance
+	 */
+	public static VeinMiningPattern createNewPattern(NamespacedKey key, Computer blockComputer) {
+		Preconditions.checkArgument(key != null, "Pattern must not have a null key");
+		Preconditions.checkArgument(blockComputer != null, "Block computer must not be null");
+		
+		return new VeinMiningPattern() {
+			@Override
+			public void computeBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
+				blockComputer.compute(blocks, origin, tool, alias);
+			}
+			
+			@Override
+			public NamespacedKey getKey() {
+				return key;
+			}
+		};
 	}
 	
 }
