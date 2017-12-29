@@ -73,7 +73,7 @@ public class BreakBlockListener implements Listener {
 		
 		this.blocks.add(block);
 		VeinMiningPattern pattern = manager.getPatternFor(player);
-		pattern.computeBlocks(blocks, block, tool, alias);
+		pattern.allocateBlocks(blocks, block, tool, alias);
 		
 		// Fire a new PlayerVeinMineEvent
 		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getData()), tool, blocks);

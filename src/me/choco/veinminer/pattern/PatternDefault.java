@@ -28,7 +28,7 @@ public class PatternDefault implements VeinMiningPattern {
 	}
 	
 	@Override
-	public void computeBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
+	public void allocateBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
 		int maxVeinSize = tool.getMaxVeinSize();
 		List<Block> blocksToAdd = new ArrayList<>();
 		

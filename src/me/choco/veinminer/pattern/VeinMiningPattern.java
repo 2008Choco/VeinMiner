@@ -18,7 +18,7 @@ import me.choco.veinminer.api.veinutils.VeinTool;
 public interface VeinMiningPattern extends Keyed {
 	
 	/**
-	 * Compute the blocks that should be broken by the vein mining pattern. Note
+	 * Allocate the blocks that should be broken by the vein mining pattern. Note
 	 * that the breaking of the blocks should not be handled by the pattern, but
 	 * rather the plugin itself. This method serves primarily to search for valid
 	 * blocks to break in a vein.
@@ -32,10 +32,10 @@ public interface VeinMiningPattern extends Keyed {
 	 * @param tool the tool used to break the block
 	 * @param alias an alias of the block being broken if one exists. May be null
 	 */
-	public void computeBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias);
+	public void allocateBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias);
 	
 	/**
-	 * Compute the blocks that should be broken by the vein mining pattern. Note
+	 * Allocate the blocks that should be broken by the vein mining pattern. Note
 	 * that the breaking of the blocks should not be handled by the pattern, but
 	 * rather the plugin itself. This method serves primarily to search for valid
 	 * blocks to break in a vein.
@@ -48,26 +48,26 @@ public interface VeinMiningPattern extends Keyed {
 	 * @param origin the block where the vein mine was initiated
 	 * @param tool the tool used to break the block
 	 */
-	public default void computeBlocks(List<Block> blocks, Block origin, VeinTool tool) {
-		this.computeBlocks(blocks, origin, tool, null);
+	public default void allocateBlocks(List<Block> blocks, Block origin, VeinTool tool) {
+		this.allocateBlocks(blocks, origin, tool, null);
 	}
 	
 	/**
-	 * Create a new VeinMiningPattern using a custom {@link Computer}
+	 * Create a new VeinMiningPattern using a custom {@link BlockAllocator}
 	 * 
 	 * @param key the key of the vein mining pattern. Must be unique and not null
 	 * @param blockComputer the computer to allocate breakable blocks. Must not be null
 	 * 
 	 * @return the resulting VeinMiningPattern instance
 	 */
-	public static VeinMiningPattern createNewPattern(NamespacedKey key, Computer blockComputer) {
+	public static VeinMiningPattern createNewPattern(NamespacedKey key, BlockAllocator blockAllocator) {
 		Preconditions.checkArgument(key != null, "Pattern must not have a null key");
-		Preconditions.checkArgument(blockComputer != null, "Block computer must not be null");
+		Preconditions.checkArgument(blockAllocator != null, "Block computer must not be null");
 		
 		return new VeinMiningPattern() {
 			@Override
-			public void computeBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
-				blockComputer.compute(blocks, origin, tool, alias);
+			public void allocateBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
+				blockAllocator.allocate(blocks, origin, tool, alias);
 			}
 			
 			@Override
