@@ -3,6 +3,7 @@ package me.choco.veinminer.commands;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -11,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.choco.veinminer.VeinMiner;
+import me.choco.veinminer.api.PlayerSwitchPatternEvent;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.pattern.VeinMiningPattern;
@@ -294,11 +296,14 @@ public class VeinMinerCmd implements CommandExecutor {
 				return true;
 			}
 			
+			PlayerSwitchPatternEvent pspe = new PlayerSwitchPatternEvent(player, manager.getPatternFor(player), pattern);
+			Bukkit.getPluginManager().callEvent(pspe);
+			
 			this.manager.setPattern(player, pattern);
 			this.sendMessage(player, ChatColor.GREEN + "Pattern successfully changed to " + ChatColor.YELLOW + patternNamespace);
 		}
 		
-		// Unkown command usage
+		// Unknown command usage
 		else{
 			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle|pattern>");
 			return true;
