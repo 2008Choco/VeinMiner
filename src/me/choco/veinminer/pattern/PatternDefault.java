@@ -30,13 +30,14 @@ public class PatternDefault implements VeinMiningPattern {
 	@Override
 	public void allocateBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
 		int maxVeinSize = tool.getMaxVeinSize();
+		VBlockFace[] facesToMine = getFacesToMine();
 		List<Block> blocksToAdd = new ArrayList<>();
 		
 		while (blocks.size() <= maxVeinSize) {
 			Iterator<Block> trackedBlocks = blocks.iterator();
 			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize) {
 				Block b = trackedBlocks.next();
-				for (VBlockFace face : getFacesToMine()) {
+				for (VBlockFace face : facesToMine) {
 					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
 					
 					Block nextBlock = face.getRelative(b);
