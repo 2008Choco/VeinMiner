@@ -1,10 +1,10 @@
 package me.choco.veinminer;
 
-import com.google.common.base.Preconditions;
-
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.google.common.base.Preconditions;
 
 import me.choco.veinminer.commands.VeinMinerCmd;
 import me.choco.veinminer.commands.VeinMinerCmdTabCompleter;
@@ -168,34 +168,19 @@ public class VeinMiner extends JavaPlugin {
 		Preconditions.checkArgument(nmsAbstract == null, "Cannot setup NMSAbstract implementation more than once");
 		
 		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-		if (version.equals("v1_8_R1")) { // 1.8.0 - 1.8.2
-			this.nmsAbstract = new NMSAbstract1_8_R1();
-			return true;
-		} else if (version.equals("v1_8_R2")) { // 1.8.3
-			this.nmsAbstract = new NMSAbstract1_8_R2();
-			return true;
-		} else if (version.equals("v1_8_R3")) { // 1.8.4 - 1.8.8
-			this.nmsAbstract = new NMSAbstract1_8_R3();
-			return true;
-		} else if (version.equals("v1_9_R1")) { // 1.9.0 - 1.9.3
-			this.nmsAbstract = new NMSAbstract1_9_R1();
-			return true;
-		} else if (version.equals("v1_9_R2")) { // 1.9.4
-			this.nmsAbstract = new NMSAbstract1_9_R2();
-			return true;
-		} else if (version.equals("v1_10_R1")) { // 1.10.0 - 1.10.2
-			this.nmsAbstract = new NMSAbstract1_10_R1();
-			return true;
-		} else if (version.equals("v1_11_R1")) { // 1.11.0 - 1.11.2
-			this.nmsAbstract = new NMSAbstract1_11_R1();
-			return true;
-		} else if (version.equals("v1_12_R1")) { // 1.12.0-Pre2 +
-			this.nmsAbstract = new NMSAbstract1_12_R1();
-			return true;
-		} else {
-			this.nmsAbstract = new NMSAbstractDefault(version);
-			return false;
+		switch (version) {
+			case "v1_8_R1": nmsAbstract = new NMSAbstract1_8_R1(); break; // 1.8.0 - 1.8.2
+			case "v1_8_R2": nmsAbstract = new NMSAbstract1_8_R2(); break; // 1.8.3
+			case "v1_8_R3": nmsAbstract = new NMSAbstract1_8_R3(); break; // 1.8.4 - 1.8.8
+			case "v1_9_R1": nmsAbstract = new NMSAbstract1_9_R1(); break; // 1.9.0 - 1.9.3
+			case "v1_9_R2": nmsAbstract = new NMSAbstract1_9_R2(); break; // 1.9.4
+			case "v1_10_R1": nmsAbstract = new NMSAbstract1_10_R1(); break; // 1.10.0 - 1.10.2
+			case "v1_11_R1": nmsAbstract = new NMSAbstract1_11_R1(); break; // 1.11.0 - 1.11.2
+			case "v1_12_R1": nmsAbstract = new NMSAbstract1_12_R1(); break; // 1.12.0-Pre2+
+			default: nmsAbstract = new NMSAbstractDefault(version);
 		}
+		
+		return !(nmsAbstract instanceof NMSAbstractDefault);
 	}
 	
 }
