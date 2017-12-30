@@ -118,13 +118,20 @@ public class VeinBlock {
 	}
 	
 	@Override
+	public int hashCode() {
+		int prime = 31;
+		int result = prime + data;
+		return prime * result + ((material == null) ? 0 : material.hashCode());
+	}
+
+	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof VeinBlock)) return false;
 		
 		VeinBlock block = (VeinBlock) object;
 		return (material == block.material && data == block.data);
 	}
-	
+
 	/** 
 	 * Register a material with specific byte data with all possible tools that
 	 * can veinmine it
@@ -279,4 +286,5 @@ public class VeinBlock {
 	public static void clearVeinableBlocks() {
 		veinable.clear();
 	}
+	
 }

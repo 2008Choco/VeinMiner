@@ -145,5 +145,18 @@ public class MaterialAlias {
 	public VeinBlock[] getAliasedBlocks() {
 		return Arrays.copyOf(blocks, blocks.length);
 	}
+
+	@Override
+	public int hashCode() {
+		return 31 * Arrays.hashCode(blocks);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof MaterialAlias)) return false;
+		
+		MaterialAlias alias = (MaterialAlias) object;
+		return Arrays.equals(blocks, alias.blocks);
+	}
 	
 }
