@@ -2,6 +2,8 @@ package me.choco.veinminer;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.base.Preconditions;
@@ -40,8 +42,8 @@ public class VeinMiner extends JavaPlugin {
 	public void onEnable() {
 		// Attempt to set up the version independence manager
 		if (!setupNMSAbstract()) {
-			this.getLogger().severe("VeinMiner is not officially supported on this version of Minecraft");
-			this.getLogger().severe("Some features may not work properly");
+			this.getLogger().warning("VeinMiner is not officially supported on this version of Minecraft");
+			this.getLogger().warning("Some features may not work properly");
 		}
 
 		instance = this;
@@ -49,21 +51,23 @@ public class VeinMiner extends JavaPlugin {
 		this.patternRegistry = new PatternRegistry();
 		
 		// Check for soft-dependencies
-		this.ncpEnabled = Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null;
-		this.aacEnabled = Bukkit.getPluginManager().getPlugin("AAC") != null;
-		this.antiAuraEnabled = Bukkit.getPluginManager().getPlugin("AntiAura") != null;
+		PluginManager manager = Bukkit.getPluginManager();
+		this.ncpEnabled = manager.isPluginEnabled("NoCheatPlus");
+		this.aacEnabled = manager.isPluginEnabled("AAC");
+		this.antiAuraEnabled = manager.isPluginEnabled("AntiAura");
 		
 		this.saveDefaultConfig();
 		
 		//Register events
 		this.getLogger().info("Registering events");
-		Bukkit.getServer().getPluginManager().registerEvents(new BreakBlockListener(this), this);
-		if (aacEnabled) Bukkit.getServer().getPluginManager().registerEvents((antiCheatSupport = new AntiCheatSupport()), this);
+		manager.registerEvents(new BreakBlockListener(this), this);
+		if (aacEnabled) manager.registerEvents((antiCheatSupport = new AntiCheatSupport()), this);
 		
 		//Register commands
 		this.getLogger().info("Registering commands");
-		Bukkit.getPluginCommand("veinminer").setExecutor(new VeinMinerCmd(this));
-		Bukkit.getPluginCommand("veinminer").setTabCompleter(new VeinMinerCmdTabCompleter(this));
+		PluginCommand veinminerCmd = getCommand("veinminer");
+		veinminerCmd.setExecutor(new VeinMinerCmd(this));
+		veinminerCmd.setTabCompleter(new VeinMinerCmdTabCompleter(this));
 		
 		//Metrics
 		if (getConfig().getBoolean("MetricsEnabled", true)) {
