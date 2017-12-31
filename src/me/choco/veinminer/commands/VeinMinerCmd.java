@@ -31,7 +31,7 @@ public class VeinMinerCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (args.length == 0) {
-			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle>");
+			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle|pattern>");
 			return true;
 		}
 		
