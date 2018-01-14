@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 
 import me.choco.veinminer.utils.VeinMinerManager;
 
@@ -51,9 +52,8 @@ public class MaterialAlias {
 	 * 
 	 * @return the newly aliased added
 	 */
-	public VeinBlock addAlias(Material material, byte data) {
+	public VeinBlock addAlias(Material material, BlockData data) {
 		Preconditions.checkArgument(material != null, "Cannot add a null material alias");
-		Preconditions.checkArgument(data >= -1, "Data values lower than 0 are unsupported (excluding the wildcard, -1)");
 		
 		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
 		
@@ -70,7 +70,7 @@ public class MaterialAlias {
 	 * @return the newly aliased added
 	 */
 	public VeinBlock addAlias(Material material) {
-		return this.addAlias(material, (byte) -1);
+		return this.addAlias(material, null);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class MaterialAlias {
 	 * @param material the material to remove
 	 * @param data the data to remove
 	 */
-	public void removeAlias(Material material, byte data) {
+	public void removeAlias(Material material, BlockData data) {
 		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
 		this.removeAlias(block);
 	}
@@ -100,7 +100,7 @@ public class MaterialAlias {
 	 * @param material the material to remove
 	 */
 	public void removeAlias(Material material) {
-		this.removeAlias(material, (byte) -1);
+		this.removeAlias(material, null);
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public class MaterialAlias {
 	 * @return true if aliased
 	 */
 	public boolean isAliased(Material material, byte data) {
-		return Arrays.stream(blocks).anyMatch(b -> b.getMaterial() == material && (!b.hasSpecficData() || b.getData() == data));
+		return Arrays.stream(blocks).anyMatch(b -> b.getMaterial() == material && (!b.hasSpecficData() || b.getData().equals(data)));
 	}
 	
 	/**

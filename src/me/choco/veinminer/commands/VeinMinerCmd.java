@@ -157,32 +157,33 @@ public class VeinMinerCmd implements CommandExecutor {
 				
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
-				byte data = -1;
-				if (args.length >= 5) {
-					try {
-						data = Byte.parseByte(args[4]);
-						if (data < -1) {
-							this.sendMessage(sender, "Data values below 0 are not possible");
-							return true;
-						}
-					} catch (NumberFormatException e) {
-						this.sendMessage(sender, "Block data value must be a valid integer");
-						return true;
-					}
-				}
+				// TODO: Support specific BlockData flags
+//				byte data = -1;
+//				if (args.length >= 5) {
+//					try {
+//						data = Byte.parseByte(args[4]);
+//						if (data < -1) {
+//							this.sendMessage(sender, "Data values below 0 are not possible");
+//							return true;
+//						}
+//					} catch (NumberFormatException e) {
+//						this.sendMessage(sender, "Block data value must be a valid integer");
+//						return true;
+//					}
+//				}
 				
-				if (VeinBlock.isVeinable(tool, material, data)) {
+				if (VeinBlock.isVeinable(tool, material)) {
 					this.sendMessage(sender, "Block Id " + material.name() + " is already on the list");
 					return true;
 				}
 				
-				blocklist.add(material.name() + (data != -1 ? ";" + data : ""));
+				blocklist.add(material.name());
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				VeinBlock.registerVeinminableBlock(material, data, tool);
-				this.sendMessage(sender, "Block Id " + material.name() + (data != -1 ? " (Data: " + data + ")" : "") + " successfully added to the list");
+				VeinBlock.registerVeinminableBlock(material, tool);
+				this.sendMessage(sender, "Block Id " + material.name() + " successfully added to the list");
 			}
 			
 			// /veinminer blocklist <tool> remove
@@ -210,32 +211,33 @@ public class VeinMinerCmd implements CommandExecutor {
 				
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
-				byte data = -1;
-				if (args.length >= 5) {
-					try {
-						data = Byte.parseByte(args[4]);
-						if (data < -1) {
-							this.sendMessage(sender, "Data values below 0 are not possible");
-							return true;
-						}
-					} catch (NumberFormatException e) {
-						this.sendMessage(sender, "Block data value must be a valid integer");
-						return true;
-					}
-				}
+				// TODO: Support specific BlockData flags
+//				byte data = -1;
+//				if (args.length >= 5) {
+//					try {
+//						data = Byte.parseByte(args[4]);
+//						if (data < -1) {
+//							this.sendMessage(sender, "Data values below 0 are not possible");
+//							return true;
+//						}
+//					} catch (NumberFormatException e) {
+//						this.sendMessage(sender, "Block data value must be a valid integer");
+//						return true;
+//					}
+//				}
 				
-				if (!VeinBlock.isVeinable(tool, material, data)) {
+				if (!VeinBlock.isVeinable(tool, material)) {
 					this.sendMessage(sender, "Block Id " + material.name() + " is not on the list");
 					return true;
 				}
 				
-				blocklist.remove(material.name() + (data != -1 ? ";" + data : ""));
+				blocklist.remove(material.name());
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				VeinBlock.unregisterVeinminableBlock(tool, material, data);
-				this.sendMessage(sender, "Block Id " + material.name() + (data != -1 ? " (Data: " + data + ")" : "") + " successfully removed from the list");
+				VeinBlock.unregisterVeinminableBlock(tool, material);
+				this.sendMessage(sender, "Block Id " + material.name() + " successfully removed from the list");
 			}
 			
 			// /veinminer blocklist <tool> list
@@ -250,8 +252,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				
 				for (VeinBlock block : blocklist) {
 					Material material = block.getMaterial();
-					byte data = block.getData();
-					sender.sendMessage(ChatColor.YELLOW + "[*] BlockID: " + material.name() + " - Data: " + (data == -1 ? "All" : data));
+					sender.sendMessage(ChatColor.YELLOW + "[*] BlockID: " + material.name());
 				}
 			}
 			

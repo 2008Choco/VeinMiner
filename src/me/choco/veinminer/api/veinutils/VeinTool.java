@@ -22,41 +22,41 @@ public enum VeinTool {
 	 * Represents a pickaxe of various materials. This includes:
 	 * <br> - Wooden Pickaxe
 	 * <br> - Stone Pickaxe
-	 * <br> - Gold Pickaxe
+	 * <br> - Golden Pickaxe
 	 * <br> - Iron Pickaxe
 	 * <br> - Diamond Pickaxe
 	 */
-	PICKAXE("Pickaxe", Material.WOOD_PICKAXE, Material.STONE_PICKAXE, Material.GOLD_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE),
+	PICKAXE("Pickaxe", Material.WOODEN_PICKAXE, Material.STONE_PICKAXE, Material.GOLDEN_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE),
 	
 	/**
 	 * Represents an axe of various materials. This includes:
 	 * <br> - Wooden Axe
 	 * <br> - Stone Axe
-	 * <br> - Gold Axe
+	 * <br> - Golden Axe
 	 * <br> - Iron Axe
 	 * <br> - Diamond Axe
 	 */
-	AXE("Axe", Material.WOOD_AXE, Material.STONE_AXE, Material.GOLD_AXE, Material.IRON_AXE, Material.DIAMOND_AXE),
+	AXE("Axe", Material.WOODEN_AXE, Material.STONE_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.DIAMOND_AXE),
 	
 	/**
 	 * Represents a shovel of various materials. This includes:
 	 * <br> - Wooden Shovel
 	 * <br> - Stone Shovel
-	 * <br> - Gold Shovel
+	 * <br> - Golden Shovel
 	 * <br> - Iron Shovel
 	 * <br> - Diamond Shovel
 	 */
-	SHOVEL("Shovel", Material.WOOD_SPADE, Material.STONE_SPADE, Material.GOLD_SPADE, Material.IRON_SPADE, Material.DIAMOND_SPADE),
+	SHOVEL("Shovel", Material.WOODEN_SHOVEL, Material.STONE_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.DIAMOND_SHOVEL),
 	
 	/**
 	 * Represents a hoe of various materials. This includes:
 	 * <br> - Wooden Hoe
 	 * <br> - Stone Hoe
-	 * <br> - Gold Hoe
+	 * <br> - Golden Hoe
 	 * <br> - Iron Hoe
 	 * <br> - Diamond Hoe
 	 */
-	HOE("Hoe", Material.WOOD_HOE, Material.STONE_HOE, Material.GOLD_HOE, Material.IRON_HOE, Material.DIAMOND_HOE),
+	HOE("Hoe", Material.WOODEN_HOE, Material.STONE_HOE, Material.GOLDEN_HOE, Material.IRON_HOE, Material.DIAMOND_HOE),
 	
 	/**
 	 * Represents shears

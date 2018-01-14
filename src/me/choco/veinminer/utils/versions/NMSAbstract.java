@@ -2,7 +2,6 @@ package me.choco.veinminer.utils.versions;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import me.choco.veinminer.VeinMiner;
 
@@ -21,13 +20,5 @@ public interface NMSAbstract {
 	 * @param block the block to break
 	 */
 	public void breakBlock(Player player, Block block);
-	
-	/** 
-	 * Get the item in hand for a player
-	 * 
-	 * @param player the player
-	 * @return the item in hand
-	 */
-	public ItemStack getItemInHand(Player player);
 	
 }
