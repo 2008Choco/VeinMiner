@@ -1,22 +1,20 @@
-package me.choco.veinminer.utils.versions.v1_8;
+package me.choco.veinminer.utils.versions.v1_13;
 
 import com.google.common.base.Preconditions;
 
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import net.minecraft.server.v1_8_R1.BlockPosition;
 
 import me.choco.veinminer.utils.versions.NMSAbstract;
+import me.choco.veinminer.utils.versions.v1_13.BlockPosition;
+import me.choco.veinminer.utils.versions.v1_13.CraftPlayer;
 
 /**
- * The Minecraft 1.8.0 - 1.8.2 implementation of {@link NMSAbstract}. This class should
+ * The Minecraft 1.13.0-Pre1+ implementation of {@link NMSAbstract}. This class should
  * not be instantiated anywhere other than VeinMiner's main class
  */
-public class NMSAbstract1_8_R1 implements NMSAbstract {
-
+public class NMSAbstract1_13_R1 implements NMSAbstract {
+	
 	@Override
 	public void breakBlock(Player player, Block block) {
 		Preconditions.checkArgument(player != null, "A null player is incapable of breaking blocks");
@@ -24,11 +22,5 @@ public class NMSAbstract1_8_R1 implements NMSAbstract {
 		
 		((CraftPlayer) player).getHandle().playerInteractManager.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
 	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public ItemStack getItemInHand(Player player) {
-		if (player == null) return null;
-		return player.getItemInHand();
-	}
+	
 }

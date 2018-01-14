@@ -47,7 +47,7 @@ public class BreakBlockListener implements Listener {
 		Block block = event.getBlock();
 		
 		Player player = event.getPlayer();
-		ItemStack itemUsed = nmsAbstract.getItemInHand(player);
+		ItemStack itemUsed = event.getPlayer().getInventory().getItemInMainHand();
 		if (itemUsed == null) return;
 		
 		// VeinTool used check
@@ -63,8 +63,8 @@ public class BreakBlockListener implements Listener {
 		if (manager.isDisabledInWorld(block.getWorld())) return;
 		if ((player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE)) return;
 		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
-		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getData()) 
-				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getData()) && player.hasPermission("veinminer.veinmine.all")))) return;
+		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData()) 
+				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getBlockData()) && player.hasPermission("veinminer.veinmine.all")))) return;
 		if (tool.hasVeinMinerDisabled(player)) return;
 		
 		// TIME TO VEINMINE
@@ -76,7 +76,7 @@ public class BreakBlockListener implements Listener {
 		pattern.allocateBlocks(blocks, block, tool, alias);
 		
 		// Fire a new PlayerVeinMineEvent
-		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getData()), tool, blocks);
+		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getBlockData()), tool, blocks);
 		Bukkit.getPluginManager().callEvent(vmEvent);
 		if (vmEvent.isCancelled()) {
 			this.blocks.clear();

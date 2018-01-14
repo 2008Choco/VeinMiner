@@ -48,7 +48,6 @@ public class VeinMinerManager {
 			
 			for (String value : blocks) {
 				Material material = null;
-				byte data = -1;
 				
 				String[] ids = value.split(";");
 				
@@ -59,22 +58,13 @@ public class VeinMinerManager {
 					continue;
 				}
 				
-				//Data value information
-				if (ids.length > 1) {
-					try{
-						data = Byte.parseByte(ids[1]);
-					} catch (NumberFormatException e) { 
-						data = -1;
-						this.plugin.getLogger().warning("Data value " + ids[1] + " could not be parsed to a byte. Assuming all data values");
-					}
-				}
-				
+				// TODO: Support specific BlockData flags
 				// Registration
 				VeinTool veinTool = VeinTool.getByName(tool);
-				if (VeinBlock.isVeinable(material, data)) {
+				if (VeinBlock.isVeinable(material)) {
 					VeinBlock.getVeinminableBlock(material).addMineableBy(veinTool);
 				} else {
-					VeinBlock.registerVeinminableBlock(material, data, veinTool);
+					VeinBlock.registerVeinminableBlock(material, veinTool);
 				}
 			}
 		}
@@ -199,7 +189,6 @@ public class VeinMinerManager {
 			
 			for (String aliasMaterial : aliasList.split("\\s*,\\s*")) {
 				Material material = null;
-				byte data = -1;
 				
 				String[] ids = aliasMaterial.split(";");
 				
@@ -210,17 +199,8 @@ public class VeinMinerManager {
 					continue;
 				}
 				
-				//Data value information
-				if (ids.length > 1) {
-					try{
-						data = Byte.parseByte(ids[1]);
-					} catch (NumberFormatException e) { 
-						data = -1;
-						plugin.getLogger().warning("Data value " + ids[1] + " could not be parsed to a byte. Assuming all data values");
-					}
-				}
-				
-				alias.addAlias(material, data);
+				// TODO: Support specific BlockData flags
+				alias.addAlias(material);
 			}
 			
 			this.aliases.add(alias);

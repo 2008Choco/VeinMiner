@@ -9,7 +9,6 @@ import com.google.common.base.Preconditions;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * The default fallback implementation of {@link NMSAbstract} using reflection
@@ -42,7 +41,7 @@ public class NMSAbstractDefault implements NMSAbstract {
 		Preconditions.checkArgument(block != null, "Cannot break a null block");
 		
 		if (!wasSuccessful) {
-			block.breakNaturally(this.getItemInHand(player));
+			block.breakNaturally(player.getInventory().getItemInMainHand());
 			return;
 		}
 		
@@ -52,12 +51,6 @@ public class NMSAbstractDefault implements NMSAbstract {
 			Object blockPos = constructorBlockPosition.newInstance(block.getX(), block.getY(), block.getZ());
 			methodBreakBlock.invoke(interactManager, blockPos);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {}
-	}
-	
-	@Override
-	public ItemStack getItemInHand(Player player) {
-		if (player == null) return null;
-		return player.getInventory().getItem(player.getInventory().getHeldItemSlot());
 	}
 	
 	private final void loadNMSClasses() {

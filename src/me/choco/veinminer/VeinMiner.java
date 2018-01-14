@@ -17,14 +17,7 @@ import me.choco.veinminer.utils.Metrics;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.versions.NMSAbstract;
 import me.choco.veinminer.utils.versions.NMSAbstractDefault;
-import me.choco.veinminer.utils.versions.v1_10.NMSAbstract1_10_R1;
-import me.choco.veinminer.utils.versions.v1_11.NMSAbstract1_11_R1;
-import me.choco.veinminer.utils.versions.v1_12.NMSAbstract1_12_R1;
-import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R1;
-import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R2;
-import me.choco.veinminer.utils.versions.v1_8.NMSAbstract1_8_R3;
-import me.choco.veinminer.utils.versions.v1_9.NMSAbstract1_9_R1;
-import me.choco.veinminer.utils.versions.v1_9.NMSAbstract1_9_R2;
+import me.choco.veinminer.utils.versions.v1_13.NMSAbstract1_13_R1;
 
 public class VeinMiner extends JavaPlugin {
 	
@@ -173,14 +166,7 @@ public class VeinMiner extends JavaPlugin {
 		
 		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 		switch (version) {
-			case "v1_8_R1": nmsAbstract = new NMSAbstract1_8_R1(); break; // 1.8.0 - 1.8.2
-			case "v1_8_R2": nmsAbstract = new NMSAbstract1_8_R2(); break; // 1.8.3
-			case "v1_8_R3": nmsAbstract = new NMSAbstract1_8_R3(); break; // 1.8.4 - 1.8.8
-			case "v1_9_R1": nmsAbstract = new NMSAbstract1_9_R1(); break; // 1.9.0 - 1.9.3
-			case "v1_9_R2": nmsAbstract = new NMSAbstract1_9_R2(); break; // 1.9.4
-			case "v1_10_R1": nmsAbstract = new NMSAbstract1_10_R1(); break; // 1.10.0 - 1.10.2
-			case "v1_11_R1": nmsAbstract = new NMSAbstract1_11_R1(); break; // 1.11.0 - 1.11.2
-			case "v1_12_R1": nmsAbstract = new NMSAbstract1_12_R1(); break; // 1.12.0-Pre2+
+			case "v1_13_R1": nmsAbstract = new NMSAbstract1_13_R1(); break; // 1.13.0-Pre1+
 			default: nmsAbstract = new NMSAbstractDefault(version);
 		}
 		
