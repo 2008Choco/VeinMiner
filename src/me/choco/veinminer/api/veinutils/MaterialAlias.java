@@ -122,7 +122,7 @@ public class MaterialAlias {
 	 * 
 	 * @return true if aliased
 	 */
-	public boolean isAliased(Material material, byte data) {
+	public boolean isAliased(Material material, BlockData data) {
 		return Arrays.stream(blocks).anyMatch(b -> b.getMaterial() == material && (!b.hasSpecficData() || b.getData().equals(data)));
 	}
 	

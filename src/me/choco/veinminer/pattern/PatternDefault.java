@@ -62,7 +62,7 @@ public class PatternDefault implements VeinMiningPattern {
 	@SuppressWarnings("deprecation")
 	private boolean blockIsSameMaterial(Block original, Block block, MaterialAlias alias) {
 		if (original.getType() == block.getType() && original.getData() == block.getData()) return true;
-		return alias != null && alias.isAliased(block.getType(), block.getData());
+		return alias != null && alias.isAliased(block.getType(), block.getBlockData());
 	}
 	
 	private VBlockFace[] getFacesToMine() {
