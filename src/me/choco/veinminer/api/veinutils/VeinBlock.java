@@ -191,8 +191,7 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Get a registered VeinBlock instance of the specified type and data. If one
-	 * does not exist, it will be created and added to the veinable list
+	 * Get a registered VeinBlock instance of the specified type and data
 	 * 
 	 * @param material the material to search for
 	 * @param data the data to search for
@@ -203,12 +202,7 @@ public class VeinBlock {
 		return veinable.stream()
 			.filter(b -> b.material == material)
 			.filter(b -> Objects.equals(b.data, data))
-			.findFirst()
-			.orElseGet(() -> {
-				VeinBlock block = new VeinBlock(material, data);
-				veinable.add(block);
-				return block;
-			});
+			.findFirst().orElse(null);
 	}
 	
 	/**
