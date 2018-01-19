@@ -114,7 +114,7 @@ public enum VeinTool {
 	 * @return true if it takes durability damage
 	 */
 	public boolean usesDurability() {
-		return (this != VeinTool.ALL ? plugin.getConfig().getBoolean("Tools." + name + ".UsesDurability", true) : true);
+		return (this == ALL) || plugin.getConfig().getBoolean("Tools." + name + ".UsesDurability", true);
 	}
 	
 	/**
@@ -135,13 +135,13 @@ public enum VeinTool {
 	 * material exists
 	 * 
 	 * @param material the material to search for
-	 * @return the VeinTool with the given categorised material
+	 * @return the VeinTool with the given categorised material. {@link #ALL} if none
 	 */
 	public static VeinTool fromMaterial(Material material) {
 		for (VeinTool tool : values())
-			for (Material mat : tool.getMaterials())
-				if (mat.equals(material)) return tool;
-		return null;
+			for (Material toolMaterial : tool.getMaterials())
+				if (toolMaterial == material) return tool;
+		return VeinTool.ALL;
 	}
 	
 	/**
