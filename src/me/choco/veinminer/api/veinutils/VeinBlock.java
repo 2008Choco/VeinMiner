@@ -14,11 +14,8 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
 /**
- * General information regarding material and byte data. Every material listed in the configuration 
+ * General information regarding material and block data. Every material listed in the configuration 
  * file will be loaded as a VeinBlock for easy accessibility in the VeinMiner API
- * <p>
- * <b>NOTE:</b> This is subject to change by Minecraft 1.13 where byte data values are no longer suitable
- * to represent block states
  */
 public class VeinBlock {
 	
@@ -50,20 +47,20 @@ public class VeinBlock {
 	}
 	
 	/** 
-	 * Get the byte data value (if any). -1 if no data specified
+	 * Get the block data value (if any). null if no data specified
 	 * 
-	 * @return the byte data
+	 * @return the block data
 	 */
 	public BlockData getData() {
 		return data;
 	}
 	
 	/** 
-	 * Whether the block has specific byte data or not. Specific data
+	 * Whether the block has specific block data or not. Specific data
 	 * will restrict the block to only be vein minable if its data value
 	 * and its material are valid
 	 * 
-	 * @return true if data is specified (i.e. not -1)
+	 * @return true if data is specified (i.e. not null)
 	 */
 	public boolean hasSpecficData() {
 		return data != null;
@@ -121,7 +118,7 @@ public class VeinBlock {
 	@Override
 	public int hashCode() {
 		int prime = 31;
-		int result = prime + data.hashCode();
+		int result = prime + ((data == null) ? 0 : data.hashCode());
 		return prime * result + ((material == null) ? 0 : material.hashCode());
 	}
 
@@ -130,15 +127,15 @@ public class VeinBlock {
 		if (!(object instanceof VeinBlock)) return false;
 		
 		VeinBlock block = (VeinBlock) object;
-		return (material == block.material && data == block.data);
+		return (material == block.material && Objects.equals(data, block.data));
 	}
 
 	/** 
-	 * Register a material with specific byte data with all possible tools that
+	 * Register a material with specific block data with all possible tools that
 	 * can veinmine it
 	 * 
 	 * @param material the material to register
-	 * @param data the byte data to register
+	 * @param data the block data to register
 	 * @param tools the tools that are capable of mining the block
 	 */
 	public static void registerVeinminableBlock(Material material, BlockData data, VeinTool... tools) {
@@ -206,7 +203,7 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Get a registered VeinBlock instance without any specific byte data
+	 * Get a registered VeinBlock instance without any specific block data
 	 * 
 	 * @param material the material to search for
 	 * @return the registered vein block. null if none registered
@@ -216,7 +213,9 @@ public class VeinBlock {
 	}
 	
 	/** 
-	 * Whether a material (with data) is able to be broken using a specific VeinMiner tool
+	 * Whether a material (with data) is able to be broken using a specific VeinMiner tool.
+	 * If a vein block with a similar material but wildcard data is veinminable, this method
+	 * will return true.
 	 * 
 	 * @param tool the tool to check
 	 * @param material the material to check
