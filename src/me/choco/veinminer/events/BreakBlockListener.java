@@ -47,11 +47,9 @@ public class BreakBlockListener implements Listener {
 		
 		Player player = event.getPlayer();
 		ItemStack itemUsed = event.getPlayer().getInventory().getItemInMainHand();
-		if (itemUsed == null) return;
 		
 		// VeinTool used check
 		VeinTool tool = VeinTool.fromMaterial(itemUsed.getType());
-		if (tool == null) tool = VeinTool.ALL;
 		
 		// Activation check
 		MineActivation activation = EnumUtils.getEnum(MineActivation.class, plugin.getConfig().getString("ActivationMode", "SNEAK").toUpperCase());
