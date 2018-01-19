@@ -6,6 +6,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -140,50 +141,41 @@ public class VeinMinerCmd implements CommandExecutor {
 				}
 				
 				if (args.length < 4) {
-					this.sendMessage(sender, "/veinminer blocklist add <id> [data]");
+					this.sendMessage(sender, "/veinminer blocklist add <block>[data]");
 					return true;
 				}
 				
-				Material material = Material.getMaterial(args[3].toUpperCase());
-				if (material == null) {
-					this.sendMessage(sender, "Block Id " + args[3] + " does not exist");
+				// Get block data from command parameter
+				BlockData data;
+				boolean specificData = false;
+				try {
+					data = Bukkit.createBlockData(args[3]);
+					specificData = args[3].contains("[");
+				} catch (IllegalArgumentException e) {
+					this.sendMessage(sender, "Unknown block type (was it an item?) and/or block states. " + args[3]);
 					return true;
 				}
 				
-				if (!material.isBlock()) {
-					this.sendMessage(sender, "An Item ID cannot be added to the blocklist");
-					return true;
-				}
-				
+				Material material = data.getMaterial();
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
-				// TODO: Support specific BlockData flags
-//				byte data = -1;
-//				if (args.length >= 5) {
-//					try {
-//						data = Byte.parseByte(args[4]);
-//						if (data < -1) {
-//							this.sendMessage(sender, "Data values below 0 are not possible");
-//							return true;
-//						}
-//					} catch (NumberFormatException e) {
-//						this.sendMessage(sender, "Block data value must be a valid integer");
-//						return true;
-//					}
-//				}
-				
-				if (VeinBlock.isVeinable(tool, material)) {
-					this.sendMessage(sender, "Block Id " + material.name() + " is already on the list");
+				if ((specificData && VeinBlock.isVeinable(tool, material, data)) || VeinBlock.isVeinable(tool, material)) {
+					this.sendMessage(sender, "Block Id " + data.getDataString() + " is already on the list");
 					return true;
 				}
 				
-				blocklist.add(material.name());
+				blocklist.add(data.getDataString());
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				VeinBlock.registerVeinminableBlock(material, tool);
-				this.sendMessage(sender, "Block Id " + material.name() + " successfully added to the list");
+				if (specificData) {
+					VeinBlock.registerVeinminableBlock(material, data, tool);
+				}
+				else {
+					VeinBlock.registerVeinminableBlock(material, tool);
+				}
+				this.sendMessage(sender, "Block Id " + data.getDataString() + " successfully added to the list");
 			}
 			
 			// /veinminer blocklist <tool> remove
@@ -194,50 +186,41 @@ public class VeinMinerCmd implements CommandExecutor {
 				}
 				
 				if (args.length < 4) {
-					this.sendMessage(sender, "/veinminer blocklist remove <id> [data]");
+					this.sendMessage(sender, "/veinminer blocklist remove <block>[data]");
 					return true;
 				}
 				
-				Material material = Material.getMaterial(args[3].toUpperCase());
-				if (material == null) {
-					this.sendMessage(sender, "Block Id " + args[3] + " does not exist");
+				// Get block data from command parameter
+				BlockData data;
+				boolean specificData = false;
+				try {
+					data = Bukkit.createBlockData(args[3]);
+					specificData = args[3].contains("[");
+				} catch (IllegalArgumentException e) {
+					this.sendMessage(sender, "Unknown block type (was it an item?) and/or block states. " + args[3]);
 					return true;
 				}
 				
-				if (!material.isBlock()) {
-					this.sendMessage(sender, "An Item ID cannot be added to the blocklist");
-					return true;
-				}
-				
+				Material material = data.getMaterial();
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
-				// TODO: Support specific BlockData flags
-//				byte data = -1;
-//				if (args.length >= 5) {
-//					try {
-//						data = Byte.parseByte(args[4]);
-//						if (data < -1) {
-//							this.sendMessage(sender, "Data values below 0 are not possible");
-//							return true;
-//						}
-//					} catch (NumberFormatException e) {
-//						this.sendMessage(sender, "Block data value must be a valid integer");
-//						return true;
-//					}
-//				}
-				
-				if (!VeinBlock.isVeinable(tool, material)) {
-					this.sendMessage(sender, "Block Id " + material.name() + " is not on the list");
+				if ((specificData && !VeinBlock.isVeinable(tool, material, data)) || !VeinBlock.isVeinable(tool, material)) {
+					this.sendMessage(sender, "Block Id " + data.getDataString() + " is not on the list");
 					return true;
 				}
 				
-				blocklist.remove(material.name());
+				blocklist.remove(data.getDataString());
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				VeinBlock.unregisterVeinminableBlock(tool, material);
-				this.sendMessage(sender, "Block Id " + material.name() + " successfully removed from the list");
+				if (specificData) {
+					VeinBlock.unregisterVeinminableBlock(tool, material, data);
+				}
+				else {
+					VeinBlock.unregisterVeinminableBlock(tool, material);
+				}
+				this.sendMessage(sender, "Block Id " + data.getDataString() + " successfully removed from the list");
 			}
 			
 			// /veinminer blocklist <tool> list
@@ -251,8 +234,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 				
 				for (VeinBlock block : blocklist) {
-					Material material = block.getMaterial();
-					sender.sendMessage(ChatColor.YELLOW + "[*] BlockID: " + material.name());
+					sender.sendMessage(ChatColor.YELLOW + "[*] " + (block.hasSpecficData() ? block.getData().getDataString() : block.getMaterial().name()));
 				}
 			}
 			
