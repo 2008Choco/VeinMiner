@@ -14,6 +14,7 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
 import me.choco.veinminer.VeinMiner;
@@ -47,24 +48,35 @@ public class VeinMinerManager {
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 			
 			for (String value : blocks) {
-				Material material = null;
-				
 				String[] ids = value.split(";");
 				
 				//Material information
-				material = Material.getMaterial(ids[0].toUpperCase());
-				if (material == null) {
-					this.plugin.getLogger().warning("Block id " + ids[0] + " not found! Ignoring");
+				BlockData data;
+				boolean specificData = false;
+				try {
+					data = Bukkit.createBlockData(ids[0]);
+					specificData = ids[0].contains("[");
+				} catch (IllegalArgumentException e) {
+					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + ids[0]);
 					continue;
 				}
 				
-				// TODO: Support specific BlockData flags
 				// Registration
 				VeinTool veinTool = VeinTool.getByName(tool);
-				if (VeinBlock.isVeinable(material)) {
+				Material material = data.getMaterial();
+				if (specificData && VeinBlock.isVeinable(material, data)) {
+					VeinBlock.getVeinminableBlock(material, data).addMineableBy(veinTool);
+				} 
+				else if (VeinBlock.isVeinable(material)) {
 					VeinBlock.getVeinminableBlock(material).addMineableBy(veinTool);
-				} else {
-					VeinBlock.registerVeinminableBlock(material, veinTool);
+				}
+				else {
+					if (specificData) {
+						VeinBlock.registerVeinminableBlock(material, data, veinTool);
+					}
+					else {
+						VeinBlock.registerVeinminableBlock(material, veinTool);
+					}
 				}
 			}
 		}
@@ -158,11 +170,11 @@ public class VeinMinerManager {
 	 * Get the alias associated with a specific material and byte data
 	 * 
 	 * @param material the material to reference
-	 * @param data the byte data to reference
+	 * @param data the block data to reference
 	 *  
 	 * @return the associated alias. null if none
 	 */
-	public MaterialAlias getAliasFor(Material material, byte data) {
+	public MaterialAlias getAliasFor(Material material, BlockData data) {
 		return this.aliases.stream()
 			.filter(a -> a.isAliased(material, data))
 			.findFirst().orElse(null);
@@ -175,7 +187,7 @@ public class VeinMinerManager {
 	 * @return the associated alias. null if none
 	 */
 	public MaterialAlias getAliasFor(Material material) {
-		return this.getAliasFor(material, (byte) -1);
+		return this.getAliasFor(material, null);
 	}
 	
 	/**
@@ -188,19 +200,25 @@ public class VeinMinerManager {
 			MaterialAlias alias = new MaterialAlias();
 			
 			for (String aliasMaterial : aliasList.split("\\s*,\\s*")) {
-				Material material = null;
-				
 				String[] ids = aliasMaterial.split(";");
 				
 				//Material information
-				material = Material.getMaterial(ids[0].toUpperCase());
-				if (material == null) {
-					plugin.getLogger().warning("Block id " + ids[0] + " not found! Ignoring");
+				BlockData data;
+				boolean specificData = false;
+				try {
+					data = Bukkit.createBlockData(ids[0]);
+					specificData = ids[0].contains("[");
+				} catch (IllegalArgumentException e) {
+					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + ids[0]);
 					continue;
 				}
 				
-				// TODO: Support specific BlockData flags
-				alias.addAlias(material);
+				if (specificData) {
+					alias.addAlias(data.getMaterial(), data);
+				}
+				else {
+					alias.addAlias(data.getMaterial());
+				}
 			}
 			
 			this.aliases.add(alias);

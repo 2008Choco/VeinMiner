@@ -39,7 +39,6 @@ public class BreakBlockListener implements Listener {
 		this.nmsAbstract = plugin.getNMSAbstract();
 	}
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	private void onBlockBreak(BlockBreakEvent event) {
 		if (!event.getClass().equals(BlockBreakEvent.class)) return; // For plugins such as McMMO, who fire custom events
@@ -69,7 +68,7 @@ public class BreakBlockListener implements Listener {
 		
 		// TIME TO VEINMINE
 		MaterialAlias alias = this.manager.getAliasFor(block.getType());
-		if (alias == null) alias = this.manager.getAliasFor(block.getType(), block.getData());
+		if (alias == null) alias = this.manager.getAliasFor(block.getType(), block.getBlockData());
 		
 		this.blocks.add(block);
 		VeinMiningPattern pattern = manager.getPatternFor(player);
