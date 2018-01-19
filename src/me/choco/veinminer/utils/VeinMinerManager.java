@@ -61,22 +61,15 @@ public class VeinMinerManager {
 					continue;
 				}
 				
-				// Registration
 				VeinTool veinTool = VeinTool.getByName(tool);
 				Material material = data.getMaterial();
-				if (specificData && VeinBlock.isVeinable(material, data)) {
-					VeinBlock.getVeinminableBlock(material, data).addMineableBy(veinTool);
-				} 
-				else if (VeinBlock.isVeinable(material)) {
-					VeinBlock.getVeinminableBlock(material).addMineableBy(veinTool);
+				
+				// Registration
+				if (VeinBlock.isVeinable(material, specificData ? data : null)) {
+					VeinBlock.getVeinminableBlock(material, specificData ? data : null).addMineableBy(veinTool);
 				}
 				else {
-					if (specificData) {
-						VeinBlock.registerVeinminableBlock(material, data, veinTool);
-					}
-					else {
-						VeinBlock.registerVeinminableBlock(material, veinTool);
-					}
+					VeinBlock.registerVeinminableBlock(material, specificData ? data : null, veinTool);
 				}
 			}
 		}
@@ -213,12 +206,7 @@ public class VeinMinerManager {
 					continue;
 				}
 				
-				if (specificData) {
-					alias.addAlias(data.getMaterial(), data);
-				}
-				else {
-					alias.addAlias(data.getMaterial());
-				}
+				alias.addAlias(data.getMaterial(), specificData ? data : null);
 			}
 			
 			this.aliases.add(alias);

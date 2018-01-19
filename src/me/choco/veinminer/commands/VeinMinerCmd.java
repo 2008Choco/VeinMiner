@@ -159,7 +159,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				Material material = data.getMaterial();
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
-				if ((specificData && VeinBlock.isVeinable(tool, material, data)) || VeinBlock.isVeinable(tool, material)) {
+				if (VeinBlock.isVeinable(tool, material, specificData ? data : null)) {
 					this.sendMessage(sender, "Block Id " + data.getDataString() + " is already on the list");
 					return true;
 				}
@@ -169,12 +169,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				if (specificData) {
-					VeinBlock.registerVeinminableBlock(material, data, tool);
-				}
-				else {
-					VeinBlock.registerVeinminableBlock(material, tool);
-				}
+				VeinBlock.registerVeinminableBlock(material, specificData ? data : null, tool);
 				this.sendMessage(sender, "Block Id " + data.getDataString() + " successfully added to the list");
 			}
 			
@@ -204,7 +199,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				Material material = data.getMaterial();
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
-				if ((specificData && !VeinBlock.isVeinable(tool, material, data)) || !VeinBlock.isVeinable(tool, material)) {
+				if (!VeinBlock.isVeinable(tool, material, specificData ? data : null)) {
 					this.sendMessage(sender, "Block Id " + data.getDataString() + " is not on the list");
 					return true;
 				}
@@ -214,12 +209,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				if (specificData) {
-					VeinBlock.unregisterVeinminableBlock(tool, material, data);
-				}
-				else {
-					VeinBlock.unregisterVeinminableBlock(tool, material);
-				}
+				VeinBlock.unregisterVeinminableBlock(tool, material, specificData ? data : null);
 				this.sendMessage(sender, "Block Id " + data.getDataString() + " successfully removed from the list");
 			}
 			
