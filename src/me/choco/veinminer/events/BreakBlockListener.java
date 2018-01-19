@@ -43,7 +43,9 @@ public class BreakBlockListener implements Listener {
 	private void onBlockBreak(BlockBreakEvent event) {
 		if (!event.getClass().equals(BlockBreakEvent.class)) return; // For plugins such as McMMO, who fire custom events
 		if (blocks.contains(event.getBlock())) return;
+		
 		Block block = event.getBlock();
+		if (manager.isDisabledInWorld(block.getWorld())) return;
 		
 		Player player = event.getPlayer();
 		ItemStack itemUsed = event.getPlayer().getInventory().getItemInMainHand();
@@ -56,13 +58,11 @@ public class BreakBlockListener implements Listener {
 		if (activation == null) activation = MineActivation.SNEAK;
 		
 		// Invalid player state check
-		if (!activation.isValid(player)) return;
-		if (manager.isDisabledInWorld(block.getWorld())) return;
-		if ((player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE)) return;
+		if (!activation.isValid(player) || player.getGameMode() != GameMode.SURVIVAL) return;
 		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
-		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData()) 
-				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getBlockData()) && player.hasPermission("veinminer.veinmine.all")))) return;
 		if (tool.hasVeinMinerDisabled(player)) return;
+		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData())
+				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getBlockData()) && player.hasPermission("veinminer.veinmine.all")))) return;
 		
 		// TIME TO VEINMINE
 		MaterialAlias alias = this.manager.getAliasFor(block.getType());
@@ -115,10 +115,10 @@ public class BreakBlockListener implements Listener {
 		// VEINMINER - DONE
 		
 		/* Anti Cheat Support ... Check if need to unexempt, in case they had been exempted prior to VeinMining */
-		if (plugin.isNCPEnabled())
-			if (unexemptNCP) NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
+		if (plugin.isNCPEnabled() && unexemptNCP)
+			NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
 		if (plugin.isAACEnabled())
-			plugin.getAntiCheatSupport().unexemptFromViolation(player);
+			this.plugin.getAntiCheatSupport().unexemptFromViolation(player);
 		if (plugin.isAntiAuraEnabled())
 			AntiAuraAPI.API.toggleExemptFromFastBreak(player);
 	}
