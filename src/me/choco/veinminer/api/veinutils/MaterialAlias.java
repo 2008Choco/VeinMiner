@@ -1,10 +1,11 @@
 package me.choco.veinminer.api.veinutils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.common.base.Preconditions;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
@@ -16,7 +17,7 @@ import me.choco.veinminer.utils.VeinMinerManager;
  */
 public class MaterialAlias {
 	
-	private VeinBlock[] blocks;
+	private List<VeinBlock> blocks;
 	
 	/**
 	 * Construct a new alias between varying vein blocks
@@ -27,7 +28,7 @@ public class MaterialAlias {
 	 * @see VeinBlock#getVeinminableBlock(Material)
 	 */
 	public MaterialAlias(VeinBlock... blocks) {
-		this.blocks = blocks;
+		this.blocks = Arrays.asList(blocks);
 	}
 	
 	/**
@@ -38,8 +39,8 @@ public class MaterialAlias {
 	public void addAlias(VeinBlock block) {
 		Preconditions.checkArgument(block != null, "Cannot add a null alias");
 		
-		if (ArrayUtils.contains(blocks, block)) return;
-		this.blocks = ArrayUtils.add(blocks, block);
+		if (blocks.contains(block)) return;
+		this.blocks.add(block);
 	}
 	
 	/**
@@ -79,8 +80,7 @@ public class MaterialAlias {
 	 * @param block the block to remove
 	 */
 	public void removeAlias(VeinBlock block) {
-		if (!ArrayUtils.contains(blocks, block)) return;
-		this.blocks = ArrayUtils.removeElement(blocks, block);
+		this.blocks.remove(block);
 	}
 	
 	/**
@@ -110,7 +110,7 @@ public class MaterialAlias {
 	 * @return true if aliased
 	 */
 	public boolean isAliased(VeinBlock block) {
-		return ArrayUtils.contains(blocks, block);
+		return blocks.contains(block);
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public class MaterialAlias {
 	 * @return true if aliased
 	 */
 	public boolean isAliased(Material material, BlockData data) {
-		return Arrays.stream(blocks).anyMatch(b -> b.getMaterial() == material && (!b.hasSpecficData() || b.getData().equals(data)));
+		return blocks.stream().anyMatch(b -> b.getMaterial() == material && (!b.hasSpecficData() || b.getData().equals(data)));
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class MaterialAlias {
 	 * @return true if aliased
 	 */
 	public boolean isAliased(Material material) {
-		return Arrays.stream(blocks).anyMatch(b -> b.getMaterial() == material);
+		return blocks.stream().anyMatch(b -> b.getMaterial() == material);
 	}
 	
 	/**
@@ -142,13 +142,13 @@ public class MaterialAlias {
 	 * 
 	 * @return all aliased blocks
 	 */
-	public VeinBlock[] getAliasedBlocks() {
-		return Arrays.copyOf(blocks, blocks.length);
+	public List<VeinBlock> getAliasedBlocks() {
+		return new ArrayList<>(blocks);
 	}
 
 	@Override
 	public int hashCode() {
-		return 31 * Arrays.hashCode(blocks);
+		return 31 * blocks.hashCode();
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public class MaterialAlias {
 		if (!(object instanceof MaterialAlias)) return false;
 		
 		MaterialAlias alias = (MaterialAlias) object;
-		return Arrays.equals(blocks, alias.blocks);
+		return blocks.equals(alias.blocks);
 	}
 	
 }
