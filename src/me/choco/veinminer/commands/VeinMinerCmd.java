@@ -58,7 +58,7 @@ public class VeinMinerCmd implements CommandExecutor {
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY  + plugin.getDescription().getVersion());
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Developer / Maintainer: " + ChatColor.RESET + ChatColor.GRAY + "2008Choco");
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Development Page: " + ChatColor.RESET + ChatColor.GRAY + "https://www.spigotmc.org/resources/vein-miner.12038/");
-			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Report Bugs To: " + ChatColor.RESET + ChatColor.GRAY + "http://dev.bukkit.org/bukkit-plugins/vein-miner/tickets");
+			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Report Bugs To: " + ChatColor.RESET + ChatColor.GRAY + "https://github.com/2008Choco/VeinMiner/issues/");
 			sender.sendMessage("");
 			sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
 		}
@@ -117,7 +117,7 @@ public class VeinMinerCmd implements CommandExecutor {
 		// Blocklist subcommand
 		else if (args[0].equalsIgnoreCase("blocklist")) {
 			if (args.length < 2) {
-				this.sendMessage(sender, "/veinminer blocklist <tool> <add|remove|list|reset>");
+				this.sendMessage(sender, "/veinminer blocklist <tool> <add|remove|list>");
 				return true;
 			}
 			
@@ -129,7 +129,7 @@ public class VeinMinerCmd implements CommandExecutor {
 			}
 			
 			if (args.length < 3) {
-				this.sendMessage(sender, "/veinminer blocklist " + args[1] + " <add|remove|list|reset>");
+				this.sendMessage(sender, "/veinminer blocklist " + args[1] + " <add|remove|list>");
 				return true;
 			}
 			
@@ -230,7 +230,7 @@ public class VeinMinerCmd implements CommandExecutor {
 			
 			// Unknown parameter
 			else{
-				this.sendMessage(sender, "/veinminer blocklist " + args[1] + "<add|remove|list|reset>"); 
+				this.sendMessage(sender, "/veinminer blocklist " + args[1] + "<add|remove|list>"); 
 				return true;
 			}
 		}
