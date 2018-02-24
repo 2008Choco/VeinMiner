@@ -10,6 +10,7 @@
 # |--> Example: "STONE;1" will specify granite
 
 # For a list of valid material values, please view https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Note: The plugin is helpful
 
 MetricsEnabled: true
 ActivationMode: 'SNEAK'
