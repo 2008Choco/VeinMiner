@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerEvent;
 
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.pattern.VeinMiningPattern;
 
 /**
  * Called when VeinMiner is activated for a specific set of blocks
@@ -22,13 +23,15 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	private final VeinBlock type;
 	private final VeinTool tool;
 	private final List<Block> blocks;
+	private final VeinMiningPattern pattern;
 	
-	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, List<Block> blocks) {
+	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, List<Block> blocks, VeinMiningPattern pattern) {
 		super(who);
 		
 		this.type = type;
 		this.tool = tool;
 		this.blocks = blocks;
+		this.pattern = pattern;
 	}
 	
 	/**
@@ -57,6 +60,15 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 */
 	public VeinTool getTool() {
 		return tool;
+	}
+	
+	/**
+	 * Get the vein mining pattern that was used for this vein mine
+	 * 
+	 * @return the pattern used
+	 */
+	public VeinMiningPattern getPattern() {
+		return pattern;
 	}
 	
 	@Override

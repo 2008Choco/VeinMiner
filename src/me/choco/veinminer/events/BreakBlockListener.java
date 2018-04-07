@@ -75,7 +75,7 @@ public class BreakBlockListener implements Listener {
 		pattern.allocateBlocks(blocks, block, tool, alias);
 		
 		// Fire a new PlayerVeinMineEvent
-		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getBlockData()), tool, blocks);
+		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getBlockData()), tool, blocks, pattern);
 		Bukkit.getPluginManager().callEvent(vmEvent);
 		if (vmEvent.isCancelled()) {
 			this.blocks.clear();
