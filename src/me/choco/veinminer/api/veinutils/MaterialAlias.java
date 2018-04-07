@@ -1,15 +1,14 @@
 package me.choco.veinminer.api.veinutils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
+import me.choco.veinminer.utils.VeinMinerManager;
+
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-
-import me.choco.veinminer.utils.VeinMinerManager;
 
 /**
  * Represents an aliasing between multiple {@link VeinBlock}s which VeinMiner
@@ -17,7 +16,7 @@ import me.choco.veinminer.utils.VeinMinerManager;
  */
 public class MaterialAlias {
 	
-	private List<VeinBlock> blocks;
+	private Set<VeinBlock> blocks = new HashSet<>();
 	
 	/**
 	 * Construct a new alias between varying vein blocks
@@ -28,7 +27,9 @@ public class MaterialAlias {
 	 * @see VeinBlock#getVeinminableBlock(Material)
 	 */
 	public MaterialAlias(VeinBlock... blocks) {
-		this.blocks = Arrays.asList(blocks);
+		for (VeinBlock block : blocks) {
+			this.blocks.add(block);
+		}
 	}
 	
 	/**
@@ -38,8 +39,6 @@ public class MaterialAlias {
 	 */
 	public void addAlias(VeinBlock block) {
 		Preconditions.checkArgument(block != null, "Cannot add a null alias");
-		
-		if (blocks.contains(block)) return;
 		this.blocks.add(block);
 	}
 	
@@ -57,8 +56,8 @@ public class MaterialAlias {
 		Preconditions.checkArgument(material != null, "Cannot add a null material alias");
 		
 		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
-		
 		this.addAlias(block);
+		
 		return block;
 	}
 	
@@ -138,12 +137,13 @@ public class MaterialAlias {
 	}
 	
 	/**
-	 * Get all blocks that are considered under this alias
+	 * Get all blocks that are considered under this alias. The returned Set is
+	 * does not affect the underlying alias Set. A copy is returned
 	 * 
 	 * @return all aliased blocks
 	 */
-	public List<VeinBlock> getAliasedBlocks() {
-		return new ArrayList<>(blocks);
+	public Set<VeinBlock> getAliasedBlocks() {
+		return new HashSet<>(blocks);
 	}
 
 	@Override

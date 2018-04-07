@@ -1,6 +1,6 @@
 package me.choco.veinminer.api.veinutils;
 
-import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
@@ -19,9 +18,9 @@ import org.bukkit.block.data.BlockData;
  */
 public class VeinBlock {
 	
-	private static Set<VeinBlock> veinable = new HashSet<>();
+	private static final Set<VeinBlock> VEINABLE = new HashSet<>();
 	
-	private VeinTool[] mineableBy = new VeinTool[0];
+	private final Set<VeinTool> mineableBy = EnumSet.noneOf(VeinTool.class);
 	
 	private final Material material;
 	private final BlockData data;
@@ -73,9 +72,7 @@ public class VeinBlock {
 	 */
 	public void addMineableBy(VeinTool tool) {
 		Preconditions.checkArgument(tool != null, "Cannot add a null vein tool");
-		if (isMineableBy(tool)) return;
-		
-		this.mineableBy = ArrayUtils.add(mineableBy, tool);
+		this.mineableBy.add(tool);
 	}
 	
 	/**
@@ -84,7 +81,9 @@ public class VeinBlock {
 	 * @param tools the tools to add
 	 */
 	public void addMineableBy(VeinTool... tools) {
-		this.mineableBy = Arrays.stream(ArrayUtils.addAll(mineableBy, tools)).filter(t -> t != null).distinct().toArray(VeinTool[]::new);
+		for (VeinTool tool : tools) {
+			this.addMineableBy(tool);
+		}
 	}
 	
 	/**
@@ -93,7 +92,7 @@ public class VeinBlock {
 	 * @param tool the tool to remove
 	 */
 	public void removeMineableBy(VeinTool tool) {
-		this.mineableBy = ArrayUtils.removeElement(mineableBy, tool);
+		this.mineableBy.remove(tool);
 	}
 	
 	/**
@@ -103,7 +102,7 @@ public class VeinBlock {
 	 * @return true if it is capable of mining it
 	 */
 	public boolean isMineableBy(VeinTool tool) {
-		return ArrayUtils.contains(mineableBy, tool);
+		return mineableBy.contains(tool);
 	}
 	
 	/**
@@ -112,7 +111,7 @@ public class VeinBlock {
 	 * @return all tools capable of mining
 	 */
 	public VeinTool[] getMineableBy() {
-		return Arrays.copyOf(mineableBy, mineableBy.length);
+		return mineableBy.toArray(new VeinTool[mineableBy.size()]);
 	}
 	
 	@Override
@@ -144,7 +143,7 @@ public class VeinBlock {
 		
 		VeinBlock block = new VeinBlock(material, data);
 		block.addMineableBy(tools);
-		veinable.add(block);
+		VEINABLE.add(block);
 	}
 	
 	/** 
@@ -166,7 +165,7 @@ public class VeinBlock {
 	 * @param data the data that should be unregistered (-1 if none)
 	 */
 	public static void unregisterVeinminableBlock(VeinTool tool, Material material, BlockData data) {
-		Iterator<VeinBlock> it = veinable.iterator();
+		Iterator<VeinBlock> it = VEINABLE.iterator();
 		
 		while (it.hasNext()) {
 			VeinBlock block = it.next();
@@ -196,7 +195,7 @@ public class VeinBlock {
 	 * @return the registered vein block. null if none registered
 	 */
 	public static VeinBlock getVeinminableBlock(Material material, BlockData data) {
-		return veinable.stream()
+		return VEINABLE.stream()
 			.filter(b -> b.material == material)
 			.filter(b -> Objects.equals(b.data, data))
 			.findFirst().orElse(null);
@@ -224,7 +223,7 @@ public class VeinBlock {
 	 * @return true if it is breakable with VeinMiner
 	 */
 	public static boolean isVeinable(VeinTool tool, Material material, BlockData data) {
-		return veinable.stream().anyMatch(b -> b.material == material && (!b.hasSpecficData() || b.data.equals(data)) && b.isMineableBy(tool));
+		return VEINABLE.stream().anyMatch(b -> b.material == material && (!b.hasSpecficData() || b.data.equals(data)) && b.isMineableBy(tool));
 	}
 	
 	/** 
@@ -268,7 +267,7 @@ public class VeinBlock {
 	 * @return A set of all VeinMineable blocks from the tool
 	 */
 	public static Set<VeinBlock> getVeinminableBlocks(VeinTool tool) {
-		return veinable.stream()
+		return VEINABLE.stream()
 				.filter(b -> b.isMineableBy(tool))
 				.collect(Collectors.toSet());
 	}
@@ -277,7 +276,7 @@ public class VeinBlock {
 	 * Clear all veinable blocks
 	 */
 	public static void clearVeinableBlocks() {
-		veinable.clear();
+		VEINABLE.clear();
 	}
 	
 }
