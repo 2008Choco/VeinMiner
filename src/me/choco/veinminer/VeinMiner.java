@@ -14,8 +14,9 @@ import me.choco.veinminer.commands.VeinMinerCmd;
 import me.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import me.choco.veinminer.events.BreakBlockListener;
 import me.choco.veinminer.pattern.PatternRegistry;
-import me.choco.veinminer.utils.Metrics;
 import me.choco.veinminer.utils.VeinMinerManager;
+import me.choco.veinminer.utils.metrics.Metrics;
+import me.choco.veinminer.utils.metrics.StatTracker;
 import me.choco.veinminer.utils.versions.NMSAbstract;
 import me.choco.veinminer.utils.versions.NMSAbstractDefault;
 import me.choco.veinminer.utils.versions.v1_13.NMSAbstract1_13_R1;
@@ -35,6 +36,7 @@ public class VeinMiner extends JavaPlugin {
 	private VeinMinerManager manager;
 	private PatternRegistry patternRegistry;
 	private NMSAbstract nmsAbstract;
+	private StatTracker statTracker;
 	
 	@Override
 	public void onEnable() {
@@ -47,6 +49,7 @@ public class VeinMiner extends JavaPlugin {
 		instance = this;
 		this.manager = new VeinMinerManager(this);
 		this.patternRegistry = new PatternRegistry();
+		this.statTracker = new StatTracker();
 		this.saveDefaultConfig();
 		
 		// Enable anticheat hooks if required
@@ -73,7 +76,10 @@ public class VeinMiner extends JavaPlugin {
 		//Metrics
 		if (getConfig().getBoolean("MetricsEnabled", true)) {
 			this.getLogger().info("Enabling Plugin Metrics");
-			new Metrics(this);
+			
+			Metrics metrics = new Metrics(this);
+			metrics.addCustomChart(new Metrics.AdvancedPie("blocks_veinmined", statTracker::getVeinMinedCountAsData));
+			
 			this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
 		}
 
@@ -126,6 +132,15 @@ public class VeinMiner extends JavaPlugin {
 	 */
 	public NMSAbstract getNMSAbstract() {
 		return nmsAbstract;
+	}
+	
+	/**
+	 * Get the statistic tracker for bStats data
+	 * 
+	 * @return the bStats statistic tracker
+	 */
+	public StatTracker getStatTracker() {
+		return statTracker;
 	}
 	
 	/**

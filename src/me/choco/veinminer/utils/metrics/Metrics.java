@@ -1,4 +1,4 @@
-package me.choco.veinminer.utils;
+package me.choco.veinminer.utils.metrics;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
