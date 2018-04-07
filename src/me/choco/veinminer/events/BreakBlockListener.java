@@ -12,9 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import fr.neatmonster.nocheatplus.checks.CheckType;
-import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 import me.choco.veinminer.VeinMiner;
+import me.choco.veinminer.anticheat.AntiCheatHook;
 import me.choco.veinminer.api.MineActivation;
 import me.choco.veinminer.api.PlayerVeinMineEvent;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
@@ -80,20 +79,9 @@ public class BreakBlockListener implements Listener {
 			return;
 		}
 		
-		/* Anti Cheat support start */
-		boolean unexemptNCP = false;
-		if (plugin.isNCPEnabled()) {
-			if (!NCPExemptionManager.isExempted(player, CheckType.BLOCKBREAK)) {
-				NCPExemptionManager.exemptPermanently(player, CheckType.BLOCKBREAK);
-				unexemptNCP = true;
-			}
-		}
-		if (plugin.isAACEnabled())
-			plugin.getAntiCheatSupport().exemptFromViolation(player);
-		
-		if (plugin.isAntiAuraEnabled())
-			AntiAuraAPI.API.toggleExemptFromFastBreak(player);
-		/* Anti Cheat support end */
+		// Anticheat support
+		List<AntiCheatHook> hooks = plugin.getAnticheatHooks();
+		hooks.stream().filter(AntiCheatHook::isSupported).forEach(h -> h.exempt(player));
 		
 		// Actually destroying the allocated blocks
 		boolean usesDurability = tool.usesDurability();
@@ -114,13 +102,11 @@ public class BreakBlockListener implements Listener {
 		
 		// VEINMINER - DONE
 		
-		/* Anti Cheat Support ... Check if need to unexempt, in case they had been exempted prior to VeinMining */
-		if (plugin.isNCPEnabled() && unexemptNCP)
-			NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
-		if (plugin.isAACEnabled())
-			this.plugin.getAntiCheatSupport().unexemptFromViolation(player);
-		if (plugin.isAntiAuraEnabled())
-			AntiAuraAPI.API.toggleExemptFromFastBreak(player);
+		// Unexempt from anticheats
+		hooks.stream()
+			.filter(AntiCheatHook::isSupported)
+			.filter(h -> h.shouldUnexempt(player))
+			.forEach(h -> h.unexempt(player));
 	}
 	
 }

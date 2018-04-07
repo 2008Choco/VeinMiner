@@ -1,16 +1,17 @@
 package me.choco.veinminer;
 
-import org.apache.commons.lang3.math.NumberUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.google.common.base.Preconditions;
 
+import me.choco.veinminer.anticheat.AntiCheatHook;
+import me.choco.veinminer.anticheat.AntiCheatHookAAC;
+import me.choco.veinminer.anticheat.AntiCheatHookAntiAura;
+import me.choco.veinminer.anticheat.AntiCheatHookNCP;
 import me.choco.veinminer.commands.VeinMinerCmd;
 import me.choco.veinminer.commands.VeinMinerCmdTabCompleter;
-import me.choco.veinminer.events.AntiCheatSupport;
 import me.choco.veinminer.events.BreakBlockListener;
 import me.choco.veinminer.pattern.PatternRegistry;
 import me.choco.veinminer.utils.Metrics;
@@ -19,12 +20,16 @@ import me.choco.veinminer.utils.versions.NMSAbstract;
 import me.choco.veinminer.utils.versions.NMSAbstractDefault;
 import me.choco.veinminer.utils.versions.v1_13.NMSAbstract1_13_R1;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
 public class VeinMiner extends JavaPlugin {
 	
 	private static VeinMiner instance;
-	private AntiCheatSupport antiCheatSupport;
 	
-	private boolean ncpEnabled, aacEnabled, antiAuraEnabled;
+	private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
 	private double antiAuraVersion = -1;
 	
 	private VeinMinerManager manager;
@@ -42,19 +47,22 @@ public class VeinMiner extends JavaPlugin {
 		instance = this;
 		this.manager = new VeinMinerManager(this);
 		this.patternRegistry = new PatternRegistry();
-		
-		// Check for soft-dependencies
-		PluginManager manager = Bukkit.getPluginManager();
-		this.ncpEnabled = manager.isPluginEnabled("NoCheatPlus");
-		this.aacEnabled = manager.isPluginEnabled("AAC");
-		this.antiAuraEnabled = manager.isPluginEnabled("AntiAura");
-		
 		this.saveDefaultConfig();
+		
+		// Enable anticheat hooks if required
+		PluginManager manager = Bukkit.getPluginManager();
+		if (manager.isPluginEnabled("NoCheatPlus")) anticheatHooks.add(new AntiCheatHookNCP());
+		if (manager.isPluginEnabled("AntiAura")) anticheatHooks.add(new AntiCheatHookAntiAura());
+		if (manager.isPluginEnabled("AAC")) {
+			AntiCheatHookAAC aacHook = new AntiCheatHookAAC();
+			
+			manager.registerEvents(aacHook, this);
+			this.anticheatHooks.add(aacHook);
+		}
 		
 		//Register events
 		this.getLogger().info("Registering events");
 		manager.registerEvents(new BreakBlockListener(this), this);
-		if (aacEnabled) manager.registerEvents((antiCheatSupport = new AntiCheatSupport()), this);
 		
 		//Register commands
 		this.getLogger().info("Registering commands");
@@ -81,8 +89,7 @@ public class VeinMiner extends JavaPlugin {
 		this.getLogger().info("Clearing localized data");
 		this.manager.clearLocalisedData();
 		this.patternRegistry.clearPatterns();
-		
-		if (antiCheatSupport != null) antiCheatSupport.clearExemptedUsers();
+		this.anticheatHooks.clear();
 	}
 	
 	/** 
@@ -121,44 +128,34 @@ public class VeinMiner extends JavaPlugin {
 		return nmsAbstract;
 	}
 	
-	/** 
-	 * Get an instance of the listener used to prevent false-positives on anti-cheat plugins 
-	 * (Only Konsolas' Advanced Anti-Cheat is supported in this class as of now)
+	/**
+	 * Get the active version of AntiAura. If the plugin is not enabled, 0.0 will be returned
 	 * 
-	 * @return an instance of the anti cheat listener
+	 * @return the AntiAura version. 0.0 if not enabled
 	 */
-	public AntiCheatSupport getAntiCheatSupport() {
-		return antiCheatSupport;
+	public double getAntiAuraVersion() {
+		return antiAuraVersion;
 	}
 	
-	/** 
-	 * Check whether NoCheatPlus is currently enabled on the server or not
+	/**
+	 * Register an anticheat hook to VeinMiner. Hooks should be registered for all anticheat plugins
+	 * as to support VeinMining and not false-flag players with fast-break
 	 * 
-	 * @return true if NCP is enabled
+	 * @param hook the hook to register
 	 */
-	public boolean isNCPEnabled() {
-		return ncpEnabled;
+	public void registerAntiCheatHook(AntiCheatHook hook) {
+		Preconditions.checkArgument(hook != null, "Cannot register a null anticheat hook implementation");
+		Preconditions.checkArgument(!anticheatHooks.contains(hook), "Hook already registered (" + hook.getPluginName() + ")");
+		this.anticheatHooks.add(hook);
 	}
 	
-	/** 
-	 * Check whether Advanced Anti-Cheat is currently enabled on the server or not
+	/**
+	 * Get a list of all anti cheat hooks
 	 * 
-	 * @return true if AAC is enabled
+	 * @return all anticheat hooks
 	 */
-	public boolean isAACEnabled() {
-		return aacEnabled;
-	}
-	
-	/** 
-	 * Check whether Anti Aura is currently enabled on the server or not
-	 * 
-	 * @return true if Anti Aura is enabled
-	 */
-	public boolean isAntiAuraEnabled() {
-		if (antiAuraEnabled && antiAuraVersion == -1)
-			this.antiAuraVersion = NumberUtils.toDouble(Bukkit.getPluginManager().getPlugin("AntiAura").getDescription().getVersion(), Double.NaN);
-		
-		return antiAuraEnabled && this.antiAuraVersion >= 10.83; // API implemented in 10.83
+	public List<AntiCheatHook> getAnticheatHooks() {
+		return Collections.unmodifiableList(anticheatHooks);
 	}
 	
 	private final boolean setupNMSAbstract() {
