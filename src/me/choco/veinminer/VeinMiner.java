@@ -160,7 +160,13 @@ public class VeinMiner extends JavaPlugin {
 	 */
 	public void registerAntiCheatHook(AntiCheatHook hook) {
 		Preconditions.checkArgument(hook != null, "Cannot register a null anticheat hook implementation");
-		Preconditions.checkArgument(!anticheatHooks.contains(hook), "Hook already registered (" + hook.getPluginName() + ")");
+		
+		for (AntiCheatHook anticheatHook : anticheatHooks) {
+			if (anticheatHook.getPluginName().equals(hook.getPluginName())) {
+				throw new IllegalArgumentException("Anticheat Hook for plugin " + anticheatHook.getPluginName() + " already registered");
+			}
+		}
+		
 		this.anticheatHooks.add(hook);
 	}
 	
