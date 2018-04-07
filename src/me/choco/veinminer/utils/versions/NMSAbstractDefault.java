@@ -18,9 +18,6 @@ import org.bukkit.entity.Player;
  */
 public class NMSAbstractDefault implements NMSAbstract {
 	
-	private boolean wasSuccessful = true;
-	private final String version;
-	
 	private static Class<?> nmsPlayer;
 	private static Class<?> playerInteractManager;
 	private static Field fieldPlayerInteractManager;
@@ -29,6 +26,9 @@ public class NMSAbstractDefault implements NMSAbstract {
 	private static Class<?> craftPlayer;
 	private static Method methodGetHandle;
 	private static Method methodBreakBlock;
+
+	private boolean wasSuccessful = true;
+	private final String version;
 	
 	public NMSAbstractDefault(String version) {
 		this.version = version + ".";

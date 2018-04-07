@@ -2,6 +2,8 @@ package me.choco.veinminer.api;
 
 import java.util.function.Predicate;
 
+import com.google.common.base.Predicates;
+
 import org.bukkit.entity.Player;
 
 /**
@@ -17,7 +19,7 @@ public enum MineActivation {
 	/**
 	 * Activated when a Player is standing up (not sneaking)
 	 */
-	STAND(p -> !p.isSneaking());
+	STAND(Predicates.not(Player::isSneaking));
 	
 	private final Predicate<Player> condition;
 	

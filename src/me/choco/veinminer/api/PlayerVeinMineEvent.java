@@ -32,8 +32,8 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	}
 	
 	/**
-	 * Get a list of all blocks affected by this event. This list is mutable, you are able to modify
-	 * it and manipulate what blocks are and are not modified
+	 * Get a list of all blocks destroyed by this vein mine. This list is mutable, you
+	 * are able to modify it and manipulate what blocks are and are not modified
 	 * 
 	 * @return the blocks to be affected by this event
 	 */
@@ -42,7 +42,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	}
 	
 	/**
-	 * Get the block affected by the VeinMine
+	 * Get the block affected by the vein mine
 	 * 
 	 * @return the block affected
 	 */
@@ -51,7 +51,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	}
 	
 	/**
-	 * Get the tool used to initiate this VeinMine
+	 * Get the tool used to initiate this vein mine
 	 * 
 	 * @return the tool used
 	 */

@@ -191,14 +191,7 @@ public enum VeinTool {
 	 * @param player the player to toggle this tool for
 	 */
 	public void toggleVeinMiner(OfflinePlayer player) {
-		Preconditions.checkArgument(player != null, "Cannot toggle veinminer for a null player");
-		
-		if (hasVeinMinerEnabled(player)) {
-			this.disabledBy.add(player.getUniqueId());
-		}
-		else {
-			this.disabledBy.remove(player.getUniqueId());
-		}
+		this.toggleVeinMiner(player, !hasVeinMinerEnabled(player));
 	}
 	
 	/**
