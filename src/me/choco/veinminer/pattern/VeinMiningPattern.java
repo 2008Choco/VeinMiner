@@ -56,7 +56,7 @@ public interface VeinMiningPattern extends Keyed {
 	 * Create a new VeinMiningPattern using a custom {@link BlockAllocator}
 	 * 
 	 * @param key the key of the vein mining pattern. Must be unique and not null
-	 * @param blockComputer the computer to allocate breakable blocks. Must not be null
+	 * @param blockAllocator the allocator to compute breakable blocks. Must not be null
 	 * 
 	 * @return the resulting VeinMiningPattern instance
 	 */

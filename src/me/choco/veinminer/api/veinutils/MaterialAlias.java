@@ -24,7 +24,7 @@ public class MaterialAlias {
 	 * 
 	 * @param blocks the blocks to alias
 	 * 
-	 * @see VeinBlock#getVeinminableBlock(Material, byte)
+	 * @see VeinBlock#getVeinminableBlock(Material, BlockData)
 	 * @see VeinBlock#getVeinminableBlock(Material)
 	 */
 	public MaterialAlias(VeinBlock... blocks) {
