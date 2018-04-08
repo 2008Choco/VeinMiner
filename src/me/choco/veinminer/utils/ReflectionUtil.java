@@ -1,4 +1,4 @@
-package me.choco.veinminer.utils.versions;
+package me.choco.veinminer.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -10,13 +10,7 @@ import com.google.common.base.Preconditions;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-/**
- * The default fallback implementation of {@link NMSAbstract} using reflection
- * to prevent the need to update, assuming no changes to NMS obfuscation were made.
- * This implementation is a last resort if all else fails and there is no alternative
- * implementation provided by VeinMiner
- */
-public class NMSAbstractDefault implements NMSAbstract {
+public final class ReflectionUtil {
 	
 	private static Class<?> nmsPlayer;
 	private static Class<?> playerInteractManager;
@@ -26,17 +20,13 @@ public class NMSAbstractDefault implements NMSAbstract {
 	private static Class<?> craftPlayer;
 	private static Method methodGetHandle;
 	private static Method methodBreakBlock;
-
-	private boolean wasSuccessful = true;
-	private final String version;
 	
-	public NMSAbstractDefault(String version) {
-		this.version = version + ".";
-		this.loadNMSClasses();
-	}
+	private static boolean wasSuccessful = false;
+	private static String version;
 	
-	@Override
-	public void breakBlock(Player player, Block block) {
+	private ReflectionUtil() { }
+	
+	public static void breakBlock(Player player, Block block) {
 		Preconditions.checkArgument(player != null, "A null player is incapable of breaking blocks");
 		Preconditions.checkArgument(block != null, "Cannot break a null block");
 		
@@ -48,73 +38,77 @@ public class NMSAbstractDefault implements NMSAbstract {
 		try {
 			Object cPlayer = methodGetHandle.invoke(player);
 			Object interactManager = fieldPlayerInteractManager.get(cPlayer);
-			Object blockPos = constructorBlockPosition.newInstance(block.getX(), block.getY(), block.getZ());
+			Object blockPos = constructorBlockPosition
+					.newInstance(block.getX(), block.getY(), block.getZ());
 			methodBreakBlock.invoke(interactManager, blockPos);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {}
 	}
 	
-	private final void loadNMSClasses() {
+	public static void loadNMSClasses(String version) {
 		if (nmsPlayer != null) return;
 		
-		nmsPlayer = this.getNMSClass("EntityPlayer");
-		playerInteractManager = this.getNMSClass("PlayerInteractManager");
-		fieldPlayerInteractManager = this.getField(nmsPlayer, "playerInteractManager");
-		blockPosition = this.getNMSClass("BlockPosition");
-		constructorBlockPosition = this.getConstructor(blockPosition, Integer.TYPE, Integer.TYPE, Integer.TYPE);
-		craftPlayer = this.getCBClass("entity.CraftPlayer");
-		methodGetHandle = this.getMethod("getHandle", craftPlayer);
-		methodBreakBlock = this.getMethod("breakBlock", playerInteractManager, blockPosition);
+		ReflectionUtil.version = version.concat(".");
+		
+		nmsPlayer = getNMSClass("EntityPlayer");
+		playerInteractManager = getNMSClass("PlayerInteractManager");
+		fieldPlayerInteractManager = getField(nmsPlayer, "playerInteractManager");
+		blockPosition = getNMSClass("BlockPosition");
+		constructorBlockPosition = getConstructor(blockPosition, Integer.TYPE, Integer.TYPE, Integer.TYPE);
+		craftPlayer = getCBClass("entity.CraftPlayer");
+		methodGetHandle = getMethod("getHandle", craftPlayer);
+		methodBreakBlock = getMethod("breakBlock", playerInteractManager, blockPosition);
 	}
 	
-	private Method getMethod(String name, Class<?> clazz, Class<?>... paramTypes) {
+	private static Method getMethod(String name, Class<?> clazz, Class<?>... paramTypes) {
 		try {
 			return clazz.getMethod(name, paramTypes);
 		} catch (NoSuchMethodException | SecurityException e) {
 			System.out.println("Could not find method " + name + " in " + clazz.getSimpleName());
-			this.wasSuccessful = false;
+			wasSuccessful = false;
 		}
 		return null;
 	}
 	
-	private Field getField(Class<?> clazz, String name) {
+	private static Field getField(Class<?> clazz, String name) {
 		try {
 			Field field = clazz.getDeclaredField(name);
 			field.setAccessible(true);
 			return field;
 		} catch (Exception e) {
 			System.out.println("Could not find field " + name + " in " + clazz.getSimpleName());
-			this.wasSuccessful = false;
+			wasSuccessful = false;
 		}
 		return null;
 	}
 	
-	private Constructor<?> getConstructor(Class<?> clazz, Class<?>... parameters) {
+	private static Constructor<?> getConstructor(Class<?> clazz, Class<?>... parameters) {
 		try {
 			return clazz.getConstructor(parameters);
 		} catch (NoSuchMethodException | SecurityException e) {
 			System.out.println("Could not find constructor for class " + clazz.getSimpleName());
-			this.wasSuccessful = false;
+			wasSuccessful = false;
 		}
 		return null;
 	}
 	
-	private Class<?> getNMSClass(String className) {
+	private static Class<?> getNMSClass(String className) {
 		try {
 			return Class.forName("net.minecraft.server." + version + className);
 		} catch (Exception e) {
 			System.out.println("Could not find class " + className);
-			this.wasSuccessful = false;
+			wasSuccessful = false;
 		}
 		return null;
 	}
 	
-	private Class<?> getCBClass(String className) {
+	private static Class<?> getCBClass(String className) {
 		try {
 			return Class.forName("org.bukkit.craftbukkit." + version + className);
 		} catch (Exception e) {
 			System.out.println("Could not find class " + className);
-			this.wasSuccessful = false;
+			wasSuccessful = false;
 		}
 		return null;
 	}
+	
 }

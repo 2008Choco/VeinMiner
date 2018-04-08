@@ -17,9 +17,6 @@ import me.choco.veinminer.pattern.PatternRegistry;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.metrics.Metrics;
 import me.choco.veinminer.utils.metrics.StatTracker;
-import me.choco.veinminer.utils.versions.NMSAbstract;
-import me.choco.veinminer.utils.versions.NMSAbstractDefault;
-import me.choco.veinminer.utils.versions.v1_13.NMSAbstract1_13_R1;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -35,17 +32,10 @@ public class VeinMiner extends JavaPlugin {
 	
 	private VeinMinerManager manager;
 	private PatternRegistry patternRegistry;
-	private NMSAbstract nmsAbstract;
 	private StatTracker statTracker;
 	
 	@Override
 	public void onEnable() {
-		// Attempt to set up the version independence manager
-		if (!setupNMSAbstract()) {
-			this.getLogger().warning("VeinMiner is not officially supported on this version of Minecraft");
-			this.getLogger().warning("Some features may not work properly");
-		}
-
 		instance = this;
 		this.manager = new VeinMinerManager(this);
 		this.patternRegistry = new PatternRegistry();
@@ -125,15 +115,6 @@ public class VeinMiner extends JavaPlugin {
 		return patternRegistry;
 	}
 	
-	/** 
-	 * Get the interface that manages all things related to version independence
-	 * 
-	 * @return the current NMSAbstract implementation
-	 */
-	public NMSAbstract getNMSAbstract() {
-		return nmsAbstract;
-	}
-	
 	/**
 	 * Get the statistic tracker for bStats data
 	 * 
@@ -177,18 +158,6 @@ public class VeinMiner extends JavaPlugin {
 	 */
 	public List<AntiCheatHook> getAnticheatHooks() {
 		return Collections.unmodifiableList(anticheatHooks);
-	}
-	
-	private final boolean setupNMSAbstract() {
-		Preconditions.checkArgument(nmsAbstract == null, "Cannot setup NMSAbstract implementation more than once");
-		
-		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-		switch (version) {
-			case "v1_13_R1": nmsAbstract = new NMSAbstract1_13_R1(); break; // 1.13.0-Pre1+
-			default: nmsAbstract = new NMSAbstractDefault(version);
-		}
-		
-		return !(nmsAbstract instanceof NMSAbstractDefault);
 	}
 	
 }

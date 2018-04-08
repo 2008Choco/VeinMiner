@@ -11,9 +11,9 @@ import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.pattern.VeinMiningPattern;
 import me.choco.veinminer.utils.NonNullArrayList;
+import me.choco.veinminer.utils.ReflectionUtil;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.metrics.StatTracker;
-import me.choco.veinminer.utils.versions.NMSAbstract;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.Bukkit;
@@ -31,13 +31,11 @@ public class BreakBlockListener implements Listener {
 
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
-	private final NMSAbstract nmsAbstract;
 	private final StatTracker statTracker;
 	
 	public BreakBlockListener(VeinMiner plugin) {
 		this.plugin = plugin;
 		this.manager = plugin.getVeinMinerManager();
-		this.nmsAbstract = plugin.getNMSAbstract();
 		this.statTracker = plugin.getStatTracker();
 	}
 	
@@ -93,7 +91,7 @@ public class BreakBlockListener implements Listener {
 			short priorDurability = itemUsed.getDurability();
 			if (priorDurability >= maxDurability) break;
 			
-			this.nmsAbstract.breakBlock(player, b);
+			ReflectionUtil.breakBlock(player, b);
 			this.statTracker.accumulateVeinMinedMaterial(b.getType());
 			
 			// Unbreaking enchantment precaution
