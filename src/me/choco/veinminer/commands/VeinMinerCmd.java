@@ -160,17 +160,17 @@ public class VeinMinerCmd implements CommandExecutor {
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
 				if (VeinBlock.isVeinable(tool, material, specificData ? data : null)) {
-					this.sendMessage(sender, "Block Id " + data.getDataString() + " is already on the list");
+					this.sendMessage(sender, "Block Id " + data.getAsString() + " is already on the list");
 					return true;
 				}
 				
-				blocklist.add(data.getDataString());
+				blocklist.add(data.getAsString());
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
 				VeinBlock.registerVeinminableBlock(material, specificData ? data : null, tool);
-				this.sendMessage(sender, "Block Id " + data.getDataString() + " successfully added to the list");
+				this.sendMessage(sender, "Block Id " + data.getAsString() + " successfully added to the list");
 			}
 			
 			// /veinminer blocklist <tool> remove
@@ -200,17 +200,17 @@ public class VeinMinerCmd implements CommandExecutor {
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
 				if (!VeinBlock.isVeinable(tool, material, specificData ? data : null)) {
-					this.sendMessage(sender, "Block Id " + data.getDataString() + " is not on the list");
+					this.sendMessage(sender, "Block Id " + data.getAsString() + " is not on the list");
 					return true;
 				}
 				
-				blocklist.remove(data.getDataString());
+				blocklist.remove(data.getAsString());
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
 				VeinBlock.unregisterVeinminableBlock(tool, material, specificData ? data : null);
-				this.sendMessage(sender, "Block Id " + data.getDataString() + " successfully removed from the list");
+				this.sendMessage(sender, "Block Id " + data.getAsString() + " successfully removed from the list");
 			}
 			
 			// /veinminer blocklist <tool> list
@@ -224,7 +224,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 				
 				for (VeinBlock block : blocklist) {
-					sender.sendMessage(ChatColor.YELLOW + "[*] " + (block.hasSpecficData() ? block.getData().getDataString() : block.getMaterial().name()));
+					sender.sendMessage(ChatColor.YELLOW + "[*] " + (block.hasSpecficData() ? block.getData().getAsString() : block.getMaterial().name()));
 				}
 			}
 			
