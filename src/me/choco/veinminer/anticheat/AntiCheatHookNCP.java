@@ -1,5 +1,9 @@
 package me.choco.veinminer.anticheat;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
 import fr.neatmonster.nocheatplus.checks.CheckType;
@@ -10,7 +14,7 @@ import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
  */
 public class AntiCheatHookNCP implements AntiCheatHook {
 	
-	private boolean exempted = false;
+	private final Set<UUID> exempted = new HashSet<>();
 	
 	@Override
 	public String getPluginName() {
@@ -22,18 +26,18 @@ public class AntiCheatHookNCP implements AntiCheatHook {
 		if (!NCPExemptionManager.isExempted(player, CheckType.BLOCKBREAK)) return;
 		
 		NCPExemptionManager.exemptPermanently(player, CheckType.BLOCKBREAK);
-		this.exempted = true;
+		this.exempted.add(player.getUniqueId());
 	}
 	
 	@Override
 	public void unexempt(Player player) {
-		if (!exempted) return;
+		if (!exempted.contains(player.getUniqueId())) return;
 		NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
 	}
 	
 	@Override
 	public boolean shouldUnexempt(Player player) {
-		return exempted;
+		return exempted.contains(player.getUniqueId());
 	}
 	
 }
