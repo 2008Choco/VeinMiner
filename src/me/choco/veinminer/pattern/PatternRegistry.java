@@ -15,15 +15,11 @@ import org.bukkit.NamespacedKey;
  */
 public class PatternRegistry {
 	
-	/**
-	 * The default mining pattern for VeinMiner
-	 */
-	public static final VeinMiningPattern VEINMINER_PATTERN_DEFAULT = new PatternDefault();
-	
 	private final Map<NamespacedKey, VeinMiningPattern> patterns = new HashMap<>();
 	
 	public PatternRegistry() {
-		this.patterns.put(VEINMINER_PATTERN_DEFAULT.getKey(), VEINMINER_PATTERN_DEFAULT);
+		PatternDefault defaultPattern = PatternDefault.get();
+		this.patterns.put(defaultPattern.getKey(), defaultPattern);
 	}
 	
 	/**

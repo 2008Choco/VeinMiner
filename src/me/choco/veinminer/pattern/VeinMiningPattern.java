@@ -13,7 +13,8 @@ import org.bukkit.block.Block;
 
 /**
  * Represents a mining algorithm capable of computing which blocks should be broken by VeinMiner
- * when a successful vein mine will occur
+ * when a successful vein mine will occur. It is recommended that implementations of
+ * VeinMiningPattern are singleton instances, although this is not a requirement
  */
 public interface VeinMiningPattern extends Keyed {
 	

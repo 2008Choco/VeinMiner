@@ -15,7 +15,7 @@ import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
-import me.choco.veinminer.pattern.PatternRegistry;
+import me.choco.veinminer.pattern.PatternDefault;
 import me.choco.veinminer.pattern.VeinMiningPattern;
 
 import org.bukkit.Bukkit;
@@ -210,14 +210,14 @@ public class VeinMinerManager {
 	
 	/**
 	 * Get the pattern used by the specified player. If the player is not using any specific
-	 * pattern, {@link PatternRegistry#VEINMINER_PATTERN_DEFAULT} will be returned
+	 * pattern, {@link PatternDefault} will be returned
 	 * 
 	 * @param player the player to get the pattern for
 	 * @return the player's mining pattern
 	 */
 	public VeinMiningPattern getPatternFor(Player player) {
 		Preconditions.checkArgument(player != null, "Cannot get the mining pattern for a null player");
-		return playerMiningPattern.getOrDefault(player.getUniqueId(), PatternRegistry.VEINMINER_PATTERN_DEFAULT);
+		return playerMiningPattern.getOrDefault(player.getUniqueId(), PatternDefault.get());
 	}
 	
 	/**

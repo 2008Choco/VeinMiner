@@ -13,7 +13,12 @@ import me.choco.veinminer.utils.VBlockFace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
-public class PatternDefault implements VeinMiningPattern {
+/**
+ * The default {@link VeinMiningPattern} implementation used by all players unless explicitly set
+ * 
+ * @author Parker Hawke - 2008Choco
+ */
+public final class PatternDefault implements VeinMiningPattern {
 	
 	private static final VBlockFace[] LIMITED_FACES = {
 			VBlockFace.UP, VBlockFace.DOWN, VBlockFace.NORTH, VBlockFace.SOUTH, VBlockFace.EAST,
@@ -21,11 +26,13 @@ public class PatternDefault implements VeinMiningPattern {
 			VBlockFace.SOUTH_WEST
 	};
 	
+	private static PatternDefault instance;
+	
 	private final VeinMiner plugin;
 	private final NamespacedKey key;
 	private final List<Block> blockBuffer = new ArrayList<>();
 	
-	public PatternDefault() {
+	private PatternDefault() {
 		this.plugin = VeinMiner.getPlugin();
 		this.key = new NamespacedKey(plugin, "default");
 	}
@@ -74,6 +81,15 @@ public class PatternDefault implements VeinMiningPattern {
 	
 	private VBlockFace[] getFacesToMine() {
 		return plugin.getConfig().getBoolean("IncludeEdges") ? VBlockFace.values() : LIMITED_FACES;
+	}
+	
+	/**
+	 * Get a singleton instance of the default pattern
+	 * 
+	 * @return the default pattern
+	 */
+	public static PatternDefault get() {
+		return (instance == null) ? instance = new PatternDefault() : instance;
 	}
 	
 }
