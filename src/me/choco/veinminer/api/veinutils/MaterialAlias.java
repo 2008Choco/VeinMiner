@@ -1,6 +1,7 @@
 package me.choco.veinminer.api.veinutils;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
@@ -14,7 +15,7 @@ import org.bukkit.block.data.BlockData;
  * Represents an aliasing between multiple {@link VeinBlock}s which VeinMiner
  * can recognise as a single material value when being vein mined
  */
-public class MaterialAlias {
+public class MaterialAlias implements Iterable<VeinBlock> {
 	
 	private Set<VeinBlock> blocks = new HashSet<>();
 	
@@ -145,12 +146,17 @@ public class MaterialAlias {
 	public Set<VeinBlock> getAliasedBlocks() {
 		return new HashSet<>(blocks);
 	}
-
+	
+	@Override
+	public Iterator<VeinBlock> iterator() {
+		return blocks.iterator();
+	}
+	
 	@Override
 	public int hashCode() {
 		return 31 * blocks.hashCode();
 	}
-
+	
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof MaterialAlias)) return false;
