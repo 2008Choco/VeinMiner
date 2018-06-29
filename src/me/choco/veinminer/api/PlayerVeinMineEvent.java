@@ -1,6 +1,6 @@
 package me.choco.veinminer.api;
 
-import java.util.List;
+import java.util.Set;
 
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
@@ -22,10 +22,10 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	
 	private final VeinBlock type;
 	private final VeinTool tool;
-	private final List<Block> blocks;
+	private final Set<Block> blocks;
 	private final VeinMiningPattern pattern;
 	
-	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, List<Block> blocks, VeinMiningPattern pattern) {
+	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, Set<Block> blocks, VeinMiningPattern pattern) {
 		super(who);
 		
 		this.type = type;
@@ -35,12 +35,12 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	}
 	
 	/**
-	 * Get a list of all blocks destroyed by this vein mine. This list is mutable, you are able to
-	 * modify it and manipulate what blocks are and are not modified
+	 * Get a set of all blocks destroyed by this vein mine. This set is mutable. Modifications
+	 * will directly manipulate what blocks are and are not modified
 	 * 
 	 * @return the blocks to be affected by this event
 	 */
-	public List<Block> getBlocks() {
+	public Set<Block> getBlocks() {
 		return blocks;
 	}
 	

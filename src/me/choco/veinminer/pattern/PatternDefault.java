@@ -3,6 +3,7 @@ package me.choco.veinminer.pattern;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
@@ -29,7 +30,7 @@ public class PatternDefault implements VeinMiningPattern {
 	}
 	
 	@Override
-	public void allocateBlocks(List<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
+	public void allocateBlocks(Set<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
 		int maxVeinSize = tool.getMaxVeinSize();
 		VBlockFace[] facesToMine = getFacesToMine();
 		List<Block> blocksToAdd = new ArrayList<>();

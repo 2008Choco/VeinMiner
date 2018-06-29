@@ -1,6 +1,7 @@
 package me.choco.veinminer.events;
 
 import java.util.List;
+import java.util.Set;
 
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.anticheat.AntiCheatHook;
@@ -10,7 +11,7 @@ import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.pattern.VeinMiningPattern;
-import me.choco.veinminer.utils.NonNullArrayList;
+import me.choco.veinminer.utils.NonNullHashSet;
 import me.choco.veinminer.utils.ReflectionUtil;
 import me.choco.veinminer.utils.VeinMinerManager;
 import me.choco.veinminer.utils.metrics.StatTracker;
@@ -27,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class BreakBlockListener implements Listener {
 	
-	private final List<Block> blocks = new NonNullArrayList<>();
+	private final Set<Block> blocks = new NonNullHashSet<>();
 	
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
@@ -65,7 +66,7 @@ public class BreakBlockListener implements Listener {
 		if (tool.hasVeinMinerDisabled(player)) return;
 		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData())
 				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getBlockData())
-				&& player.hasPermission("veinminer.veinmine.all")))) {
+						&& player.hasPermission("veinminer.veinmine.all")))) {
 			return;
 		}
 		
