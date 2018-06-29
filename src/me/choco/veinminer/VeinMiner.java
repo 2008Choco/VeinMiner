@@ -28,7 +28,7 @@ public class VeinMiner extends JavaPlugin {
 	private static VeinMiner instance;
 	
 	private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
-	private double antiAuraVersion = -1;
+	private final double antiAuraVersion = -1;
 	
 	private VeinMinerManager manager;
 	private PatternRegistry patternRegistry;
@@ -42,8 +42,12 @@ public class VeinMiner extends JavaPlugin {
 		
 		// Enable anticheat hooks if required
 		PluginManager manager = Bukkit.getPluginManager();
-		if (manager.isPluginEnabled("NoCheatPlus")) anticheatHooks.add(new AntiCheatHookNCP());
-		if (manager.isPluginEnabled("AntiAura")) anticheatHooks.add(new AntiCheatHookAntiAura());
+		if (manager.isPluginEnabled("NoCheatPlus")) {
+			this.anticheatHooks.add(new AntiCheatHookNCP());
+		}
+		if (manager.isPluginEnabled("AntiAura")) {
+			this.anticheatHooks.add(new AntiCheatHookAntiAura());
+		}
 		if (manager.isPluginEnabled("AAC")) {
 			AntiCheatHookAAC aacHook = new AntiCheatHookAAC();
 			
@@ -51,17 +55,17 @@ public class VeinMiner extends JavaPlugin {
 			this.anticheatHooks.add(aacHook);
 		}
 		
-		//Register events
+		// Register events
 		this.getLogger().info("Registering events");
 		manager.registerEvents(new BreakBlockListener(this), this);
 		
-		//Register commands
+		// Register commands
 		this.getLogger().info("Registering commands");
 		PluginCommand veinminerCmd = getCommand("veinminer");
 		veinminerCmd.setExecutor(new VeinMinerCmd(this));
 		veinminerCmd.setTabCompleter(new VeinMinerCmdTabCompleter(this));
 		
-		//Metrics
+		// Metrics
 		if (getConfig().getBoolean("MetricsEnabled", true)) {
 			this.getLogger().info("Enabling Plugin Metrics");
 			
@@ -70,8 +74,8 @@ public class VeinMiner extends JavaPlugin {
 			
 			this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
 		}
-
-		//Load blocks to the veinable list
+		
+		// Load blocks to the veinable list
 		this.getLogger().info("Loading configuration options to local memory");
 		this.manager.loadVeinableBlocks();
 		this.manager.loadDisabledWorlds();
@@ -86,7 +90,7 @@ public class VeinMiner extends JavaPlugin {
 		this.anticheatHooks.clear();
 	}
 	
-	/** 
+	/**
 	 * Get an instance of the main VeinMiner class (for VeinMiner API usages)
 	 * 
 	 * @return an instance of the VeinMiner class
@@ -95,7 +99,7 @@ public class VeinMiner extends JavaPlugin {
 		return instance;
 	}
 	
-	/** 
+	/**
 	 * Get the VeinMiner Manager used to keep track of veinminable blocks, and other utilities
 	 * 
 	 * @return an instance of the VeinMiner manager

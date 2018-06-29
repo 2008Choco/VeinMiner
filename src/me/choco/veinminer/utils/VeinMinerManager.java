@@ -11,12 +11,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Player;
-
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinBlock;
@@ -24,9 +18,14 @@ import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.pattern.PatternRegistry;
 import me.choco.veinminer.pattern.VeinMiningPattern;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
+
 /**
- * The central management for VeinMiner to handle everything regarding
- * veinminer and its features
+ * The central management for VeinMiner to handle everything regarding VeinMiner and its features
  */
 public class VeinMinerManager {
 	
@@ -34,13 +33,13 @@ public class VeinMinerManager {
 	private final Set<UUID> disabledWorlds = new HashSet<>();
 	private final Map<UUID, VeinMiningPattern> playerMiningPattern = new HashMap<>();
 	
-	private VeinMiner plugin;
+	private final VeinMiner plugin;
 	
 	public VeinMinerManager(VeinMiner plugin) {
 		this.plugin = plugin;
 	}
 	
-	/** 
+	/**
 	 * Load all veinable blocks from the configuration file to memory
 	 */
 	public void loadVeinableBlocks() {
@@ -50,7 +49,7 @@ public class VeinMinerManager {
 			for (String value : blocks) {
 				String[] ids = value.split(";");
 				
-				//Material information
+				// Material information
 				BlockData data;
 				boolean specificData = false;
 				try {
@@ -67,16 +66,15 @@ public class VeinMinerManager {
 				// Registration
 				if (VeinBlock.isVeinable(material, specificData ? data : null)) {
 					VeinBlock.getVeinminableBlock(material, specificData ? data : null).addMineableBy(veinTool);
-				}
-				else {
+				} else {
 					VeinBlock.registerVeinminableBlock(material, specificData ? data : null, veinTool);
 				}
 			}
 		}
 	}
 	
-	/** 
-	 * Load all disabled worlds from the configuration file to memory 
+	/**
+	 * Load all disabled worlds from the configuration file to memory
 	 */
 	public void loadDisabledWorlds() {
 		this.disabledWorlds.clear();
@@ -93,7 +91,7 @@ public class VeinMinerManager {
 		}
 	}
 	
-	/** 
+	/**
 	 * Check whether a world has VeinMiner disabled or not
 	 * 
 	 * @param world the world to check
@@ -104,7 +102,7 @@ public class VeinMinerManager {
 		return disabledWorlds.contains(world.getUID());
 	}
 	
-	/** 
+	/**
 	 * Get a list of all worlds in which VeinMiner is disabled
 	 * 
 	 * @return a list of all disabled worlds
@@ -113,7 +111,7 @@ public class VeinMinerManager {
 		return disabledWorlds.stream().map(w -> Bukkit.getWorld(w)).collect(Collectors.toSet());
 	}
 	
-	/** 
+	/**
 	 * Disable vein miner in a specific world
 	 * 
 	 * @param world the world to disable
@@ -123,7 +121,7 @@ public class VeinMinerManager {
 		this.disabledWorlds.add(world.getUID());
 	}
 	
-	/** 
+	/**
 	 * Enable VeinMiner in a specific world
 	 * 
 	 * @param world the world to disable
@@ -164,13 +162,10 @@ public class VeinMinerManager {
 	 * 
 	 * @param material the material to reference
 	 * @param data the block data to reference
-	 *  
 	 * @return the associated alias. null if none
 	 */
 	public MaterialAlias getAliasFor(Material material, BlockData data) {
-		return this.aliases.stream()
-			.filter(a -> a.isAliased(material, data))
-			.findFirst().orElse(null);
+		return aliases.stream().filter(a -> a.isAliased(material, data)).findFirst().orElse(null);
 	}
 	
 	/**
@@ -195,7 +190,7 @@ public class VeinMinerManager {
 			for (String aliasMaterial : aliasList.split("\\s*,\\s*")) {
 				String[] ids = aliasMaterial.split(";");
 				
-				//Material information
+				// Material information
 				BlockData data;
 				boolean specificData = false;
 				try {
@@ -214,8 +209,8 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Get the pattern used by the specified player. If the player is not using any specific pattern,
-	 * {@link PatternRegistry#VEINMINER_PATTERN_DEFAULT} will be returned
+	 * Get the pattern used by the specified player. If the player is not using any specific
+	 * pattern, {@link PatternRegistry#VEINMINER_PATTERN_DEFAULT} will be returned
 	 * 
 	 * @param player the player to get the pattern for
 	 * @return the player's mining pattern
@@ -236,8 +231,7 @@ public class VeinMinerManager {
 		
 		if (pattern == null) {
 			this.playerMiningPattern.remove(player.getUniqueId());
-		}
-		else {
+		} else {
 			this.playerMiningPattern.put(player.getUniqueId(), pattern);
 		}
 	}
@@ -246,13 +240,14 @@ public class VeinMinerManager {
 	 * Clear all localised data in the VeinMiner Manager
 	 */
 	public void clearLocalisedData() {
-		this.disabledWorlds.clear();
 		VeinBlock.clearVeinableBlocks();
+		this.disabledWorlds.clear();
 		this.playerMiningPattern.clear();
 		this.aliases.clear();
 		
-		for (VeinTool tool : VeinTool.values())
+		for (VeinTool tool : VeinTool.values()) {
 			tool.clearPlayerInformation();
+		}
 	}
 	
 }

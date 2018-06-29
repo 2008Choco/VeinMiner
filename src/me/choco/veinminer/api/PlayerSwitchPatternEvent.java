@@ -1,14 +1,14 @@
 package me.choco.veinminer.api;
 
+import me.choco.veinminer.pattern.VeinMiningPattern;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
-import me.choco.veinminer.pattern.VeinMiningPattern;
-
 /**
- * Called when a player updates their vein mining pattern through the use of
- * the <code>/veinminer pattern</code> command
+ * Called when a player updates their vein mining pattern through the use of the
+ * <code>/veinminer pattern</code> command
  */
 public class PlayerSwitchPatternEvent extends PlayerEvent {
 	

@@ -2,7 +2,6 @@ package me.choco.veinminer.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.google.common.base.Preconditions;
@@ -27,8 +26,8 @@ public final class ReflectionUtil {
 	private ReflectionUtil() { }
 	
 	public static void breakBlock(Player player, Block block) {
-		Preconditions.checkArgument(player != null, "A null player is incapable of breaking blocks");
-		Preconditions.checkArgument(block != null, "Cannot break a null block");
+		Preconditions.checkNotNull(player, "A null player is incapable of breaking blocks");
+		Preconditions.checkNotNull(block, "Cannot break a null block");
 		
 		if (!wasSuccessful) {
 			block.breakNaturally(player.getInventory().getItemInMainHand());
@@ -38,10 +37,11 @@ public final class ReflectionUtil {
 		try {
 			Object cPlayer = methodGetHandle.invoke(player);
 			Object interactManager = fieldPlayerInteractManager.get(cPlayer);
-			Object blockPos = constructorBlockPosition
-					.newInstance(block.getX(), block.getY(), block.getZ());
+			Object blockPos = constructorBlockPosition.newInstance(block.getX(), block.getY(), block.getZ());
 			methodBreakBlock.invoke(interactManager, blockPos);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {}
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void loadNMSClasses(String version) {

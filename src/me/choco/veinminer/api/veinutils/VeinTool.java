@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
+import me.choco.veinminer.VeinMiner;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-
-import me.choco.veinminer.VeinMiner;
 
 /**
  * Tools recognised by VeinMiner and it's code. Tools are limited to those listed in the enumeration
@@ -19,42 +19,42 @@ import me.choco.veinminer.VeinMiner;
 public enum VeinTool {
 	
 	/**
-	 * Represents a pickaxe of various materials. This includes:
-	 * <br> - Wooden Pickaxe
-	 * <br> - Stone Pickaxe
-	 * <br> - Golden Pickaxe
-	 * <br> - Iron Pickaxe
-	 * <br> - Diamond Pickaxe
+	 * Represents a pickaxe of various materials. This includes: <br>
+	 * - Wooden Pickaxe <br>
+	 * - Stone Pickaxe <br>
+	 * - Golden Pickaxe <br>
+	 * - Iron Pickaxe <br>
+	 * - Diamond Pickaxe
 	 */
 	PICKAXE("Pickaxe", Material.WOODEN_PICKAXE, Material.STONE_PICKAXE, Material.GOLDEN_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE),
 	
 	/**
-	 * Represents an axe of various materials. This includes:
-	 * <br> - Wooden Axe
-	 * <br> - Stone Axe
-	 * <br> - Golden Axe
-	 * <br> - Iron Axe
-	 * <br> - Diamond Axe
+	 * Represents an axe of various materials. This includes: <br>
+	 * - Wooden Axe <br>
+	 * - Stone Axe <br>
+	 * - Golden Axe <br>
+	 * - Iron Axe <br>
+	 * - Diamond Axe
 	 */
 	AXE("Axe", Material.WOODEN_AXE, Material.STONE_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.DIAMOND_AXE),
 	
 	/**
-	 * Represents a shovel of various materials. This includes:
-	 * <br> - Wooden Shovel
-	 * <br> - Stone Shovel
-	 * <br> - Golden Shovel
-	 * <br> - Iron Shovel
-	 * <br> - Diamond Shovel
+	 * Represents a shovel of various materials. This includes: <br>
+	 * - Wooden Shovel <br>
+	 * - Stone Shovel <br>
+	 * - Golden Shovel <br>
+	 * - Iron Shovel <br>
+	 * - Diamond Shovel
 	 */
 	SHOVEL("Shovel", Material.WOODEN_SHOVEL, Material.STONE_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.DIAMOND_SHOVEL),
 	
 	/**
-	 * Represents a hoe of various materials. This includes:
-	 * <br> - Wooden Hoe
-	 * <br> - Stone Hoe
-	 * <br> - Golden Hoe
-	 * <br> - Iron Hoe
-	 * <br> - Diamond Hoe
+	 * Represents a hoe of various materials. This includes: <br>
+	 * - Wooden Hoe <br>
+	 * - Stone Hoe <br>
+	 * - Golden Hoe <br>
+	 * - Iron Hoe <br>
+	 * - Diamond Hoe
 	 */
 	HOE("Hoe", Material.WOODEN_HOE, Material.STONE_HOE, Material.GOLDEN_HOE, Material.IRON_HOE, Material.DIAMOND_HOE),
 	
@@ -131,16 +131,19 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Get a VeinTool based on a categorised material. null if no VeinTool with the given 
-	 * material exists
+	 * Get a VeinTool based on a categorised material. null if no VeinTool with the given material
+	 * exists
 	 * 
 	 * @param material the material to search for
 	 * @return the VeinTool with the given categorised material. {@link #ALL} if none
 	 */
 	public static VeinTool fromMaterial(Material material) {
-		for (VeinTool tool : values())
-			for (Material toolMaterial : tool.getMaterials())
+		for (VeinTool tool : values()) {
+			for (Material toolMaterial : tool.getMaterials()) {
 				if (toolMaterial == material) return tool;
+			}
+		}
+		
 		return VeinTool.ALL;
 	}
 	
@@ -150,7 +153,7 @@ public enum VeinTool {
 	 * @param player the player to disable it for
 	 */
 	public void disableVeinMiner(OfflinePlayer player) {
-		Preconditions.checkArgument(player != null, "Cannot disable veinminer for a null player");
+		Preconditions.checkNotNull(player, "Cannot disable veinminer for a null player");
 		this.disabledBy.add(player.getUniqueId());
 	}
 	
@@ -160,7 +163,7 @@ public enum VeinTool {
 	 * @param player the player to enable it for
 	 */
 	public void enableVeinMiner(OfflinePlayer player) {
-		Preconditions.checkArgument(player != null, "Cannot enable veinminer for a null player");
+		Preconditions.checkNotNull(player, "Cannot enable veinminer for a null player");
 		this.disabledBy.remove(player.getUniqueId());
 	}
 	
@@ -171,8 +174,8 @@ public enum VeinTool {
 	 * @return true if veinminer disabled
 	 */
 	public boolean hasVeinMinerDisabled(OfflinePlayer player) {
-		Preconditions.checkArgument(player != null, "Cannot check veinminer state for a null player");
-		return this.disabledBy.contains(player.getUniqueId());
+		Preconditions.checkNotNull(player, "Cannot check veinminer state for a null player");
+		return disabledBy.contains(player.getUniqueId());
 	}
 	
 	/**
@@ -182,7 +185,7 @@ public enum VeinTool {
 	 * @return true if veinminer enabled
 	 */
 	public boolean hasVeinMinerEnabled(OfflinePlayer player) {
-		return !this.hasVeinMinerDisabled(player);
+		return !hasVeinMinerDisabled(player);
 	}
 	
 	/**
@@ -205,8 +208,7 @@ public enum VeinTool {
 		
 		if (hasVeinMinerDisabled(player) && enabled) {
 			this.disabledBy.remove(player.getUniqueId());
-		}
-		else if (hasVeinMinerEnabled(player) && !enabled) {
+		} else if (hasVeinMinerEnabled(player) && !enabled) {
 			this.disabledBy.add(player.getUniqueId());
 		}
 	}
@@ -217,7 +219,7 @@ public enum VeinTool {
 	 * @return all players disabling this tool
 	 */
 	public Set<OfflinePlayer> getDisabledBy() {
-		return this.disabledBy.stream().map(p -> Bukkit.getOfflinePlayer(p)).collect(Collectors.toSet());
+		return disabledBy.stream().map(Bukkit::getOfflinePlayer).collect(Collectors.toSet());
 	}
 	
 	/**
@@ -226,4 +228,5 @@ public enum VeinTool {
 	public void clearPlayerInformation() {
 		this.disabledBy.clear();
 	}
+	
 }

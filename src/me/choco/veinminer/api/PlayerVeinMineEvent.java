@@ -2,15 +2,15 @@ package me.choco.veinminer.api;
 
 import java.util.List;
 
+import me.choco.veinminer.api.veinutils.VeinBlock;
+import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.pattern.VeinMiningPattern;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
-
-import me.choco.veinminer.api.veinutils.VeinBlock;
-import me.choco.veinminer.api.veinutils.VeinTool;
-import me.choco.veinminer.pattern.VeinMiningPattern;
 
 /**
  * Called when VeinMiner is activated for a specific set of blocks
@@ -35,8 +35,8 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	}
 	
 	/**
-	 * Get a list of all blocks destroyed by this vein mine. This list is mutable, you
-	 * are able to modify it and manipulate what blocks are and are not modified
+	 * Get a list of all blocks destroyed by this vein mine. This list is mutable, you are able to
+	 * modify it and manipulate what blocks are and are not modified
 	 * 
 	 * @return the blocks to be affected by this event
 	 */

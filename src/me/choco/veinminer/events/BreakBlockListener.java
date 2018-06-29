@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
 public class BreakBlockListener implements Listener {
 	
 	private final List<Block> blocks = new NonNullArrayList<>();
-
+	
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
 	private final StatTracker statTracker;
@@ -54,19 +54,26 @@ public class BreakBlockListener implements Listener {
 		VeinTool tool = (itemUsed != null) ? VeinTool.fromMaterial(itemUsed.getType()) : VeinTool.ALL;
 		
 		// Activation check
-		MineActivation activation = EnumUtils.getEnum(MineActivation.class, plugin.getConfig().getString("ActivationMode", "SNEAK").toUpperCase());
-		if (activation == null) activation = MineActivation.SNEAK;
+		MineActivation activation = EnumUtils.getEnum(MineActivation.class, plugin.getConfig().getString("ActivationMode", "SNEAK"));
+		if (activation == null) {
+			activation = MineActivation.SNEAK;
+		}
 		
 		// Invalid player state check
 		if (!activation.isValid(player) || player.getGameMode() != GameMode.SURVIVAL) return;
 		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
 		if (tool.hasVeinMinerDisabled(player)) return;
 		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData())
-				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getBlockData()) && player.hasPermission("veinminer.veinmine.all")))) return;
+				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getBlockData())
+				&& player.hasPermission("veinminer.veinmine.all")))) {
+			return;
+		}
 		
 		// TIME TO VEINMINE
-		MaterialAlias alias = this.manager.getAliasFor(block.getType());
-		if (alias == null) alias = this.manager.getAliasFor(block.getType(), block.getBlockData());
+		MaterialAlias alias = manager.getAliasFor(block.getType());
+		if (alias == null) {
+			alias = manager.getAliasFor(block.getType(), block.getBlockData());
+		}
 		
 		this.blocks.add(block);
 		VeinMiningPattern pattern = manager.getPatternFor(player);
@@ -89,15 +96,18 @@ public class BreakBlockListener implements Listener {
 		int maxDurability = itemUsed.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
 		for (Block b : blocks) {
 			short priorDurability = itemUsed.getDurability();
-			if (priorDurability >= maxDurability) break;
+			if (priorDurability >= maxDurability) {
+				break;
+			}
 			
 			ReflectionUtil.breakBlock(player, b);
 			this.statTracker.accumulateVeinMinedMaterial(b.getType());
 			
 			// Unbreaking enchantment precaution
 			short newDurability = itemUsed.getDurability();
-			if (!usesDurability && priorDurability < newDurability)
+			if (!usesDurability && priorDurability < newDurability) {
 				itemUsed.setDurability((short) (newDurability - 1));
+			}
 		}
 		
 		this.blocks.clear();
@@ -105,10 +115,7 @@ public class BreakBlockListener implements Listener {
 		// VEINMINER - DONE
 		
 		// Unexempt from anticheats
-		hooks.stream()
-			.filter(AntiCheatHook::isSupported)
-			.filter(h -> h.shouldUnexempt(player))
-			.forEach(h -> h.unexempt(player));
+		hooks.stream().filter(AntiCheatHook::isSupported).filter(h -> h.shouldUnexempt(player)).forEach(h -> h.unexempt(player));
 	}
 	
 }

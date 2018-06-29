@@ -3,6 +3,13 @@ package me.choco.veinminer.commands;
 import java.util.List;
 import java.util.Set;
 
+import me.choco.veinminer.VeinMiner;
+import me.choco.veinminer.api.PlayerSwitchPatternEvent;
+import me.choco.veinminer.api.veinutils.VeinBlock;
+import me.choco.veinminer.api.veinutils.VeinTool;
+import me.choco.veinminer.pattern.VeinMiningPattern;
+import me.choco.veinminer.utils.VeinMinerManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,17 +19,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.choco.veinminer.VeinMiner;
-import me.choco.veinminer.api.PlayerSwitchPatternEvent;
-import me.choco.veinminer.api.veinutils.VeinBlock;
-import me.choco.veinminer.api.veinutils.VeinTool;
-import me.choco.veinminer.pattern.VeinMiningPattern;
-import me.choco.veinminer.utils.VeinMinerManager;
-
 public class VeinMinerCmd implements CommandExecutor {
 	
-	private VeinMiner plugin;
-	private VeinMinerManager manager;
+	private final VeinMiner plugin;
+	private final VeinMinerManager manager;
 	
 	public VeinMinerCmd(VeinMiner plugin) {
 		this.plugin = plugin;
@@ -55,7 +55,7 @@ public class VeinMinerCmd implements CommandExecutor {
 		else if (args[0].equalsIgnoreCase("version")) {
 			sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
 			sender.sendMessage("");
-			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY  + plugin.getDescription().getVersion());
+			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY + plugin.getDescription().getVersion());
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Developer / Maintainer: " + ChatColor.RESET + ChatColor.GRAY + "2008Choco");
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Development Page: " + ChatColor.RESET + ChatColor.GRAY + "https://www.spigotmc.org/resources/vein-miner.12038/");
 			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Report Bugs To: " + ChatColor.RESET + ChatColor.GRAY + "https://github.com/2008Choco/VeinMiner/issues/");
@@ -72,7 +72,7 @@ public class VeinMinerCmd implements CommandExecutor {
 			
 			Player player = (Player) sender;
 			if (!canVeinMine(player)) {
-				sendMessage(player, "You can't toggle a feature you do not have access to, silly!");
+				this.sendMessage(player, "You can't toggle a feature you do not have access to, silly!");
 				return true;
 			}
 			
@@ -105,8 +105,9 @@ public class VeinMinerCmd implements CommandExecutor {
 					}
 				}
 				
-				for (VeinTool tool : VeinTool.values())
+				for (VeinTool tool : VeinTool.values()) {
 					tool.toggleVeinMiner(player, hasAllDisabled);
+				}
 				
 				this.sendMessage(player, "VeinMiner successfully toggled "
 						+ (hasAllDisabled ? ChatColor.GREEN + "on" : ChatColor.RED + "off")
@@ -216,7 +217,7 @@ public class VeinMinerCmd implements CommandExecutor {
 			// /veinminer blocklist <tool> list
 			else if (args[2].equalsIgnoreCase("list")) {
 				if (!sender.hasPermission("veinminer.blocklist.list." + tool.getName().toLowerCase())) {
-					sendMessage(sender, "You don't have the sufficient permissions to list this tool");
+					this.sendMessage(sender, "You don't have the sufficient permissions to list this tool");
 					return true;
 				}
 				
@@ -229,8 +230,8 @@ public class VeinMinerCmd implements CommandExecutor {
 			}
 			
 			// Unknown parameter
-			else{
-				this.sendMessage(sender, "/veinminer blocklist " + args[1] + "<add|remove|list>"); 
+			else {
+				this.sendMessage(sender, "/veinminer blocklist " + args[1] + "<add|remove|list>");
 				return true;
 			}
 		}
@@ -256,14 +257,12 @@ public class VeinMinerCmd implements CommandExecutor {
 			
 			if (!patternNamespace.contains(":")) {
 				patternNamespace = plugin.getName().toLowerCase() + ":" + patternNamespace;
-			}
-			else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
-				this.sendMessage(player, "Invalid namespace. Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id"
-						+ ChatColor.GRAY + " (i.e. " + ChatColor.YELLOW + "\"veinminer:default\"" + ChatColor.GRAY + ")");
+			} else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
+				this.sendMessage(player, "Invalid namespace. Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id" + ChatColor.GRAY + " (i.e. " + ChatColor.YELLOW + "\"veinminer:default\"" + ChatColor.GRAY + ")");
 				return true;
 			}
 			
-			VeinMiningPattern pattern = this.plugin.getPatternRegistry().getPattern(patternNamespace);
+			VeinMiningPattern pattern = plugin.getPatternRegistry().getPattern(patternNamespace);
 			if (pattern == null) {
 				this.sendMessage(player, "Unknown pattern found with ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + ". Perhaps you meant \"default\"");
 				return true;
@@ -277,7 +276,7 @@ public class VeinMinerCmd implements CommandExecutor {
 		}
 		
 		// Unknown command usage
-		else{
+		else {
 			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle|pattern>");
 			return true;
 		}
@@ -292,11 +291,8 @@ public class VeinMinerCmd implements CommandExecutor {
 	private boolean canVeinMine(Player player) {
 		if (player.hasPermission("veinminer.veinmine.*")) return true;
 		
-		for (VeinTool tool : VeinTool.values()) {
-			if (player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) 
-				return true;
-		}
-		
+		for (VeinTool tool : VeinTool.values())
+			if (player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return true;
 		return false;
 	}
 }

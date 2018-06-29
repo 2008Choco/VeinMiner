@@ -1,8 +1,8 @@
 package me.choco.veinminer.anticheat;
 
-import org.bukkit.entity.Player;
-
 import me.choco.veinminer.VeinMiner;
+
+import org.bukkit.entity.Player;
 
 /**
  * The default AntiAura hook implementation

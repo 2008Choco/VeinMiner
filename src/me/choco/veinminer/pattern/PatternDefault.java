@@ -4,26 +4,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-
 import me.choco.veinminer.VeinMiner;
 import me.choco.veinminer.api.veinutils.MaterialAlias;
 import me.choco.veinminer.api.veinutils.VeinTool;
 import me.choco.veinminer.utils.VBlockFace;
 
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+
 public class PatternDefault implements VeinMiningPattern {
 	
-	private static final VBlockFace[] LIMITED_FACES = new VBlockFace[] {
-			VBlockFace.UP, VBlockFace.DOWN, VBlockFace.NORTH, VBlockFace.SOUTH, VBlockFace.EAST, VBlockFace.WEST,
-			VBlockFace.NORTH_EAST, VBlockFace.NORTH_WEST, VBlockFace.SOUTH_EAST, VBlockFace.SOUTH_WEST
-		};
+	private static final VBlockFace[] LIMITED_FACES = {
+			VBlockFace.UP, VBlockFace.DOWN, VBlockFace.NORTH, VBlockFace.SOUTH, VBlockFace.EAST,
+			VBlockFace.WEST, VBlockFace.NORTH_EAST, VBlockFace.NORTH_WEST, VBlockFace.SOUTH_EAST,
+			VBlockFace.SOUTH_WEST
+	};
 	
 	private final VeinMiner plugin;
 	private final NamespacedKey key;
 	
-	public PatternDefault(VeinMiner plugin) {
-		this.plugin = plugin;
+	public PatternDefault() {
+		this.plugin = VeinMiner.getPlugin();
 		this.key = new NamespacedKey(plugin, "default");
 	}
 	
@@ -38,17 +39,23 @@ public class PatternDefault implements VeinMiningPattern {
 			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize) {
 				Block b = trackedBlocks.next();
 				for (VBlockFace face : facesToMine) {
-					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) break;
+					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) {
+						break;
+					}
 					
 					Block nextBlock = face.getRelative(b);
-					if (blocks.contains(nextBlock) || !blockIsSameMaterial(origin, nextBlock, alias)) 
+					if (blocks.contains(nextBlock) || !blockIsSameMaterial(origin, nextBlock, alias)) {
 						continue;
+					}
 					
 					blocksToAdd.add(nextBlock);
 				}
 			}
 			
-			if (blocksToAdd.size() == 0) break;
+			if (blocksToAdd.size() == 0) {
+				break;
+			}
+			
 			blocks.addAll(blocksToAdd);
 			blocksToAdd.clear();
 		}

@@ -33,7 +33,7 @@ public class AntiCheatHookAAC implements AntiCheatHook, Listener {
 		this.exemptedUsers.remove(player.getUniqueId());
 	}
 	
-	@EventHandler(priority=EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onAACViolation(PlayerViolationEvent event) {
 		if (!exemptedUsers.contains(event.getPlayer().getUniqueId())) return;
 		event.setCancelled(true);

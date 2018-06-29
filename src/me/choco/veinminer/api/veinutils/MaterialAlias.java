@@ -12,18 +12,17 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
 /**
- * Represents an aliasing between multiple {@link VeinBlock}s which VeinMiner
- * can recognise as a single material value when being vein mined
+ * Represents an aliasing between multiple {@link VeinBlock}s which VeinMiner can recognise as a
+ * single material value when being vein mined
  */
 public class MaterialAlias implements Iterable<VeinBlock> {
 	
-	private Set<VeinBlock> blocks = new HashSet<>();
+	private final Set<VeinBlock> blocks = new HashSet<>();
 	
 	/**
 	 * Construct a new alias between varying vein blocks
 	 * 
 	 * @param blocks the blocks to alias
-	 * 
 	 * @see VeinBlock#getVeinminableBlock(Material, BlockData)
 	 * @see VeinBlock#getVeinminableBlock(Material)
 	 */
@@ -39,14 +38,14 @@ public class MaterialAlias implements Iterable<VeinBlock> {
 	 * @param block the block to add
 	 */
 	public void addAlias(VeinBlock block) {
-		Preconditions.checkArgument(block != null, "Cannot add a null alias");
+		Preconditions.checkNotNull(block, "Cannot add a null alias");
 		this.blocks.add(block);
 	}
 	
 	/**
-	 * Add a material and its byte data to this alias. If the VeinBlock does
-	 * not already exist, it will be registered to the {@link VeinMinerManager}
-	 * with the same {@link VeinTool}s as the dominant {@link VeinBlock}
+	 * Add a material and its byte data to this alias. If the VeinBlock does not already exist, it
+	 * will be registered to the {@link VeinMinerManager} with the same {@link VeinTool}s as the
+	 * dominant {@link VeinBlock}
 	 * 
 	 * @param material the material to add
 	 * @param data the data to add
@@ -63,9 +62,9 @@ public class MaterialAlias implements Iterable<VeinBlock> {
 	}
 	
 	/**
-	 * Add a material with no byte data to this alias. If the VeinBlock does
-	 * not already exist, it will be registered to the {@link VeinMinerManager}
-	 * with the same {@link VeinTool}s as the dominant {@link VeinBlock}
+	 * Add a material with no byte data to this alias. If the VeinBlock does not already exist, it
+	 * will be registered to the {@link VeinMinerManager} with the same {@link VeinTool}s as the
+	 * dominant {@link VeinBlock}
 	 * 
 	 * @param material the material to add
 	 * @return the newly aliased added
@@ -114,8 +113,7 @@ public class MaterialAlias implements Iterable<VeinBlock> {
 	}
 	
 	/**
-	 * Check whether a material with byte data is aliased under this
-	 * material alias
+	 * Check whether a material with byte data is aliased under this material alias
 	 * 
 	 * @param material the material to check
 	 * @param data the data to check
@@ -127,8 +125,7 @@ public class MaterialAlias implements Iterable<VeinBlock> {
 	}
 	
 	/**
-	 * Check whether a material with no byte data is aliased under this
-	 * material alias
+	 * Check whether a material with no byte data is aliased under this material alias
 	 * 
 	 * @param material the material to check
 	 * @return true if aliased
@@ -138,8 +135,8 @@ public class MaterialAlias implements Iterable<VeinBlock> {
 	}
 	
 	/**
-	 * Get all blocks that are considered under this alias. The returned Set is
-	 * does not affect the underlying alias Set. A copy is returned
+	 * Get all blocks that are considered under this alias. The returned Set is does not affect the
+	 * underlying alias Set. A copy is returned
 	 * 
 	 * @return all aliased blocks
 	 */
@@ -159,6 +156,7 @@ public class MaterialAlias implements Iterable<VeinBlock> {
 	
 	@Override
 	public boolean equals(Object object) {
+		if (object == this) return true;
 		if (!(object instanceof MaterialAlias)) return false;
 		
 		MaterialAlias alias = (MaterialAlias) object;
