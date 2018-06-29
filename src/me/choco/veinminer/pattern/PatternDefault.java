@@ -23,6 +23,7 @@ public class PatternDefault implements VeinMiningPattern {
 	
 	private final VeinMiner plugin;
 	private final NamespacedKey key;
+	private final List<Block> blockBuffer = new ArrayList<>();
 	
 	public PatternDefault() {
 		this.plugin = VeinMiner.getPlugin();
@@ -33,14 +34,13 @@ public class PatternDefault implements VeinMiningPattern {
 	public void allocateBlocks(Set<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
 		int maxVeinSize = tool.getMaxVeinSize();
 		VBlockFace[] facesToMine = getFacesToMine();
-		List<Block> blocksToAdd = new ArrayList<>();
 		
 		while (blocks.size() <= maxVeinSize) {
 			Iterator<Block> trackedBlocks = blocks.iterator();
-			while (trackedBlocks.hasNext() && blocks.size() + blocksToAdd.size() <= maxVeinSize) {
+			while (trackedBlocks.hasNext() && blocks.size() + blockBuffer.size() <= maxVeinSize) {
 				Block b = trackedBlocks.next();
 				for (VBlockFace face : facesToMine) {
-					if (blocks.size() + blocksToAdd.size() >= maxVeinSize) {
+					if (blocks.size() + blockBuffer.size() >= maxVeinSize) {
 						break;
 					}
 					
@@ -49,16 +49,16 @@ public class PatternDefault implements VeinMiningPattern {
 						continue;
 					}
 					
-					blocksToAdd.add(nextBlock);
+					this.blockBuffer.add(nextBlock);
 				}
 			}
 			
-			if (blocksToAdd.size() == 0) {
+			if (blockBuffer.size() == 0) {
 				break;
 			}
 			
-			blocks.addAll(blocksToAdd);
-			blocksToAdd.clear();
+			blocks.addAll(blockBuffer);
+			this.blockBuffer.clear();
 		}
 	}
 	
