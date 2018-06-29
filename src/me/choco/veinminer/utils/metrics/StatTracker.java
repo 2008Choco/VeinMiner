@@ -12,9 +12,13 @@ import org.bukkit.Material;
  * 
  * @author Parker Hawke - 2008Choco
  */
-public class StatTracker {
+public final class StatTracker {
+	
+	private static StatTracker instance;
 	
 	private final Map<Material, Integer> minedBlocks = new EnumMap<>(Material.class);
+	
+	private StatTracker() { }
 	
 	/**
 	 * Add 1 to the amount of mined blocks for the provided material
@@ -48,6 +52,15 @@ public class StatTracker {
 		this.minedBlocks.forEach((k, v) -> data.put(k.name(), v));
 		this.minedBlocks.clear();
 		return data;
+	}
+	
+	/**
+	 * Get a singleton instance of the StatTracker
+	 * 
+	 * @return the stat tracker instance
+	 */
+	public static StatTracker get() {
+		return (instance == null) ? instance = new StatTracker() : instance;
 	}
 	
 }

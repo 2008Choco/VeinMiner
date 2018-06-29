@@ -36,7 +36,7 @@ public class BreakBlockListener implements Listener {
 	public BreakBlockListener(VeinMiner plugin) {
 		this.plugin = plugin;
 		this.manager = plugin.getVeinMinerManager();
-		this.statTracker = plugin.getStatTracker();
+		this.statTracker = StatTracker.get();
 	}
 	
 	@EventHandler

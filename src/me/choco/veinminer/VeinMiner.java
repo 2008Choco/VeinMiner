@@ -32,14 +32,12 @@ public class VeinMiner extends JavaPlugin {
 	
 	private VeinMinerManager manager;
 	private PatternRegistry patternRegistry;
-	private StatTracker statTracker;
 	
 	@Override
 	public void onEnable() {
 		instance = this;
 		this.manager = new VeinMinerManager(this);
 		this.patternRegistry = new PatternRegistry();
-		this.statTracker = new StatTracker();
 		this.saveDefaultConfig();
 		
 		// Enable anticheat hooks if required
@@ -68,7 +66,7 @@ public class VeinMiner extends JavaPlugin {
 			this.getLogger().info("Enabling Plugin Metrics");
 			
 			Metrics metrics = new Metrics(this);
-			metrics.addCustomChart(new Metrics.AdvancedPie("blocks_veinmined", statTracker::getVeinMinedCountAsData));
+			metrics.addCustomChart(new Metrics.AdvancedPie("blocks_veinmined", StatTracker.get()::getVeinMinedCountAsData));
 			
 			this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
 		}
@@ -113,15 +111,6 @@ public class VeinMiner extends JavaPlugin {
 	 */
 	public PatternRegistry getPatternRegistry() {
 		return patternRegistry;
-	}
-	
-	/**
-	 * Get the statistic tracker for bStats data
-	 * 
-	 * @return the bStats statistic tracker
-	 */
-	public StatTracker getStatTracker() {
-		return statTracker;
 	}
 	
 	/**
