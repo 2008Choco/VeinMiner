@@ -13,7 +13,8 @@ import org.bukkit.block.data.BlockData;
 
 /**
  * Represents a set of material and block data. A VeinBlock may or may not possess additional data
- * beyond a {@link Material} type.
+ * beyond a {@link Material} type. If that is to be the case, an unmodified {@link BlockData} instance
+ * will be used.
  */
 public class VeinBlock {
 	
@@ -25,14 +26,15 @@ public class VeinBlock {
 	private final BlockData data;
 	
 	private VeinBlock(Material material, BlockData data) {
-		Preconditions.checkNotNull(material, "Cannot add a null material alias");
+		Preconditions.checkNotNull(material, "Cannot set a null material");
+		Preconditions.checkNotNull(data, "Cannot set a null block data");
 		
 		this.material = material;
 		this.data = data;
 	}
 	
 	private VeinBlock(Material material) {
-		this(material, null);
+		this(material, material.createBlockData());
 	}
 	
 	/**
@@ -45,7 +47,8 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Get the underlying block data value (if any). null if no data specified.
+	 * Get the underlying block data value (if any). This method will never return null. If no
+	 * explicit data has been specified, an unmodified {@link BlockData} instance will be returned
 	 * 
 	 * @return the block data
 	 */
@@ -72,7 +75,7 @@ public class VeinBlock {
 	 * @return true if data is specified (i.e. not null)
 	 */
 	public boolean hasSpecficData() {
-		return data != null;
+		return !data.equals(material.createBlockData());
 	}
 	
 	/**
@@ -145,18 +148,24 @@ public class VeinBlock {
 	 * Register a material with specific block data with all possible tools that may vein mine it.
 	 * 
 	 * @param material the material to register
-	 * @param data the block data to register
+	 * @param data the block data to register. If null, {@link Material#createBlockData()} will be
+	 * used as the VeinBlock data
 	 * @param tools the tools that are capable of mining the block
 	 * 
 	 * @return the newly created VeinBlock instance
 	 */
 	public static VeinBlock registerVeinminableBlock(Material material, BlockData data, VeinTool... tools) {
-		Preconditions.checkNotNull(material, "Cannot add a null material alias");
-		if (isVeinable(material, data)) return null;
+		Preconditions.checkNotNull(material, "Cannot register a null material");
+		Preconditions.checkNotNull(data, "Cannot register a null block data");
+		
+		if (isVeinable(material, data)) {
+			return getVeinminableBlock(material, data);
+		}
 		
 		VeinBlock block = new VeinBlock(material, data);
 		block.addMineableBy(tools);
 		VEINABLE.add(block);
+		
 		return block;
 	}
 	
@@ -169,7 +178,8 @@ public class VeinBlock {
 	 * @return the newly created VeinBlock instance
 	 */
 	public static VeinBlock registerVeinminableBlock(Material material, VeinTool... tools) {
-		return registerVeinminableBlock(material, null, tools);
+		Preconditions.checkNotNull(material, "Cannot register a null material");
+		return registerVeinminableBlock(material, material.createBlockData(), tools);
 	}
 	
 	/**
@@ -181,6 +191,9 @@ public class VeinBlock {
 	 * @return the registered vein block. null if none registered
 	 */
 	public static VeinBlock getVeinminableBlock(Material material, BlockData data) {
+		Preconditions.checkNotNull(material, "Cannot get a null material");
+		Preconditions.checkNotNull(data, "Cannot get a null block data");
+		
 		return VEINABLE.stream().filter(b -> b.material == material)
 				.filter(b -> Objects.equals(b.data, data)).findFirst().orElse(null);
 	}
@@ -193,7 +206,8 @@ public class VeinBlock {
 	 * @return the registered vein block. null if none registered
 	 */
 	public static VeinBlock getVeinminableBlock(Material material) {
-		return getVeinminableBlock(material, null);
+		Preconditions.checkNotNull(material, "Cannot get a null material");
+		return getVeinminableBlock(material, material.createBlockData());
 	}
 	
 	/**
@@ -208,6 +222,7 @@ public class VeinBlock {
 	 * @return true if it is breakable with VeinMiner, false otherwise
 	 */
 	public static boolean isVeinable(VeinTool tool, Material material, BlockData data) {
+		Preconditions.checkNotNull(data, "Cannot check for null block data");
 		return VEINABLE.stream().anyMatch(b -> b.material == material && (!b.hasSpecficData() || b.data.equals(data)) && b.isMineableBy(tool));
 	}
 	
@@ -220,7 +235,8 @@ public class VeinBlock {
 	 * @return true if it is breakable with VeinMiner, false otherwise
 	 */
 	public static boolean isVeinable(VeinTool tool, Material material) {
-		return isVeinable(tool, material, null);
+		Preconditions.checkNotNull(material, "Cannot check for null material");
+		return isVeinable(tool, material, material.createBlockData());
 	}
 	
 	/**
