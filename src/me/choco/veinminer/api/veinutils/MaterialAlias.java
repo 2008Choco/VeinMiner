@@ -15,7 +15,7 @@ import org.bukkit.block.data.BlockData;
  * Represents an aliasing between multiple {@link VeinBlock}s which VeinMiner can recognise as a
  * single material value when being vein mined
  */
-public class MaterialAlias implements Iterable<VeinBlock> {
+public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	
 	private final Set<VeinBlock> blocks = new HashSet<>();
 	
@@ -30,6 +30,10 @@ public class MaterialAlias implements Iterable<VeinBlock> {
 		for (VeinBlock block : blocks) {
 			this.blocks.add(block);
 		}
+	}
+	
+	private MaterialAlias(Set<VeinBlock> blocks) {
+		this.blocks.addAll(blocks);
 	}
 	
 	/**
@@ -147,6 +151,11 @@ public class MaterialAlias implements Iterable<VeinBlock> {
 	@Override
 	public Iterator<VeinBlock> iterator() {
 		return blocks.iterator();
+	}
+	
+	@Override
+	public MaterialAlias clone() {
+		return new MaterialAlias(blocks);
 	}
 	
 	@Override
