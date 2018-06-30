@@ -2,7 +2,6 @@ package me.choco.veinminer.api.veinutils;
 
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,8 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
 /**
- * General information regarding material and block data. Every material listed in the configuration
- * file will be loaded as a VeinBlock for easy accessibility in the VeinMiner API
+ * Represents a set of material and block data. A VeinBlock may or may not possess additional data
+ * beyond a {@link Material} type.
  */
 public class VeinBlock {
 	
@@ -37,7 +36,7 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Get the represented Bukkit {@link Material}
+	 * Get the underlying Bukkit {@link Material} represented by this VeinBlock.
 	 * 
 	 * @return the base material
 	 */
@@ -46,7 +45,7 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Get the block data value (if any). null if no data specified
+	 * Get the underlying block data value (if any). null if no data specified.
 	 * 
 	 * @return the block data
 	 */
@@ -55,8 +54,20 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Whether the block has specific block data or not. Specific data will restrict the block to
-	 * only be vein minable if its data value and its material are valid
+	 * Check whether the block has specific block data or not. In a situation where a VeinBlock
+	 * has specific data is compared with that of a VeinBlock where data is not explicitly set,
+	 * {@link #equals(Object)} will not yield true. For example:
+	 * <p>
+	 * <pre>{@code
+	 * BlockData cakeData = Material.CAKE.createBlockData();
+	 * cakeData.setBites(4);
+	 * 
+	 * VeinBlock specificDataBlock = VeinBlock.getVeinminableBlock(Material.CAKE, cakeData);
+	 * VeinBlock noDataBlock = VeinBlock.getVeinminableBlock(Material.CAKE); // No data
+	 * 
+	 * specificDataBlock.equals(noDataBlock); // false
+	 * noDataBlock.equals(specificDataBlock); // false
+	 * }</pre>
 	 * 
 	 * @return true if data is specified (i.e. not null)
 	 */
@@ -65,7 +76,7 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Add a tool that is capable of mining this block
+	 * Add a tool that is capable of vein mining this block.
 	 * 
 	 * @param tool the tool to add
 	 */
@@ -75,7 +86,7 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Add a list of tools that are capable of mining this block
+	 * Add a list of tools that are capable of vein mining this block.
 	 * 
 	 * @param tools the tools to add
 	 */
@@ -86,7 +97,7 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Remove a tool from the list of tools capable of mining this block
+	 * Remove a tool from the list of tools capable of vein mining this block.
 	 * 
 	 * @param tool the tool to remove
 	 */
@@ -95,17 +106,19 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Check whether a tool is capable of mining this block or not
+	 * Check whether a tool is capable of vein mining this block or not.
 	 * 
 	 * @param tool the tool to check
-	 * @return true if it is capable of mining it
+	 * 
+	 * @return true if it is capable of mining it, false otherwise
 	 */
 	public boolean isMineableBy(VeinTool tool) {
 		return mineableBy.contains(tool);
 	}
 	
 	/**
-	 * Get all tools that are capable of mining this block
+	 * Get an array of tools that are capable of vein mining this block. The returned array is a
+	 * copy, therefore any modifications made to the returned array will not affect this VeinBlock.
 	 * 
 	 * @return all tools capable of mining
 	 */
@@ -129,62 +142,38 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Register a material with specific block data with all possible tools that can veinmine it
+	 * Register a material with specific block data with all possible tools that may vein mine it.
 	 * 
 	 * @param material the material to register
 	 * @param data the block data to register
 	 * @param tools the tools that are capable of mining the block
+	 * 
+	 * @return the newly created VeinBlock instance
 	 */
-	public static void registerVeinminableBlock(Material material, BlockData data, VeinTool... tools) {
+	public static VeinBlock registerVeinminableBlock(Material material, BlockData data, VeinTool... tools) {
 		Preconditions.checkNotNull(material, "Cannot add a null material alias");
-		if (isVeinable(material, data)) return;
+		if (isVeinable(material, data)) return null;
 		
 		VeinBlock block = new VeinBlock(material, data);
 		block.addMineableBy(tools);
 		VEINABLE.add(block);
+		return block;
 	}
 	
 	/**
-	 * Register a material with no specific data with all possible tools that can veinmine it
+	 * Register a material with no specific data with all possible tools that may vein mine it.
 	 * 
 	 * @param material the material to register
 	 * @param tools the tools that are capable of mining the block
-	 */
-	public static void registerVeinminableBlock(Material material, VeinTool... tools) {
-		registerVeinminableBlock(material, null, tools);
-	}
-	
-	/**
-	 * Unregister a specific material (with data)
 	 * 
-	 * @param tool the tool to unregister the material for
-	 * @param material the material that should be unregistered
-	 * @param data the data that should be unregistered (-1 if none)
+	 * @return the newly created VeinBlock instance
 	 */
-	public static void unregisterVeinminableBlock(VeinTool tool, Material material, BlockData data) {
-		Iterator<VeinBlock> it = VEINABLE.iterator();
-		
-		while (it.hasNext()) {
-			VeinBlock block = it.next();
-			if (block.material == material && (!block.hasSpecficData() || block.data.equals(data)) && block.isMineableBy(tool)) {
-				it.remove();
-				break;
-			}
-		}
+	public static VeinBlock registerVeinminableBlock(Material material, VeinTool... tools) {
+		return registerVeinminableBlock(material, null, tools);
 	}
 	
 	/**
-	 * Unregister a specific material (with no specified data)
-	 * 
-	 * @param tool the tool to unregister the material for
-	 * @param material the material that should be unregistered
-	 */
-	public static void unregisterVeinminableBlock(VeinTool tool, Material material) {
-		unregisterVeinminableBlock(tool, material, null);
-	}
-	
-	/**
-	 * Get a registered VeinBlock instance of the specified type and data
+	 * Get a registered VeinBlock instance of the specified type and data.
 	 * 
 	 * @param material the material to search for
 	 * @param data the data to search for
@@ -197,9 +186,10 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Get a registered VeinBlock instance without any specific block data
+	 * Get a registered VeinBlock instance without any specific block data.
 	 * 
 	 * @param material the material to search for
+	 * 
 	 * @return the registered vein block. null if none registered
 	 */
 	public static VeinBlock getVeinminableBlock(Material material) {
@@ -207,34 +197,34 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Whether a material (with data) is able to be broken using a specific VeinMiner tool. If a
-	 * vein block with a similar material but wildcard data is veinminable, this method will return
+	 * Check whether a material (with data) is able to be broken using a specific VeinMiner tool. If
+	 * a vein block with a similar material but wildcard data is veinminable, this method will return
 	 * true.
 	 * 
 	 * @param tool the tool to check
 	 * @param material the material to check
 	 * @param data the data to check
 	 * 
-	 * @return true if it is breakable with VeinMiner
+	 * @return true if it is breakable with VeinMiner, false otherwise
 	 */
 	public static boolean isVeinable(VeinTool tool, Material material, BlockData data) {
 		return VEINABLE.stream().anyMatch(b -> b.material == material && (!b.hasSpecficData() || b.data.equals(data)) && b.isMineableBy(tool));
 	}
 	
 	/**
-	 * Whether a material is able to be broken using a specific VeinMiner tool
+	 * Check whether a material is able to be broken using a specific VeinMiner tool.
 	 * 
 	 * @param tool the tool to check
 	 * @param material the material to check
 	 * 
-	 * @return true if it is breakable with VeinMiner
+	 * @return true if it is breakable with VeinMiner, false otherwise
 	 */
 	public static boolean isVeinable(VeinTool tool, Material material) {
 		return isVeinable(tool, material, null);
 	}
 	
 	/**
-	 * Check whether a material (with data) is able to be broken using any VeinMiner tool
+	 * Check whether a material (with data) is able to be broken using any VeinMiner tool.
 	 * 
 	 * @param material the material to check
 	 * @param data the data to check
@@ -246,9 +236,10 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Check whether a material is able to be broken using any VeinMiner tool
+	 * Check whether a material is able to be broken using any VeinMiner tool.
 	 * 
-	 * @param material - The material to check
+	 * @param material the material to check
+	 * 
 	 * @return true if it is breakable with VeinMiner
 	 */
 	public static boolean isVeinable(Material material) {
@@ -256,9 +247,12 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Get a list of all blocks able to be broken by VeinMiner from a specific tool
+	 * Get a set of all blocks able to be broken by VeinMiner from a specific tool. A copy of
+	 * the set is returned, therefore any changes made to the returned set will not affect this
+	 * VeinBlock.
 	 * 
 	 * @param tool the tool to check
+	 * 
 	 * @return A set of all VeinMineable blocks from the tool
 	 */
 	public static Set<VeinBlock> getVeinminableBlocks(VeinTool tool) {
@@ -266,7 +260,7 @@ public class VeinBlock {
 	}
 	
 	/**
-	 * Clear all veinable blocks
+	 * Clear all veinable blocks.
 	 */
 	public static void clearVeinableBlocks() {
 		VEINABLE.clear();

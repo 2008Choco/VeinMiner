@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerEvent;
 
 /**
  * Called when a player updates their vein mining pattern through the use of the
- * <code>/veinminer pattern</code> command
+ * <code>/veinminer pattern</code> command.
  */
 public class PlayerSwitchPatternEvent extends PlayerEvent {
 	
@@ -24,7 +24,7 @@ public class PlayerSwitchPatternEvent extends PlayerEvent {
 	}
 	
 	/**
-	 * Get the pattern the player switched from
+	 * Get the pattern from which the player switched.
 	 * 
 	 * @return the old pattern
 	 */
@@ -33,7 +33,7 @@ public class PlayerSwitchPatternEvent extends PlayerEvent {
 	}
 	
 	/**
-	 * Get the pattern the player switched to
+	 * Get the pattern to which the player.
 	 * 
 	 * @return the new pattern
 	 */

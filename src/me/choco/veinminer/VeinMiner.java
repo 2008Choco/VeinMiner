@@ -91,7 +91,7 @@ public class VeinMiner extends JavaPlugin {
 	}
 	
 	/**
-	 * Get an instance of the main VeinMiner class (for VeinMiner API usages)
+	 * Get an instance of the main VeinMiner class (for VeinMiner API usages).
 	 * 
 	 * @return an instance of the VeinMiner class
 	 */
@@ -100,7 +100,7 @@ public class VeinMiner extends JavaPlugin {
 	}
 	
 	/**
-	 * Get the VeinMiner Manager used to keep track of veinminable blocks, and other utilities
+	 * Get the VeinMiner Manager used to keep track of Veinminable blocks, and other utilities.
 	 * 
 	 * @return an instance of the VeinMiner manager
 	 */
@@ -109,7 +109,7 @@ public class VeinMiner extends JavaPlugin {
 	}
 	
 	/**
-	 * Get the pattern registry used to register custom vein mining patterns
+	 * Get the pattern registry used to register custom vein mining patterns.
 	 * 
 	 * @return an instance of the pattern registry
 	 */
@@ -118,7 +118,7 @@ public class VeinMiner extends JavaPlugin {
 	}
 	
 	/**
-	 * Get the active version of AntiAura. If the plugin is not enabled, 0.0 will be returned
+	 * Get the active version of AntiAura. If the plugin is not enabled, 0.0 will be returned.
 	 * 
 	 * @return the AntiAura version. 0.0 if not enabled
 	 */
@@ -128,7 +128,7 @@ public class VeinMiner extends JavaPlugin {
 	
 	/**
 	 * Register an anticheat hook to VeinMiner. Hooks should be registered for all anticheat plugins
-	 * as to support VeinMining and not false-flag players with fast-break
+	 * as to support VeinMining and not false-flag players with fast-break.
 	 * 
 	 * @param hook the hook to register
 	 */
@@ -145,7 +145,7 @@ public class VeinMiner extends JavaPlugin {
 	}
 	
 	/**
-	 * Get a list of all anti cheat hooks
+	 * Get an immutable list of all anti cheat hooks.
 	 * 
 	 * @return all anticheat hooks
 	 */

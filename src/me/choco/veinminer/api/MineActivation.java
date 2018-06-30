@@ -7,17 +7,17 @@ import com.google.common.base.Predicates;
 import org.bukkit.entity.Player;
 
 /**
- * Represents the different methods of activating VeinMiner
+ * Represents the different methods of activating VeinMiner.
  */
 public enum MineActivation {
 	
 	/**
-	 * Activated when a Player is holding sneak
+	 * Activated when a Player is holding sneak.
 	 */
 	SNEAK(Player::isSneaking),
 	
 	/**
-	 * Activated when a Player is standing up (not sneaking)
+	 * Activated when a Player is standing up (i.e. not sneaking).
 	 */
 	STAND(Predicates.not(Player::isSneaking));
 	
@@ -28,19 +28,21 @@ public enum MineActivation {
 	}
 	
 	/**
-	 * Check whether a Player is capable of vein mining based on this activation
+	 * Check whether a Player is capable of vein mining according to this activation.
 	 * 
 	 * @param player the player to check
-	 * @return true if valid to vein mine
+	 * 
+	 * @return true if valid to vein mine, false otherwise
 	 */
 	public boolean isValid(Player player) {
 		return player != null && this.condition.test(player);
 	}
 	
 	/**
-	 * Get a MineActivation based on its name
+	 * Get a MineActivation based on its name.
 	 * 
-	 * @param name the name to search for
+	 * @param name the name for which to search. Case insensitive
+	 * 
 	 * @return the resulting activation. null if none found
 	 */
 	public static MineActivation getByName(String name) {

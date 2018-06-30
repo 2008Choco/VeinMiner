@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.NamespacedKey;
 
 /**
- * A registry to register any custom implementations of {@link VeinMiningPattern}
+ * A registry to register any custom implementations of {@link VeinMiningPattern}.
  */
 public class PatternRegistry {
 	
@@ -23,7 +23,7 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Register a new VeinMiningPattern implementation
+	 * Register a new VeinMiningPattern implementation.
 	 * 
 	 * @param pattern the pattern to register
 	 */
@@ -36,9 +36,10 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Get the pattern associated with the given key
+	 * Get the pattern associated with the given key.
 	 * 
 	 * @param key the key of the pattern to retrieve
+	 * 
 	 * @return the pattern. null if no pattern matches the given key
 	 */
 	public VeinMiningPattern getPattern(NamespacedKey key) {
@@ -46,7 +47,7 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Get the pattern associated with the given key or default if one is not registered
+	 * Get the pattern associated with the given key or default if one is not registered.
 	 * 
 	 * @param key the key of the pattern to retrieve
 	 * @param defaultPattern the default pattern in the case the key is not registered
@@ -58,7 +59,7 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Get a pattern associated with the given key (in the form of a String)
+	 * Get a pattern associated with the given key in the form of a String.
 	 * 
 	 * @param key the key of the pattern to retrieve
 	 * @return the pattern. null if no pattern matches the given key
@@ -68,8 +69,8 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Get the pattern associated with the given key (in the form of a String) or default if one is
-	 * not registered
+	 * Get the pattern associated with the given key in the form of a String, or default if one is
+	 * not registered.
 	 * 
 	 * @param key the key of the pattern to retrieve
 	 * @param defaultPattern the default pattern in the case the key is not registered
@@ -83,7 +84,7 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Unregister the provided pattern from the pattern registry
+	 * Unregister the provided pattern from the pattern registry.
 	 * 
 	 * @param pattern the pattern to unregister
 	 */
@@ -93,7 +94,7 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Unregister the pattern associated with the given key from the pattern registry
+	 * Unregister the pattern associated with the given key from the pattern registry.
 	 * 
 	 * @param key the key of the pattern to unregister
 	 */
@@ -102,7 +103,7 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Get an immutable Set of all registered patterns
+	 * Get an immutable set of all registered patterns.
 	 * 
 	 * @return all registered patterns
 	 */
@@ -111,7 +112,7 @@ public class PatternRegistry {
 	}
 	
 	/**
-	 * Clear all patterns from the registry
+	 * Clear all patterns from the registry.
 	 */
 	public void clearPatterns() {
 		this.patterns.clear();

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 
 import me.choco.veinminer.utils.VeinMinerManager;
 
@@ -13,16 +14,17 @@ import org.bukkit.block.data.BlockData;
 
 /**
  * Represents an aliasing between multiple {@link VeinBlock}s which VeinMiner can recognise as a
- * single material value when being vein mined
+ * single material value when being vein mined.
  */
 public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	
 	private final Set<VeinBlock> blocks = new HashSet<>();
 	
 	/**
-	 * Construct a new alias between varying vein blocks
+	 * Construct a new alias between varying vein blocks.
 	 * 
 	 * @param blocks the blocks to alias
+	 * 
 	 * @see VeinBlock#getVeinminableBlock(Material, BlockData)
 	 * @see VeinBlock#getVeinminableBlock(Material)
 	 */
@@ -37,7 +39,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	}
 	
 	/**
-	 * Add a block to this alias
+	 * Add a block to this alias.
 	 * 
 	 * @param block the block to add
 	 */
@@ -47,38 +49,42 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	}
 	
 	/**
-	 * Add a material and its byte data to this alias. If the VeinBlock does not already exist, it
+	 * Add a material and its block data to this alias. If the VeinBlock does not already exist, it
 	 * will be registered to the {@link VeinMinerManager} with the same {@link VeinTool}s as the
-	 * dominant {@link VeinBlock}
+	 * dominant {@link VeinBlock}.
 	 * 
 	 * @param material the material to add
 	 * @param data the data to add
 	 * 
-	 * @return the newly aliased added
+	 * @return the newly aliased VeinBlock
 	 */
 	public VeinBlock addAlias(Material material, BlockData data) {
 		Preconditions.checkArgument(material != null, "Cannot add a null material alias");
 		
 		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
-		this.addAlias(block);
+		if (block == null) {
+			block = VeinBlock.registerVeinminableBlock(material, data, Iterables.get(blocks, 0).getMineableBy());
+		}
 		
+		this.addAlias(block);
 		return block;
 	}
 	
 	/**
-	 * Add a material with no byte data to this alias. If the VeinBlock does not already exist, it
-	 * will be registered to the {@link VeinMinerManager} with the same {@link VeinTool}s as the
-	 * dominant {@link VeinBlock}
+	 * Add a material with no specific block data to this alias. If the VeinBlock does not already exist,
+	 * it will be registered to the {@link VeinMinerManager} with the same {@link VeinTool}s as the
+	 * dominant {@link VeinBlock}.
 	 * 
 	 * @param material the material to add
+	 * 
 	 * @return the newly aliased added
 	 */
 	public VeinBlock addAlias(Material material) {
-		return this.addAlias(material, null);
+		return addAlias(material, null);
 	}
 	
 	/**
-	 * Remove a block from this alias
+	 * Remove a VeinBlock from this alias.
 	 * 
 	 * @param block the block to remove
 	 */
@@ -87,18 +93,17 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	}
 	
 	/**
-	 * Remove a material with byte data from this alias
+	 * Remove a material with specific block data from this alias.
 	 * 
 	 * @param material the material to remove
 	 * @param data the data to remove
 	 */
 	public void removeAlias(Material material, BlockData data) {
-		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
-		this.removeAlias(block);
+		this.removeAlias(VeinBlock.getVeinminableBlock(material, data));
 	}
 	
 	/**
-	 * Remove a material with no byte data from this alias
+	 * Remove a material without any specific block data from this alias.
 	 * 
 	 * @param material the material to remove
 	 */
@@ -107,40 +112,42 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	}
 	
 	/**
-	 * Check whether a block is aliased under this material alias
+	 * Check whether a block is aliased under this material alias.
 	 * 
 	 * @param block the block to check
-	 * @return true if aliased
+	 * 
+	 * @return true if aliased, false otherwise
 	 */
 	public boolean isAliased(VeinBlock block) {
 		return blocks.contains(block);
 	}
 	
 	/**
-	 * Check whether a material with byte data is aliased under this material alias
+	 * Check whether a material with specific block data is aliased under this material alias.
 	 * 
 	 * @param material the material to check
 	 * @param data the data to check
 	 * 
-	 * @return true if aliased
+	 * @return true if aliased, false otherwise
 	 */
 	public boolean isAliased(Material material, BlockData data) {
 		return blocks.stream().anyMatch(b -> b.getMaterial() == material && (!b.hasSpecficData() || b.getData().equals(data)));
 	}
 	
 	/**
-	 * Check whether a material with no byte data is aliased under this material alias
+	 * Check whether a material with no specific block data is aliased under this material alias.
 	 * 
 	 * @param material the material to check
-	 * @return true if aliased
+	 * 
+	 * @return true if aliased, false otherwise
 	 */
 	public boolean isAliased(Material material) {
 		return blocks.stream().anyMatch(b -> b.getMaterial() == material);
 	}
 	
 	/**
-	 * Get all blocks that are considered under this alias. The returned Set is does not affect the
-	 * underlying alias Set. A copy is returned
+	 * Get all blocks that are considered under this alias. A copy of the set is returned,
+	 * therefore any changes made to the returned set will not affect this MaterialAlias.
 	 * 
 	 * @return all aliased blocks
 	 */

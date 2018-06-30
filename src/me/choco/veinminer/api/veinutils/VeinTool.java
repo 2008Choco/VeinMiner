@@ -14,7 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
 /**
- * Tools recognised by VeinMiner and it's code. Tools are limited to those listed in the enumeration
+ * Tools recognised by VeinMiner and it's code. Tools are limited to those listed in the enumeration.
  */
 public enum VeinTool {
 	
@@ -81,7 +81,7 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Get the name provided in the configuration file
+	 * Get the name for this tool used in the configuration file.
 	 * 
 	 * @return the name
 	 */
@@ -90,39 +90,43 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Get all tool materials categorised under the vein tool
+	 * Get all Materials associated with this VeinTool.
 	 * 
-	 * @return all categorised tool materials
+	 * @return all associated tool materials
 	 */
 	public Material[] getMaterials() {
 		return materials;
 	}
 	
 	/**
-	 * Get the maximum vein size this vein tool can break (Specified in configuration file)
+	 * Get the maximum vein size this VeinTool is capable of breaking.This option is specified in and
+	 * directly retrieved from the configuration file. Note that {@link #ALL} will always result in a
+	 * value of {@code 64} being returned.
 	 * 
-	 * @return the maximum vein size
+	 * @return the maximum vein size. Defaults to 64 if not explicitly set
 	 */
 	public int getMaxVeinSize() {
 		return (this != VeinTool.ALL ? plugin.getConfig().getInt("Tools." + name + ".MaxVeinSize", 64) : 64);
 	}
 	
 	/**
-	 * Get whether this vein tool will take durability whilst veinmining or not (Specified in
-	 * configuration file)
+	 * Get whether this VeinTool will take durability whilst vein mining or not. This option is specified
+	 * in and directly retrieved from the configuration file. Note that {@link #ALL} will always result
+	 * in a value of {@code true} being returned.
 	 * 
-	 * @return true if it takes durability damage
+	 * @return true if it takes durability damage, false otherwise. Defaults to true if not explicitly set
 	 */
 	public boolean usesDurability() {
 		return (this == ALL) || plugin.getConfig().getBoolean("Tools." + name + ".UsesDurability", true);
 	}
 	
 	/**
-	 * Get a VeinTool based on its name used in the configuration file. Null if no VeinTool with the
-	 * given name exists
+	 * Get a VeinTool based on its name used in the configuration file. null if no VeinTool with the
+	 * given name exists.
 	 * 
-	 * @param name the name of the tool
-	 * @return the VeinTool with the given name
+	 * @param name the name of the tool. Case insensitive
+	 * 
+	 * @return the VeinTool with the given name. null if none
 	 */
 	public static VeinTool getByName(String name) {
 		for (VeinTool tool : values())
@@ -131,11 +135,12 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Get a VeinTool based on a categorised material. null if no VeinTool with the given material
-	 * exists
+	 * Get the VeinTool associated with the specified material. If none exist, {@link #ALL} is
+	 * returned.
 	 * 
-	 * @param material the material to search for
-	 * @return the VeinTool with the given categorised material. {@link #ALL} if none
+	 * @param material the material for which to search
+	 * 
+	 * @return the VeinTool associated with the specified material. {@link #ALL} if none
 	 */
 	public static VeinTool fromMaterial(Material material) {
 		for (VeinTool tool : values()) {
@@ -148,9 +153,9 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Disable VeinMiner for this tool for a specific player
+	 * Disable VeinMiner for this tool for a specific player.
 	 * 
-	 * @param player the player to disable it for
+	 * @param player the player for whom to disable the tool
 	 */
 	public void disableVeinMiner(OfflinePlayer player) {
 		Preconditions.checkNotNull(player, "Cannot disable veinminer for a null player");
@@ -158,9 +163,9 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Enable VeinMiner for this tool for a specific player
+	 * Enable VeinMiner for this tool for a specific player.
 	 * 
-	 * @param player the player to enable it for
+	 * @param player the player for whom to disable the tool
 	 */
 	public void enableVeinMiner(OfflinePlayer player) {
 		Preconditions.checkNotNull(player, "Cannot enable veinminer for a null player");
@@ -168,10 +173,11 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Check whether this vein tool is disabled for a specific player
+	 * Check whether this vein tool is disabled for a specific player.
 	 * 
 	 * @param player the player to check
-	 * @return true if veinminer disabled
+	 * 
+	 * @return true if VeinMiner is disabled
 	 */
 	public boolean hasVeinMinerDisabled(OfflinePlayer player) {
 		Preconditions.checkNotNull(player, "Cannot check veinminer state for a null player");
@@ -179,29 +185,30 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Check whether this vein tool is enabled for a specific player
+	 * Check whether this vein tool is enabled for a specific player.
 	 * 
 	 * @param player the player to check
-	 * @return true if veinminer enabled
+	 * 
+	 * @return true if VeinMiner is enabled
 	 */
 	public boolean hasVeinMinerEnabled(OfflinePlayer player) {
 		return !hasVeinMinerDisabled(player);
 	}
 	
 	/**
-	 * Toggle the enable state for this tool for a specific player
+	 * Toggle whether this tool is enabled or not for a specific player.
 	 * 
-	 * @param player the player to toggle this tool for
+	 * @param player the player for whom to toggle this tool
 	 */
 	public void toggleVeinMiner(OfflinePlayer player) {
 		this.toggleVeinMiner(player, !hasVeinMinerEnabled(player));
 	}
 	
 	/**
-	 * Toggle the enable state for this tool for a specific player
+	 * Toggle whether this tool is enabled or not for a specific player.
 	 * 
-	 * @param player the player to toggle this tool for
-	 * @param enabled the new enable state
+	 * @param player the player for whom to toggle this tool
+	 * @param enabled the new enable state. true to enable, false otherwise
 	 */
 	public void toggleVeinMiner(OfflinePlayer player, boolean enabled) {
 		Preconditions.checkArgument(player != null, "Cannot toggle veinminer for a null player");
@@ -214,7 +221,7 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Get a list of all players that have this tool disabled
+	 * Get a set of all players that have this tool disabled.
 	 * 
 	 * @return all players disabling this tool
 	 */
@@ -223,7 +230,7 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Clear all information regarding players that have VeinMiner disabled
+	 * Clear all information regarding players that have VeinMiner disabled.
 	 */
 	public void clearPlayerInformation() {
 		this.disabledBy.clear();

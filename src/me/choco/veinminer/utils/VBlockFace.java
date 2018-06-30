@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import org.bukkit.block.Block;
 
 /**
- * Represents all possible relative directions of a block supported by VeinMiner
+ * Represents all possible relative directions of a block supported by VeinMiner.
  */
 public enum VBlockFace {
 	
@@ -52,7 +52,7 @@ public enum VBlockFace {
 	}
 	
 	/**
-	 * Get the X value translation of this block face
+	 * Get the X value translation of this block face.
 	 * 
 	 * @return the X translation
 	 */
@@ -61,7 +61,7 @@ public enum VBlockFace {
 	}
 	
 	/**
-	 * Get the Y value translation of this block face
+	 * Get the Y value translation of this block face.
 	 * 
 	 * @return the Y translation
 	 */
@@ -70,7 +70,7 @@ public enum VBlockFace {
 	}
 	
 	/**
-	 * Get the Z value translation of this block face
+	 * Get the Z value translation of this block face.
 	 * 
 	 * @return the Z translation
 	 */
@@ -79,9 +79,10 @@ public enum VBlockFace {
 	}
 	
 	/**
-	 * Get the block relative to the specified block based on the current block face
+	 * Get the block relative to the specified block based on the current block face.
 	 * 
 	 * @param block the block of reference
+	 * 
 	 * @return the relative block
 	 */
 	public Block getRelative(Block block) {

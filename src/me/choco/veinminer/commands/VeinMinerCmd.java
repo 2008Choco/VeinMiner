@@ -210,7 +210,8 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				VeinBlock.unregisterVeinminableBlock(tool, material, specificData ? data : null);
+				VeinBlock block = VeinBlock.getVeinminableBlock(material, specificData ? data : null);
+				block.removeMineableBy(tool);
 				this.sendMessage(sender, "Block Id " + data.getAsString() + " successfully removed from the list");
 			}
 			

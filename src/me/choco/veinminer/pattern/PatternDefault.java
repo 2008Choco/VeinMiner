@@ -14,7 +14,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
 /**
- * The default {@link VeinMiningPattern} implementation used by all players unless explicitly set
+ * The default {@link VeinMiningPattern} implementation used by all players unless explicitly set.
  * 
  * @author Parker Hawke - 2008Choco
  */
@@ -84,7 +84,7 @@ public final class PatternDefault implements VeinMiningPattern {
 	}
 	
 	/**
-	 * Get a singleton instance of the default pattern
+	 * Get a singleton instance of the default pattern.
 	 * 
 	 * @return the default pattern
 	 */

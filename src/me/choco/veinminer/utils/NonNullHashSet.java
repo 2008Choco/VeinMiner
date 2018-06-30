@@ -7,10 +7,11 @@ import com.google.common.base.Preconditions;
 
 /**
  * A more specific implementation of HashSet that prevents the addition of null values. If a null
- * value is added to this collection, a NullPointerException will be thrown
+ * value is added to this collection, a NullPointerException will be thrown.
+ * 
+ * @param <T> the type of element to store in this collection
  * 
  * @author Parker Hawke - 2008Choco
- * @param <T> the type of element to store in this collection
  */
 public class NonNullHashSet<T> extends HashSet<T> {
 	

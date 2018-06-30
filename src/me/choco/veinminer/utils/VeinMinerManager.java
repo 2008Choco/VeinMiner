@@ -25,7 +25,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
 /**
- * The central management for VeinMiner to handle everything regarding VeinMiner and its features
+ * The central management for VeinMiner to handle everything regarding VeinMiner and its features.
  */
 public class VeinMinerManager {
 	
@@ -40,7 +40,7 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Load all veinable blocks from the configuration file to memory
+	 * Load all veinable blocks from the configuration file to memory.
 	 */
 	public void loadVeinableBlocks() {
 		for (String tool : plugin.getConfig().getConfigurationSection("BlockList").getKeys(false)) {
@@ -74,7 +74,7 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Load all disabled worlds from the configuration file to memory
+	 * Load all disabled worlds from the configuration file to memory.
 	 */
 	public void loadDisabledWorlds() {
 		this.disabledWorlds.clear();
@@ -92,10 +92,11 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Check whether a world has VeinMiner disabled or not
+	 * Check whether a world has VeinMiner disabled or not.
 	 * 
 	 * @param world the world to check
-	 * @return true if the world has VeinMiner disabled
+	 * 
+	 * @return true if the world has VeinMiner disabled, false otherwise
 	 */
 	public boolean isDisabledInWorld(World world) {
 		Preconditions.checkArgument(world != null, "Cannot check state of veinminer in null world");
@@ -103,18 +104,19 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Get a list of all worlds in which VeinMiner is disabled
+	 * Get a set of all worlds in which VeinMiner is disabled. A copy of the set is returned,
+	 * therefore any changes made to the returned set will not affect the disabled worlds.
 	 * 
-	 * @return a list of all disabled worlds
+	 * @return a set of all disabled worlds
 	 */
 	public Set<World> getDisabledWorlds() {
 		return disabledWorlds.stream().map(w -> Bukkit.getWorld(w)).collect(Collectors.toSet());
 	}
 	
 	/**
-	 * Disable vein miner in a specific world
+	 * Disable vein miner in a specific world.
 	 * 
-	 * @param world the world to disable
+	 * @param world the world for which to disable VeinMiner
 	 */
 	public void setDisabledInWorld(World world) {
 		Preconditions.checkArgument(world != null, "Cannot disable veinminer in null world");
@@ -122,9 +124,9 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Enable VeinMiner in a specific world
+	 * Enable VeinMiner in a specific world.
 	 * 
-	 * @param world the world to disable
+	 * @param world the world for which to enabled VeinMiner
 	 */
 	public void setEnabledInWorld(World world) {
 		Preconditions.checkArgument(world != null, "Cannot enable veinminer in null world");
@@ -132,14 +134,14 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Clear all worlds from the blacklist
+	 * Clear all worlds from the blacklist.
 	 */
 	public void clearDisabledWorlds() {
 		this.disabledWorlds.clear();
 	}
 	
 	/**
-	 * Register a new MaterialAlias
+	 * Register a new MaterialAlias.
 	 * 
 	 * @param alias the alias to register
 	 */
@@ -149,7 +151,7 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Unregister a MaterialAlias
+	 * Unregister a MaterialAlias.
 	 * 
 	 * @param alias the alias to unregister
 	 */
@@ -158,10 +160,11 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Get the alias associated with a specific material and byte data
+	 * Get the alias associated with a specific material and block data.
 	 * 
 	 * @param material the material to reference
 	 * @param data the block data to reference
+	 * 
 	 * @return the associated alias. null if none
 	 */
 	public MaterialAlias getAliasFor(Material material, BlockData data) {
@@ -169,9 +172,10 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Get the alias associated with a specific material
+	 * Get the alias associated with a specific material.
 	 * 
 	 * @param material the material to reference
+	 * 
 	 * @return the associated alias. null if none
 	 */
 	public MaterialAlias getAliasFor(Material material) {
@@ -179,7 +183,7 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Load all material aliases from config to memory
+	 * Load all material aliases from config to memory.
 	 */
 	public void loadMaterialAliases() {
 		this.aliases.clear();
@@ -210,9 +214,10 @@ public class VeinMinerManager {
 	
 	/**
 	 * Get the pattern used by the specified player. If the player is not using any specific
-	 * pattern, {@link PatternDefault} will be returned
+	 * pattern, {@link PatternDefault} will be returned.
 	 * 
 	 * @param player the player to get the pattern for
+	 * 
 	 * @return the player's mining pattern
 	 */
 	public VeinMiningPattern getPatternFor(Player player) {
@@ -221,7 +226,7 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Set the pattern to use for the specified player
+	 * Set the pattern to use for the specified player.
 	 * 
 	 * @param player the player whose pattern to set
 	 * @param pattern the new pattern. null if default
@@ -237,7 +242,7 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Clear all localised data in the VeinMiner Manager
+	 * Clear all localised data in the VeinMiner Manager.
 	 */
 	public void clearLocalisedData() {
 		VeinBlock.clearVeinableBlocks();

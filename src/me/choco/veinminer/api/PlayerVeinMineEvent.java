@@ -13,7 +13,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
 /**
- * Called when VeinMiner is activated for a specific set of blocks
+ * Called when VeinMiner is activated for a set of blocks.
  */
 public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	
@@ -36,7 +36,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	
 	/**
 	 * Get a set of all blocks destroyed by this vein mine. This set is mutable. Modifications
-	 * will directly manipulate what blocks are and are not modified
+	 * will directly manipulate what blocks are and are not destroyed.
 	 * 
 	 * @return the blocks to be affected by this event
 	 */
@@ -45,16 +45,16 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	}
 	
 	/**
-	 * Get the block affected by the vein mine
+	 * Get the block type affected by the vein mine.
 	 * 
-	 * @return the block affected
+	 * @return the affected block
 	 */
 	public VeinBlock getAffectedBlock() {
 		return type;
 	}
 	
 	/**
-	 * Get the tool used to initiate this vein mine
+	 * Get the tool used to initiate this vein mine.
 	 * 
 	 * @return the tool used
 	 */
@@ -63,7 +63,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	}
 	
 	/**
-	 * Get the vein mining pattern that was used for this vein mine
+	 * Get the vein mining pattern used for this vein mine.
 	 * 
 	 * @return the pattern used
 	 */
@@ -89,4 +89,5 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
+	
 }

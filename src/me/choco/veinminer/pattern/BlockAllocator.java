@@ -9,7 +9,7 @@ import org.bukkit.block.Block;
 
 /**
  * A functional interface to assist in the allocation of vein mining patterns. For application, see
- * {@link VeinMiningPattern#createNewPattern(org.bukkit.NamespacedKey, BlockAllocator)}
+ * {@link VeinMiningPattern#createNewPattern(org.bukkit.NamespacedKey, BlockAllocator)}.
  */
 @FunctionalInterface
 public interface BlockAllocator {

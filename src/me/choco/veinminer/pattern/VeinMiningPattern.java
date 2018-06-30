@@ -12,9 +12,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
 /**
- * Represents a mining algorithm capable of computing which blocks should be broken by VeinMiner
- * when a successful vein mine will occur. It is recommended that implementations of
- * VeinMiningPattern are singleton instances, although this is not a requirement
+ * Represents a mining algorithm capable of allocating which blocks should be broken by VeinMiner
+ * when a successful vein mine occurs. It is recommended that implementations of VeinMiningPattern
+ * are singleton instances, although this is not a requirement.
  */
 public interface VeinMiningPattern extends Keyed {
 	
@@ -52,7 +52,7 @@ public interface VeinMiningPattern extends Keyed {
 	}
 	
 	/**
-	 * Create a new VeinMiningPattern using a custom {@link BlockAllocator}
+	 * Create a new VeinMiningPattern using a custom {@link BlockAllocator}.
 	 * 
 	 * @param key the key of the vein mining pattern. Must be unique and not null
 	 * @param blockAllocator the allocator to compute breakable blocks. Must not be null
