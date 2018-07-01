@@ -42,7 +42,7 @@ public class BreakBlockListener implements Listener {
 	
 	@EventHandler
 	private void onBlockBreak(BlockBreakEvent event) {
-		if (!event.getClass().equals(BlockBreakEvent.class)) return; // For plugins such as McMMO, who fire custom events
+		if (event.getClass() != BlockBreakEvent.class) return; // For plugins such as McMMO, who fire custom events
 		if (blocks.contains(event.getBlock())) return;
 		
 		Block block = event.getBlock();
@@ -66,7 +66,7 @@ public class BreakBlockListener implements Listener {
 		if (tool.hasVeinMinerDisabled(player)) return;
 		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData())
 				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getBlockData())
-						&& player.hasPermission("veinminer.veinmine.all")))) {
+					&& player.hasPermission("veinminer.veinmine.all")))) {
 			return;
 		}
 		
