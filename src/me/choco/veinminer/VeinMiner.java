@@ -28,7 +28,6 @@ public class VeinMiner extends JavaPlugin {
 	private static VeinMiner instance;
 	
 	private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
-	private final double antiAuraVersion = -1;
 	
 	private VeinMinerManager manager;
 	private PatternRegistry patternRegistry;
@@ -115,15 +114,6 @@ public class VeinMiner extends JavaPlugin {
 	 */
 	public PatternRegistry getPatternRegistry() {
 		return patternRegistry;
-	}
-	
-	/**
-	 * Get the active version of AntiAura. If the plugin is not enabled, 0.0 will be returned.
-	 * 
-	 * @return the AntiAura version. 0.0 if not enabled
-	 */
-	public double getAntiAuraVersion() {
-		return antiAuraVersion;
 	}
 	
 	/**

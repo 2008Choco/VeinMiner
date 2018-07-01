@@ -1,13 +1,20 @@
 package me.choco.veinminer.anticheat;
 
-import me.choco.veinminer.VeinMiner;
-
+import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
  * The default AntiAura hook implementation
  */
 public class AntiCheatHookAntiAura implements AntiCheatHook {
+	
+	private double version = -1.0;
+	
+	public AntiCheatHookAntiAura() {
+		String versionString = Bukkit.getPluginManager().getPlugin("AntiAura").getDescription().getVersion();
+		this.version = NumberUtils.toDouble(versionString);
+	}
 	
 	@Override
 	public String getPluginName() {
@@ -26,7 +33,7 @@ public class AntiCheatHookAntiAura implements AntiCheatHook {
 	
 	@Override
 	public boolean isSupported() {
-		return VeinMiner.getPlugin().getAntiAuraVersion() >= 10.83;
+		return version >= 10.83;
 	}
 	
 }
