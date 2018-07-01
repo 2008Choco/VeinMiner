@@ -108,7 +108,7 @@ public class VeinMinerManager {
 	 * @return true if the world has VeinMiner disabled, false otherwise
 	 */
 	public boolean isDisabledInWorld(World world) {
-		Preconditions.checkArgument(world != null, "Cannot check state of veinminer in null world");
+		Preconditions.checkNotNull(world, "Cannot check state of veinminer in null world");
 		return disabledWorlds.contains(world.getUID());
 	}
 	
@@ -128,7 +128,7 @@ public class VeinMinerManager {
 	 * @param world the world for which to disable VeinMiner
 	 */
 	public void setDisabledInWorld(World world) {
-		Preconditions.checkArgument(world != null, "Cannot disable veinminer in null world");
+		Preconditions.checkNotNull(world, "Cannot disable veinminer in null world");
 		this.disabledWorlds.add(world.getUID());
 	}
 	
@@ -138,7 +138,7 @@ public class VeinMinerManager {
 	 * @param world the world for which to enabled VeinMiner
 	 */
 	public void setEnabledInWorld(World world) {
-		Preconditions.checkArgument(world != null, "Cannot enable veinminer in null world");
+		Preconditions.checkNotNull(world, "Cannot enable veinminer in null world");
 		this.disabledWorlds.remove(world.getUID());
 	}
 	
@@ -155,7 +155,7 @@ public class VeinMinerManager {
 	 * @param alias the alias to register
 	 */
 	public void registerAlias(MaterialAlias alias) {
-		Preconditions.checkArgument(alias != null, "Cannot register a null alias");
+		Preconditions.checkNotNull(alias, "Cannot register a null alias");
 		this.aliases.add(alias);
 	}
 	
@@ -226,7 +226,7 @@ public class VeinMinerManager {
 	 * @return the player's mining pattern
 	 */
 	public VeinMiningPattern getPatternFor(Player player) {
-		Preconditions.checkArgument(player != null, "Cannot get the mining pattern for a null player");
+		Preconditions.checkNotNull(player, "Cannot get the mining pattern for a null player");
 		return playerMiningPattern.getOrDefault(player.getUniqueId(), PatternDefault.get());
 	}
 	
@@ -237,7 +237,7 @@ public class VeinMinerManager {
 	 * @param pattern the new pattern. null if default
 	 */
 	public void setPattern(Player player, VeinMiningPattern pattern) {
-		Preconditions.checkArgument(player != null, "Cannot set the mining pattern for a null player");
+		Preconditions.checkNotNull(player, "Cannot set the mining pattern for a null player");
 		
 		if (pattern == null) {
 			this.playerMiningPattern.remove(player.getUniqueId());

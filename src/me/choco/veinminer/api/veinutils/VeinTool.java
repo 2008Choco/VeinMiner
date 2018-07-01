@@ -211,7 +211,7 @@ public enum VeinTool {
 	 * @param enabled the new enable state. true to enable, false otherwise
 	 */
 	public void toggleVeinMiner(OfflinePlayer player, boolean enabled) {
-		Preconditions.checkArgument(player != null, "Cannot toggle veinminer for a null player");
+		Preconditions.checkNotNull(player, "Cannot toggle veinminer for a null player");
 		
 		if (hasVeinMinerDisabled(player) && enabled) {
 			this.disabledBy.remove(player.getUniqueId());

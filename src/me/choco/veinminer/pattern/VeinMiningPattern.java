@@ -60,8 +60,8 @@ public interface VeinMiningPattern extends Keyed {
 	 * @return the resulting VeinMiningPattern instance
 	 */
 	public static VeinMiningPattern createNewPattern(NamespacedKey key, BlockAllocator blockAllocator) {
-		Preconditions.checkArgument(key != null, "Pattern must not have a null key");
-		Preconditions.checkArgument(blockAllocator != null, "Block computer must not be null");
+		Preconditions.checkNotNull(key, "Pattern must not have a null key");
+		Preconditions.checkNotNull(blockAllocator, "Block computer must not be null");
 		
 		return new VeinMiningPattern() {
 			@Override

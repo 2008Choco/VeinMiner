@@ -86,7 +86,7 @@ public enum VBlockFace {
 	 * @return the relative block
 	 */
 	public Block getRelative(Block block) {
-		Preconditions.checkArgument(block != null, "Cannot get the relative block of a null block");
+		Preconditions.checkNotNull(block, "Cannot get the relative block of a null block");
 		return block.getWorld().getBlockAt(block.getX() + xTranslation, block.getY() + yTranslation, block.getZ() + zTranslation);
 	}
 	

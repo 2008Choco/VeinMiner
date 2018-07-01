@@ -59,7 +59,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 * @return the newly aliased VeinBlock
 	 */
 	public VeinBlock addAlias(Material material, BlockData data) {
-		Preconditions.checkArgument(material != null, "Cannot add a null material alias");
+		Preconditions.checkNotNull(material, "Cannot add a null material alias");
 		
 		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
 		if (block == null) {
