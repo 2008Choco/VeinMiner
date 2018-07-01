@@ -46,28 +46,37 @@ public class VeinMinerManager {
 		for (String tool : plugin.getConfig().getConfigurationSection("BlockList").getKeys(false)) {
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 			
+			VeinTool veinTool = VeinTool.getByName(tool);
+			boolean all = tool.equalsIgnoreCase("all") && veinTool == null;
+			
 			for (String value : blocks) {
-				String[] ids = value.split(";");
-				
 				// Material information
 				BlockData data;
-				boolean specificData = false;
+				
 				try {
-					data = Bukkit.createBlockData(ids[0]);
-					specificData = ids[0].contains("[");
+					data = Bukkit.createBlockData(value);
 				} catch (IllegalArgumentException e) {
-					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + ids[0]);
+					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + value);
 					continue;
 				}
 				
-				VeinTool veinTool = VeinTool.getByName(tool);
 				Material material = data.getMaterial();
 				
-				// Registration
-				if (VeinBlock.isVeinable(material, specificData ? data : null)) {
-					VeinBlock.getVeinminableBlock(material, specificData ? data : null).addMineableBy(veinTool);
+				// Registration (ugly, but it has to be this way)
+				if (VeinBlock.isVeinable(material, data)) {
+					VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
+					
+					if (all) {
+						block.addMineableBy(VeinTool.values());
+					} else {
+						block.addMineableBy(veinTool);
+					}
 				} else {
-					VeinBlock.registerVeinminableBlock(material, specificData ? data : null, veinTool);
+					if (all) {
+						VeinBlock.registerVeinminableBlock(material, data, VeinTool.values());
+					} else {
+						VeinBlock.registerVeinminableBlock(material, data, veinTool);
+					}
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 package me.choco.veinminer.api.veinutils;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -64,9 +65,10 @@ public enum VeinTool {
 	SHEARS("Shears", Material.SHEARS),
 	
 	/**
-	 * Represents all VeinTools listed in the game, i.e. pickaxe, axe, shovel, shears, etc.
+	 * Represent's a player's hands; i.e. no tool at all
 	 */
-	ALL("All");
+	HAND("Hand");
+	
 	
 	private static final VeinMiner plugin = VeinMiner.getPlugin();
 	
@@ -95,29 +97,27 @@ public enum VeinTool {
 	 * @return all associated tool materials
 	 */
 	public Material[] getMaterials() {
-		return materials;
+		return Arrays.copyOf(materials, materials.length);
 	}
 	
 	/**
 	 * Get the maximum vein size this VeinTool is capable of breaking.This option is specified in and
-	 * directly retrieved from the configuration file. Note that {@link #ALL} will always result in a
-	 * value of {@code 64} being returned.
+	 * directly retrieved from the configuration file.
 	 * 
 	 * @return the maximum vein size. Defaults to 64 if not explicitly set
 	 */
 	public int getMaxVeinSize() {
-		return (this != VeinTool.ALL ? plugin.getConfig().getInt("Tools." + name + ".MaxVeinSize", 64) : 64);
+		return plugin.getConfig().getInt("Tools." + name + ".MaxVeinSize", 64);
 	}
 	
 	/**
 	 * Get whether this VeinTool will take durability whilst vein mining or not. This option is specified
-	 * in and directly retrieved from the configuration file. Note that {@link #ALL} will always result
-	 * in a value of {@code true} being returned.
+	 * in and directly retrieved from the configuration file.
 	 * 
 	 * @return true if it takes durability damage, false otherwise. Defaults to true if not explicitly set
 	 */
 	public boolean usesDurability() {
-		return (this == ALL) || plugin.getConfig().getBoolean("Tools." + name + ".UsesDurability", true);
+		return plugin.getConfig().getBoolean("Tools." + name + ".UsesDurability", true);
 	}
 	
 	/**
@@ -135,12 +135,12 @@ public enum VeinTool {
 	}
 	
 	/**
-	 * Get the VeinTool associated with the specified material. If none exist, {@link #ALL} is
+	 * Get the VeinTool associated with the specified material. If none exist, {@link #HAND} is
 	 * returned.
 	 * 
 	 * @param material the material for which to search
 	 * 
-	 * @return the VeinTool associated with the specified material. {@link #ALL} if none
+	 * @return the VeinTool associated with the specified material. {@link #HAND} if none
 	 */
 	public static VeinTool fromMaterial(Material material) {
 		for (VeinTool tool : values()) {
@@ -149,7 +149,7 @@ public enum VeinTool {
 			}
 		}
 		
-		return VeinTool.ALL;
+		return HAND;
 	}
 	
 	/**

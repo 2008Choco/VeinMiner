@@ -52,7 +52,7 @@ public class BreakBlockListener implements Listener {
 		ItemStack itemUsed = event.getPlayer().getInventory().getItemInMainHand();
 		
 		// VeinTool used check
-		VeinTool tool = (itemUsed != null) ? VeinTool.fromMaterial(itemUsed.getType()) : VeinTool.ALL;
+		VeinTool tool = (itemUsed != null) ? VeinTool.fromMaterial(itemUsed.getType()) : VeinTool.HAND;
 		
 		// Activation check
 		MineActivation activation = EnumUtils.getEnum(MineActivation.class, plugin.getConfig().getString("ActivationMode", "SNEAK"));
@@ -64,11 +64,7 @@ public class BreakBlockListener implements Listener {
 		if (!activation.isValid(player) || player.getGameMode() != GameMode.SURVIVAL) return;
 		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
 		if (tool.hasVeinMinerDisabled(player)) return;
-		if ((!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData())
-				&& !(VeinBlock.isVeinable(VeinTool.ALL, block.getType(), block.getBlockData())
-					&& player.hasPermission("veinminer.veinmine.all")))) {
-			return;
-		}
+		if (!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData())) return;
 		
 		// TIME TO VEINMINE
 		MaterialAlias alias = manager.getAliasFor(block.getType());
