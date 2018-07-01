@@ -23,7 +23,7 @@ public class VeinBlock {
 	private final Set<VeinTool> mineableBy = EnumSet.noneOf(VeinTool.class);
 	
 	private final Material material;
-	private final BlockData data;
+	private final BlockData data, unmodifiedData;
 	
 	private VeinBlock(Material material, BlockData data) {
 		Preconditions.checkNotNull(material, "Cannot set a null material");
@@ -31,6 +31,7 @@ public class VeinBlock {
 		
 		this.material = material;
 		this.data = data;
+		this.unmodifiedData = material.createBlockData();
 	}
 	
 	private VeinBlock(Material material) {
@@ -75,7 +76,7 @@ public class VeinBlock {
 	 * @return true if data is specified (i.e. not null)
 	 */
 	public boolean hasSpecficData() {
-		return !data.equals(material.createBlockData());
+		return !data.equals(unmodifiedData);
 	}
 	
 	/**
