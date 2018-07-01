@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
@@ -49,12 +50,14 @@ public class VeinBlock {
 	
 	/**
 	 * Get the underlying block data value (if any). This method will never return null. If no
-	 * explicit data has been specified, an unmodified {@link BlockData} instance will be returned
+	 * explicit data has been specified, an unmodified {@link BlockData} instance will be returned.
+	 * A copy of the underlying data will be returned, therefore any modifications made on the data
+	 * will not directly affect this VeinBlock's properties.
 	 * 
 	 * @return the block data
 	 */
 	public BlockData getData() {
-		return data;
+		return Bukkit.createBlockData(data.getAsString());
 	}
 	
 	/**
