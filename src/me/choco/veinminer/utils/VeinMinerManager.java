@@ -201,20 +201,16 @@ public class VeinMinerManager {
 			MaterialAlias alias = new MaterialAlias();
 			
 			for (String aliasMaterial : aliasList.split("\\s*,\\s*")) {
-				String[] ids = aliasMaterial.split(";");
-				
 				// Material information
 				BlockData data;
-				boolean specificData = false;
 				try {
-					data = Bukkit.createBlockData(ids[0]);
-					specificData = ids[0].contains("[");
+					data = Bukkit.createBlockData(aliasMaterial.substring(1, aliasMaterial.length() - 1)); // Account for 'quotations'
 				} catch (IllegalArgumentException e) {
-					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + ids[0]);
+					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + aliasMaterial);
 					continue;
 				}
 				
-				alias.addAlias(data.getMaterial(), specificData ? data : null);
+				alias.addAlias(data.getMaterial(), data);
 			}
 			
 			this.aliases.add(alias);
