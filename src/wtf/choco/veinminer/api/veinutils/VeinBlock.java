@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
@@ -57,7 +56,7 @@ public class VeinBlock {
 	 * @return the block data
 	 */
 	public BlockData getData() {
-		return Bukkit.createBlockData(data.getAsString());
+		return data.clone();
 	}
 	
 	/**
