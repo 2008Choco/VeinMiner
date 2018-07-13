@@ -7,10 +7,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.java.annotation.command.Command;
+import org.bukkit.plugin.java.annotation.permission.ChildPermission;
+import org.bukkit.plugin.java.annotation.permission.Permission;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.PlayerSwitchPatternEvent;
@@ -19,6 +22,18 @@ import wtf.choco.veinminer.api.veinutils.VeinTool;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.utils.VeinMinerManager;
 
+@Permission(name = "veinminer.reload", desc = "Allow the use of the '/veinminer reload' subcommand")
+@Permission(name = "veinminer.toggle", desc = "Allow the use of the '/veinminer toggle' subcommand", defaultValue = PermissionDefault.TRUE)
+@Permission(name = "veinminer.pattern", desc = "Allow the use of the '/veinminer pattern' subcommand", defaultValue = PermissionDefault.TRUE)
+@Permission(name = "veinminer.blocklist.list.*", desc = "Allow the use of the '/veinminer blocklist' subcommand", children = {
+	@ChildPermission(name = "veinminer.blocklist.list.pickaxe"),
+	@ChildPermission(name = "veinminer.blocklist.list.axe"),
+	@ChildPermission(name = "veinminer.blocklist.list.shovel"),
+	@ChildPermission(name = "veinminer.blocklist.list.hoe"),
+	@ChildPermission(name = "veinminer.blocklist.list.shears"),
+	@ChildPermission(name = "veinminer.blocklist.list.hand")
+})
+@Command(name = "veinminer", desc = "The main command for VeinMiner", usage = "/<command> <version|reload|blocklist|toggle|pattern>", aliases = {"vm"})
 public class VeinMinerCmd implements CommandExecutor {
 	
 	private final VeinMiner plugin;
@@ -30,7 +45,7 @@ public class VeinMinerCmd implements CommandExecutor {
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String commandLabel, String[] args) {
 		if (args.length == 0) {
 			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle|pattern>");
 			return true;

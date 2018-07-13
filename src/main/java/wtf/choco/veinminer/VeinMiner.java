@@ -8,8 +8,15 @@ import com.google.common.base.Preconditions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.annotation.dependency.SoftDependency;
+import org.bukkit.plugin.java.annotation.permission.ChildPermission;
+import org.bukkit.plugin.java.annotation.permission.Permission;
+import org.bukkit.plugin.java.annotation.plugin.Description;
+import org.bukkit.plugin.java.annotation.plugin.Plugin;
+import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
@@ -23,6 +30,18 @@ import wtf.choco.veinminer.utils.VeinMinerManager;
 import wtf.choco.veinminer.utils.metrics.Metrics;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
 
+@Permission(name = "veinminer.veinmine.*", desc = "Allow the use of VeinMiner for all tools", defaultValue = PermissionDefault.TRUE, children = {
+	@ChildPermission(name = "veinminer.veinmine.pickaxe"),
+	@ChildPermission(name = "veinminer.veinmine.axe"),
+	@ChildPermission(name = "veinminer.veinmine.shovel"),
+	@ChildPermission(name = "veinminer.veinmine.hoe"),
+	@ChildPermission(name = "veinminer.veinmine.shears"),
+	@ChildPermission(name = "veinminer.veinmine.hand")
+})
+@Author("2008Choco")
+@Description("${project.description}")
+@SoftDependency("NoCheatPlus") @SoftDependency("AAC") @SoftDependency("AntiAura")
+@Plugin(name = "VeinMiner", version = "${project.version}")
 public class VeinMiner extends JavaPlugin {
 	
 	private static VeinMiner instance;
