@@ -14,6 +14,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.dependency.SoftDependency;
 import org.bukkit.plugin.java.annotation.permission.ChildPermission;
 import org.bukkit.plugin.java.annotation.permission.Permission;
+import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
+import org.bukkit.plugin.java.annotation.plugin.ApiVersion.Target;
 import org.bukkit.plugin.java.annotation.plugin.Description;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
@@ -41,6 +43,7 @@ import wtf.choco.veinminer.utils.metrics.StatTracker;
 @Author("2008Choco")
 @Description("Aims to recreate the Forge mod, VeinMiner, in an efficient, flexible and feature-filled way")
 @SoftDependency("NoCheatPlus") @SoftDependency("AAC") @SoftDependency("AntiAura")
+@ApiVersion(Target.v1_13)
 @Plugin(name = "VeinMiner", version = "1.12.0")
 public class VeinMiner extends JavaPlugin {
 	
