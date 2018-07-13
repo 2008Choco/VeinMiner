@@ -1,7 +1,7 @@
-name: VeinMiner
+name: ${project.name}
 main: me.choco.veinminer.VeinMiner
-version: 1.11.3
-description: VeinMiner for CraftBukkit, Bukkit, and Spigot
+version: ${project.version}
+description: ${project.description}
 author: 2008Choco
 softdepend: [NoCheatPlus, AAC, AntiAura]
 commands:
