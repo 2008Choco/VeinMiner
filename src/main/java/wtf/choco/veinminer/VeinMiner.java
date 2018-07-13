@@ -39,9 +39,9 @@ import wtf.choco.veinminer.utils.metrics.StatTracker;
 	@ChildPermission(name = "veinminer.veinmine.hand")
 })
 @Author("2008Choco")
-@Description("${project.description}")
+@Description("Aims to recreate the Forge mod, VeinMiner, in an efficient, flexible and feature-filled way")
 @SoftDependency("NoCheatPlus") @SoftDependency("AAC") @SoftDependency("AntiAura")
-@Plugin(name = "VeinMiner", version = "${project.version}")
+@Plugin(name = "VeinMiner", version = "1.12.0")
 public class VeinMiner extends JavaPlugin {
 	
 	private static VeinMiner instance;
