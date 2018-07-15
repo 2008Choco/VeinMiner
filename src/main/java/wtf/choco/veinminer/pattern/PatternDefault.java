@@ -9,10 +9,10 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.veinutils.MaterialAlias;
-import wtf.choco.veinminer.api.veinutils.VeinBlock;
-import wtf.choco.veinminer.api.veinutils.VeinTool;
-import wtf.choco.veinminer.utils.VBlockFace;
+import wtf.choco.veinminer.api.MaterialAlias;
+import wtf.choco.veinminer.api.VBlockFace;
+import wtf.choco.veinminer.api.VeinTool;
+import wtf.choco.veinminer.api.blocks.VeinBlock;
 
 /**
  * The default {@link VeinMiningPattern} implementation used by all players unless explicitly set.

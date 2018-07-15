@@ -4,9 +4,9 @@ import java.util.Set;
 
 import org.bukkit.block.Block;
 
-import wtf.choco.veinminer.api.veinutils.MaterialAlias;
-import wtf.choco.veinminer.api.veinutils.VeinBlock;
-import wtf.choco.veinminer.api.veinutils.VeinTool;
+import wtf.choco.veinminer.api.MaterialAlias;
+import wtf.choco.veinminer.api.VeinTool;
+import wtf.choco.veinminer.api.blocks.VeinBlock;
 
 /**
  * A functional interface to assist in the allocation of vein mining patterns. For application, see

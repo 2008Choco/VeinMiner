@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.api.veinutils;
+package wtf.choco.veinminer.api;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,7 +10,7 @@ import com.google.common.collect.Iterables;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
-import wtf.choco.veinminer.utils.VeinMinerManager;
+import wtf.choco.veinminer.api.blocks.VeinBlock;
 
 /**
  * Represents an aliasing between multiple {@link VeinBlock}s which VeinMiner can recognise as a

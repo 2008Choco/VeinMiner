@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.veinutils.VeinTool;
+import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 
 public class VeinMinerCmdTabCompleter implements TabCompleter {

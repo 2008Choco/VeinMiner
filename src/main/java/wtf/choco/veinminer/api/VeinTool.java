@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.api.veinutils;
+package wtf.choco.veinminer.api;
 
 import java.util.Arrays;
 import java.util.HashSet;

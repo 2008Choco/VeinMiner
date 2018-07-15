@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.api;
+package wtf.choco.veinminer.api.event;
 
 import java.util.Set;
 
@@ -8,8 +8,8 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
-import wtf.choco.veinminer.api.veinutils.VeinBlock;
-import wtf.choco.veinminer.api.veinutils.VeinTool;
+import wtf.choco.veinminer.api.VeinTool;
+import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 
 /**

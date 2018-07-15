@@ -16,11 +16,11 @@ import org.bukkit.plugin.java.annotation.permission.ChildPermission;
 import org.bukkit.plugin.java.annotation.permission.Permission;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.PlayerSwitchPatternEvent;
-import wtf.choco.veinminer.api.veinutils.VeinBlock;
-import wtf.choco.veinminer.api.veinutils.VeinTool;
+import wtf.choco.veinminer.api.VeinMinerManager;
+import wtf.choco.veinminer.api.VeinTool;
+import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.api.event.PlayerSwitchPatternEvent;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
-import wtf.choco.veinminer.utils.VeinMinerManager;
 
 @Permission(name = "veinminer.reload", desc = "Allow the use of the '/veinminer reload' subcommand")
 @Permission(name = "veinminer.toggle", desc = "Allow the use of the '/veinminer toggle' subcommand", defaultValue = PermissionDefault.TRUE)
@@ -241,7 +241,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 				
 				for (VeinBlock block : blocklist) {
-					sender.sendMessage(ChatColor.YELLOW + "[*] " + (block.hasSpecificData() ? block.getData().getAsString() : block.getMaterial().name()));
+					sender.sendMessage(ChatColor.YELLOW + "[*] " + block.getData().getAsString());
 				}
 			}
 			

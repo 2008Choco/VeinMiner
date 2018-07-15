@@ -17,15 +17,15 @@ import org.bukkit.inventory.ItemStack;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
+import wtf.choco.veinminer.api.MaterialAlias;
 import wtf.choco.veinminer.api.MineActivation;
-import wtf.choco.veinminer.api.PlayerVeinMineEvent;
-import wtf.choco.veinminer.api.veinutils.MaterialAlias;
-import wtf.choco.veinminer.api.veinutils.VeinBlock;
-import wtf.choco.veinminer.api.veinutils.VeinTool;
+import wtf.choco.veinminer.api.VeinMinerManager;
+import wtf.choco.veinminer.api.VeinTool;
+import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.utils.NonNullHashSet;
 import wtf.choco.veinminer.utils.ReflectionUtil;
-import wtf.choco.veinminer.utils.VeinMinerManager;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
 
 public class BreakBlockListener implements Listener {

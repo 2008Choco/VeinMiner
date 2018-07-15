@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.utils;
+package wtf.choco.veinminer.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +18,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.veinutils.MaterialAlias;
-import wtf.choco.veinminer.api.veinutils.VeinBlock;
-import wtf.choco.veinminer.api.veinutils.VeinTool;
+import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.pattern.PatternDefault;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 

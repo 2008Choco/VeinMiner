@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.api;
+package wtf.choco.veinminer.api.event;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

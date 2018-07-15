@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.api.veinutils;
+package wtf.choco.veinminer.api.blocks;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -11,6 +11,8 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+
+import wtf.choco.veinminer.api.VeinTool;
 
 /**
  * Represents a set of material and block data. A VeinBlock may or may not possess additional data

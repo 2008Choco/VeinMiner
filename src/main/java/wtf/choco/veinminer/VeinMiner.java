@@ -24,11 +24,11 @@ import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
+import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCmd;
 import wtf.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import wtf.choco.veinminer.events.BreakBlockListener;
 import wtf.choco.veinminer.pattern.PatternRegistry;
-import wtf.choco.veinminer.utils.VeinMinerManager;
 import wtf.choco.veinminer.utils.metrics.Metrics;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
 

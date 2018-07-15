@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.utils;
+package wtf.choco.veinminer.api;
 
 import com.google.common.base.Preconditions;
 
