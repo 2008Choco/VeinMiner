@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -24,9 +23,6 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 * Construct a new alias between varying vein blocks.
 	 * 
 	 * @param blocks the blocks to alias
-	 * 
-	 * @see VeinBlock#getVeinminableBlock(Material, BlockData)
-	 * @see VeinBlock#getVeinminableBlock(Material)
 	 */
 	public MaterialAlias(VeinBlock... blocks) {
 		for (VeinBlock block : blocks) {
@@ -49,43 +45,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	}
 	
 	/**
-	 * Add a material and its block data to this alias. If the VeinBlock does not already exist, it
-	 * will be registered to the {@link VeinMinerManager} with the same {@link VeinTool}s as the
-	 * dominant {@link VeinBlock}.
-	 * 
-	 * @param material the material to add
-	 * @param data the data to add
-	 * 
-	 * @return the newly aliased VeinBlock
-	 */
-	public VeinBlock addAlias(Material material, BlockData data) {
-		Preconditions.checkNotNull(material, "Cannot add a null material alias");
-		
-		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
-		if (block == null) {
-			VeinTool[] mineableBy = (blocks.size() == 0) ? VeinTool.values() : Iterables.get(blocks, 0).getMineableBy();
-			block = VeinBlock.registerVeinminableBlock(material, data, mineableBy);
-		}
-		
-		this.addAlias(block);
-		return block;
-	}
-	
-	/**
-	 * Add a material with no specific block data to this alias. If the VeinBlock does not already exist,
-	 * it will be registered to the {@link VeinMinerManager} with the same {@link VeinTool}s as the
-	 * dominant {@link VeinBlock}.
-	 * 
-	 * @param material the material to add
-	 * 
-	 * @return the newly aliased added
-	 */
-	public VeinBlock addAlias(Material material) {
-		return addAlias(material, null);
-	}
-	
-	/**
-	 * Remove a VeinBlock from this alias.
+	 * Remove a NVeinBlock from this alias.
 	 * 
 	 * @param block the block to remove
 	 */
@@ -96,11 +56,16 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	/**
 	 * Remove a material with specific block data from this alias.
 	 * 
-	 * @param material the material to remove
 	 * @param data the data to remove
 	 */
-	public void removeAlias(Material material, BlockData data) {
-		this.removeAlias(VeinBlock.getVeinminableBlock(material, data));
+	public void removeAlias(BlockData data) {
+		Iterator<VeinBlock> blockIterator = this.iterator();
+		
+		while (blockIterator.hasNext()) {
+			if (blockIterator.next().isSimilar(data)) {
+				blockIterator.remove();
+			}
+		}
 	}
 	
 	/**
@@ -109,7 +74,13 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 * @param material the material to remove
 	 */
 	public void removeAlias(Material material) {
-		this.removeAlias(material, null);
+		Iterator<VeinBlock> blockIterator = this.iterator();
+		
+		while (blockIterator.hasNext()) {
+			if (blockIterator.next().getType() == material) {
+				blockIterator.remove();
+			}
+		}
 	}
 	
 	/**
@@ -126,13 +97,12 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	/**
 	 * Check whether a material with specific block data is aliased under this material alias.
 	 * 
-	 * @param material the material to check
 	 * @param data the data to check
 	 * 
 	 * @return true if aliased, false otherwise
 	 */
-	public boolean isAliased(Material material, BlockData data) {
-		return blocks.stream().anyMatch(b -> b.getMaterial() == material && (!b.hasSpecificData() || b.getData().equals(data)));
+	public boolean isAliased(BlockData data) {
+		return blocks.stream().anyMatch(b -> b.isSimilar(data));
 	}
 	
 	/**
@@ -143,7 +113,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 * @return true if aliased, false otherwise
 	 */
 	public boolean isAliased(Material material) {
-		return blocks.stream().anyMatch(b -> b.getMaterial() == material);
+		return blocks.stream().anyMatch(b -> b.getType() == material);
 	}
 	
 	/**

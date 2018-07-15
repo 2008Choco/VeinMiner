@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,8 @@ import org.bukkit.entity.Player;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.api.blocks.VeinBlockDatable;
+import wtf.choco.veinminer.api.blocks.VeinBlockWildcarded;
 import wtf.choco.veinminer.pattern.PatternDefault;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 
@@ -27,6 +30,7 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
  */
 public class VeinMinerManager {
 	
+	private final Set<VeinBlock> veinmineable = new HashSet<>();
 	private final List<MaterialAlias> aliases = new ArrayList<>();
 	private final Set<UUID> disabledWorlds = new HashSet<>();
 	private final Map<UUID, VeinMiningPattern> playerMiningPattern = new HashMap<>();
@@ -42,14 +46,17 @@ public class VeinMinerManager {
 	 */
 	public void loadVeinableBlocks() {
 		for (String tool : plugin.getConfig().getConfigurationSection("BlockList").getKeys(false)) {
+			if (tool.equalsIgnoreCase("all")) continue;
+			
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 			
 			VeinTool veinTool = VeinTool.getByName(tool);
-			boolean all = tool.equalsIgnoreCase("all") && veinTool == null;
+			boolean all = tool.equalsIgnoreCase("all");
 			
 			for (String value : blocks) {
 				// Material information
 				BlockData data;
+				boolean specificData = value.endsWith("]");
 				
 				try {
 					data = Bukkit.createBlockData(value);
@@ -58,26 +65,113 @@ public class VeinMinerManager {
 					continue;
 				}
 				
-				Material material = data.getMaterial();
-				
 				// Registration (ugly, but it has to be this way)
-				if (VeinBlock.isVeinable(material, data)) {
-					VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
+				if (isVeinmineable(data)) {
+					VeinBlock block = getVeinmineableBlock(data);
 					
 					if (all) {
-						block.addMineableBy(VeinTool.values());
-					} else {
-						block.addMineableBy(veinTool);
+						for (VeinTool localTool : VeinTool.values())
+							block.setVeinmineableBy(localTool, true);
+						continue;
 					}
+					
+					block.setVeinmineableBy(veinTool, true);
 				} else {
-					if (all) {
-						VeinBlock.registerVeinminableBlock(material, data, VeinTool.values());
+					VeinTool[] tools = all ? VeinTool.values() : new VeinTool[] { veinTool };
+					
+					if (specificData) {
+						this.registerVeinmineableBlock(data, tools);
 					} else {
-						VeinBlock.registerVeinminableBlock(material, data, veinTool);
+						this.registerVeinmineableBlock(data.getMaterial(), tools);
 					}
 				}
 			}
 		}
+	}
+	
+	public VeinBlock registerVeinmineableBlock(BlockData data, VeinTool... tools) {
+		Preconditions.checkNotNull(data, "data");
+		
+		VeinBlock existing = getVeinmineableBlock(data);
+		if (existing != null) {
+			for (VeinTool tool : tools) {
+				existing.setVeinmineableBy(tool, true);
+			}
+			
+			return existing;
+		}
+		
+		VeinBlock block = new VeinBlockDatable(data, tools);
+		this.veinmineable.add(block);
+		return block;
+	}
+	
+	public VeinBlock registerVeinmineableBlock(Material material, VeinTool... tools) {
+		Preconditions.checkNotNull(material, "Cannot register a null material");
+		
+		VeinBlock existing = getVeinmineableBlock(material);
+		if (existing != null) {
+			for (VeinTool tool : tools) {
+				existing.setVeinmineableBy(tool, true);
+			}
+			
+			return existing;
+		}
+		
+		VeinBlock block = new VeinBlockWildcarded(material, tools);
+		this.veinmineable.add(block);
+		return block;
+	}
+	
+	public void unregisterVeinmineableBlock(VeinBlock block) {
+		this.veinmineable.remove(block);
+	}
+	
+	public VeinBlock getVeinmineableBlock(BlockData data) {
+		// Search for wildcarded first
+		VeinBlock wildcarded = getVeinmineableBlock(data.getMaterial());
+		if (wildcarded != null) return wildcarded;
+		
+		// Now search for specific data
+		return veinmineable.stream()
+			.filter(b -> b.isSimilar(data))
+			.findFirst().orElse(null);
+	}
+	
+	public VeinBlock getVeinmineableBlock(Material material) {
+		return veinmineable.stream()
+			.filter(b -> b.getType() == material)
+			.findFirst().orElse(null);
+	}
+	
+	public boolean isVeinmineableBy(BlockData data, VeinTool tool) {
+		VeinBlock block = getVeinmineableBlock(data);
+		return block != null && block.isVeinmineableBy(tool);
+	}
+	
+	public boolean isVeinmineableBy(Material material, VeinTool tool) {
+		VeinBlock block = getVeinmineableBlock(material);
+		return block != null && block.isVeinmineableBy(tool);
+	}
+	
+	public boolean isVeinmineable(BlockData data) {
+		return getVeinmineableBlock(data) != null;
+	}
+	
+	public boolean isVeinmineable(Material material) {
+		return getVeinmineableBlock(material) != null;
+	}
+	
+	public Set<VeinBlock> getVeinmineableBlocks(VeinTool tool) {
+		return veinmineable.stream().filter(b -> b.isVeinmineableBy(tool)).collect(Collectors.toSet());
+	}
+	
+	public Set<VeinBlock> getVeinmineableBlocks() {
+		return Collections.unmodifiableSet(veinmineable);
+	}
+	
+	public void clearVeinmineableBlocks() {
+		this.veinmineable.clear();
 	}
 	
 	/**
@@ -167,15 +261,14 @@ public class VeinMinerManager {
 	}
 	
 	/**
-	 * Get the alias associated with a specific material and block data.
+	 * Get the alias associated with a specific block data.
 	 * 
-	 * @param material the material to reference
 	 * @param data the block data to reference
 	 * 
 	 * @return the associated alias. null if none
 	 */
-	public MaterialAlias getAliasFor(Material material, BlockData data) {
-		return aliases.stream().filter(a -> a.isAliased(material, data)).findFirst().orElse(null);
+	public MaterialAlias getAliasFor(BlockData data) {
+		return aliases.stream().filter(a -> a.isAliased(data)).findFirst().orElse(null);
 	}
 	
 	/**
@@ -186,7 +279,7 @@ public class VeinMinerManager {
 	 * @return the associated alias. null if none
 	 */
 	public MaterialAlias getAliasFor(Material material) {
-		return this.getAliasFor(material, null);
+		return aliases.stream().filter(a -> a.isAliased(material)).findFirst().orElse(null);
 	}
 	
 	/**
@@ -201,6 +294,8 @@ public class VeinMinerManager {
 			for (String aliasMaterial : aliasList.split("\\s*,\\s*")) {
 				// Material information
 				BlockData data;
+				boolean specificData = aliasMaterial.endsWith("]");
+				
 				try {
 					data = Bukkit.createBlockData(aliasMaterial); // Account for 'quotations'
 				} catch (IllegalArgumentException e) {
@@ -208,7 +303,16 @@ public class VeinMinerManager {
 					continue;
 				}
 				
-				alias.addAlias(data.getMaterial(), data);
+				VeinBlock block = getVeinmineableBlock(data);
+				if (block == null) {
+					if (specificData) {
+						block = registerVeinmineableBlock(data);
+					} else {
+						block = registerVeinmineableBlock(data.getMaterial());
+					}
+				}
+				
+				alias.addAlias(block);
 			}
 			
 			this.aliases.add(alias);
@@ -248,7 +352,7 @@ public class VeinMinerManager {
 	 * Clear all localised data in the VeinMiner Manager.
 	 */
 	public void clearLocalisedData() {
-		VeinBlock.clearVeinableBlocks();
+		this.veinmineable.clear();
 		this.disabledWorlds.clear();
 		this.playerMiningPattern.clear();
 		this.aliases.clear();

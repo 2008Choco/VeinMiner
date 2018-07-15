@@ -69,16 +69,16 @@ public class BreakBlockListener implements Listener {
 		
 		Material blockType = block.getType();
 		BlockData blockData = block.getBlockData();
-		if (!VeinBlock.isVeinable(tool, blockType, blockData)) return;
+		if (!manager.isVeinmineableBy(blockData, tool)) return;
 		
 		// TIME TO VEINMINE
 		MaterialAlias alias = manager.getAliasFor(blockType);
 		if (alias == null) {
-			alias = manager.getAliasFor(blockType, blockData);
+			alias = manager.getAliasFor(blockData);
 		}
 		
 		this.blocks.add(block);
-		VeinBlock type = VeinBlock.getVeinminableBlock(blockType, blockData);
+		VeinBlock type = manager.getVeinmineableBlock(blockData);
 		VeinMiningPattern pattern = manager.getPatternFor(player);
 		pattern.allocateBlocks(blocks, type, block, tool, alias);
 		

@@ -76,7 +76,7 @@ public final class PatternDefault implements VeinMiningPattern {
 	}
 	
 	private boolean blockIsSameMaterial(VeinBlock type, Block block, MaterialAlias alias) {
-		return type.isSimilar(block) || (alias != null && alias.isAliased(block.getType(), block.getBlockData()));
+		return type.isSimilar(block) || (alias != null && alias.isAliased(type));
 	}
 	
 	private VBlockFace[] getFacesToMine() {

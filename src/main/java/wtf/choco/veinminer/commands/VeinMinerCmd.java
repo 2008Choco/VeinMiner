@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -163,30 +162,34 @@ public class VeinMinerCmd implements CommandExecutor {
 				
 				// Get block data from command parameter
 				BlockData data;
-				boolean specificData = false;
+				boolean specificData = args[3].endsWith("]");
 				try {
 					data = Bukkit.createBlockData(args[3]);
-					specificData = args[3].contains("[");
 				} catch (IllegalArgumentException e) {
 					this.sendMessage(sender, "Unknown block type (was it an item?) and/or block states. " + args[3]);
 					return true;
 				}
 				
-				Material material = data.getMaterial();
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
-				if (VeinBlock.isVeinable(tool, material, specificData ? data : null)) {
+				if (manager.isVeinmineableBy(data, tool)) {
 					this.sendMessage(sender, "Block Id " + data.getAsString() + " is already on the list");
 					return true;
 				}
 				
-				blocklist.add(data.getAsString());
+				VeinBlock block = null;
+				if (specificData) {
+					block = manager.registerVeinmineableBlock(data, tool);
+				} else {
+					block = manager.registerVeinmineableBlock(data.getMaterial(), tool);
+				}
+				
+				blocklist.add(block.toString());
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				VeinBlock.registerVeinminableBlock(material, specificData ? data : null, tool);
-				this.sendMessage(sender, "Block Id " + data.getAsString() + " successfully added to the list");
+				this.sendMessage(sender, "Block Id " + block + " successfully added to the list");
 			}
 			
 			// /veinminer blocklist <tool> remove
@@ -203,31 +206,32 @@ public class VeinMinerCmd implements CommandExecutor {
 				
 				// Get block data from command parameter
 				BlockData data;
-				boolean specificData = false;
 				try {
 					data = Bukkit.createBlockData(args[3]);
-					specificData = args[3].contains("[");
 				} catch (IllegalArgumentException e) {
 					this.sendMessage(sender, "Unknown block type (was it an item?) and/or block states. " + args[3]);
 					return true;
 				}
 				
-				Material material = data.getMaterial();
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
-				if (!VeinBlock.isVeinable(tool, material, specificData ? data : null)) {
+				if (!manager.isVeinmineableBy(data, tool)) {
 					this.sendMessage(sender, "Block Id " + data.getAsString() + " is not on the list");
 					return true;
 				}
+
+				VeinBlock block = manager.getVeinmineableBlock(data);
+				block.setVeinmineableBy(tool, false);
+				if (block.getVeinmineableBy().size() == 0) {
+					this.manager.unregisterVeinmineableBlock(block);
+				}
 				
-				blocklist.remove(data.getAsString());
+				blocklist.remove(block.toString());
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				VeinBlock block = VeinBlock.getVeinminableBlock(material, specificData ? data : null);
-				block.removeMineableBy(tool);
-				this.sendMessage(sender, "Block Id " + data.getAsString() + " successfully removed from the list");
+				this.sendMessage(sender, "Block Id " + block + " successfully removed from the list");
 			}
 			
 			// /veinminer blocklist <tool> list
@@ -237,11 +241,11 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 				
-				Set<VeinBlock> blocklist = VeinBlock.getVeinminableBlocks(tool);
+				Set<VeinBlock> blocklist = manager.getVeinmineableBlocks(tool);
 				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 				
 				for (VeinBlock block : blocklist) {
-					sender.sendMessage(ChatColor.YELLOW + "[*] " + block.getData().getAsString());
+					sender.sendMessage(ChatColor.YELLOW + "  - " + block);
 				}
 			}
 			
