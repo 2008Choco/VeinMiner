@@ -6,7 +6,9 @@ import java.util.Set;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -64,20 +66,24 @@ public class BreakBlockListener implements Listener {
 		if (!activation.isValid(player) || player.getGameMode() != GameMode.SURVIVAL) return;
 		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
 		if (tool.hasVeinMinerDisabled(player)) return;
-		if (!VeinBlock.isVeinable(tool, block.getType(), block.getBlockData())) return;
+		
+		Material blockType = block.getType();
+		BlockData blockData = block.getBlockData();
+		if (!VeinBlock.isVeinable(tool, blockType, blockData)) return;
 		
 		// TIME TO VEINMINE
-		MaterialAlias alias = manager.getAliasFor(block.getType());
+		MaterialAlias alias = manager.getAliasFor(blockType);
 		if (alias == null) {
-			alias = manager.getAliasFor(block.getType(), block.getBlockData());
+			alias = manager.getAliasFor(blockType, blockData);
 		}
 		
 		this.blocks.add(block);
+		VeinBlock type = VeinBlock.getVeinminableBlock(blockType, blockData);
 		VeinMiningPattern pattern = manager.getPatternFor(player);
-		pattern.allocateBlocks(blocks, block, tool, alias);
+		pattern.allocateBlocks(blocks, type, block, tool, alias);
 		
 		// Fire a new PlayerVeinMineEvent
-		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, VeinBlock.getVeinminableBlock(block.getType(), block.getBlockData()), tool, blocks, pattern);
+		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, type, tool, blocks, pattern);
 		Bukkit.getPluginManager().callEvent(vmEvent);
 		if (vmEvent.isCancelled()) {
 			this.blocks.clear();

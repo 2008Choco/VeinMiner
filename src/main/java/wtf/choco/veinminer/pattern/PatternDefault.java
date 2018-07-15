@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.veinutils.MaterialAlias;
+import wtf.choco.veinminer.api.veinutils.VeinBlock;
 import wtf.choco.veinminer.api.veinutils.VeinTool;
 import wtf.choco.veinminer.utils.VBlockFace;
 
@@ -38,7 +39,7 @@ public final class PatternDefault implements VeinMiningPattern {
 	}
 	
 	@Override
-	public void allocateBlocks(Set<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
+	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool, MaterialAlias alias) {
 		int maxVeinSize = tool.getMaxVeinSize();
 		VBlockFace[] facesToMine = getFacesToMine();
 		
@@ -52,7 +53,7 @@ public final class PatternDefault implements VeinMiningPattern {
 					}
 					
 					Block nextBlock = face.getRelative(b);
-					if (blocks.contains(nextBlock) || !blockIsSameMaterial(origin, nextBlock, alias)) {
+					if (blocks.contains(nextBlock) || !blockIsSameMaterial(type, nextBlock, alias)) {
 						continue;
 					}
 					
@@ -74,9 +75,8 @@ public final class PatternDefault implements VeinMiningPattern {
 		return key;
 	}
 	
-	private boolean blockIsSameMaterial(Block original, Block block, MaterialAlias alias) {
-		return original.getBlockData().equals(block.getBlockData())
-			|| (alias != null && alias.isAliased(block.getType(), block.getBlockData()));
+	private boolean blockIsSameMaterial(VeinBlock type, Block block, MaterialAlias alias) {
+		return type.isSimilar(block) || (alias != null && alias.isAliased(block.getType(), block.getBlockData()));
 	}
 	
 	private VBlockFace[] getFacesToMine() {

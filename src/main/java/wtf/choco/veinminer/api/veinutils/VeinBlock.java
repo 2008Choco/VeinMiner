@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
 /**
@@ -77,7 +78,7 @@ public class VeinBlock {
 	 * 
 	 * @return true if data is specified (i.e. not null)
 	 */
-	public boolean hasSpecficData() {
+	public boolean hasSpecificData() {
 		return !data.equals(unmodifiedData);
 	}
 	
@@ -130,6 +131,45 @@ public class VeinBlock {
 	 */
 	public VeinTool[] getMineableBy() {
 		return mineableBy.toArray(new VeinTool[mineableBy.size()]);
+	}
+	
+	/**
+	 * Check whether the provided block is encapsulated under this VeinBlock type. This method will
+	 * return true such that the block's type and data are identical. Alternatively, if this VeinBlock
+	 * instance has no specific data associated with it (i.e. {@link #hasSpecificData()} == false),
+	 * then the provided block's data is ignored and only type is checked.
+	 * 
+	 * @param block the block to check
+	 * 
+	 * @return true if similar, false otherwise
+	 */
+	public boolean isSimilar(Block block) {
+		return block != null && material == block.getType() && (!hasSpecificData() || data.equals(block.getBlockData()));
+	}
+	
+	/**
+	 * Check whether the provided block data is encapsulated under this VeinBlock type. This method will
+	 * return true such that the block data's type and data are identical. Alternatively, if this VeinBlock
+	 * instance has no specific data associated with it (i.e. {@link #hasSpecificData()} == false),
+	 * then the provided block data's data is ignored and only type is checked.
+	 * 
+	 * @param blockdata the block data to check
+	 * 
+	 * @return true if similar, false otherwise
+	 */
+	public boolean isSimilar(BlockData blockdata) {
+		return blockdata != null && material == blockdata.getMaterial() && (!hasSpecificData() || data.equals(blockdata));
+	}
+	
+	/**
+	 * Check whether the provided material is similar to that held in this VeinBlock
+	 * 
+	 * @param type the material type to check
+	 * 
+	 * @return true if similar, false otherwise
+	 */
+	public boolean isSimilar(Material type) {
+		return material == type;
 	}
 	
 	@Override
@@ -198,7 +238,7 @@ public class VeinBlock {
 		Preconditions.checkNotNull(data, "Cannot get a null block data");
 		
 		return VEINABLE.stream().filter(b -> b.material == material)
-				.filter(b -> Objects.equals(b.data, data)).findFirst().orElse(null);
+				.filter(b -> !b.hasSpecificData() || b.data.equals(data)).findFirst().orElse(null);
 	}
 	
 	/**
@@ -226,7 +266,7 @@ public class VeinBlock {
 	 */
 	public static boolean isVeinable(VeinTool tool, Material material, BlockData data) {
 		Preconditions.checkNotNull(data, "Cannot check for null block data");
-		return VEINABLE.stream().anyMatch(b -> b.material == material && (!b.hasSpecficData() || b.data.equals(data)) && b.isMineableBy(tool));
+		return VEINABLE.stream().anyMatch(b -> b.material == material && (!b.hasSpecificData() || b.data.equals(data)) && b.isMineableBy(tool));
 	}
 	
 	/**

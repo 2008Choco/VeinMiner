@@ -241,7 +241,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 				
 				for (VeinBlock block : blocklist) {
-					sender.sendMessage(ChatColor.YELLOW + "[*] " + (block.hasSpecficData() ? block.getData().getAsString() : block.getMaterial().name()));
+					sender.sendMessage(ChatColor.YELLOW + "[*] " + (block.hasSpecificData() ? block.getData().getAsString() : block.getMaterial().name()));
 				}
 			}
 			

@@ -9,6 +9,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
 import wtf.choco.veinminer.api.veinutils.MaterialAlias;
+import wtf.choco.veinminer.api.veinutils.VeinBlock;
 import wtf.choco.veinminer.api.veinutils.VeinTool;
 
 /**
@@ -28,11 +29,12 @@ public interface VeinMiningPattern extends Keyed {
 	 * 
 	 * @param blocks a set of all blocks to break. Valid blocks should be added here. The "origin"
 	 * block passed to this method will be added automatically
+	 * @param type the type of VeinBlock being vein mined
 	 * @param origin the block where the vein mine was initiated
 	 * @param tool the tool used to break the block
 	 * @param alias an alias of the block being broken if one exists. May be null
 	 */
-	public void allocateBlocks(Set<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias);
+	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool, MaterialAlias alias);
 	
 	/**
 	 * Allocate the blocks that should be broken by the vein mining pattern. Note that the breaking
@@ -44,11 +46,12 @@ public interface VeinMiningPattern extends Keyed {
 	 * 
 	 * @param blocks a set of all blocks to break. Valid blocks should be added here. The "origin"
 	 * block passed to this method will be added automatically
+	 * @param type the type of VeinBlock being vein mined
 	 * @param origin the block where the vein mine was initiated
 	 * @param tool the tool used to break the block
 	 */
-	public default void allocateBlocks(Set<Block> blocks, Block origin, VeinTool tool) {
-		this.allocateBlocks(blocks, origin, tool, null);
+	public default void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool) {
+		this.allocateBlocks(blocks, type, origin, tool, null);
 	}
 	
 	/**
@@ -65,8 +68,8 @@ public interface VeinMiningPattern extends Keyed {
 		
 		return new VeinMiningPattern() {
 			@Override
-			public void allocateBlocks(Set<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias) {
-				blockAllocator.allocate(blocks, origin, tool, alias);
+			public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool, MaterialAlias alias) {
+				blockAllocator.allocate(blocks, type, origin, tool, alias);
 			}
 			
 			@Override

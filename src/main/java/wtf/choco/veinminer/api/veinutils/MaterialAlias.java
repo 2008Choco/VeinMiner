@@ -63,7 +63,8 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 		
 		VeinBlock block = VeinBlock.getVeinminableBlock(material, data);
 		if (block == null) {
-			block = VeinBlock.registerVeinminableBlock(material, data, Iterables.get(blocks, 0).getMineableBy());
+			VeinTool[] mineableBy = (blocks.size() == 0) ? VeinTool.values() : Iterables.get(blocks, 0).getMineableBy();
+			block = VeinBlock.registerVeinminableBlock(material, data, mineableBy);
 		}
 		
 		this.addAlias(block);
@@ -131,7 +132,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 * @return true if aliased, false otherwise
 	 */
 	public boolean isAliased(Material material, BlockData data) {
-		return blocks.stream().anyMatch(b -> b.getMaterial() == material && (!b.hasSpecficData() || b.getData().equals(data)));
+		return blocks.stream().anyMatch(b -> b.getMaterial() == material && (!b.hasSpecificData() || b.getData().equals(data)));
 	}
 	
 	/**

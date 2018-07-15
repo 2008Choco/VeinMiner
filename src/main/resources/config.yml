@@ -54,7 +54,7 @@ BlockList:
     - 'minecraft:jungle_log'
     - 'minecraft:oak_log'
     - 'minecraft:spruce_log'
-    - 'minecraft:melon_block'
+    - 'minecraft:melon'
     - 'minecraft:pumpkin'
     - 'minecraft:carved_pumpkin'
     - 'minecraft:red_mushroom_block'
@@ -86,7 +86,6 @@ BlockList:
     - 'minecraft:red_wool'
     - 'minecraft:white_wool'
     - 'minecraft:yellow_wool'
-    - 'minecraft:web'
     - 'minecraft:acacia_leaves'
     - 'minecraft:birch_leaves'
     - 'minecraft:dark_oak_leaves'
@@ -100,6 +99,6 @@ BlockList:
     - 'minecraft:packed_ice'
     
 Aliases:
-- 'minecraft:red_mushroom_block','minecraft:brown_mushroom_block'
-- 'minecraft:grass','minecraft:tall_grass'
-- 'minecraft:pumpkin','minecraft:carved_pumpkin'
+- 'minecraft:red_mushroom_block,minecraft:brown_mushroom_block'
+- 'minecraft:grass,minecraft:tall_grass'
+- 'minecraft:pumpkin,minecraft:carved_pumpkin'

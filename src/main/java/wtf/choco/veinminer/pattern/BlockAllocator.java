@@ -5,6 +5,7 @@ import java.util.Set;
 import org.bukkit.block.Block;
 
 import wtf.choco.veinminer.api.veinutils.MaterialAlias;
+import wtf.choco.veinminer.api.veinutils.VeinBlock;
 import wtf.choco.veinminer.api.veinutils.VeinTool;
 
 /**
@@ -24,12 +25,13 @@ public interface BlockAllocator {
 	 * 
 	 * @param blocks a set of all blocks to break. Valid blocks should be added here. The "origin"
 	 * block passed to this method will be added automatically
+	 * @param type the type of VeinBlock being vein mined
 	 * @param origin the block where the vein mine was initiated
 	 * @param tool the tool used to break the block
 	 * @param alias an alias of the block being broken if one exists. May be null
 	 * 
-	 * @see VeinMiningPattern#allocateBlocks(Set, Block, VeinTool, MaterialAlias)
+	 * @see VeinMiningPattern#allocateBlocks(Set, VeinBlock, Block, VeinTool, MaterialAlias)
 	 */
-	public void allocate(Set<Block> blocks, Block origin, VeinTool tool, MaterialAlias alias);
+	public void allocate(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool, MaterialAlias alias);
 	
 }

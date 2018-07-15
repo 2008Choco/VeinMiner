@@ -204,7 +204,7 @@ public class VeinMinerManager {
 				// Material information
 				BlockData data;
 				try {
-					data = Bukkit.createBlockData(aliasMaterial.substring(1, aliasMaterial.length() - 1)); // Account for 'quotations'
+					data = Bukkit.createBlockData(aliasMaterial); // Account for 'quotations'
 				} catch (IllegalArgumentException e) {
 					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + aliasMaterial);
 					continue;
