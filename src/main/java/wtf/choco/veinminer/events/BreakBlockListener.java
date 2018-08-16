@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -35,6 +36,7 @@ public class BreakBlockListener implements Listener {
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
 	private final StatTracker statTracker;
+	private boolean ingoreBreakListening;
 	
 	public BreakBlockListener(VeinMiner plugin) {
 		this.plugin = plugin;
@@ -42,10 +44,12 @@ public class BreakBlockListener implements Listener {
 		this.statTracker = StatTracker.get();
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGH)//Check isCancelled
 	private void onBlockBreak(BlockBreakEvent event) {
+		if(ingoreBreakListening) return;
 		if (event.getClass() != BlockBreakEvent.class) return; // For plugins such as McMMO, who fire custom events
 		if (blocks.contains(event.getBlock())) return;
+		if(event.isCancelled()) return;
 		
 		Block block = event.getBlock();
 		if (manager.isDisabledInWorld(block.getWorld())) return;
@@ -89,7 +93,16 @@ public class BreakBlockListener implements Listener {
 			this.blocks.clear();
 			return;
 		}
-		
+		//Call all plugin to check blocks protection.
+		//Tell plugin restart listen break event
+		ingoreBreakListening = true;
+		for (Block mineingBlock : blocks) {
+			BlockBreakEvent blockBreakEvent = new BlockBreakEvent(mineingBlock, event.getPlayer());
+			if(blockBreakEvent.isCancelled()) ingoreBreakListening = false; return; //Cancel and reset ingoreListening.
+			//Cancel, Because some plugin cancel this event(Like worldguard and other protection plugin.
+		}
+		//Tell plugin restart listen break event
+				ingoreBreakListening = false;
 		// Anticheat support
 		List<AntiCheatHook> hooks = plugin.getAnticheatHooks();
 		hooks.stream().filter(AntiCheatHook::isSupported).forEach(h -> h.exempt(player));
