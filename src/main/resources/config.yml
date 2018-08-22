@@ -1,0 +1,112 @@
+# Please note that REDSTONE_ORE and GLOWING_REDSTONE_ORE are the same blocks, but both are necessary in the list in order for it to work. 
+# |-->  Reason: Touching a redstone block turns it into a glowing redstone ore, and the plugin needs to be able to detect both
+
+# ActivationMode values are as followed:
+# |--> 'SNEAK': Activated upon breaking block whilst sneaking
+# |--> 'STAND': Activated upon breaking block whilst standing up
+
+# Specifying block data values:
+# |--> Simply specify your block ID, and use a semi-colon to promptly place your data value
+# |--> Example: "STONE;1" will specify granite
+
+# For a list of valid material values, please view https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+
+MetricsEnabled: true
+ActivationMode: 'SNEAK'
+RepairFriendlyVeinminer: false
+IncludeEdges: true
+DisabledWorlds:
+- WorldName
+
+Tools:
+  Pickaxe:
+    MaxVeinSize: 64
+  Axe:
+    MaxVeinSize: 64
+  Shovel:
+    MaxVeinSize: 64
+  Hoe:
+    MaxVeinSize: 64
+  Shears:
+    MaxVeinSize: 64
+  Hand:
+    InheritMaterialsFromAll: false
+
+BlockList:
+  Pickaxe:
+    - 'minecraft:coal_ore'
+    - 'minecraft:iron_ore'
+    - 'minecraft:gold_ore'
+    - 'minecraft:lapis_ore'
+    - 'minecraft:redstone_ore'
+    - 'minecraft:diamond_ore'
+    - 'minecraft:emerald_ore'
+    - 'minecraft:nether_quartz_ore'
+  Axe:
+    - 'minecraft:acacia_log'
+    - 'minecraft:birch_log'
+    - 'minecraft:dark_oak_log'
+    - 'minecraft:jungle_log'
+    - 'minecraft:oak_log'
+    - 'minecraft:spruce_log'
+    - 'minecraft:acacia_wood'
+    - 'minecraft:birch_wood'
+    - 'minecraft:dark_oak_wood'
+    - 'minecraft:jungle_wood'
+    - 'minecraft:oak_wood'
+    - 'minecraft:spruce_wood'
+    - 'minecraft:melon'
+    - 'minecraft:pumpkin'
+    - 'minecraft:carved_pumpkin'
+    - 'minecraft:red_mushroom_block'
+    - 'minecraft:brown_mushroom_block'
+  Shovel:
+    - 'minecraft:sand'
+    - 'minecraft:gravel'
+  Hoe:
+    - 'minecraft:wheat[age=7]'
+    - 'minecraft:potatoes[age=7]'
+    - 'minecraft:carrots[age=7]'
+    - 'minecraft:beetroots[age=3]'
+    - 'minecraft:red_mushroom'
+    - 'minecraft:brown_mushroom'
+  Shears:
+    - 'minecraft:black_wool'
+    - 'minecraft:blue_wool'
+    - 'minecraft:brown_wool'
+    - 'minecraft:cyan_wool'
+    - 'minecraft:gray_wool'
+    - 'minecraft:green_wool'
+    - 'minecraft:light_blue_wool'
+    - 'minecraft:light_gray_wool'
+    - 'minecraft:lime_wool'
+    - 'minecraft:magenta_wool'
+    - 'minecraft:orange_wool'
+    - 'minecraft:pink_wool'
+    - 'minecraft:purple_wool'
+    - 'minecraft:red_wool'
+    - 'minecraft:white_wool'
+    - 'minecraft:yellow_wool'
+    - 'minecraft:acacia_leaves'
+    - 'minecraft:birch_leaves'
+    - 'minecraft:dark_oak_leaves'
+    - 'minecraft:jungle_leaves'
+    - 'minecraft:oak_leaves'
+    - 'minecraft:spruce_leaves'
+    - 'minecraft:cobweb'
+  Hand: []
+  All:
+    - 'minecraft:ice'
+    - 'minecraft:packed_ice'
+    - 'minecraft:blue_ice'
+    
+Aliases:
+- 'minecraft:red_mushroom_block,minecraft:brown_mushroom_block'
+- 'minecraft:grass,minecraft:tall_grass'
+- 'minecraft:pumpkin,minecraft:carved_pumpkin'
+- 'minecraft:acacia_log,minecraft:acacia_wood'
+- 'minecraft:birch_log,minecraft:birch_wood'
+- 'minecraft:dark_oak_log,minecraft:dark_oak_wood'
+- 'minecraft:jungle_log,minecraft:jungle_wood'
+- 'minecraft:oak_log,minecraft:oak_wood'
+- 'minecraft:spruce_log,minecraft:spruce_wood'
