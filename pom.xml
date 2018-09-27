@@ -5,19 +5,49 @@
   <version>1.12.0</version>
   <name>VeinMiner</name>
   <description>Aims to recreate the Forge mod, VeinMiner, in an efficient, flexible and feature-filled way</description>
-  
+
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
-  
+
   <repositories>
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
+    <repository>
+      <id>bstats-repo</id>
+      <url>http://repo.bstats.org/content/repositories/releases/</url>
+    </repository>
   </repositories>
-  
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <relocations>
+            <relocation>
+              <pattern>org.bstats</pattern>
+              <shadedPattern>wtf.choco.veinminer.utils.metrics</shadedPattern>
+            </relocation>
+          </relocations>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.spigotmc</groupId>
@@ -31,7 +61,7 @@
       <version>1.2.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Locally installed dependencies, because AntiCheat authors are selfish -->
     <dependency>
       <groupId>me.vagdedes</groupId>
@@ -50,6 +80,14 @@
       <artifactId>NoCheatPlus</artifactId>
       <version>3.15.0</version>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- bStats Maven -->
+    <dependency>
+      <groupId>org.bstats</groupId>
+      <artifactId>bstats-bukkit</artifactId>
+      <version>1.2</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>

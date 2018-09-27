@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.permissions.PermissionDefault;
@@ -30,7 +31,6 @@ import wtf.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import wtf.choco.veinminer.events.BreakBlockListener;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.utils.ReflectionUtil;
-import wtf.choco.veinminer.utils.metrics.Metrics;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
 
 @Permission(name = "veinminer.veinmine.*", desc = "Allow the use of VeinMiner for all tools", defaultValue = PermissionDefault.TRUE, children = {
