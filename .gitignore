@@ -26,6 +26,9 @@ local.properties
 # Code Recommenders
 .recommenders/
 
+### Eclipse Maven ###
+dependency-reduced-pom.xml
+
 ### Eclipse Patch ###
 # Eclipse Core		
 .project
