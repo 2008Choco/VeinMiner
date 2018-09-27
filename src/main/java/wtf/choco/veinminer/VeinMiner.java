@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
@@ -47,6 +48,8 @@ import wtf.choco.veinminer.utils.metrics.StatTracker;
 @ApiVersion(Target.v1_13)
 @Plugin(name = "VeinMiner", version = "1.12.0")
 public class VeinMiner extends JavaPlugin {
+	
+	public static final String CHAT_PREFIX = ChatColor.BLUE.toString() + ChatColor.BOLD + "VeinMiner | " + ChatColor.GRAY;
 	
 	private static VeinMiner instance;
 	

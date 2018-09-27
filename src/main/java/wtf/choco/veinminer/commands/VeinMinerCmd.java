@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.commands;
 
+import static wtf.choco.veinminer.VeinMiner.CHAT_PREFIX;
+
 import java.util.List;
 import java.util.Set;
 
@@ -44,16 +46,16 @@ public class VeinMinerCmd implements CommandExecutor {
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
 		if (args.length == 0) {
-			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle|pattern>");
+			sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/veinminer <reload|version|blocklist|toggle|pattern>");
 			return true;
 		}
 		
 		// Reload subcommand
 		if (args[0].equalsIgnoreCase("reload")) {
 			if (!sender.hasPermission("veinminer.reload")) {
-				this.sendMessage(sender, "You don't have the sufficient permissions to run this command");
+				sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
 				return true;
 			}
 			
@@ -62,54 +64,54 @@ public class VeinMinerCmd implements CommandExecutor {
 			this.manager.loadDisabledWorlds();
 			this.manager.loadMaterialAliases();
 			
-			this.sendMessage(sender, ChatColor.GREEN + "Configuration Successfully Reloaded");
+			sender.sendMessage(CHAT_PREFIX + ChatColor.GREEN + "VeinMiner configuration successfully reloaded");
 		}
 		
 		// Version subcommand
 		else if (args[0].equalsIgnoreCase("version")) {
-			sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
+			sender.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
 			sender.sendMessage("");
-			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY + plugin.getDescription().getVersion());
-			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Developer / Maintainer: " + ChatColor.RESET + ChatColor.GRAY + "2008Choco");
-			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Development Page: " + ChatColor.RESET + ChatColor.GRAY + "https://www.spigotmc.org/resources/vein-miner.12038/");
-			sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Report Bugs To: " + ChatColor.RESET + ChatColor.GRAY + "https://github.com/2008Choco/VeinMiner/issues/");
+			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY + plugin.getDescription().getVersion());
+			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Developer: " + ChatColor.RESET + ChatColor.GRAY + "2008Choco " + ChatColor.YELLOW + "( https://choco.gg )");
+			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Development page: " + ChatColor.RESET + ChatColor.GRAY + "https://www.spigotmc.org/resources/veinminer.12038");
+			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Report bugs to: " + ChatColor.RESET + ChatColor.GRAY + "https://github.com/2008Choco/VeinMiner/issues");
 			sender.sendMessage("");
-			sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
+			sender.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
 		}
 		
 		// Toggle subcommand
 		else if (args[0].equalsIgnoreCase("toggle")) {
 			if (!(sender instanceof Player)) {
-				this.sendMessage(sender, "Cannot toggle VeinMiner for the console. You're not a player, silly!");
+				sender.sendMessage("VeinMiner cannot be toggled from the console...");
 				return true;
 			}
 			
 			Player player = (Player) sender;
 			if (!canVeinMine(player)) {
-				this.sendMessage(player, "You can't toggle a feature you do not have access to, silly!");
+				player.sendMessage(CHAT_PREFIX + ChatColor.RED + "You may not toggle a feature to which you do not have access");
 				return true;
 			}
 			
 			if (!player.hasPermission("veinminer.toggle")) {
-				this.sendMessage(player, "You don't have the sufficient permissions to run this command");
+				player.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
 				return true;
 			}
 			
-			// TOGGLE A SPECIFIC TOOL
+			// Toggle a specific tool
 			if (args.length >= 2) {
 				VeinTool tool = VeinTool.getByName(args[1]);
 				if (tool == null) {
-					this.sendMessage(sender, "Invalid tool name, \"" + ChatColor.AQUA + args[1] + ChatColor.GRAY + "\"");
+					player.sendMessage(CHAT_PREFIX + "Invalid tool name: " + ChatColor.YELLOW + args[1]);
 					return true;
 				}
 				
 				tool.toggleVeinMiner(player);
-				this.sendMessage(player, "VeinMiner successfully toggled "
-						+ (tool.hasVeinMinerDisabled(player) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
-						+ ChatColor.GRAY + " for tool " + tool.name());
+				player.sendMessage(CHAT_PREFIX + "VeinMiner successfully toggled "
+					+ (tool.hasVeinMinerDisabled(player) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
+					+ ChatColor.GRAY + " for tool " + ChatColor.YELLOW + tool.getName().toLowerCase());
 			}
 			
-			// TOGGLE ALL TOOLS
+			// Toggle all tools
 			else {
 				boolean hasAllDisabled = true;
 				for (VeinTool tool : VeinTool.values()) {
@@ -123,40 +125,40 @@ public class VeinMinerCmd implements CommandExecutor {
 					tool.toggleVeinMiner(player, hasAllDisabled);
 				}
 				
-				this.sendMessage(player, "VeinMiner successfully toggled "
-						+ (hasAllDisabled ? ChatColor.GREEN + "on" : ChatColor.RED + "off")
-						+ ChatColor.GRAY + " for all tools!");
+				player.sendMessage(CHAT_PREFIX + "VeinMiner successfully toggled "
+					+ (hasAllDisabled ? ChatColor.GREEN + "on" : ChatColor.RED + "off")
+					+ ChatColor.GRAY + " for " + ChatColor.YELLOW + "all tools");
 			}
 		}
 		
 		// Blocklist subcommand
 		else if (args[0].equalsIgnoreCase("blocklist")) {
 			if (args.length < 2) {
-				this.sendMessage(sender, "/veinminer blocklist <tool> <add|remove|list>");
+				sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter(s). " + ChatColor.YELLOW + "/" + label + " blocklist <tool> <add|remove|list>");
 				return true;
 			}
 			
 			VeinTool tool = VeinTool.getByName(args[1]);
 			
 			if (tool == null) {
-				this.sendMessage(sender, "Invalid tool name, \"" + ChatColor.AQUA + args[1] + ChatColor.GRAY + "\"");
+				sender.sendMessage(CHAT_PREFIX + "Invalid tool name: " + ChatColor.YELLOW + args[1]);
 				return true;
 			}
 			
 			if (args.length < 3) {
-				this.sendMessage(sender, "/veinminer blocklist " + args[1] + " <add|remove|list>");
+				sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/" + label + " blocklist " + args[1] + " <add|remove|list>");
 				return true;
 			}
 			
 			// /veinminer blocklist <tool> add
 			if (args[2].equalsIgnoreCase("add")) {
 				if (!sender.hasPermission("veinminer.blocklist.add")) {
-					this.sendMessage(sender, "You don't have the sufficient permissions to run this command");
+					sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
 					return true;
 				}
 				
 				if (args.length < 4) {
-					this.sendMessage(sender, "/veinminer blocklist add <block>[data]");
+					sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/" + label + " blocklist " + args[1] + " add <block>[[data]]");
 					return true;
 				}
 				
@@ -164,16 +166,16 @@ public class VeinMinerCmd implements CommandExecutor {
 				BlockData data;
 				boolean specificData = !args[3].endsWith("[]") && args[3].endsWith("]");
 				try {
-					data = Bukkit.createBlockData(args[3]);
+					data = Bukkit.createBlockData(args[3].toLowerCase());
 				} catch (IllegalArgumentException e) {
-					this.sendMessage(sender, "Unknown block type (was it an item?) and/or block states. " + args[3]);
+					sender.sendMessage(CHAT_PREFIX + "Unknown block type and/or block states. (Was it an item?) Given: " + ChatColor.YELLOW + args[3]);
 					return true;
 				}
 				
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
 				if (manager.isVeinmineableBy(data, tool)) {
-					this.sendMessage(sender, "Block Id " + args[3] + " is already on the list");
+					sender.sendMessage(CHAT_PREFIX + "A block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " is already on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
 					return true;
 				}
 				
@@ -188,18 +190,18 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				this.sendMessage(sender, "Block Id " + args[3] + " successfully added to the list");
+				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.YELLOW + " successfully added to the list");
 			}
 			
 			// /veinminer blocklist <tool> remove
 			else if (args[2].equalsIgnoreCase("remove")) {
 				if (!sender.hasPermission("veinminer.blocklist.remove")) {
-					this.sendMessage(sender, "You don't have the sufficient permissions to run this command");
+					sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
 					return true;
 				}
 				
 				if (args.length < 4) {
-					this.sendMessage(sender, "/veinminer blocklist remove <block>[data]");
+					sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/" + label + " blocklist " + args[1] + " remove <block>[[data]]");
 					return true;
 				}
 				
@@ -208,14 +210,14 @@ public class VeinMinerCmd implements CommandExecutor {
 				try {
 					data = Bukkit.createBlockData(args[3]);
 				} catch (IllegalArgumentException e) {
-					this.sendMessage(sender, "Unknown block type (was it an item?) and/or block states. " + args[3]);
+					sender.sendMessage(CHAT_PREFIX + "Unknown block type and/or block states. (Was it an item?) Given: " + ChatColor.YELLOW + args[3]);
 					return true;
 				}
 				
 				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
 				
 				if (!manager.isVeinmineableBy(data, tool)) {
-					this.sendMessage(sender, "Block Id " + args[3] + " is not on the list");
+					sender.sendMessage(CHAT_PREFIX + "No block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " was found on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
 					return true;
 				}
 
@@ -229,14 +231,14 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
-				
-				this.sendMessage(sender, "Block Id " + args[3] + " successfully removed from the list");
+
+				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.YELLOW + " successfully removed from the list");
 			}
 			
 			// /veinminer blocklist <tool> list
 			else if (args[2].equalsIgnoreCase("list")) {
 				if (!sender.hasPermission("veinminer.blocklist.list." + tool.getName().toLowerCase())) {
-					this.sendMessage(sender, "You don't have the sufficient permissions to list this tool");
+					sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
 					return true;
 				}
 				
@@ -250,24 +252,24 @@ public class VeinMinerCmd implements CommandExecutor {
 			
 			// Unknown parameter
 			else {
-				this.sendMessage(sender, "/veinminer blocklist " + args[1] + "<add|remove|list>");
+				sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Unknown parameter " + ChatColor.AQUA + args[2] + ChatColor.GRAY + ". " + ChatColor.YELLOW + "/" + label + " blocklist " + args[1] + " <add|remove|list>");
 				return true;
 			}
 		}
 		
 		else if (args[0].equalsIgnoreCase("pattern")) {
 			if (!(sender instanceof Player)) {
-				this.sendMessage(sender, "Only players are permitted to change their veinmining pattern");
+				sender.sendMessage("VeinMiner patterns cannot be changed from the console...");
 				return true;
 			}
 			
 			if (!sender.hasPermission("veinminer.pattern")) {
-				this.sendMessage(sender, "You don't have sufficient permissions to run this command!");
+				sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
 				return true;
 			}
 			
 			if (args.length < 2) {
-				this.sendMessage(sender, "/veinminer pattern <pattern_id>");
+				sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/" + label + " pattern <pattern_id>");
 				return true;
 			}
 			
@@ -277,13 +279,13 @@ public class VeinMinerCmd implements CommandExecutor {
 			if (!patternNamespace.contains(":")) {
 				patternNamespace = plugin.getName().toLowerCase() + ":" + patternNamespace;
 			} else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
-				this.sendMessage(player, "Invalid namespace. Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id" + ChatColor.GRAY + " (i.e. " + ChatColor.YELLOW + "\"veinminer:default\"" + ChatColor.GRAY + ")");
+				player.sendMessage(CHAT_PREFIX + "Invalid ID. Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id" + ChatColor.GRAY + " (i.e. " + ChatColor.YELLOW + "veinminer:default" + ChatColor.GRAY + ")");
 				return true;
 			}
 			
 			VeinMiningPattern pattern = plugin.getPatternRegistry().getPattern(patternNamespace);
 			if (pattern == null) {
-				this.sendMessage(player, "Unknown pattern found with ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + ". Perhaps you meant \"default\"");
+				player.sendMessage(CHAT_PREFIX + "A pattern with the ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + " could not be found. Perhaps you meant " + ChatColor.YELLOW + "default" + ChatColor.GRAY + "?");
 				return true;
 			}
 			
@@ -291,20 +293,16 @@ public class VeinMinerCmd implements CommandExecutor {
 			Bukkit.getPluginManager().callEvent(pspe);
 			
 			this.manager.setPattern(player, pattern);
-			this.sendMessage(player, ChatColor.GREEN + "Pattern successfully changed to " + ChatColor.YELLOW + patternNamespace);
+			player.sendMessage(CHAT_PREFIX + "Pattern successfully changed to " + ChatColor.YELLOW + patternNamespace);
 		}
 		
 		// Unknown command usage
 		else {
-			this.sendMessage(sender, "/veinminer <reload|version|blocklist|toggle|pattern>");
+			sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Unknown parameter " + ChatColor.AQUA + args[0] + ChatColor.GRAY + ". " + ChatColor.YELLOW + "/" + label + " <reload|version|blocklist|toggle|pattern>");
 			return true;
 		}
 		
 		return true;
-	}
-	
-	private void sendMessage(CommandSender sender, String message) {
-		sender.sendMessage(ChatColor.BLUE + "VeinMiner" + ChatColor.DARK_BLUE + "> " + ChatColor.GRAY + message);
 	}
 	
 	private boolean canVeinMine(Player player) {
