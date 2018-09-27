@@ -109,7 +109,6 @@ public class VeinBlock {
 	 * 
 	 * @return true if similar, false otherwise
 	 */
-	@SuppressWarnings("deprecation") // Draft API
 	public boolean isSimilar(Block block) {
 		return block.getBlockData().matches(data);
 	}
@@ -121,7 +120,6 @@ public class VeinBlock {
 	 * 
 	 * @return true if similar, false otherwise
 	 */
-	@SuppressWarnings("deprecation") // Draft API
 	public boolean isSimilar(BlockData blockData) {
 		return blockData.matches(data);
 	}

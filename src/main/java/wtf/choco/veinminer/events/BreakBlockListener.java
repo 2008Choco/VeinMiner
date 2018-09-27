@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
@@ -97,7 +98,7 @@ public class BreakBlockListener implements Listener {
 		// Actually destroying the allocated blocks
 		int maxDurability = itemUsed.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
 		for (Block b : blocks) {
-			if (itemUsed.getDurability() >= maxDurability) break;
+			if (((Damageable) itemUsed.getItemMeta()).getDamage() >= maxDurability) break;
 			
 			Material currentType = b.getType();
 			if (ReflectionUtil.breakBlock(player, b)) {
