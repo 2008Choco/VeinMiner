@@ -180,7 +180,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				}
 				
 				if (specificData) {
-					this.manager.registerVeinmineableBlock(data, tool);
+					this.manager.registerVeinmineableBlock(data, args[3].toLowerCase(), tool);
 				} else {
 					this.manager.registerVeinmineableBlock(data.getMaterial(), tool);
 				}
@@ -246,7 +246,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 				
 				for (VeinBlock block : blocklist) {
-					sender.sendMessage(ChatColor.YELLOW + "  - " + block);
+					sender.sendMessage(ChatColor.YELLOW + "  - " + block.getRawData());
 				}
 			}
 			

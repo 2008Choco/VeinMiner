@@ -87,7 +87,7 @@ public class VeinMinerManager {
 		}
 	}
 	
-	public VeinBlock registerVeinmineableBlock(BlockData data, VeinTool... tools) {
+	public VeinBlock registerVeinmineableBlock(BlockData data, String rawData, VeinTool... tools) {
 		Preconditions.checkNotNull(data, "data");
 		
 		VeinBlock existing = getVeinmineableBlock(data);
@@ -99,9 +99,14 @@ public class VeinMinerManager {
 			return existing;
 		}
 		
-		VeinBlock block = new VeinBlock(data, tools);
+		VeinBlock block = new VeinBlock(data, rawData, tools);
 		this.veinmineable.add(block);
 		return block;
+	}
+	
+	@Deprecated
+	public VeinBlock registerVeinmineableBlock(BlockData data, VeinTool... tools) {
+		return registerVeinmineableBlock(data, data.getAsString(), tools);
 	}
 	
 	public VeinBlock registerVeinmineableBlock(Material material, VeinTool... tools) {

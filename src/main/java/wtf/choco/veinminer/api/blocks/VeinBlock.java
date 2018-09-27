@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -18,15 +21,19 @@ public class VeinBlock {
 	
 	private final Set<VeinTool> tools = EnumSet.noneOf(VeinTool.class);
 	
-	private final Material type;
 	private final BlockData data;
+	private final String rawData;
 	
-	public VeinBlock(BlockData data, VeinTool... tools) {
-		this(data);
+	public VeinBlock(Material type) {
+		this.data = type.createBlockData();
+		this.rawData = type.getKey().toString();
+	}
+	
+	public VeinBlock(BlockData data, String rawData) {
+		Preconditions.checkState(Bukkit.createBlockData(rawData) != null, "The block data created must comply with the restrictions imposed by Bukkit#createBlockData(String)");
 		
-		for (VeinTool tool : tools) {
-			this.tools.add(tool);
-		}
+		this.data = data.clone();
+		this.rawData = rawData;
 	}
 	
 	public VeinBlock(Material type, VeinTool... tools) {
@@ -37,14 +44,27 @@ public class VeinBlock {
 		}
 	}
 	
-	public VeinBlock(BlockData data) {
-		this.type = data.getMaterial();
-		this.data = data;
+	public VeinBlock(BlockData data, String rawData, VeinTool... tools) {
+		this(data, rawData);
+		
+		for (VeinTool tool : tools) {
+			this.tools.add(tool);
+		}
 	}
 	
-	public VeinBlock(Material type) {
-		this.type = type;
-		this.data = type.createBlockData("[]");
+	@Deprecated
+	public VeinBlock(BlockData data, VeinTool... tools) {
+		this(data);
+		
+		for (VeinTool tool : tools) {
+			this.tools.add(tool);
+		}
+	}
+
+	@Deprecated
+	public VeinBlock(BlockData data) {
+		this.data = data;
+		this.rawData = data.toString();
 	}
 	
 	/**
@@ -53,7 +73,7 @@ public class VeinBlock {
 	 * @return the Bukkit material
 	 */
 	public Material getType() {
-		return type;
+		return data.getMaterial();
 	}
 	
 	/**
@@ -96,10 +116,20 @@ public class VeinBlock {
 	 * Get the specific data associated with this block, if any. Will never be null. The returned BlockData
 	 * instance is immutable and will have no effect on the underlying block data
 	 * 
-	 * @return the associated data, if any
+	 * @return the associated data
 	 */
 	public BlockData getData() {
 		return data.clone();
+	}
+	
+	/**
+	 * Get the raw data that represents this VeinBlock in a more accurate way. The raw data may or may not
+	 * be equal to the result of {@link BlockData#getAsString()}.
+	 * 
+	 * @return the raw data
+	 */
+	public String getRawData() {
+		return rawData;
 	}
 	
 	/**
@@ -126,24 +156,17 @@ public class VeinBlock {
 	
 	@Override
 	public int hashCode() {
-		int result = 31 * type.hashCode();
-		result = 31 * result + data.hashCode();
-		
-		return result;
+		return 31 * data.hashCode();
 	}
 	
 	@Override
 	public boolean equals(Object object) {
-		if (object == this) return true;
-		if (!(object instanceof VeinBlock)) return false;
-		
-		VeinBlock other = (VeinBlock) object;
-		return type == other.type && data.equals(other.data);
+		return object == this || (object instanceof VeinBlock && data.equals(((VeinBlock) object).data));
 	}
 	
 	@Override
 	public String toString() {
-		return data.getAsString();
+		return "{VeinBlock:{Type:" + data.getMaterial() + ", Data:\"" + data.getAsString() + "\", RawData:\"" + rawData + "\"}}";
 	}
 	
 }
