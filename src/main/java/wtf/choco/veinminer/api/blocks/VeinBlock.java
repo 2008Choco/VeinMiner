@@ -25,7 +25,7 @@ public class VeinBlock {
 	private final String rawData;
 	
 	public VeinBlock(Material type) {
-		this.data = type.createBlockData();
+		this.data = type.createBlockData("[]");
 		this.rawData = type.getKey().toString();
 	}
 	
