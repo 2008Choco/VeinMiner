@@ -48,7 +48,7 @@ import wtf.choco.veinminer.utils.metrics.StatTracker;
 @Description("Aims to recreate the Forge mod, VeinMiner, in an efficient, flexible and feature-filled way")
 @SoftDependency("NoCheatPlus") @SoftDependency("AAC") @SoftDependency("AntiAura")
 @ApiVersion(Target.v1_13)
-@Plugin(name = "VeinMiner", version = "1.12.2")
+@Plugin(name = "VeinMiner", version = "1.12.3")
 public class VeinMiner extends JavaPlugin {
 	
 	public static final String CHAT_PREFIX = ChatColor.BLUE.toString() + ChatColor.BOLD + "VeinMiner | " + ChatColor.GRAY;
