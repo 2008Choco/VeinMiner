@@ -32,6 +32,8 @@ import wtf.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import wtf.choco.veinminer.events.BreakBlockListener;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.utils.ReflectionUtil;
+import wtf.choco.veinminer.utils.UpdateChecker;
+import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
 
 @Permission(name = "veinminer.veinmine.*", desc = "Allow the use of VeinMiner for all tools", defaultValue = PermissionDefault.TRUE, children = {
@@ -107,6 +109,24 @@ public class VeinMiner extends JavaPlugin {
 		this.manager.loadVeinableBlocks();
 		this.manager.loadDisabledWorlds();
 		this.manager.loadMaterialAliases();
+		
+		// Update check (https://www.spigotmc.org/resources/veinminer.12038/)
+		this.getLogger().info("Performing an update check!");
+		UpdateChecker.init(this, 12038).requestUpdateCheck().whenComplete((result, exception) -> {
+			if (result.requiresUpdate()) {
+				this.getLogger().info(String.format("An update is available! VeinMiner %s may be downloaded on SpigotMC", result.getNewestVersion()));
+				return;
+			}
+			
+			UpdateReason reason = result.getReason();
+			if (reason == UpdateReason.UP_TO_DATE) {
+				this.getLogger().info(String.format("Your version of VeinMiner (%s) is up to date!", result.getNewestVersion()));
+			} else if (reason == UpdateReason.UNRELEASED_VERSION) {
+				this.getLogger().info(String.format("Your version of VeinMiner (%s) is more recent than the one publicly available. Are you on a development build?", result.getNewestVersion()));
+			} else {
+				this.getLogger().warning("Could not check for a new version of VeinMiner. Reason: " + reason);
+			}
+		});
 	}
 	
 	@Override
