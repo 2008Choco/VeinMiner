@@ -12,6 +12,8 @@
 # For a list of valid material values, please view https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 
 MetricsEnabled: true
+PerformUpdateChecks: true
+
 ActivationMode: 'SNEAK'
 RepairFriendlyVeinminer: false
 IncludeEdges: true

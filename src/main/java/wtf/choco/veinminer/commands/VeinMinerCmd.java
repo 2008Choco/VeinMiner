@@ -22,6 +22,8 @@ import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.api.event.PlayerSwitchPatternEvent;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.utils.UpdateChecker;
+import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
 
 @Permission(name = "veinminer.reload", desc = "Allow the use of the '/veinminer reload' subcommand")
 @Permission(name = "veinminer.toggle", desc = "Allow the use of the '/veinminer toggle' subcommand", defaultValue = PermissionDefault.TRUE)
@@ -71,7 +73,7 @@ public class VeinMinerCmd implements CommandExecutor {
 		else if (args[0].equalsIgnoreCase("version")) {
 			sender.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
 			sender.sendMessage("");
-			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY + plugin.getDescription().getVersion());
+			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Version: " + ChatColor.RESET + ChatColor.GRAY + plugin.getDescription().getVersion() + getUpdateSuffix());
 			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Developer: " + ChatColor.RESET + ChatColor.GRAY + "2008Choco " + ChatColor.YELLOW + "( https://choco.gg )");
 			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Development page: " + ChatColor.RESET + ChatColor.GRAY + "https://www.spigotmc.org/resources/veinminer.12038");
 			sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD + "Report bugs to: " + ChatColor.RESET + ChatColor.GRAY + "https://github.com/2008Choco/VeinMiner/issues");
@@ -312,4 +314,14 @@ public class VeinMinerCmd implements CommandExecutor {
 			if (player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return true;
 		return false;
 	}
+	
+	private String getUpdateSuffix() {
+		if (!plugin.getConfig().getBoolean("PerformUpdateChecks")) {
+			return "";
+		}
+		
+		UpdateResult result = UpdateChecker.get().getLastResult();
+		return (result != null && result.requiresUpdate()) ? " (" + ChatColor.GREEN + ChatColor.BOLD + "UPDATE AVAILABLE!" + ChatColor.GRAY + ")" : "";
+	}
+	
 }
