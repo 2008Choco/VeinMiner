@@ -14,13 +14,13 @@ import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 
 public class VeinMinerCmdTabCompleter implements TabCompleter {
-	
+
 	private final VeinMiner plugin;
-	
+
 	public VeinMinerCmdTabCompleter(VeinMiner plugin) {
 		this.plugin = plugin;
 	}
-	
+
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		List<String> values = new ArrayList<>();
@@ -39,21 +39,21 @@ public class VeinMinerCmdTabCompleter implements TabCompleter {
 				values.add("pattern");
 			}
 		}
-		
+
 		else if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("blocklist")) {
 				for (VeinTool tool : VeinTool.values()) {
 					values.add(tool.name().toLowerCase());
 				}
 			}
-			
+
 			else if (args[0].equalsIgnoreCase("pattern")) {
 				values = plugin.getPatternRegistry().getPatterns().stream()
 						.map(VeinMiningPattern::getKey).map(NamespacedKey::toString)
 						.collect(Collectors.toList());
 			}
 		}
-		
+
 		else if (args.length == 3) {
 			if (args[0].equalsIgnoreCase("blocklist")) {
 				if (sender.hasPermission("veinminer.blocklist.add")) {
@@ -67,10 +67,10 @@ public class VeinMinerCmdTabCompleter implements TabCompleter {
 				}
 			}
 		}
-		
+
 		return values;
 	}
-	
+
 	private boolean hasBlocklistPerms(CommandSender sender) {
 		return sender.hasPermission("veinminer.blocklist.add")
 			|| sender.hasPermission("veinminer.blocklist.remove")

@@ -10,7 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public final class ReflectionUtil {
-	
+
 	private static Class<?> nmsPlayer;
 	private static Class<?> playerInteractManager;
 	private static Field fieldPlayerInteractManager;
@@ -19,20 +19,20 @@ public final class ReflectionUtil {
 	private static Class<?> craftPlayer;
 	private static Method methodGetHandle;
 	private static Method methodBreakBlock;
-	
+
 	private static boolean wasSuccessful = true;
 	private static String version;
-	
+
 	private ReflectionUtil() { }
-	
+
 	public static boolean breakBlock(Player player, Block block) {
 		Preconditions.checkNotNull(player, "A null player is incapable of breaking blocks");
 		Preconditions.checkNotNull(block, "Cannot break a null block");
-		
+
 		if (!wasSuccessful) {
 			return block.breakNaturally(player.getInventory().getItemInMainHand());
 		}
-		
+
 		try {
 			Object cPlayer = methodGetHandle.invoke(player);
 			Object interactManager = fieldPlayerInteractManager.get(cPlayer);
@@ -41,15 +41,15 @@ public final class ReflectionUtil {
 		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
-	
+
 	public static void loadNMSClasses(String version) {
 		if (nmsPlayer != null) return;
-		
+
 		ReflectionUtil.version = version.concat(".");
-		
+
 		nmsPlayer = getNMSClass("EntityPlayer");
 		playerInteractManager = getNMSClass("PlayerInteractManager");
 		fieldPlayerInteractManager = getField(nmsPlayer, "playerInteractManager");
@@ -59,7 +59,7 @@ public final class ReflectionUtil {
 		methodGetHandle = getMethod("getHandle", craftPlayer);
 		methodBreakBlock = getMethod("breakBlock", playerInteractManager, blockPosition);
 	}
-	
+
 	private static Method getMethod(String name, Class<?> clazz, Class<?>... paramTypes) {
 		try {
 			return clazz.getMethod(name, paramTypes);
@@ -67,9 +67,10 @@ public final class ReflectionUtil {
 			System.out.println("Could not find method " + name + " in " + clazz.getSimpleName());
 			wasSuccessful = false;
 		}
+
 		return null;
 	}
-	
+
 	private static Field getField(Class<?> clazz, String name) {
 		try {
 			Field field = clazz.getDeclaredField(name);
@@ -79,9 +80,10 @@ public final class ReflectionUtil {
 			System.out.println("Could not find field " + name + " in " + clazz.getSimpleName());
 			wasSuccessful = false;
 		}
+
 		return null;
 	}
-	
+
 	private static Constructor<?> getConstructor(Class<?> clazz, Class<?>... parameters) {
 		try {
 			return clazz.getConstructor(parameters);
@@ -89,9 +91,10 @@ public final class ReflectionUtil {
 			System.out.println("Could not find constructor for class " + clazz.getSimpleName());
 			wasSuccessful = false;
 		}
+
 		return null;
 	}
-	
+
 	private static Class<?> getNMSClass(String className) {
 		try {
 			return Class.forName("net.minecraft.server." + version + className);
@@ -99,9 +102,10 @@ public final class ReflectionUtil {
 			System.out.println("Could not find class " + className);
 			wasSuccessful = false;
 		}
+
 		return null;
 	}
-	
+
 	private static Class<?> getCBClass(String className) {
 		try {
 			return Class.forName("org.bukkit.craftbukkit." + version + className);
@@ -109,7 +113,8 @@ public final class ReflectionUtil {
 			System.out.println("Could not find class " + className);
 			wasSuccessful = false;
 		}
+
 		return null;
 	}
-	
+
 }
