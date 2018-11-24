@@ -192,7 +192,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 				
-				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.YELLOW + " successfully added to the list");
+				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " successfully added to the list");
 			}
 			
 			// /veinminer blocklist <tool> remove
@@ -234,7 +234,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 
-				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.YELLOW + " successfully removed from the list");
+				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " successfully removed from the list");
 			}
 			
 			// /veinminer blocklist <tool> list
