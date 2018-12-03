@@ -1,20 +1,15 @@
-# Please note that REDSTONE_ORE and GLOWING_REDSTONE_ORE are the same blocks, but both are necessary in the list in order for it to work. 
-# |-->  Reason: Touching a redstone block turns it into a glowing redstone ore, and the plugin needs to be able to detect both
-
 # ActivationMode values are as followed:
 # |--> 'SNEAK': Activated upon breaking block whilst sneaking
 # |--> 'STAND': Activated upon breaking block whilst standing up
 
-# Specifying block data values:
-# |--> Simply specify your block ID, and use a semi-colon to promptly place your data value
-# |--> Example: "STONE;1" will specify granite
-
-# For a list of valid material values, please view https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Material values are 1:1 with in-game IDs. The prepending of "minecraft:" is optional
+# To specify states, do so with [brackets]. For example, "minecraft:chest[waterlogged=true]"
+# The above will search for any waterlogged chests. Other states will be ignored when checking.
 
 MetricsEnabled: true
 PerformUpdateChecks: true
 
-ActivationMode: 'SNEAK'
+ActivationMode: SNEAK
 RepairFriendlyVeinminer: false
 IncludeEdges: true
 DisabledWorlds:
