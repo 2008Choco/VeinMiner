@@ -21,10 +21,10 @@ import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.api.MaterialAlias;
 import wtf.choco.veinminer.api.MineActivation;
 import wtf.choco.veinminer.api.VeinMinerManager;
-import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.NonNullHashSet;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
@@ -54,7 +54,7 @@ public class BreakBlockListener implements Listener {
 		ItemStack itemUsed = event.getPlayer().getInventory().getItemInMainHand();
 
 		// VeinTool used check
-		VeinTool tool = (itemUsed != null) ? VeinTool.fromMaterial(itemUsed.getType()) : VeinTool.HAND;
+		ToolCategory tool = (itemUsed != null) ? ToolCategory.fromMaterial(itemUsed.getType()) : ToolCategory.HAND;
 
 		// Activation check
 		MineActivation activation = EnumUtils.getEnum(MineActivation.class, plugin.getConfig().getString("ActivationMode", "SNEAK"));
@@ -98,7 +98,7 @@ public class BreakBlockListener implements Listener {
 		// Actually destroying the allocated blocks
 		int maxDurability = itemUsed.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
 		for (Block b : blocks) {
-			if (tool != VeinTool.HAND && (itemUsed.getType() == Material.AIR || ((Damageable) itemUsed.getItemMeta()).getDamage() >= maxDurability)) break;
+			if (tool != ToolCategory.HAND && (itemUsed.getType() == Material.AIR || ((Damageable) itemUsed.getItemMeta()).getDamage() >= maxDurability)) break;
 
 			Material currentType = b.getType();
 			if (ReflectionUtil.breakBlock(player, b)) {

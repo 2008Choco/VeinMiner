@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.tool.ToolCategory;
 
 public class VeinMinerCmdTabCompleter implements TabCompleter {
 
@@ -42,7 +42,7 @@ public class VeinMinerCmdTabCompleter implements TabCompleter {
 
 		else if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("blocklist")) {
-				for (VeinTool tool : VeinTool.values()) {
+				for (ToolCategory tool : ToolCategory.values()) {
 					values.add(tool.name().toLowerCase());
 				}
 			}

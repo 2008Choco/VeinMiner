@@ -22,6 +22,7 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.pattern.PatternDefault;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
  * The central management for VeinMiner to handle everything regarding VeinMiner and its features.
@@ -48,7 +49,7 @@ public class VeinMinerManager {
 
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 
-			VeinTool veinTool = VeinTool.getByName(tool);
+			ToolCategory toolCategory = ToolCategory.getByName(tool);
 			boolean all = tool.equalsIgnoreCase("all");
 
 			for (String value : blocks) {
@@ -68,16 +69,16 @@ public class VeinMinerManager {
 					VeinBlock block = getVeinmineableBlock(data);
 
 					if (all) {
-						for (VeinTool localTool : VeinTool.values()) {
+						for (ToolCategory localTool : ToolCategory.values()) {
 							block.setVeinmineableBy(localTool, true);
 						}
 
 						continue;
 					}
 
-					block.setVeinmineableBy(veinTool, true);
+					block.setVeinmineableBy(toolCategory, true);
 				} else {
-					VeinTool[] tools = all ? VeinTool.values() : new VeinTool[] { veinTool };
+					ToolCategory[] tools = all ? ToolCategory.values() : new ToolCategory[] { toolCategory };
 
 					if (specificData) {
 						this.registerVeinmineableBlock(data, tools);
@@ -89,12 +90,12 @@ public class VeinMinerManager {
 		}
 	}
 
-	public VeinBlock registerVeinmineableBlock(BlockData data, String rawData, VeinTool... tools) {
+	public VeinBlock registerVeinmineableBlock(BlockData data, String rawData, ToolCategory... tools) {
 		Preconditions.checkNotNull(data, "data");
 
 		VeinBlock existing = getVeinmineableBlock(data);
 		if (existing != null) {
-			for (VeinTool tool : tools) {
+			for (ToolCategory tool : tools) {
 				existing.setVeinmineableBy(tool, true);
 			}
 
@@ -107,16 +108,16 @@ public class VeinMinerManager {
 	}
 
 	@Deprecated
-	public VeinBlock registerVeinmineableBlock(BlockData data, VeinTool... tools) {
+	public VeinBlock registerVeinmineableBlock(BlockData data, ToolCategory... tools) {
 		return registerVeinmineableBlock(data, data.getAsString(), tools);
 	}
 
-	public VeinBlock registerVeinmineableBlock(Material material, VeinTool... tools) {
+	public VeinBlock registerVeinmineableBlock(Material material, ToolCategory... tools) {
 		Preconditions.checkNotNull(material, "Cannot register a null material");
 
 		VeinBlock existing = getVeinmineableBlock(material);
 		if (existing != null) {
-			for (VeinTool tool : tools) {
+			for (ToolCategory tool : tools) {
 				existing.setVeinmineableBy(tool, true);
 			}
 
@@ -149,12 +150,12 @@ public class VeinMinerManager {
 			.findFirst().orElse(null);
 	}
 
-	public boolean isVeinmineableBy(BlockData data, VeinTool tool) {
+	public boolean isVeinmineableBy(BlockData data, ToolCategory tool) {
 		VeinBlock block = getVeinmineableBlock(data);
 		return block != null && block.isVeinmineableBy(tool);
 	}
 
-	public boolean isVeinmineableBy(Material material, VeinTool tool) {
+	public boolean isVeinmineableBy(Material material, ToolCategory tool) {
 		VeinBlock block = getVeinmineableBlock(material);
 		return block != null && block.isVeinmineableBy(tool);
 	}
@@ -167,7 +168,7 @@ public class VeinMinerManager {
 		return getVeinmineableBlock(material) != null;
 	}
 
-	public Set<VeinBlock> getVeinmineableBlocks(VeinTool tool) {
+	public Set<VeinBlock> getVeinmineableBlocks(ToolCategory tool) {
 		return veinmineable.stream().filter(b -> b.isVeinmineableBy(tool)).collect(Collectors.toSet());
 	}
 
@@ -362,7 +363,7 @@ public class VeinMinerManager {
 		this.playerMiningPattern.clear();
 		this.aliases.clear();
 
-		for (VeinTool tool : VeinTool.values()) {
+		for (ToolCategory tool : ToolCategory.values()) {
 			tool.clearPlayerInformation();
 		}
 	}

@@ -5,8 +5,8 @@ import java.util.Set;
 import org.bukkit.block.Block;
 
 import wtf.choco.veinminer.api.MaterialAlias;
-import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
  * A functional interface to assist in the allocation of vein mining patterns. For application, see
@@ -30,8 +30,8 @@ public interface BlockAllocator {
 	 * @param tool the tool used to break the block
 	 * @param alias an alias of the block being broken if one exists. May be null
 	 *
-	 * @see VeinMiningPattern#allocateBlocks(Set, VeinBlock, Block, VeinTool, MaterialAlias)
+	 * @see VeinMiningPattern#allocateBlocks(Set, VeinBlock, Block, ToolCategory, MaterialAlias)
 	 */
-	public void allocate(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool, MaterialAlias alias);
+	public void allocate(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool, MaterialAlias alias);
 
 }

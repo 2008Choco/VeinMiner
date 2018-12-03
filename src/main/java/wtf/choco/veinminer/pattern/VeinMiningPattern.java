@@ -9,8 +9,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
 import wtf.choco.veinminer.api.MaterialAlias;
-import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
  * Represents a mining algorithm capable of allocating which blocks should be broken by VeinMiner
@@ -34,7 +34,7 @@ public interface VeinMiningPattern extends Keyed {
 	 * @param tool the tool used to break the block
 	 * @param alias an alias of the block being broken if one exists. May be null
 	 */
-	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool, MaterialAlias alias);
+	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool, MaterialAlias alias);
 
 	/**
 	 * Allocate the blocks that should be broken by the vein mining pattern. Note that the breaking
@@ -50,7 +50,7 @@ public interface VeinMiningPattern extends Keyed {
 	 * @param origin the block where the vein mine was initiated
 	 * @param tool the tool used to break the block
 	 */
-	public default void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool) {
+	public default void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool) {
 		this.allocateBlocks(blocks, type, origin, tool, null);
 	}
 
@@ -68,7 +68,7 @@ public interface VeinMiningPattern extends Keyed {
 
 		return new VeinMiningPattern() {
 			@Override
-			public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool, MaterialAlias alias) {
+			public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool, MaterialAlias alias) {
 				blockAllocator.allocate(blocks, type, origin, tool, alias);
 			}
 

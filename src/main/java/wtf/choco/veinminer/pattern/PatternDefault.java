@@ -11,8 +11,8 @@ import org.bukkit.block.Block;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.MaterialAlias;
 import wtf.choco.veinminer.api.VBlockFace;
-import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
  * The default {@link VeinMiningPattern} implementation used by all players unless explicitly set.
@@ -39,7 +39,7 @@ public final class PatternDefault implements VeinMiningPattern {
 	}
 
 	@Override
-	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, VeinTool tool, MaterialAlias alias) {
+	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool, MaterialAlias alias) {
 		int maxVeinSize = tool.getMaxVeinSize();
 		VBlockFace[] facesToMine = getFacesToMine();
 

@@ -8,9 +8,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
-import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
  * Called when VeinMiner is activated for a set of blocks.
@@ -21,11 +21,11 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	private boolean cancelled = false;
 
 	private final VeinBlock type;
-	private final VeinTool tool;
+	private final ToolCategory tool;
 	private final Set<Block> blocks;
 	private final VeinMiningPattern pattern;
 
-	public PlayerVeinMineEvent(Player who, VeinBlock type, VeinTool tool, Set<Block> blocks, VeinMiningPattern pattern) {
+	public PlayerVeinMineEvent(Player who, VeinBlock type, ToolCategory tool, Set<Block> blocks, VeinMiningPattern pattern) {
 		super(who);
 
 		this.type = type;
@@ -58,7 +58,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 *
 	 * @return the tool used
 	 */
-	public VeinTool getTool() {
+	public ToolCategory getTool() {
 		return tool;
 	}
 

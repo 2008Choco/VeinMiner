@@ -11,7 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
-import wtf.choco.veinminer.api.VeinTool;
+import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
  * Represents block mineable by VeinMiner. A VeinBlock may or may not possess additional data
@@ -19,7 +19,7 @@ import wtf.choco.veinminer.api.VeinTool;
  */
 public class VeinBlock {
 
-	private final Set<VeinTool> tools = EnumSet.noneOf(VeinTool.class);
+	private final Set<ToolCategory> tools = EnumSet.noneOf(ToolCategory.class);
 
 	private final BlockData data;
 	private final String rawData;
@@ -36,27 +36,27 @@ public class VeinBlock {
 		this.rawData = rawData;
 	}
 
-	public VeinBlock(Material type, VeinTool... tools) {
+	public VeinBlock(Material type, ToolCategory... tools) {
 		this(type);
 
-		for (VeinTool tool : tools) {
+		for (ToolCategory tool : tools) {
 			this.tools.add(tool);
 		}
 	}
 
-	public VeinBlock(BlockData data, String rawData, VeinTool... tools) {
+	public VeinBlock(BlockData data, String rawData, ToolCategory... tools) {
 		this(data, rawData);
 
-		for (VeinTool tool : tools) {
+		for (ToolCategory tool : tools) {
 			this.tools.add(tool);
 		}
 	}
 
 	@Deprecated
-	public VeinBlock(BlockData data, VeinTool... tools) {
+	public VeinBlock(BlockData data, ToolCategory... tools) {
 		this(data);
 
-		for (VeinTool tool : tools) {
+		for (ToolCategory tool : tools) {
 			this.tools.add(tool);
 		}
 	}
@@ -77,13 +77,13 @@ public class VeinBlock {
 	}
 
 	/**
-	 * Set whether the specified {@link VeinTool} is capable of mining this VeinBlock with vein miner
+	 * Set whether the specified {@link ToolCategory} is capable of mining this VeinBlock with vein miner
 	 * or not.
 	 *
 	 * @param tool the tool to set
 	 * @param mineable true if should be mineable, false otherwise
 	 */
-	public void setVeinmineableBy(VeinTool tool, boolean mineable) {
+	public void setVeinmineableBy(ToolCategory tool, boolean mineable) {
 		if (mineable) {
 			this.tools.add(tool);
 		} else {
@@ -92,14 +92,14 @@ public class VeinBlock {
 	}
 
 	/**
-	 * Check whether the specified {@link VeinTool} is capable of mining this VeinBlock with vein miner
+	 * Check whether the specified {@link ToolCategory} is capable of mining this VeinBlock with vein miner
 	 * or not.
 	 *
 	 * @param tool the tool to check
 	 *
 	 * @return true if mineable, false otherwise
 	 */
-	public boolean isVeinmineableBy(VeinTool tool) {
+	public boolean isVeinmineableBy(ToolCategory tool) {
 		return tools.contains(tool);
 	}
 
@@ -108,7 +108,7 @@ public class VeinBlock {
 	 *
 	 * @return all tools
 	 */
-	public Set<VeinTool> getVeinmineableBy() {
+	public Set<ToolCategory> getVeinmineableBy() {
 		return Collections.unmodifiableSet(tools);
 	}
 

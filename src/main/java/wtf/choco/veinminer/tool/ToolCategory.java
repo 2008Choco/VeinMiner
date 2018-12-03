@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.api;
+package wtf.choco.veinminer.tool;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,47 +15,56 @@ import org.bukkit.OfflinePlayer;
 import wtf.choco.veinminer.VeinMiner;
 
 /**
- * Tools recognised by VeinMiner and it's code. Tools are limited to those listed in the enumeration.
+ * Tool categories recognised by VeinMiner and it's code. Tool materials are limited
+ * to those listed in the enumeration.
  */
-public enum VeinTool {
+public enum ToolCategory {
 
 	/**
-	 * Represents a pickaxe of various materials. This includes: <br>
-	 * - Wooden Pickaxe <br>
-	 * - Stone Pickaxe <br>
-	 * - Golden Pickaxe <br>
-	 * - Iron Pickaxe <br>
-	 * - Diamond Pickaxe
+	 * Represents a pickaxe of various materials. This includes:
+	 * <ul>
+	 *   <li>Wooden Pickaxe
+	 *   <li>Stone Pickaxe
+	 *   <li>Golden Pickaxe
+	 *   <li>Iron Pickaxe
+	 *   <li>Diamond Pickaxe
+	 * </ul>
 	 */
 	PICKAXE("Pickaxe", Material.WOODEN_PICKAXE, Material.STONE_PICKAXE, Material.GOLDEN_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE),
 
 	/**
-	 * Represents an axe of various materials. This includes: <br>
-	 * - Wooden Axe <br>
-	 * - Stone Axe <br>
-	 * - Golden Axe <br>
-	 * - Iron Axe <br>
-	 * - Diamond Axe
+	 * Represents an axe of various materials. This includes:
+	 * <ul>
+	 *   <li>Wooden Axe
+	 *   <li>Stone Axe
+	 *   <li>Golden Axe
+	 *   <li>Iron Axe
+	 *   <li>Diamond Axe
+	 * </ul>
 	 */
 	AXE("Axe", Material.WOODEN_AXE, Material.STONE_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.DIAMOND_AXE),
 
 	/**
-	 * Represents a shovel of various materials. This includes: <br>
-	 * - Wooden Shovel <br>
-	 * - Stone Shovel <br>
-	 * - Golden Shovel <br>
-	 * - Iron Shovel <br>
-	 * - Diamond Shovel
+	 * Represents a shovel of various materials. This includes:
+	 * <ul>
+	 *   <li>Wooden Shovel
+	 *   <li>Stone Shovel
+	 *   <li>Golden Shovel
+	 *   <li>Iron Shovel
+	 *   <li>Diamond Shovel
+	 * </ul>
 	 */
 	SHOVEL("Shovel", Material.WOODEN_SHOVEL, Material.STONE_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.DIAMOND_SHOVEL),
 
 	/**
-	 * Represents a hoe of various materials. This includes: <br>
-	 * - Wooden Hoe <br>
-	 * - Stone Hoe <br>
-	 * - Golden Hoe <br>
-	 * - Iron Hoe <br>
-	 * - Diamond Hoe
+	 * Represents a hoe of various materials. This includes:
+	 * <ul>
+	 *   <li>Wooden Hoe
+	 *   <li>Stone Hoe
+	 *   <li>Golden Hoe
+	 *   <li>Iron Hoe
+	 *   <li>Diamond Hoe
+	 * </ul>
 	 */
 	HOE("Hoe", Material.WOODEN_HOE, Material.STONE_HOE, Material.GOLDEN_HOE, Material.IRON_HOE, Material.DIAMOND_HOE),
 
@@ -77,7 +86,7 @@ public enum VeinTool {
 	private final String name;
 	private final Material[] materials;
 
-	private VeinTool(String name, Material... materials) {
+	private ToolCategory(String name, Material... materials) {
 		this.name = name;
 		this.materials = materials;
 	}
@@ -118,8 +127,8 @@ public enum VeinTool {
 	 *
 	 * @return the VeinTool with the given name. null if none
 	 */
-	public static VeinTool getByName(String name) {
-		for (VeinTool tool : values())
+	public static ToolCategory getByName(String name) {
+		for (ToolCategory tool : values())
 			if (tool.getName().equalsIgnoreCase(name)) return tool;
 		return null;
 	}
@@ -132,8 +141,8 @@ public enum VeinTool {
 	 *
 	 * @return the VeinTool associated with the specified material. {@link #HAND} if none
 	 */
-	public static VeinTool fromMaterial(Material material) {
-		for (VeinTool tool : values()) {
+	public static ToolCategory fromMaterial(Material material) {
+		for (ToolCategory tool : values()) {
 			for (Material toolMaterial : tool.getMaterials()) {
 				if (toolMaterial == material) return tool;
 			}

@@ -18,10 +18,10 @@ import org.bukkit.plugin.java.annotation.permission.Permission;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VeinMinerManager;
-import wtf.choco.veinminer.api.VeinTool;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.api.event.PlayerSwitchPatternEvent;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
 
@@ -101,7 +101,7 @@ public class VeinMinerCmd implements CommandExecutor {
 
 			// Toggle a specific tool
 			if (args.length >= 2) {
-				VeinTool tool = VeinTool.getByName(args[1]);
+				ToolCategory tool = ToolCategory.getByName(args[1]);
 				if (tool == null) {
 					player.sendMessage(CHAT_PREFIX + "Invalid tool name: " + ChatColor.YELLOW + args[1]);
 					return true;
@@ -116,14 +116,14 @@ public class VeinMinerCmd implements CommandExecutor {
 			// Toggle all tools
 			else {
 				boolean hasAllDisabled = true;
-				for (VeinTool tool : VeinTool.values()) {
+				for (ToolCategory tool : ToolCategory.values()) {
 					if (tool.hasVeinMinerEnabled(player)) {
 						hasAllDisabled = false;
 						break;
 					}
 				}
 
-				for (VeinTool tool : VeinTool.values()) {
+				for (ToolCategory tool : ToolCategory.values()) {
 					tool.toggleVeinMiner(player, hasAllDisabled);
 				}
 
@@ -140,7 +140,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				return true;
 			}
 
-			VeinTool tool = VeinTool.getByName(args[1]);
+			ToolCategory tool = ToolCategory.getByName(args[1]);
 
 			if (tool == null) {
 				sender.sendMessage(CHAT_PREFIX + "Invalid tool name: " + ChatColor.YELLOW + args[1]);
@@ -310,7 +310,7 @@ public class VeinMinerCmd implements CommandExecutor {
 	private boolean canVeinMine(Player player) {
 		if (player.hasPermission("veinminer.veinmine.*")) return true;
 
-		for (VeinTool tool : VeinTool.values())
+		for (ToolCategory tool : ToolCategory.values())
 			if (player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return true;
 		return false;
 	}
