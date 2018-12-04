@@ -19,7 +19,12 @@ public enum MineActivation {
 	/**
 	 * Activated when a Player is standing up (i.e. not sneaking).
 	 */
-	STAND(Predicates.not(Player::isSneaking));
+	STAND(Predicates.not(Player::isSneaking)),
+
+	/**
+	 * Always activated.
+	 */
+	ALWAYS(Predicates.alwaysTrue());
 
 	private final Predicate<Player> condition;
 

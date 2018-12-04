@@ -1,6 +1,7 @@
 # ActivationMode values are as followed:
 # |--> 'SNEAK': Activated upon breaking block whilst sneaking
 # |--> 'STAND': Activated upon breaking block whilst standing up
+# |--> 'ALWAYS': Always active
 
 # Material values are 1:1 with in-game IDs. The prepending of "minecraft:" is optional
 # To specify states, do so with [brackets]. For example, "minecraft:chest[waterlogged=true]"
