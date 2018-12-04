@@ -20,6 +20,7 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.api.event.PlayerSwitchPatternEvent;
+import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.UpdateChecker;
@@ -99,6 +100,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				return true;
 			}
 
+			VMPlayerData playerData = VMPlayerData.get(player);
 			// Toggle a specific tool
 			if (args.length >= 2) {
 				ToolCategory tool = ToolCategory.getByName(args[1]);
@@ -107,28 +109,17 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				tool.toggleVeinMiner(player);
+				playerData.setVeinMinerEnabled(!playerData.isVeinMinerEnabled(), tool);
 				player.sendMessage(CHAT_PREFIX + "VeinMiner successfully toggled "
-					+ (tool.hasVeinMinerDisabled(player) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
+					+ (playerData.isVeinMinerDisabled(tool) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
 					+ ChatColor.GRAY + " for tool " + ChatColor.YELLOW + tool.getName().toLowerCase());
 			}
 
 			// Toggle all tools
 			else {
-				boolean hasAllDisabled = true;
-				for (ToolCategory tool : ToolCategory.values()) {
-					if (tool.hasVeinMinerEnabled(player)) {
-						hasAllDisabled = false;
-						break;
-					}
-				}
-
-				for (ToolCategory tool : ToolCategory.values()) {
-					tool.toggleVeinMiner(player, hasAllDisabled);
-				}
-
+				playerData.setVeinMinerEnabled(!playerData.isVeinMinerEnabled());
 				player.sendMessage(CHAT_PREFIX + "VeinMiner successfully toggled "
-					+ (hasAllDisabled ? ChatColor.GREEN + "on" : ChatColor.RED + "off")
+					+ (playerData.isVeinMinerEnabled() ? ChatColor.GREEN + "on" : ChatColor.RED + "off")
 					+ ChatColor.GRAY + " for " + ChatColor.YELLOW + "all tools");
 			}
 		}
@@ -291,10 +282,11 @@ public class VeinMinerCmd implements CommandExecutor {
 				return true;
 			}
 
-			PlayerSwitchPatternEvent pspe = new PlayerSwitchPatternEvent(player, manager.getPatternFor(player), pattern);
+			VMPlayerData playerData = VMPlayerData.get(player);
+			PlayerSwitchPatternEvent pspe = new PlayerSwitchPatternEvent(player, playerData.getPattern(), pattern);
 			Bukkit.getPluginManager().callEvent(pspe);
 
-			this.manager.setPattern(player, pattern);
+			playerData.setPattern(pattern);
 			player.sendMessage(CHAT_PREFIX + "Pattern successfully changed to " + ChatColor.YELLOW + patternNamespace);
 		}
 

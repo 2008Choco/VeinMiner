@@ -23,6 +23,7 @@ import wtf.choco.veinminer.api.MineActivation;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
+import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.NonNullHashSet;
@@ -63,9 +64,10 @@ public class BreakBlockListener implements Listener {
 		}
 
 		// Invalid player state check
+		VMPlayerData playerData = VMPlayerData.get(player);
 		if (!activation.isValid(player) || player.getGameMode() != GameMode.SURVIVAL) return;
 		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
-		if (tool.hasVeinMinerDisabled(player)) return;
+		if (playerData.isVeinMinerDisabled(tool)) return;
 
 		Material blockType = block.getType();
 		BlockData blockData = block.getBlockData();
@@ -79,7 +81,7 @@ public class BreakBlockListener implements Listener {
 
 		this.blocks.add(block);
 		VeinBlock type = manager.getVeinmineableBlock(blockData);
-		VeinMiningPattern pattern = manager.getPatternFor(player);
+		VeinMiningPattern pattern = playerData.getPattern();
 		pattern.allocateBlocks(blocks, type, block, tool, alias);
 		this.blocks.removeIf(Block::isEmpty);
 

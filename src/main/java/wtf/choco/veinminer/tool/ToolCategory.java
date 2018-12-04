@@ -2,16 +2,9 @@ package wtf.choco.veinminer.tool;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 
 import wtf.choco.veinminer.VeinMiner;
 
@@ -81,8 +74,6 @@ public enum ToolCategory {
 
 
 	private static final VeinMiner plugin = VeinMiner.getPlugin();
-
-	private final Set<UUID> disabledBy = new HashSet<>();
 
 	private final String name;
 	private final Set<Material> materials;
@@ -161,90 +152,6 @@ public enum ToolCategory {
 		}
 
 		return HAND;
-	}
-
-	/**
-	 * Disable VeinMiner for this category for a specific player.
-	 *
-	 * @param player the player for whom the category should be disabled
-	 */
-	public void disableVeinMiner(OfflinePlayer player) {
-		Preconditions.checkNotNull(player, "Cannot disable veinminer for a null player");
-		this.disabledBy.add(player.getUniqueId());
-	}
-
-	/**
-	 * Enable VeinMiner for this category for a specific player.
-	 *
-	 * @param player the player for whom the category should be enabled
-	 */
-	public void enableVeinMiner(OfflinePlayer player) {
-		Preconditions.checkNotNull(player, "Cannot enable veinminer for a null player");
-		this.disabledBy.remove(player.getUniqueId());
-	}
-
-	/**
-	 * Check whether this category is disabled for a specific player.
-	 *
-	 * @param player the player to check
-	 *
-	 * @return true if VeinMiner is disabled
-	 */
-	public boolean hasVeinMinerDisabled(OfflinePlayer player) {
-		Preconditions.checkNotNull(player, "Cannot check veinminer state for a null player");
-		return disabledBy.contains(player.getUniqueId());
-	}
-
-	/**
-	 * Check whether this category is enabled for a specific player.
-	 *
-	 * @param player the player to check
-	 *
-	 * @return true if VeinMiner is enabled
-	 */
-	public boolean hasVeinMinerEnabled(OfflinePlayer player) {
-		return !hasVeinMinerDisabled(player);
-	}
-
-	/**
-	 * Toggle whether this category is enabled or not for a specific player.
-	 *
-	 * @param player the player for whom the category should be toggled
-	 */
-	public void toggleVeinMiner(OfflinePlayer player) {
-		this.toggleVeinMiner(player, !hasVeinMinerEnabled(player));
-	}
-
-	/**
-	 * Toggle whether this category is enabled or not for a specific player.
-	 *
-	 * @param player the player for whom this category should be toggled
-	 * @param enabled the new enable state. true to enable, false otherwise
-	 */
-	public void toggleVeinMiner(OfflinePlayer player, boolean enabled) {
-		Preconditions.checkNotNull(player, "Cannot toggle veinminer for a null player");
-
-		if (hasVeinMinerDisabled(player) && enabled) {
-			this.disabledBy.remove(player.getUniqueId());
-		} else if (hasVeinMinerEnabled(player) && !enabled) {
-			this.disabledBy.add(player.getUniqueId());
-		}
-	}
-
-	/**
-	 * Get a set of all players that have this category disabled.
-	 *
-	 * @return all players disabling this category
-	 */
-	public Set<OfflinePlayer> getDisabledBy() {
-		return disabledBy.stream().map(Bukkit::getOfflinePlayer).collect(Collectors.toSet());
-	}
-
-	/**
-	 * Clear all information regarding players that have VeinMiner disabled.
-	 */
-	public void clearPlayerInformation() {
-		this.disabledBy.clear();
 	}
 
 }

@@ -2,10 +2,8 @@ package wtf.choco.veinminer.api;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -16,12 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Player;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.blocks.VeinBlock;
-import wtf.choco.veinminer.pattern.PatternDefault;
-import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
@@ -32,7 +27,6 @@ public class VeinMinerManager {
 	private final Set<VeinBlock> veinmineable = new HashSet<>();
 	private final List<MaterialAlias> aliases = new ArrayList<>();
 	private final Set<UUID> disabledWorlds = new HashSet<>();
-	private final Map<UUID, VeinMiningPattern> playerMiningPattern = new HashMap<>();
 
 	private final VeinMiner plugin;
 
@@ -326,46 +320,12 @@ public class VeinMinerManager {
 	}
 
 	/**
-	 * Get the pattern used by the specified player. If the player is not using any specific
-	 * pattern, {@link PatternDefault} will be returned.
-	 *
-	 * @param player the player to get the pattern for
-	 *
-	 * @return the player's mining pattern
-	 */
-	public VeinMiningPattern getPatternFor(Player player) {
-		Preconditions.checkNotNull(player, "Cannot get the mining pattern for a null player");
-		return playerMiningPattern.getOrDefault(player.getUniqueId(), PatternDefault.get());
-	}
-
-	/**
-	 * Set the pattern to use for the specified player.
-	 *
-	 * @param player the player whose pattern to set
-	 * @param pattern the new pattern. null if default
-	 */
-	public void setPattern(Player player, VeinMiningPattern pattern) {
-		Preconditions.checkNotNull(player, "Cannot set the mining pattern for a null player");
-
-		if (pattern == null) {
-			this.playerMiningPattern.remove(player.getUniqueId());
-		} else {
-			this.playerMiningPattern.put(player.getUniqueId(), pattern);
-		}
-	}
-
-	/**
 	 * Clear all localised data in the VeinMiner Manager.
 	 */
 	public void clearLocalisedData() {
 		this.veinmineable.clear();
 		this.disabledWorlds.clear();
-		this.playerMiningPattern.clear();
 		this.aliases.clear();
-
-		for (ToolCategory tool : ToolCategory.values()) {
-			tool.clearPlayerInformation();
-		}
 	}
 
 }
