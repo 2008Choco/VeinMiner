@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import wtf.choco.veinminer.VeinMiner;
 
@@ -152,6 +153,18 @@ public enum ToolCategory {
 		}
 
 		return HAND;
+	}
+
+	/**
+	 * Get the tool category associated with the specific item. If none exist or the item is null,
+	 * {@link #HAND} is returned.
+	 *
+	 * @param item the item for which to search
+	 *
+	 * @return the ToolCategory associated with the specified item. {@link #HAND} if none
+	 */
+	public static ToolCategory fromItemStack(ItemStack item) {
+		return (item != null) ? fromMaterial(item.getType()) : HAND;
 	}
 
 }

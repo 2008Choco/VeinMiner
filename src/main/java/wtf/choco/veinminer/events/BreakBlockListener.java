@@ -52,10 +52,8 @@ public class BreakBlockListener implements Listener {
 		if (manager.isDisabledInWorld(block.getWorld())) return;
 
 		Player player = event.getPlayer();
-		ItemStack itemUsed = event.getPlayer().getInventory().getItemInMainHand();
-
-		// VeinTool used check
-		ToolCategory tool = (itemUsed != null) ? ToolCategory.fromMaterial(itemUsed.getType()) : ToolCategory.HAND;
+		ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
+		ToolCategory category = ToolCategory.fromItemStack(tool);
 
 		// Activation check
 		MineActivation activation = EnumUtils.getEnum(MineActivation.class, plugin.getConfig().getString("ActivationMode", "SNEAK"));
@@ -66,12 +64,12 @@ public class BreakBlockListener implements Listener {
 		// Invalid player state check
 		VMPlayerData playerData = VMPlayerData.get(player);
 		if (!activation.isValid(player) || player.getGameMode() != GameMode.SURVIVAL) return;
-		if (!player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return;
-		if (playerData.isVeinMinerDisabled(tool)) return;
+		if (!player.hasPermission("veinminer.veinmine." + category.getName().toLowerCase())) return;
+		if (playerData.isVeinMinerDisabled(category)) return;
 
 		Material blockType = block.getType();
 		BlockData blockData = block.getBlockData();
-		if (!manager.isVeinmineableBy(blockData, tool)) return;
+		if (!manager.isVeinmineableBy(blockData, category)) return;
 
 		// TIME TO VEINMINE
 		MaterialAlias alias = manager.getAliasFor(blockType);
@@ -82,11 +80,11 @@ public class BreakBlockListener implements Listener {
 		this.blocks.add(block);
 		VeinBlock type = manager.getVeinmineableBlock(blockData);
 		VeinMiningPattern pattern = playerData.getPattern();
-		pattern.allocateBlocks(blocks, type, block, tool, alias);
+		pattern.allocateBlocks(blocks, type, block, category, alias);
 		this.blocks.removeIf(Block::isEmpty);
 
 		// Fire a new PlayerVeinMineEvent
-		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, type, tool, blocks, pattern);
+		PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, type, category, blocks, pattern);
 		Bukkit.getPluginManager().callEvent(vmEvent);
 		if (vmEvent.isCancelled()) {
 			this.blocks.clear();
@@ -98,9 +96,9 @@ public class BreakBlockListener implements Listener {
 		hooks.stream().filter(AntiCheatHook::isSupported).forEach(h -> h.exempt(player));
 
 		// Actually destroying the allocated blocks
-		int maxDurability = itemUsed.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
+		int maxDurability = tool.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
 		for (Block b : blocks) {
-			if (tool != ToolCategory.HAND && (itemUsed.getType() == Material.AIR || ((Damageable) itemUsed.getItemMeta()).getDamage() >= maxDurability)) break;
+			if (category != ToolCategory.HAND && (tool.getType() == Material.AIR || ((Damageable) tool.getItemMeta()).getDamage() >= maxDurability)) break;
 
 			Material currentType = b.getType();
 			if (ReflectionUtil.breakBlock(player, b)) {
