@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.tool;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -84,11 +85,11 @@ public enum ToolCategory {
 	private final Set<UUID> disabledBy = new HashSet<>();
 
 	private final String name;
-	private final Material[] materials;
+	private final Set<Material> materials;
 
 	private ToolCategory(String name, Material... materials) {
 		this.name = name;
-		this.materials = materials;
+		this.materials = (materials.length != 0) ? EnumSet.of(materials[0], materials) : EnumSet.noneOf(Material.class);
 	}
 
 	/**
@@ -101,17 +102,28 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Get all Materials associated with this VeinTool.
+	 * Get all Materials associated with this tool category.
 	 *
 	 * @return all associated tool materials
 	 */
-	public Material[] getMaterials() {
-		return Arrays.copyOf(materials, materials.length);
+	public Set<Material> getMaterials() {
+		return Collections.unmodifiableSet(materials);
 	}
 
 	/**
-	 * Get the maximum vein size this VeinTool is capable of breaking.This option is specified in and
-	 * directly retrieved from the configuration file.
+	 * Check whether or not the provided material is considered a part of this category.
+	 *
+	 * @param material the material to check
+	 *
+	 * @return true if contained in this category, false otherwise
+	 */
+	public boolean contains(Material material) {
+		return materials.contains(material);
+	}
+
+	/**
+	 * Get the maximum vein size this tool category is capable of breaking. This option is specified
+	 * in and directly retrieved from the configuration file.
 	 *
 	 * @return the maximum vein size. Defaults to 64 if not explicitly set
 	 */
@@ -120,12 +132,12 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Get a VeinTool based on its name used in the configuration file. null if no VeinTool with the
-	 * given name exists.
+	 * Get a tool category based on its name used in the configuration file. null if no VeinTool with
+	 * the given name exists.
 	 *
-	 * @param name the name of the tool. Case insensitive
+	 * @param name the name of the category. Case insensitive
 	 *
-	 * @return the VeinTool with the given name. null if none
+	 * @return the ToolCategory with the given name. null if none
 	 */
 	public static ToolCategory getByName(String name) {
 		for (ToolCategory tool : values())
@@ -134,17 +146,17 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Get the VeinTool associated with the specified material. If none exist, {@link #HAND} is
+	 * Get the tool category associated with the specified material. If none exist, {@link #HAND} is
 	 * returned.
 	 *
 	 * @param material the material for which to search
 	 *
-	 * @return the VeinTool associated with the specified material. {@link #HAND} if none
+	 * @return the ToolCategory associated with the specified material. {@link #HAND} if none
 	 */
 	public static ToolCategory fromMaterial(Material material) {
 		for (ToolCategory tool : values()) {
-			for (Material toolMaterial : tool.getMaterials()) {
-				if (toolMaterial == material) return tool;
+			if (tool.contains(material)) {
+				return tool;
 			}
 		}
 
@@ -152,9 +164,9 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Disable VeinMiner for this tool for a specific player.
+	 * Disable VeinMiner for this category for a specific player.
 	 *
-	 * @param player the player for whom to disable the tool
+	 * @param player the player for whom the category should be disabled
 	 */
 	public void disableVeinMiner(OfflinePlayer player) {
 		Preconditions.checkNotNull(player, "Cannot disable veinminer for a null player");
@@ -162,9 +174,9 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Enable VeinMiner for this tool for a specific player.
+	 * Enable VeinMiner for this category for a specific player.
 	 *
-	 * @param player the player for whom to disable the tool
+	 * @param player the player for whom the category should be enabled
 	 */
 	public void enableVeinMiner(OfflinePlayer player) {
 		Preconditions.checkNotNull(player, "Cannot enable veinminer for a null player");
@@ -172,7 +184,7 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Check whether this vein tool is disabled for a specific player.
+	 * Check whether this category is disabled for a specific player.
 	 *
 	 * @param player the player to check
 	 *
@@ -184,7 +196,7 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Check whether this vein tool is enabled for a specific player.
+	 * Check whether this category is enabled for a specific player.
 	 *
 	 * @param player the player to check
 	 *
@@ -195,18 +207,18 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Toggle whether this tool is enabled or not for a specific player.
+	 * Toggle whether this category is enabled or not for a specific player.
 	 *
-	 * @param player the player for whom to toggle this tool
+	 * @param player the player for whom the category should be toggled
 	 */
 	public void toggleVeinMiner(OfflinePlayer player) {
 		this.toggleVeinMiner(player, !hasVeinMinerEnabled(player));
 	}
 
 	/**
-	 * Toggle whether this tool is enabled or not for a specific player.
+	 * Toggle whether this category is enabled or not for a specific player.
 	 *
-	 * @param player the player for whom to toggle this tool
+	 * @param player the player for whom this category should be toggled
 	 * @param enabled the new enable state. true to enable, false otherwise
 	 */
 	public void toggleVeinMiner(OfflinePlayer player, boolean enabled) {
@@ -220,9 +232,9 @@ public enum ToolCategory {
 	}
 
 	/**
-	 * Get a set of all players that have this tool disabled.
+	 * Get a set of all players that have this category disabled.
 	 *
-	 * @return all players disabling this tool
+	 * @return all players disabling this category
 	 */
 	public Set<OfflinePlayer> getDisabledBy() {
 		return disabledBy.stream().map(Bukkit::getOfflinePlayer).collect(Collectors.toSet());
