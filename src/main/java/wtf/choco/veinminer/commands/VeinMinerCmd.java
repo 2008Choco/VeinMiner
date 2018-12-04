@@ -11,10 +11,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.plugin.java.annotation.command.Command;
-import org.bukkit.plugin.java.annotation.permission.ChildPermission;
-import org.bukkit.plugin.java.annotation.permission.Permission;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VeinMinerManager;
@@ -26,18 +22,6 @@ import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
 
-@Permission(name = "veinminer.reload", desc = "Allow the use of the '/veinminer reload' subcommand")
-@Permission(name = "veinminer.toggle", desc = "Allow the use of the '/veinminer toggle' subcommand", defaultValue = PermissionDefault.TRUE)
-@Permission(name = "veinminer.pattern", desc = "Allow the use of the '/veinminer pattern' subcommand", defaultValue = PermissionDefault.TRUE)
-@Permission(name = "veinminer.blocklist.list.*", desc = "Allow the use of the '/veinminer blocklist' subcommand", children = {
-	@ChildPermission(name = "veinminer.blocklist.list.pickaxe"),
-	@ChildPermission(name = "veinminer.blocklist.list.axe"),
-	@ChildPermission(name = "veinminer.blocklist.list.shovel"),
-	@ChildPermission(name = "veinminer.blocklist.list.hoe"),
-	@ChildPermission(name = "veinminer.blocklist.list.shears"),
-	@ChildPermission(name = "veinminer.blocklist.list.hand")
-})
-@Command(name = "veinminer", desc = "The main command for VeinMiner", usage = "/<command> <version|reload|blocklist|toggle|pattern>", aliases = {"vm"})
 public class VeinMinerCmd implements CommandExecutor {
 
 	private final VeinMiner plugin;
