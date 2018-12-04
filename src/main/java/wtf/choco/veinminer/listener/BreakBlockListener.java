@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.events;
+package wtf.choco.veinminer.listener;
 
 import java.util.List;
 import java.util.Set;
