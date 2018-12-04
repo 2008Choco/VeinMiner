@@ -18,12 +18,12 @@ import org.bukkit.inventory.meta.Damageable;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
-import wtf.choco.veinminer.api.MaterialAlias;
-import wtf.choco.veinminer.api.MineActivation;
+import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.api.VeinMinerManager;
-import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
+import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.VMPlayerData;
+import wtf.choco.veinminer.data.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.NonNullHashSet;
@@ -56,9 +56,9 @@ public class BreakBlockListener implements Listener {
 		ToolCategory category = ToolCategory.fromItemStack(tool);
 
 		// Activation check
-		MineActivation activation = EnumUtils.getEnum(MineActivation.class, plugin.getConfig().getString("ActivationMode", "SNEAK"));
+		ActivationStrategy activation = EnumUtils.getEnum(ActivationStrategy.class, plugin.getConfig().getString("ActivationMode", "SNEAK"));
 		if (activation == null) {
-			activation = MineActivation.SNEAK;
+			activation = ActivationStrategy.SNEAK;
 		}
 
 		// Invalid player state check

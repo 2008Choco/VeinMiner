@@ -4,8 +4,8 @@ import java.util.Set;
 
 import org.bukkit.block.Block;
 
-import wtf.choco.veinminer.api.MaterialAlias;
-import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.data.MaterialAlias;
+import wtf.choco.veinminer.data.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**

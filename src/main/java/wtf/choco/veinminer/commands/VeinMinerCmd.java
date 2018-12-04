@@ -18,9 +18,9 @@ import org.bukkit.plugin.java.annotation.permission.Permission;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VeinMinerManager;
-import wtf.choco.veinminer.api.blocks.VeinBlock;
 import wtf.choco.veinminer.api.event.PlayerSwitchPatternEvent;
 import wtf.choco.veinminer.data.VMPlayerData;
+import wtf.choco.veinminer.data.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.UpdateChecker;

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 /**
  * Represents the different methods of activating VeinMiner.
  */
-public enum MineActivation {
+public enum ActivationStrategy {
 
 	/**
 	 * Activated when a Player is holding sneak.
@@ -28,7 +28,7 @@ public enum MineActivation {
 
 	private final Predicate<Player> condition;
 
-	private MineActivation(Predicate<Player> condition) {
+	private ActivationStrategy(Predicate<Player> condition) {
 		this.condition = condition;
 	}
 
@@ -50,8 +50,8 @@ public enum MineActivation {
 	 *
 	 * @return the resulting activation. null if none found
 	 */
-	public static MineActivation getByName(String name) {
-		for (MineActivation activation : values())
+	public static ActivationStrategy getByName(String name) {
+		for (ActivationStrategy activation : values())
 			if (activation.name().equalsIgnoreCase(name)) return activation;
 		return null;
 	}

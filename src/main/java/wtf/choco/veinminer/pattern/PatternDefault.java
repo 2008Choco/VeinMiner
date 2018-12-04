@@ -9,9 +9,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.MaterialAlias;
 import wtf.choco.veinminer.api.VBlockFace;
-import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.data.MaterialAlias;
+import wtf.choco.veinminer.data.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**

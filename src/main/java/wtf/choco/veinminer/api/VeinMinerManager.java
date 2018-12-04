@@ -16,7 +16,8 @@ import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.blocks.VeinBlock;
+import wtf.choco.veinminer.data.MaterialAlias;
+import wtf.choco.veinminer.data.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**

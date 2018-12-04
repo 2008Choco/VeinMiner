@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.api.blocks;
+package wtf.choco.veinminer.data;
 
 import java.util.Collections;
 import java.util.EnumSet;
