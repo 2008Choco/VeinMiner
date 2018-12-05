@@ -10,6 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
+import wtf.choco.veinminer.data.block.VeinBlock;
+
 /**
  * Represents an aliasing between multiple {@link VeinBlock}s which VeinMiner can recognise as a
  * single material value when being vein mined.
@@ -61,7 +63,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 		Iterator<VeinBlock> blockIterator = this.iterator();
 
 		while (blockIterator.hasNext()) {
-			if (blockIterator.next().isSimilar(data)) {
+			if (blockIterator.next().encapsulates(data)) {
 				blockIterator.remove();
 			}
 		}
@@ -101,7 +103,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 * @return true if aliased, false otherwise
 	 */
 	public boolean isAliased(BlockData data) {
-		return blocks.stream().anyMatch(b -> b.isSimilar(data));
+		return blocks.stream().anyMatch(b -> b.encapsulates(data));
 	}
 
 	/**

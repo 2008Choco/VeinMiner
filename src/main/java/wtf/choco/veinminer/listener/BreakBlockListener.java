@@ -23,7 +23,7 @@ import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.VMPlayerData;
-import wtf.choco.veinminer.data.VeinBlock;
+import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.NonNullHashSet;
@@ -78,7 +78,7 @@ public class BreakBlockListener implements Listener {
 		}
 
 		this.blocks.add(block);
-		VeinBlock type = new VeinBlock(blockData, null); // TODO: Fix this... use a cache or something... "null" rawData may cause potential errors
+		VeinBlock type = VeinBlock.get(blockData, null); // TODO: Fix this... use a cache or something... "null" rawData may cause potential errors
 		VeinMiningPattern pattern = playerData.getPattern();
 		pattern.allocateBlocks(blocks, type, block, category, alias);
 		this.blocks.removeIf(Block::isEmpty);

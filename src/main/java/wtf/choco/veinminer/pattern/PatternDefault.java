@@ -11,7 +11,7 @@ import org.bukkit.block.Block;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VBlockFace;
 import wtf.choco.veinminer.data.MaterialAlias;
-import wtf.choco.veinminer.data.VeinBlock;
+import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
@@ -76,7 +76,7 @@ public final class PatternDefault implements VeinMiningPattern {
 	}
 
 	private boolean blockIsSameMaterial(VeinBlock type, Block block, MaterialAlias alias) {
-		return type.isSimilar(block) || (alias != null && alias.isAliased(block));
+		return type.encapsulates(block) || (alias != null && alias.isAliased(block));
 	}
 
 	private VBlockFace[] getFacesToMine() {

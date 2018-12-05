@@ -16,7 +16,7 @@ import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.api.event.PlayerSwitchPatternEvent;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.VMPlayerData;
-import wtf.choco.veinminer.data.VeinBlock;
+import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.UpdateChecker;
@@ -158,7 +158,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				}
 
 				if (specificData) {
-					blocklist.add(data, args[3].toLowerCase().substring(args[3].indexOf('[')));
+					blocklist.add(data, args[3].toLowerCase());
 				} else {
 					blocklist.add(data.getMaterial());
 				}
@@ -220,7 +220,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 
 				for (VeinBlock block : blocklist) {
-					sender.sendMessage(ChatColor.YELLOW + "  - " + block.getRawData());
+					sender.sendMessage(ChatColor.YELLOW + "  - " + block.asDataString());
 				}
 			}
 

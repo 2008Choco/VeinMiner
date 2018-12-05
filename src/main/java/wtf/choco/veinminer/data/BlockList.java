@@ -9,6 +9,8 @@ import java.util.function.Predicate;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
+import wtf.choco.veinminer.data.block.VeinBlock;
+
 public class BlockList implements Iterable<VeinBlock>, Serializable {
 
 	private static final long serialVersionUID = -2274615459168041997L;
@@ -36,7 +38,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable {
 	}
 
 	public VeinBlock add(BlockData data, String rawData) {
-		VeinBlock block = new VeinBlock(data, rawData);
+		VeinBlock block = VeinBlock.get(data, rawData);
 		this.add(block);
 		return block;
 	}
@@ -50,7 +52,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable {
 			}
 		}
 
-		VeinBlock block = new VeinBlock(material);
+		VeinBlock block = VeinBlock.get(material);
 		this.add(block);
 		return block;
 	}
@@ -74,7 +76,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable {
 	}
 
 	public void remove(BlockData data) {
-		this.blocks.removeIf(block -> block.getData().equals(data));
+		this.blocks.removeIf(block -> block.getBlockData().equals(data));
 	}
 
 	public void removeAll(Material material) {
@@ -86,7 +88,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable {
 	}
 
 	public boolean contains(BlockData data) {
-		return containsOnPredicate(block -> block.isSimilar(data));
+		return containsOnPredicate(block -> block.encapsulates(data));
 	}
 
 	public boolean contains(Material material) {
@@ -94,7 +96,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable {
 	}
 
 	public boolean containsExact(BlockData data) {
-		return containsOnPredicate(block -> block.getData().equals(data));
+		return containsOnPredicate(block -> block.getBlockData().equals(data));
 	}
 
 	private boolean containsOnPredicate(Predicate<VeinBlock> predicate) {

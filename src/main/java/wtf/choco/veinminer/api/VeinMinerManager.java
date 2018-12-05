@@ -19,7 +19,7 @@ import org.bukkit.block.data.BlockData;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.MaterialAlias;
-import wtf.choco.veinminer.data.VeinBlock;
+import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
@@ -119,7 +119,7 @@ public class VeinMinerManager {
 				}
 
 				if (specificData) { // Specific data
-					blocklist.add(data, value.substring(value.indexOf('[')));
+					blocklist.add(data, value);
 				} else { // Wildcard
 					blocklist.add(data.getMaterial());
 				}
@@ -256,7 +256,7 @@ public class VeinMinerManager {
 					continue;
 				}
 
-				alias.addAlias((specificData) ? new VeinBlock(data, aliasMaterial.substring(aliasMaterial.indexOf('['))) : new VeinBlock(data.getMaterial()));
+				alias.addAlias((specificData) ? VeinBlock.get(data, aliasMaterial) : VeinBlock.get(data.getMaterial()));
 			}
 
 			this.aliases.add(alias);
