@@ -60,6 +60,11 @@ class VeinBlockMaterial implements VeinBlock {
 	}
 
 	@Override
+	public VeinBlock clone() {
+		return new VeinBlockMaterial(type);
+	}
+
+	@Override
 	public String toString() {
 		return "{VeinBlockMaterial:{\"Type\":" + asDataString() + "\"}}";
 	}

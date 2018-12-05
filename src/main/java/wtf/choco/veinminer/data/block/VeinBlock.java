@@ -15,7 +15,7 @@ import org.bukkit.block.data.BlockData;
  *
  * @author Parker Hawke - 2008Choco
  */
-public interface VeinBlock {
+public interface VeinBlock extends Cloneable {
 
 	/**
 	 * Get the Bukkit {@link Material} represented by this block
@@ -112,6 +112,8 @@ public interface VeinBlock {
 	 * @return the human-readable data string
 	 */
 	public String asDataString();
+
+	public VeinBlock clone();
 
 	/**
 	 * Get a VeinBlock based on type with no additional block states.

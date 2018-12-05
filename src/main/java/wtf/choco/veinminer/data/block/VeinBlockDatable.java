@@ -12,7 +12,7 @@ class VeinBlockDatable implements VeinBlock {
 	private final String rawData;
 
 	protected VeinBlockDatable(BlockData data, String rawData) {
-		this.data = data;
+		this.data = data.clone();
 		this.rawData = rawData;
 	}
 
@@ -54,6 +54,11 @@ class VeinBlockDatable implements VeinBlock {
 	@Override
 	public int hashCode() {
 		return data.hashCode();
+	}
+
+	@Override
+	public VeinBlock clone() {
+		return new VeinBlockDatable(data, rawData);
 	}
 
 	@Override
