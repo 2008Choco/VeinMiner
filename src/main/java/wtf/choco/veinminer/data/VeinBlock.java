@@ -1,9 +1,5 @@
 package wtf.choco.veinminer.data;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 
 import org.bukkit.Bukkit;
@@ -11,15 +7,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
-import wtf.choco.veinminer.tool.ToolCategory;
-
 /**
  * Represents block mineable by VeinMiner. A VeinBlock may or may not possess additional data
  * beyond a {@link Material} type.
  */
 public class VeinBlock {
-
-	private final Set<ToolCategory> tools = EnumSet.noneOf(ToolCategory.class);
 
 	private final BlockData data;
 	private final String rawData;
@@ -36,37 +28,6 @@ public class VeinBlock {
 		this.rawData = rawData;
 	}
 
-	public VeinBlock(Material type, ToolCategory... tools) {
-		this(type);
-
-		for (ToolCategory tool : tools) {
-			this.tools.add(tool);
-		}
-	}
-
-	public VeinBlock(BlockData data, String rawData, ToolCategory... tools) {
-		this(data, rawData);
-
-		for (ToolCategory tool : tools) {
-			this.tools.add(tool);
-		}
-	}
-
-	@Deprecated
-	public VeinBlock(BlockData data, ToolCategory... tools) {
-		this(data);
-
-		for (ToolCategory tool : tools) {
-			this.tools.add(tool);
-		}
-	}
-
-	@Deprecated
-	public VeinBlock(BlockData data) {
-		this.data = data;
-		this.rawData = data.toString();
-	}
-
 	/**
 	 * Get the type of {@link Material} represented by this VeinBlock instance.
 	 *
@@ -74,42 +35,6 @@ public class VeinBlock {
 	 */
 	public Material getType() {
 		return data.getMaterial();
-	}
-
-	/**
-	 * Set whether the specified {@link ToolCategory} is capable of mining this VeinBlock with vein miner
-	 * or not.
-	 *
-	 * @param tool the tool to set
-	 * @param mineable true if should be mineable, false otherwise
-	 */
-	public void setVeinmineableBy(ToolCategory tool, boolean mineable) {
-		if (mineable) {
-			this.tools.add(tool);
-		} else {
-			this.tools.remove(tool);
-		}
-	}
-
-	/**
-	 * Check whether the specified {@link ToolCategory} is capable of mining this VeinBlock with vein miner
-	 * or not.
-	 *
-	 * @param tool the tool to check
-	 *
-	 * @return true if mineable, false otherwise
-	 */
-	public boolean isVeinmineableBy(ToolCategory tool) {
-		return tools.contains(tool);
-	}
-
-	/**
-	 * Get an immutable set of all tools capable of vein mining this VeinBlock.
-	 *
-	 * @return all tools
-	 */
-	public Set<ToolCategory> getVeinmineableBy() {
-		return Collections.unmodifiableSet(tools);
 	}
 
 	/**

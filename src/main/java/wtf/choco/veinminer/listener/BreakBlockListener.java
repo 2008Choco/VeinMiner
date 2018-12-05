@@ -69,7 +69,7 @@ public class BreakBlockListener implements Listener {
 
 		Material blockType = block.getType();
 		BlockData blockData = block.getBlockData();
-		if (!manager.isVeinmineableBy(blockData, category)) return;
+		if (!manager.getBlockList(category).contains(blockData)) return;
 
 		// TIME TO VEINMINE
 		MaterialAlias alias = manager.getAliasFor(blockType);
@@ -78,7 +78,7 @@ public class BreakBlockListener implements Listener {
 		}
 
 		this.blocks.add(block);
-		VeinBlock type = manager.getVeinmineableBlock(blockData);
+		VeinBlock type = new VeinBlock(blockData, null); // TODO: Fix this... use a cache or something... "null" rawData may cause potential errors
 		VeinMiningPattern pattern = playerData.getPattern();
 		pattern.allocateBlocks(blocks, type, block, category, alias);
 		this.blocks.removeIf(Block::isEmpty);

@@ -3,7 +3,6 @@ package wtf.choco.veinminer.commands;
 import static wtf.choco.veinminer.VeinMiner.CHAT_PREFIX;
 
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +14,7 @@ import org.bukkit.entity.Player;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.api.event.PlayerSwitchPatternEvent;
+import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
@@ -149,21 +149,22 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
+				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
+				BlockList blocklist = manager.getBlockList(tool);
 
-				if (manager.isVeinmineableBy(data, tool)) {
+				if (blocklist.contains(data)) {
 					sender.sendMessage(CHAT_PREFIX + "A block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " is already on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
 					return true;
 				}
 
 				if (specificData) {
-					this.manager.registerVeinmineableBlock(data, args[3].toLowerCase(), tool);
+					blocklist.add(data, args[3].toLowerCase().substring(args[3].indexOf('[')));
 				} else {
-					this.manager.registerVeinmineableBlock(data.getMaterial(), tool);
+					blocklist.add(data.getMaterial());
 				}
 
-				blocklist.add(args[3]);
-				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
+				configBlocklist.add(args[3]);
+				this.plugin.getConfig().set("BlockList." + tool.getName(), configBlocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 
@@ -191,21 +192,17 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				List<String> blocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
+				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
+				BlockList blocklist = manager.getBlockList(tool);
 
-				if (!manager.isVeinmineableBy(data, tool)) {
+				if (!blocklist.contains(data)) {
 					sender.sendMessage(CHAT_PREFIX + "No block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " was found on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
 					return true;
 				}
 
-				VeinBlock block = manager.getVeinmineableBlock(data);
-				block.setVeinmineableBy(tool, false);
-				if (block.getVeinmineableBy().size() == 0) {
-					this.manager.unregisterVeinmineableBlock(block);
-				}
-
-				blocklist.remove(args[3]);
-				this.plugin.getConfig().set("BlockList." + tool.getName(), blocklist);
+				blocklist.remove(data);
+				configBlocklist.remove(args[3]);
+				this.plugin.getConfig().set("BlockList." + tool.getName(), configBlocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 
@@ -219,7 +216,7 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				Set<VeinBlock> blocklist = manager.getVeinmineableBlocks(tool);
+				BlockList blocklist = manager.getBlockList(tool);
 				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
 
 				for (VeinBlock block : blocklist) {
