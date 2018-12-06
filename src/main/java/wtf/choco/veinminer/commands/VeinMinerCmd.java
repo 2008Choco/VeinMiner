@@ -87,16 +87,16 @@ public class VeinMinerCmd implements CommandExecutor {
 			VMPlayerData playerData = VMPlayerData.get(player);
 			// Toggle a specific tool
 			if (args.length >= 2) {
-				ToolCategory tool = ToolCategory.getByName(args[1]);
-				if (tool == null) {
-					player.sendMessage(CHAT_PREFIX + "Invalid tool name: " + ChatColor.YELLOW + args[1]);
+				ToolCategory category = ToolCategory.getByName(args[1]);
+				if (category == null) {
+					player.sendMessage(CHAT_PREFIX + "Invalid tool category: " + ChatColor.YELLOW + args[1]);
 					return true;
 				}
 
-				playerData.setVeinMinerEnabled(!playerData.isVeinMinerEnabled(), tool);
+				playerData.setVeinMinerEnabled(!playerData.isVeinMinerEnabled(), category);
 				player.sendMessage(CHAT_PREFIX + "VeinMiner successfully toggled "
-					+ (playerData.isVeinMinerDisabled(tool) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
-					+ ChatColor.GRAY + " for tool " + ChatColor.YELLOW + tool.getName().toLowerCase());
+					+ (playerData.isVeinMinerDisabled(category) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
+					+ ChatColor.GRAY + " for tool " + ChatColor.YELLOW + category.getName().toLowerCase());
 			}
 
 			// Toggle all tools
@@ -115,10 +115,10 @@ public class VeinMinerCmd implements CommandExecutor {
 				return true;
 			}
 
-			ToolCategory tool = ToolCategory.getByName(args[1]);
+			ToolCategory category = ToolCategory.getByName(args[1]);
 
-			if (tool == null) {
-				sender.sendMessage(CHAT_PREFIX + "Invalid tool name: " + ChatColor.YELLOW + args[1]);
+			if (category == null) {
+				sender.sendMessage(CHAT_PREFIX + "Invalid tool category: " + ChatColor.YELLOW + args[1]);
 				return true;
 			}
 
@@ -149,8 +149,8 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
-				BlockList blocklist = manager.getBlockList(tool);
+				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
+				BlockList blocklist = manager.getBlockList(category);
 
 				if (blocklist.contains(data)) {
 					sender.sendMessage(CHAT_PREFIX + "A block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " is already on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
@@ -164,14 +164,14 @@ public class VeinMinerCmd implements CommandExecutor {
 				}
 
 				configBlocklist.add(args[3]);
-				this.plugin.getConfig().set("BlockList." + tool.getName(), configBlocklist);
+				this.plugin.getConfig().set("BlockList." + category.getName(), configBlocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 
 				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " successfully added to the list");
 			}
 
-			// /veinminer blocklist <tool> remove
+			// /veinminer blocklist <category> remove
 			else if (args[2].equalsIgnoreCase("remove")) {
 				if (!sender.hasPermission("veinminer.blocklist.remove")) {
 					sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
@@ -192,8 +192,8 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + tool.getName());
-				BlockList blocklist = manager.getBlockList(tool);
+				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
+				BlockList blocklist = manager.getBlockList(category);
 
 				if (!blocklist.contains(data)) {
 					sender.sendMessage(CHAT_PREFIX + "No block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " was found on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
@@ -202,7 +202,7 @@ public class VeinMinerCmd implements CommandExecutor {
 
 				blocklist.remove(data);
 				configBlocklist.remove(args[3]);
-				this.plugin.getConfig().set("BlockList." + tool.getName(), configBlocklist);
+				this.plugin.getConfig().set("BlockList." + category.getName(), configBlocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 
@@ -211,13 +211,13 @@ public class VeinMinerCmd implements CommandExecutor {
 
 			// /veinminer blocklist <tool> list
 			else if (args[2].equalsIgnoreCase("list")) {
-				if (!sender.hasPermission("veinminer.blocklist.list." + tool.getName().toLowerCase())) {
+				if (!sender.hasPermission("veinminer.blocklist.list." + category.getName().toLowerCase())) {
 					sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
 					return true;
 				}
 
-				BlockList blocklist = manager.getBlockList(tool);
-				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + tool + "): ");
+				BlockList blocklist = manager.getBlockList(category);
+				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + category + "): ");
 
 				for (VeinBlock block : blocklist) {
 					sender.sendMessage(ChatColor.YELLOW + "  - " + block.asDataString());
@@ -283,8 +283,8 @@ public class VeinMinerCmd implements CommandExecutor {
 	private boolean canVeinMine(Player player) {
 		if (player.hasPermission("veinminer.veinmine.*")) return true;
 
-		for (ToolCategory tool : ToolCategory.values())
-			if (player.hasPermission("veinminer.veinmine." + tool.getName().toLowerCase())) return true;
+		for (ToolCategory category : ToolCategory.values())
+			if (player.hasPermission("veinminer.veinmine." + category.getName().toLowerCase())) return true;
 		return false;
 	}
 

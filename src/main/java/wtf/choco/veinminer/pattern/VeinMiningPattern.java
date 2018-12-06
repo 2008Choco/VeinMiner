@@ -31,10 +31,10 @@ public interface VeinMiningPattern extends Keyed {
 	 * block passed to this method will be added automatically
 	 * @param type the type of VeinBlock being vein mined
 	 * @param origin the block where the vein mine was initiated
-	 * @param tool the tool used to break the block
+	 * @param category the tool category used to break the block
 	 * @param alias an alias of the block being broken if one exists. May be null
 	 */
-	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool, MaterialAlias alias);
+	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias);
 
 	/**
 	 * Allocate the blocks that should be broken by the vein mining pattern. Note that the breaking
@@ -48,10 +48,10 @@ public interface VeinMiningPattern extends Keyed {
 	 * block passed to this method will be added automatically
 	 * @param type the type of VeinBlock being vein mined
 	 * @param origin the block where the vein mine was initiated
-	 * @param tool the tool used to break the block
+	 * @param category the tool category used to break the block
 	 */
-	public default void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool) {
-		this.allocateBlocks(blocks, type, origin, tool, null);
+	public default void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category) {
+		this.allocateBlocks(blocks, type, origin, category, null);
 	}
 
 	/**

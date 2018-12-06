@@ -27,11 +27,11 @@ public interface BlockAllocator {
 	 * block passed to this method will be added automatically
 	 * @param type the type of VeinBlock being vein mined
 	 * @param origin the block where the vein mine was initiated
-	 * @param tool the tool used to break the block
+	 * @param category the tool category used to break the block
 	 * @param alias an alias of the block being broken if one exists. May be null
 	 *
 	 * @see VeinMiningPattern#allocateBlocks(Set, VeinBlock, Block, ToolCategory, MaterialAlias)
 	 */
-	public void allocate(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool, MaterialAlias alias);
+	public void allocate(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias);
 
 }

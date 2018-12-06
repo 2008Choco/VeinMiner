@@ -42,8 +42,8 @@ public class VeinMinerCmdTabCompleter implements TabCompleter {
 
 		else if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("blocklist")) {
-				for (ToolCategory tool : ToolCategory.values()) {
-					values.add(tool.name().toLowerCase());
+				for (ToolCategory category : ToolCategory.values()) {
+					values.add(category.name().toLowerCase());
 				}
 			}
 

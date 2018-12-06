@@ -132,8 +132,8 @@ public enum ToolCategory {
 	 * @return the ToolCategory with the given name. null if none
 	 */
 	public static ToolCategory getByName(String name) {
-		for (ToolCategory tool : values())
-			if (tool.getName().equalsIgnoreCase(name)) return tool;
+		for (ToolCategory category : values())
+			if (category.getName().equalsIgnoreCase(name)) return category;
 		return null;
 	}
 
@@ -146,9 +146,9 @@ public enum ToolCategory {
 	 * @return the ToolCategory associated with the specified material. {@link #HAND} if none
 	 */
 	public static ToolCategory fromMaterial(Material material) {
-		for (ToolCategory tool : values()) {
-			if (tool.contains(material)) {
-				return tool;
+		for (ToolCategory category : values()) {
+			if (category.contains(material)) {
+				return category;
 			}
 		}
 

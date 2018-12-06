@@ -21,15 +21,15 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	private boolean cancelled = false;
 
 	private final VeinBlock type;
-	private final ToolCategory tool;
+	private final ToolCategory category;
 	private final Set<Block> blocks;
 	private final VeinMiningPattern pattern;
 
-	public PlayerVeinMineEvent(Player who, VeinBlock type, ToolCategory tool, Set<Block> blocks, VeinMiningPattern pattern) {
+	public PlayerVeinMineEvent(Player who, VeinBlock type, ToolCategory category, Set<Block> blocks, VeinMiningPattern pattern) {
 		super(who);
 
 		this.type = type;
-		this.tool = tool;
+		this.category = category;
 		this.blocks = blocks;
 		this.pattern = pattern;
 	}
@@ -58,8 +58,8 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 *
 	 * @return the tool used
 	 */
-	public ToolCategory getTool() {
-		return tool;
+	public ToolCategory getCategory() {
+		return category;
 	}
 
 	/**

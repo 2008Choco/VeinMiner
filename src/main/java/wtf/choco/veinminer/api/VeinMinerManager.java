@@ -97,13 +97,13 @@ public class VeinMinerManager {
 	 */
 	public void loadVeinableBlocks() {
 		for (String tool : plugin.getConfig().getConfigurationSection("BlockList").getKeys(false)) {
-			ToolCategory toolCategory = ToolCategory.getByName(tool);
-			if (toolCategory == null && tool.equalsIgnoreCase("all")) { // Special case for "all". Error otherwise
+			ToolCategory category = ToolCategory.getByName(tool);
+			if (category == null && tool.equalsIgnoreCase("all")) { // Special case for "all". Error otherwise
 				this.plugin.getLogger().warning("Attempted to create blocklist for the non-existent category, " + tool + "... ignoring.");
 				continue;
 			}
 
-			BlockList blocklist = getBlockList(toolCategory);
+			BlockList blocklist = getBlockList(category);
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 
 			for (String value : blocks) {
