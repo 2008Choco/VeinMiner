@@ -64,6 +64,14 @@ public class VeinMinerManager {
 		return new BlockList(lists);
 	}
 
+	public boolean isVeinMineable(BlockData data, ToolCategory category) {
+		return globalBlocklist.contains(data) || blocklist.get(category).contains(data);
+	}
+
+	public boolean isVeinMineable(Material material, ToolCategory category) {
+		return globalBlocklist.contains(material) || blocklist.get(category).contains(material);
+	}
+
 	public boolean isVeinMineable(BlockData data) {
 		if (globalBlocklist.contains(data)) {
 			return true;
