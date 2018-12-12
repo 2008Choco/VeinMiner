@@ -12,21 +12,26 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
+import wtf.choco.veinminer.tool.ToolTemplate;
 
 /**
  * The central management for VeinMiner to handle everything regarding VeinMiner and its features.
  */
 public class VeinMinerManager {
 
+	private final Map<ToolCategory, ToolTemplate> toolTemplates = new EnumMap<>(ToolCategory.class);
 	private final Map<ToolCategory, BlockList> blocklist = new EnumMap<>(ToolCategory.class);
 	private final BlockList globalBlocklist = new BlockList();
 
@@ -133,6 +138,47 @@ public class VeinMinerManager {
 				}
 			}
 		}
+	}
+
+	public void loadToolTemplates() {
+		this.toolTemplates.clear();
+
+		FileConfiguration config = plugin.getConfig();
+		for (String categoryName : config.getConfigurationSection("Tools").getKeys(false)) {
+			ToolCategory category = ToolCategory.getByName(categoryName);
+
+			ConfigurationSection categoryTemplate = config.getConfigurationSection("Tools." + categoryName + "Tool");
+			if (categoryTemplate == null) continue;
+
+			Material type = Material.matchMaterial(categoryTemplate.getString("Type"));
+			String name = ChatColor.translateAlternateColorCodes('&', categoryTemplate.getString("Name", ""));
+			List<String> lore = categoryTemplate.getStringList("Lore").stream().map(s -> ChatColor.translateAlternateColorCodes('&', s)).collect(Collectors.toList());
+
+			ToolTemplate template = null;
+			if (type != null) {
+				if (!category.contains(type)) {
+					this.plugin.getLogger().warning("Invalid material type " + type.getKey() + " for category " + category.getName() + ". Ignoring...");
+					continue;
+				}
+
+				template = new ToolTemplate(type, (name.isEmpty()) ? null : name, (lore.isEmpty()) ? null : lore);
+			} else {
+				template = new ToolTemplate(category, (name.isEmpty()) ? null : name, (lore.isEmpty()) ? null : lore);
+			}
+
+			this.toolTemplates.put(category, template);
+		}
+	}
+
+	public void setToolTemplate(ToolCategory category, ToolTemplate template) {
+		Preconditions.checkArgument(category != null, "Tool category must not be null");
+		Preconditions.checkArgument(category.canHaveToolTemplate(), "The provided category (%s) cannot define a tool template", category.getName());
+
+		this.toolTemplates.put(category, template);
+	}
+
+	public ToolTemplate getToolTemplate(ToolCategory category) {
+		return toolTemplates.computeIfAbsent(category, ToolTemplate::empty);
 	}
 
 	/**
@@ -275,6 +321,7 @@ public class VeinMinerManager {
 	 * Clear all localised data in the VeinMiner Manager.
 	 */
 	public void clearLocalisedData() {
+		this.toolTemplates.clear();
 		this.blocklist.values().forEach(BlockList::clear);
 		this.blocklist.clear();
 		this.globalBlocklist.clear();

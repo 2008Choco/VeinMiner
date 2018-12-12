@@ -85,6 +85,7 @@ public class VeinMiner extends JavaPlugin {
 
 		// Load blocks to the veinable list
 		this.getLogger().info("Loading configuration options to local memory");
+		this.manager.loadToolTemplates();
 		this.manager.loadVeinableBlocks();
 		this.manager.loadDisabledWorlds();
 		this.manager.loadMaterialAliases();

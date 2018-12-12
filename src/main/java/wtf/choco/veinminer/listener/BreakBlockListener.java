@@ -70,6 +70,7 @@ public class BreakBlockListener implements Listener {
 		Material blockType = block.getType();
 		BlockData blockData = block.getBlockData();
 		if (!manager.isVeinMineable(blockData, category)) return;
+		if (!manager.getToolTemplate(category).matches(tool)) return;
 
 		// TIME TO VEINMINE
 		MaterialAlias alias = manager.getAliasFor(blockType);

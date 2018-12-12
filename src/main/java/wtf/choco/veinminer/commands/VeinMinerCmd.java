@@ -47,6 +47,7 @@ public class VeinMinerCmd implements CommandExecutor {
 			}
 
 			this.plugin.reloadConfig();
+			this.manager.loadToolTemplates();
 			this.manager.loadVeinableBlocks();
 			this.manager.loadDisabledWorlds();
 			this.manager.loadMaterialAliases();

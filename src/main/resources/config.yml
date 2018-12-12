@@ -7,6 +7,20 @@
 # To specify states, do so with [brackets]. For example, "minecraft:chest[waterlogged=true]"
 # The above will search for any waterlogged chests. Other states will be ignored when checking.
 
+# All tools may have optional tool templates which define a specific item for its category in order to use VeinMiner
+# All values for the template are optional. If not specified, it will not be checked.
+# If no template is specified at all, all default tools will be considered useable (as is default behaviour)
+# An example of a pickaxe template is as follows...
+# Tools:
+#   Pickaxe:
+#     MaxVeinSize: 64
+#     Tool:
+#       Type: 'diamond_pickaxe'
+#       Name: "&cVeinMiner Pickaxe"
+#       Lore:
+#       - "&7Hold shift to use &6VeinMiner"
+#       - "&7Will mine all nearby ores"
+
 MetricsEnabled: true
 PerformUpdateChecks: true
 

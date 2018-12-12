@@ -71,17 +71,23 @@ public enum ToolCategory {
 	/**
 	 * Represent's a player's hands; i.e. no tool at all
 	 */
-	HAND("Hand");
+	HAND("Hand", false);
 
 
 	private static final VeinMiner plugin = VeinMiner.getPlugin();
 
 	private final String name;
 	private final Set<Material> materials;
+	private final boolean canHaveToolTemplate;
+
+	private ToolCategory(String name, boolean canHaveToolTemplate, Material... materials) {
+		this.name = name;
+		this.canHaveToolTemplate = canHaveToolTemplate;
+		this.materials = (materials.length != 0) ? EnumSet.of(materials[0], materials) : EnumSet.noneOf(Material.class);
+	}
 
 	private ToolCategory(String name, Material... materials) {
-		this.name = name;
-		this.materials = (materials.length != 0) ? EnumSet.of(materials[0], materials) : EnumSet.noneOf(Material.class);
+		this(name, true, materials);
 	}
 
 	/**
@@ -91,6 +97,15 @@ public enum ToolCategory {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Check whether or not this tool category may specify a tool template.
+	 *
+	 * @return true if a template is possible, false otherwise
+	 */
+	public boolean canHaveToolTemplate() {
+		return canHaveToolTemplate;
 	}
 
 	/**
