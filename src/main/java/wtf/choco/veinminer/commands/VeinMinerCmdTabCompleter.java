@@ -8,6 +8,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.util.StringUtil;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
@@ -67,8 +68,11 @@ public class VeinMinerCmdTabCompleter implements TabCompleter {
 				}
 			}
 		}
+		else {
+			return null;
+		}
 
-		return values;
+		return StringUtil.copyPartialMatches(args[args.length - 1], values, new ArrayList<>());
 	}
 
 	private boolean hasBlocklistPerms(CommandSender sender) {
