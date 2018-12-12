@@ -21,6 +21,7 @@ import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCmd;
 import wtf.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import wtf.choco.veinminer.data.VMPlayerData;
+import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.utils.ReflectionUtil;
@@ -118,6 +119,7 @@ public class VeinMiner extends JavaPlugin {
 		this.patternRegistry.clearPatterns();
 		this.anticheatHooks.clear();
 		VMPlayerData.clearCache();
+		VeinBlock.clearCache();
 	}
 
 	/**

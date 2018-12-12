@@ -124,7 +124,7 @@ public interface VeinBlock extends Cloneable {
 	 */
 	public static VeinBlock get(Material material) {
 		Preconditions.checkArgument(material != null, "Cannot get VeinBlock with null type");
-		return new VeinBlockMaterial(material);
+		return BlockCache.MATERIAL.getOrCache(material, () -> new VeinBlockMaterial(material));
 	}
 
 	/**
@@ -142,7 +142,15 @@ public interface VeinBlock extends Cloneable {
 		Preconditions.checkArgument(data != null, "Cannot get VeinBlock with null data");
 		Validate.notEmpty(raw, "Raw data must not be empty");
 
-		return new VeinBlockDatable(data, raw);
+		return BlockCache.BLOCK_DATA.getOrCache(data, () -> new VeinBlockDatable(data, raw));
+	}
+
+	/**
+	 * Clear the VeinBlock cache. This may slightly decrease performance until the cache returns
+	 * to a more populated state.
+	 */
+	public static void clearCache() {
+		BlockCache.clear();
 	}
 
 }

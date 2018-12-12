@@ -79,7 +79,7 @@ public class BreakBlockListener implements Listener {
 		}
 
 		this.blocks.add(block);
-		VeinBlock type = VeinBlock.get(blockData, null); // TODO: Fix this... use a cache or something... "null" rawData may cause potential errors
+		VeinBlock type = VeinBlock.get(blockData, null); // 'null' because it's likely that this BlockData is present in the cache. If not... yikes.
 		VeinMiningPattern pattern = playerData.getPattern();
 		pattern.allocateBlocks(blocks, type, block, category, alias);
 		this.blocks.removeIf(Block::isEmpty);
