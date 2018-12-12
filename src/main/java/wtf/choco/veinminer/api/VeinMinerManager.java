@@ -44,6 +44,14 @@ public class VeinMinerManager {
 		this.plugin = plugin;
 	}
 
+	/**
+	 * Get the {@link BlockList} defined for the specified tool category
+	 *
+	 * @param category the category for which to get the blocklist. If null, the
+	 * global blocklist will be returned
+	 *
+	 * @return the category's blocklist
+	 */
 	public BlockList getBlockList(ToolCategory category) {
 		if (category == null) { // Yea, yea... ternary. Whatever.
 			return globalBlocklist;
@@ -53,10 +61,28 @@ public class VeinMinerManager {
 		return blocklist.computeIfAbsent(category, cat -> new BlockList(0));
 	}
 
+	/**
+	 * Get the global blocklist. This blocklist represents blocks and states listed by
+	 * the "All" category in the configuration file.
+	 *
+	 * @return the global blocklist
+	 */
 	public BlockList getBlockListGlobal() {
 		return globalBlocklist;
 	}
 
+	/**
+	 * Get a {@link BlockList} of all veinmineable blocks. The returned blocklist will
+	 * contain unique block-state combinations from all categories and the global blocklist.
+	 * Any changes made to the returned block list will not affect the underlying blocklist,
+	 * therefore if any changes are required, they should be done to those returned by
+	 * {@link #getBlockList(ToolCategory)} or {@link #getBlockListGlobal()}
+	 *
+	 * @return get all veinmineable blocks
+	 *
+	 * @see #getBlockList(ToolCategory)
+	 * @see #getBlockListGlobal()
+	 */
 	public BlockList getAllVeinMineableBlocks() {
 		BlockList[] lists = new BlockList[blocklist.size() + 1];
 
@@ -69,14 +95,43 @@ public class VeinMinerManager {
 		return new BlockList(lists);
 	}
 
+	/**
+	 * Check whether the specified {@link BlockData} is vein mineable for the specified category.
+	 *
+	 * @param data the data to check
+	 * @param category the category to check
+	 *
+	 * @return true if the data is vein mineable by the specified category, false otherwise
+	 *
+	 * @see VeinBlock#encapsulates(BlockData)
+	 */
 	public boolean isVeinMineable(BlockData data, ToolCategory category) {
 		return globalBlocklist.contains(data) || blocklist.get(category).contains(data);
 	}
 
+	/**
+	 * Check whether the specified {@link Material} is vein mineable for the specified category.
+	 *
+	 * @param material the material to check
+	 * @param category the category to check
+	 *
+	 * @return true if the material is vein mineable by the specified category, false otherwise
+	 *
+	 * @see VeinBlock#encapsulates(Material)
+	 */
 	public boolean isVeinMineable(Material material, ToolCategory category) {
 		return globalBlocklist.contains(material) || blocklist.get(category).contains(material);
 	}
 
+	/**
+	 * Check whether the specified {@link BlockData} is at all vein mineable.
+	 *
+	 * @param data the data to check
+	 *
+	 * @return true if the data is vein mineable, false otherwise
+	 *
+	 * @see VeinBlock#encapsulates(BlockData)
+	 */
 	public boolean isVeinMineable(BlockData data) {
 		if (globalBlocklist.contains(data)) {
 			return true;
@@ -91,6 +146,15 @@ public class VeinMinerManager {
 		return false;
 	}
 
+	/**
+	 * Check whether the specified {@link Material} is at all vein mineable.
+	 *
+	 * @param material the material to check
+	 *
+	 * @return true if the material is vein mineable, false otherwise
+	 *
+	 * @see VeinBlock#encapsulates(Material)
+	 */
 	public boolean isVeinMineable(Material material) {
 		if (globalBlocklist.contains(material)) {
 			return true;
@@ -140,6 +204,9 @@ public class VeinMinerManager {
 		}
 	}
 
+	/**
+	 * Load all tool templates from the configuration file to memory
+	 */
 	public void loadToolTemplates() {
 		this.toolTemplates.clear();
 
@@ -170,13 +237,28 @@ public class VeinMinerManager {
 		}
 	}
 
+	/**
+	 * Set the tool template for the specified category. If null, the template will be removed
+	 * and default behaviour will be used.
+	 *
+	 * @param category the category for which to set a template
+	 * @param template the template to set, or null for none
+	 */
 	public void setToolTemplate(ToolCategory category, ToolTemplate template) {
-		Preconditions.checkArgument(category != null, "Tool category must not be null");
+		Preconditions.checkArgument(category != null, "Cannot set template for null category");
 		Preconditions.checkArgument(category.canHaveToolTemplate(), "The provided category (%s) cannot define a tool template", category.getName());
 
-		this.toolTemplates.put(category, template);
+		this.toolTemplates.put(category, (template != null) ? template : ToolTemplate.empty(category));
 	}
 
+	/**
+	 * Get the tool template used for the specified category. If no template is specified, an empty
+	 * template will be returned (not null, but always true).
+	 *
+	 * @param category the category whose template to get
+	 *
+	 * @return the category's template
+	 */
 	public ToolTemplate getToolTemplate(ToolCategory category) {
 		return toolTemplates.computeIfAbsent(category, ToolTemplate::empty);
 	}
