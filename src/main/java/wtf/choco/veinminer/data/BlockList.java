@@ -16,7 +16,7 @@ import wtf.choco.veinminer.data.block.VeinBlock;
  *
  * @author Parker Hawke - 2008Choco
  */
-public class BlockList implements Iterable<VeinBlock>, Serializable {
+public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 
 	private static final long serialVersionUID = -2274615459168041997L;
 
@@ -227,6 +227,11 @@ public class BlockList implements Iterable<VeinBlock>, Serializable {
 	@Override
 	public Iterator<VeinBlock> iterator() {
 		return blocks.iterator();
+	}
+
+	@Override
+	public BlockList clone() {
+		return new BlockList(this);
 	}
 
 	@Override
