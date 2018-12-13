@@ -79,7 +79,7 @@ public class BreakBlockListener implements Listener {
 		}
 
 		this.blocks.add(block);
-		VeinBlock type = VeinBlock.get(blockData, null); // 'null' because it's likely that this BlockData is present in the cache. If not... yikes.
+		VeinBlock type = VeinBlock.get(blockData, "invalid-placeholder-data"); // nonsensical data because it's likely that this BlockData is present in the cache. If not... yikes.
 		VeinMiningPattern pattern = playerData.getPattern();
 		pattern.allocateBlocks(blocks, type, block, category, alias);
 		this.blocks.removeIf(Block::isEmpty);
