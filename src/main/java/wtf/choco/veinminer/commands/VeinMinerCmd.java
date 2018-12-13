@@ -3,6 +3,7 @@ package wtf.choco.veinminer.commands;
 import static wtf.choco.veinminer.VeinMiner.CHAT_PREFIX;
 
 import java.util.List;
+import java.util.regex.Matcher;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -140,31 +141,19 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				// Get block data from command parameter
-				BlockData data;
-				boolean specificData = !args[3].endsWith("[]") && args[3].endsWith("]");
-				try {
-					data = Bukkit.createBlockData(args[3].toLowerCase());
-				} catch (IllegalArgumentException e) {
-					sender.sendMessage(CHAT_PREFIX + "Unknown block type and/or block states. (Was it an item?) Given: " + ChatColor.YELLOW + args[3]);
-					return true;
-				}
+				VeinBlock block = getVeinBlockFromString(sender, args[3].toLowerCase());
 
 				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
 				BlockList blocklist = manager.getBlockList(category);
 
-				if (blocklist.contains(data)) {
+				if (blocklist.contains(block)) {
 					sender.sendMessage(CHAT_PREFIX + "A block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " is already on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
 					return true;
 				}
 
-				if (specificData) {
-					blocklist.add(data, args[3].toLowerCase());
-				} else {
-					blocklist.add(data.getMaterial());
-				}
+				blocklist.add(block);
 
-				configBlocklist.add(args[3]);
+				configBlocklist.add(block.asDataString());
 				this.plugin.getConfig().set("BlockList." + category.getName(), configBlocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
@@ -184,25 +173,18 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				// Get block data from command parameter
-				BlockData data;
-				try {
-					data = Bukkit.createBlockData(args[3]);
-				} catch (IllegalArgumentException e) {
-					sender.sendMessage(CHAT_PREFIX + "Unknown block type and/or block states. (Was it an item?) Given: " + ChatColor.YELLOW + args[3]);
-					return true;
-				}
+				VeinBlock block = getVeinBlockFromString(sender, args[3].toLowerCase());
 
 				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
 				BlockList blocklist = manager.getBlockList(category);
 
-				if (!blocklist.contains(data)) {
+				if (!blocklist.contains(block)) {
 					sender.sendMessage(CHAT_PREFIX + "No block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " was found on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
 					return true;
 				}
 
-				blocklist.remove(data);
-				configBlocklist.remove(args[3]);
+				blocklist.remove(block);
+				configBlocklist.remove(block.asDataString());
 				this.plugin.getConfig().set("BlockList." + category.getName(), configBlocklist);
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
@@ -296,6 +278,26 @@ public class VeinMinerCmd implements CommandExecutor {
 
 		UpdateResult result = UpdateChecker.get().getLastResult();
 		return (result != null && result.requiresUpdate()) ? " (" + ChatColor.GREEN + ChatColor.BOLD + "UPDATE AVAILABLE!" + ChatColor.GRAY + ")" : "";
+	}
+
+	private VeinBlock getVeinBlockFromString(CommandSender sender, String dataString) {
+		Matcher matcher = VeinMiner.BLOCK_DATA_PATTERN.matcher(dataString);
+		if (!matcher.find()) {
+			sender.sendMessage(VeinMiner.CHAT_PREFIX + ChatColor.RED + "Invalid block data format provided (" + dataString + ")... " + ChatColor.GRAY + "must be defined as (for example) " + ChatColor.YELLOW + "\"minecraft:chest[waterlogged=true]\"");
+			return null;
+		}
+
+		BlockData data;
+		boolean specificData = matcher.groupCount() >= 1;
+
+		try {
+			data = Bukkit.createBlockData(matcher.group()); // Use what the matcher found to make the life of the parser easier
+		} catch (IllegalArgumentException e) {
+			sender.sendMessage(VeinMiner.CHAT_PREFIX + ChatColor.RED + "Unknown block type (was it an item?) and/or block states. " + dataString);
+			return null;
+		}
+
+		return (specificData) ? VeinBlock.get(data, matcher.group()) : VeinBlock.get(data.getMaterial());
 	}
 
 }

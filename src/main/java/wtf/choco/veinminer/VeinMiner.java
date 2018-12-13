@@ -3,6 +3,7 @@ package wtf.choco.veinminer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
 
@@ -32,6 +33,7 @@ import wtf.choco.veinminer.utils.metrics.StatTracker;
 public class VeinMiner extends JavaPlugin {
 
 	public static final String CHAT_PREFIX = ChatColor.BLUE.toString() + ChatColor.BOLD + "VeinMiner | " + ChatColor.GRAY;
+	public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])**");
 
 	private static VeinMiner instance;
 

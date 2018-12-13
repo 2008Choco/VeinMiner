@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -184,22 +185,10 @@ public class VeinMinerManager {
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 
 			for (String value : blocks) {
-				// Material information
-				BlockData data;
-				boolean specificData = value.endsWith("]");
+				VeinBlock block = getVeinBlockFromString(value);
+				if (block == null) continue;
 
-				try {
-					data = Bukkit.createBlockData(value);
-				} catch (IllegalArgumentException e) {
-					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + value);
-					continue;
-				}
-
-				if (specificData) { // Specific data
-					blocklist.add(data, value);
-				} else { // Wildcard
-					blocklist.add(data.getMaterial());
-				}
+				blocklist.add(block);
 			}
 		}
 	}
@@ -300,7 +289,7 @@ public class VeinMinerManager {
 	 * @return a set of all disabled worlds
 	 */
 	public Set<World> getDisabledWorlds() {
-		return disabledWorlds.stream().map(w -> Bukkit.getWorld(w)).collect(Collectors.toSet());
+		return disabledWorlds.stream().map(Bukkit::getWorld).collect(Collectors.toSet());
 	}
 
 	/**
@@ -381,18 +370,10 @@ public class VeinMinerManager {
 			MaterialAlias alias = new MaterialAlias();
 
 			for (String aliasMaterial : aliasList.split("\\s*,\\s*")) {
-				// Material information
-				BlockData data;
-				boolean specificData = aliasMaterial.endsWith("]");
+				VeinBlock block = getVeinBlockFromString(aliasMaterial);
+				if (block == null) continue;
 
-				try {
-					data = Bukkit.createBlockData(aliasMaterial);
-				} catch (IllegalArgumentException e) {
-					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + aliasMaterial);
-					continue;
-				}
-
-				alias.addAlias((specificData) ? VeinBlock.get(data, aliasMaterial) : VeinBlock.get(data.getMaterial()));
+				alias.addAlias(block);
 			}
 
 			this.aliases.add(alias);
@@ -410,6 +391,26 @@ public class VeinMinerManager {
 
 		this.disabledWorlds.clear();
 		this.aliases.clear();
+	}
+
+	private VeinBlock getVeinBlockFromString(String dataString) {
+		Matcher matcher = VeinMiner.BLOCK_DATA_PATTERN.matcher(dataString);
+		if (!matcher.find()) {
+			this.plugin.getLogger().warning("Invalid block data format provided (" + dataString + ")... must be defined as (for example) \"minecraft:chest[waterlogged=true]\"");
+			return null;
+		}
+
+		BlockData data;
+		boolean specificData = matcher.groupCount() >= 1;
+
+		try {
+			data = Bukkit.createBlockData(matcher.group()); // Use what the matcher found to make the life of the parser easier
+		} catch (IllegalArgumentException e) {
+			this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + dataString);
+			return null;
+		}
+
+		return (specificData) ? VeinBlock.get(data, matcher.group()) : VeinBlock.get(data.getMaterial());
 	}
 
 }
