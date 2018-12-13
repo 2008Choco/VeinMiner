@@ -124,7 +124,7 @@ public interface VeinBlock extends Cloneable {
 	 */
 	public static VeinBlock get(Material material) {
 		Preconditions.checkArgument(material != null, "Cannot get VeinBlock with null type");
-		return BlockCache.MATERIAL.getOrCache(material, () -> new VeinBlockMaterial(material));
+		return BlockCache.MATERIAL.getOrCache(material, VeinBlockMaterial::new);
 	}
 
 	/**

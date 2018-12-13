@@ -3,6 +3,7 @@ package wtf.choco.veinminer.data.block;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.bukkit.Material;
@@ -11,7 +12,7 @@ import org.bukkit.block.data.BlockData;
 final class BlockCache<T> {
 
 	protected static final BlockCache<Material> MATERIAL = new BlockCache<>(() -> new EnumMap<>(Material.class));
-	protected static final BlockCache<BlockData> BLOCK_DATA = new BlockCache<>(HashMap::new);
+	protected static final BlockCache<BlockData> BLOCK_DATA = new BlockCache<>(() -> new HashMap<>()); // No constructor reference due to type inference "bug"
 
 	private final Map<T, VeinBlock> cached;
 
@@ -21,6 +22,10 @@ final class BlockCache<T> {
 
 	protected VeinBlock getOrCache(T type, Supplier<VeinBlock> defaultSupplier) {
 		return cached.computeIfAbsent(type, t -> defaultSupplier.get());
+	}
+
+	protected VeinBlock getOrCache(T type, Function<T, VeinBlock> defaultSupplier) {
+		return cached.computeIfAbsent(type, defaultSupplier);
 	}
 
 	protected static void clear() {
