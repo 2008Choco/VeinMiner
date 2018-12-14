@@ -56,7 +56,7 @@ class VeinBlockMaterial implements VeinBlock {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj == type;
+		return obj == this || ((obj instanceof VeinBlockMaterial) && ((VeinBlockMaterial) obj).type == type);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ class VeinBlockMaterial implements VeinBlock {
 
 	@Override
 	public String toString() {
-		return "{VeinBlockMaterial:{\"Type\":" + asDataString() + "\"}}";
+		return "{VeinBlockMaterial:{\"Type\":\"" + asDataString() + "\"}}";
 	}
 
 }
