@@ -31,9 +31,9 @@ public final class StatTracker {
 	}
 
 	/**
-	 * Get the data as a Map<String, Integer> for bStats. Note that the invocation of this method
-	 * will result in previous data being cleared and reset back to 0. This should ONLY be invoked
-	 * by bStats data collectors as to not mess up existing data.
+	 * Get the data as a {@literal Map<String, Integer>} for bStats. Note that the invocation of
+	 * this method will result in previous data being cleared and reset back to 0. This should ONLY
+	 * be invoked by bStats data collectors as to not mess up existing data.
 	 *
 	 * @return the readable bStats data
 	 */
