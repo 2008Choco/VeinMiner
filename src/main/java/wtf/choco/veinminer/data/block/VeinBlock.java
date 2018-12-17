@@ -2,7 +2,6 @@ package wtf.choco.veinminer.data.block;
 
 import com.google.common.base.Preconditions;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -128,21 +127,15 @@ public interface VeinBlock extends Cloneable {
 	}
 
 	/**
-	 * Get a VeinBlock based on block data with optional states and the raw data from which
-	 * the BlockData was derived.
+	 * Get a VeinBlock based on block data with a set of states.
 	 *
 	 * @param data the block data for which to get a VeinBlock instance
-	 * @param raw the raw, human-readable BlockData String (including material). For example,
-	 * "minecraft:chest[waterlogged=true]" would be valid raw data. No additional checks are
-	 * performed to guarantee the data and the raw data provided match.
 	 *
 	 * @return the VeinBlock instance
 	 */
-	public static VeinBlock get(BlockData data, String raw) {
+	public static VeinBlock get(BlockData data) {
 		Preconditions.checkArgument(data != null, "Cannot get VeinBlock with null data");
-		Validate.notEmpty(raw, "Raw data must not be empty");
-
-		return BlockCache.BLOCK_DATA.getOrCache(data, () -> new VeinBlockDatable(data, raw));
+		return BlockCache.BLOCK_DATA.getOrCache(data, VeinBlockDatable::new);
 	}
 
 	/**

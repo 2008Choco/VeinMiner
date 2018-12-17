@@ -57,15 +57,14 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	}
 
 	/**
-	 * Add a {@link BlockData} to this BlockList with its associated raw data.
+	 * Add a {@link BlockData} to this BlockList.
 	 *
 	 * @param data the data to add
-	 * @param rawData the raw data
 	 *
 	 * @return the VeinBlock added to this list
 	 */
-	public VeinBlock add(BlockData data, String rawData) {
-		VeinBlock block = VeinBlock.get(data, rawData);
+	public VeinBlock add(BlockData data) {
+		VeinBlock block = VeinBlock.get(data);
 		this.add(block);
 		return block;
 	}

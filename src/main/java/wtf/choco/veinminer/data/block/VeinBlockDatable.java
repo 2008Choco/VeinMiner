@@ -9,11 +9,9 @@ import org.bukkit.block.data.BlockData;
 class VeinBlockDatable implements VeinBlock {
 
 	private final BlockData data;
-	private final String rawData;
 
-	protected VeinBlockDatable(BlockData data, String rawData) {
+	protected VeinBlockDatable(BlockData data) {
 		this.data = data.clone();
-		this.rawData = rawData;
 	}
 
 	@Override
@@ -48,7 +46,7 @@ class VeinBlockDatable implements VeinBlock {
 
 	@Override
 	public String asDataString() {
-		return rawData;
+		return data.getAsString(true);
 	}
 
 	@Override
@@ -58,7 +56,7 @@ class VeinBlockDatable implements VeinBlock {
 
 	@Override
 	public VeinBlock clone() {
-		return new VeinBlockDatable(data, rawData);
+		return new VeinBlockDatable(data);
 	}
 
 	@Override
@@ -72,7 +70,8 @@ class VeinBlockDatable implements VeinBlock {
 
 	@Override
 	public String toString() {
-		return "{VeinBlockDatable:{\"Type\":\"" + data.getMaterial() + "\",\"Data\":\"" + rawData.substring(rawData.indexOf('[')) + "\"}}";
+		String dataString = asDataString();
+		return "{VeinBlockDatable:{\"Type\":\"" + data.getMaterial() + "\",\"Data\":\"" + dataString.substring(dataString.indexOf('[')) + "\"}}";
 	}
 
 }

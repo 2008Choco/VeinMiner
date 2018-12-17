@@ -410,7 +410,7 @@ public class VeinMinerManager {
 			return null;
 		}
 
-		return (specificData) ? VeinBlock.get(data, matcher.group()) : VeinBlock.get(data.getMaterial());
+		return (specificData) ? VeinBlock.get(data) : VeinBlock.get(data.getMaterial());
 	}
 
 }

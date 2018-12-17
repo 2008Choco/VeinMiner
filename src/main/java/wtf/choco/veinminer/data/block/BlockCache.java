@@ -20,10 +20,6 @@ final class BlockCache<T> {
 		this.cached = mapSupplier.get();
 	}
 
-	protected VeinBlock getOrCache(T type, Supplier<VeinBlock> defaultSupplier) {
-		return cached.computeIfAbsent(type, t -> defaultSupplier.get());
-	}
-
 	protected VeinBlock getOrCache(T type, Function<T, VeinBlock> defaultSupplier) {
 		return cached.computeIfAbsent(type, defaultSupplier);
 	}
