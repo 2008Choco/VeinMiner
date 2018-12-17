@@ -41,6 +41,16 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	}
 
 	/**
+	 * Create a new BlockList with the values from an existing {@link BlockList} instance.
+	 *
+	 * @param list the block list whose values should be included
+	 */
+	public BlockList(BlockList list) {
+		this(list.size());
+		this.addAll(list);
+	}
+
+	/**
 	 * Create a new BlockList with an initial size
 	 *
 	 * @param initialSize the initial list size
