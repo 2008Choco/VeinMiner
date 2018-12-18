@@ -33,7 +33,7 @@ import wtf.choco.veinminer.utils.metrics.StatTracker;
 public class VeinMiner extends JavaPlugin {
 
 	public static final String CHAT_PREFIX = ChatColor.BLUE.toString() + ChatColor.BOLD + "VeinMiner | " + ChatColor.GRAY;
-	public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])**");
+	public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
 
 	private static VeinMiner instance;
 
