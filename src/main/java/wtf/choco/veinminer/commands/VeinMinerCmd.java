@@ -142,6 +142,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				}
 
 				VeinBlock block = getVeinBlockFromString(sender, args[3].toLowerCase());
+				if (block == null) return true;
 
 				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
 				BlockList blocklist = manager.getBlockList(category);
@@ -174,6 +175,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				}
 
 				VeinBlock block = getVeinBlockFromString(sender, args[3].toLowerCase());
+				if (block == null) return true;
 
 				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
 				BlockList blocklist = manager.getBlockList(category);
@@ -293,7 +295,7 @@ public class VeinMinerCmd implements CommandExecutor {
 		try {
 			data = Bukkit.createBlockData(matcher.group()); // Use what the matcher found to make the life of the parser easier
 		} catch (IllegalArgumentException e) {
-			sender.sendMessage(VeinMiner.CHAT_PREFIX + ChatColor.RED + "Unknown block type (was it an item?) and/or block states. " + dataString);
+			sender.sendMessage(VeinMiner.CHAT_PREFIX + ChatColor.RED + "Unknown block type (was it an item?) and/or block states. " + ChatColor.YELLOW + dataString);
 			return null;
 		}
 
