@@ -27,6 +27,7 @@ PerformUpdateChecks: true
 ActivationMode: SNEAK
 RepairFriendlyVeinminer: false
 IncludeEdges: true
+SortBlocklistAlphabetically: true
 DisabledWorlds:
 - WorldName
 

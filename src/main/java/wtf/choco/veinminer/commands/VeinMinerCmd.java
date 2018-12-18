@@ -2,7 +2,10 @@ package wtf.choco.veinminer.commands;
 
 import static wtf.choco.veinminer.VeinMiner.CHAT_PREFIX;
 
+import java.util.LinkedList;
 import java.util.List;
+
+import com.google.common.collect.Iterables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -205,12 +208,17 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				BlockList blocklist = manager.getBlockList(category);
-				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + category + "): ");
-
-				for (VeinBlock block : blocklist) {
-					sender.sendMessage(ChatColor.YELLOW + "  - " + block.asDataString());
+				Iterable<VeinBlock> blocklistIterable;
+				if (plugin.getConfig().getBoolean("SortBlocklistAlphabetically", true)) {
+					blocklistIterable = new LinkedList<>();
+					Iterables.addAll((List<VeinBlock>) blocklistIterable, manager.getBlockList(category));
+					((LinkedList<VeinBlock>) blocklistIterable).sort((first, second) -> first.getType().getKey().getKey().compareTo(second.getType().getKey().getKey()));
+				} else {
+					blocklistIterable = manager.getBlockList(category);
 				}
+
+				sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + category + "): ");
+				blocklistIterable.forEach(block -> sender.sendMessage(ChatColor.YELLOW + "  - " + block.asDataString()));
 			}
 
 			// Unknown parameter
