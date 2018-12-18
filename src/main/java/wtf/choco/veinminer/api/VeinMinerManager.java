@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -188,8 +187,11 @@ public class VeinMinerManager {
 			List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 
 			for (String value : blocks) {
-				VeinBlock block = getVeinBlockFromString(value);
-				if (block == null) continue;
+				VeinBlock block = VeinBlock.fromString(value);
+				if (block == null) {
+					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states for blocklist \"" + category.getName() + "\". Given: " + value);
+					continue;
+				}
 
 				blocklist.add(block);
 			}
@@ -372,9 +374,12 @@ public class VeinMinerManager {
 		for (String aliasList : plugin.getConfig().getStringList("Aliases")) {
 			MaterialAlias alias = new MaterialAlias();
 
-			for (String aliasMaterial : aliasList.split("\\s*,\\s*")) {
-				VeinBlock block = getVeinBlockFromString(aliasMaterial);
-				if (block == null) continue;
+			for (String aliasState : aliasList.split("\\s*,\\s*")) {
+				VeinBlock block = VeinBlock.fromString(aliasState);
+				if (block == null) {
+					this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states for alias \"" + aliasList + "\". Given: " + aliasState);
+					continue;
+				}
 
 				alias.addAlias(block);
 			}
@@ -394,26 +399,6 @@ public class VeinMinerManager {
 
 		this.disabledWorlds.clear();
 		this.aliases.clear();
-	}
-
-	private VeinBlock getVeinBlockFromString(String dataString) {
-		Matcher matcher = VeinMiner.BLOCK_DATA_PATTERN.matcher(dataString);
-		if (!matcher.find()) {
-			this.plugin.getLogger().warning("Invalid block data format provided (" + dataString + ")... must be defined as (for example) \"minecraft:chest[waterlogged=true]\"");
-			return null;
-		}
-
-		BlockData data;
-		boolean specificData = matcher.groupCount() >= 1;
-
-		try {
-			data = Bukkit.createBlockData(matcher.group()); // Use what the matcher found to make the life of the parser easier
-		} catch (IllegalArgumentException e) {
-			this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states. " + dataString);
-			return null;
-		}
-
-		return (specificData) ? VeinBlock.get(data) : VeinBlock.get(data.getMaterial());
 	}
 
 }

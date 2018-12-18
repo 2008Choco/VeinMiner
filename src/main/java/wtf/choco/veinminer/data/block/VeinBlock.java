@@ -1,10 +1,15 @@
 package wtf.choco.veinminer.data.block;
 
+import java.util.regex.Matcher;
+
 import com.google.common.base.Preconditions;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+
+import wtf.choco.veinminer.VeinMiner;
 
 /**
  * Represents a block that may be vein mined. These blocks may or may not contain
@@ -136,6 +141,40 @@ public interface VeinBlock extends Cloneable {
 	public static VeinBlock get(BlockData data) {
 		Preconditions.checkArgument(data != null, "Cannot get VeinBlock with null data");
 		return BlockCache.BLOCK_DATA.getOrCache(data, VeinBlockDatable::new);
+	}
+
+	/**
+	 * Get a VeinBlock based on a String representation of its material and/or state.
+	 * If the format of the String is inconsistent with how Minecraft formats its states,
+	 * or if the type / (one or more of the) states are invalid or unknown, this method
+	 * will return null. An example of valid formats are as follows:
+	 * <pre>{@code
+	 * chest
+	 * minecraft:chest
+	 * minecraft:chest[waterlogged=true]
+	 * minecraft:chest[facing=north,waterlogged=true]
+	 * }</pre>
+	 *
+	 * @param value the value from which to get a VeinBlock instance.
+	 *
+	 * @return the parsed VeinBlock instance
+	 */
+	public static VeinBlock fromString(String value) {
+		Matcher matcher = VeinMiner.BLOCK_DATA_PATTERN.matcher(value);
+		if (!matcher.find()) {
+			return null;
+		}
+
+		BlockData data;
+		boolean specificData = (matcher.group(1) != null);
+
+		try {
+			data = Bukkit.createBlockData(matcher.group());
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+
+		return (specificData) ? VeinBlock.get(data) : VeinBlock.get(data.getMaterial());
 	}
 
 	/**

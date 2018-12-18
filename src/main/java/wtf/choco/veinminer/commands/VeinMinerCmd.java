@@ -3,11 +3,9 @@ package wtf.choco.veinminer.commands;
 import static wtf.choco.veinminer.VeinMiner.CHAT_PREFIX;
 
 import java.util.List;
-import java.util.regex.Matcher;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -141,8 +139,11 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				VeinBlock block = getVeinBlockFromString(sender, args[3].toLowerCase());
-				if (block == null) return true;
+				VeinBlock block = VeinBlock.fromString(args[3].toLowerCase());
+				if (block == null) {
+					sender.sendMessage(VeinMiner.CHAT_PREFIX + ChatColor.RED + "Unknown block type (was it an item?) and/or block states. Given: " + ChatColor.YELLOW + args[3].toLowerCase());
+					return true;
+				}
 
 				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
 				BlockList blocklist = manager.getBlockList(category);
@@ -159,7 +160,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 
-				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " successfully added to the list");
+				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + block.asDataString() + ChatColor.GRAY + " successfully added to the list");
 			}
 
 			// /veinminer blocklist <category> remove
@@ -174,8 +175,11 @@ public class VeinMinerCmd implements CommandExecutor {
 					return true;
 				}
 
-				VeinBlock block = getVeinBlockFromString(sender, args[3].toLowerCase());
-				if (block == null) return true;
+				VeinBlock block = VeinBlock.fromString(args[3].toLowerCase());
+				if (block == null) {
+					sender.sendMessage(VeinMiner.CHAT_PREFIX + ChatColor.RED + "Unknown block type (was it an item?) and/or block states. Given: " + ChatColor.YELLOW + args[3].toLowerCase());
+					return true;
+				}
 
 				List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
 				BlockList blocklist = manager.getBlockList(category);
@@ -191,7 +195,7 @@ public class VeinMinerCmd implements CommandExecutor {
 				this.plugin.saveConfig();
 				this.plugin.reloadConfig();
 
-				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " successfully removed from the list");
+				sender.sendMessage(CHAT_PREFIX + "Block ID " + ChatColor.YELLOW + block.asDataString() + ChatColor.GRAY + " successfully removed from the list");
 			}
 
 			// /veinminer blocklist <tool> list
@@ -280,26 +284,6 @@ public class VeinMinerCmd implements CommandExecutor {
 
 		UpdateResult result = UpdateChecker.get().getLastResult();
 		return (result != null && result.requiresUpdate()) ? " (" + ChatColor.GREEN + ChatColor.BOLD + "UPDATE AVAILABLE!" + ChatColor.GRAY + ")" : "";
-	}
-
-	private VeinBlock getVeinBlockFromString(CommandSender sender, String dataString) {
-		Matcher matcher = VeinMiner.BLOCK_DATA_PATTERN.matcher(dataString);
-		if (!matcher.find()) {
-			sender.sendMessage(VeinMiner.CHAT_PREFIX + ChatColor.RED + "Invalid block data format provided (" + dataString + ")... " + ChatColor.GRAY + "must be defined as (for example) " + ChatColor.YELLOW + "\"minecraft:chest[waterlogged=true]\"");
-			return null;
-		}
-
-		BlockData data;
-		boolean specificData = matcher.groupCount() >= 1;
-
-		try {
-			data = Bukkit.createBlockData(matcher.group()); // Use what the matcher found to make the life of the parser easier
-		} catch (IllegalArgumentException e) {
-			sender.sendMessage(VeinMiner.CHAT_PREFIX + ChatColor.RED + "Unknown block type (was it an item?) and/or block states. " + ChatColor.YELLOW + dataString);
-			return null;
-		}
-
-		return (specificData) ? VeinBlock.get(data) : VeinBlock.get(data.getMaterial());
 	}
 
 }
