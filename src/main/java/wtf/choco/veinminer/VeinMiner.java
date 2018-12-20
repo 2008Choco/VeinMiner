@@ -94,9 +94,10 @@ public class VeinMiner extends JavaPlugin {
 		this.manager.loadMaterialAliases();
 
 		// Update check (https://www.spigotmc.org/resources/veinminer.12038/)
+		UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
 		if (getConfig().getBoolean("PerformUpdateChecks")) {
 			this.getLogger().info("Performing an update check!");
-			UpdateChecker.init(this, 12038).requestUpdateCheck().whenComplete((result, exception) -> {
+			updateChecker.requestUpdateCheck().whenComplete((result, exception) -> {
 				if (result.requiresUpdate()) {
 					this.getLogger().info(String.format("An update is available! VeinMiner %s may be downloaded on SpigotMC", result.getNewestVersion()));
 					return;
