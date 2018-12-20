@@ -55,11 +55,6 @@ class VeinBlockDatable implements VeinBlock {
 	}
 
 	@Override
-	public VeinBlock clone() {
-		return new VeinBlockDatable(data);
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) return true;
 		if (!(obj instanceof VeinBlockDatable)) return false;

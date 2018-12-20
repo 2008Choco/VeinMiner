@@ -19,7 +19,7 @@ import wtf.choco.veinminer.VeinMiner;
  *
  * @author Parker Hawke - 2008Choco
  */
-public interface VeinBlock extends Cloneable {
+public interface VeinBlock {
 
 	/**
 	 * Get the Bukkit {@link Material} represented by this block
@@ -116,8 +116,6 @@ public interface VeinBlock extends Cloneable {
 	 * @return the human-readable data string
 	 */
 	public String asDataString();
-
-	public VeinBlock clone();
 
 	/**
 	 * Get a VeinBlock based on type with no additional block states.
