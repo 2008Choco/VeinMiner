@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,14 +25,16 @@ import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
-import wtf.choco.veinminer.tool.ToolTemplate;
+import wtf.choco.veinminer.tool.template.TemplatePrecedence;
+import wtf.choco.veinminer.tool.template.TemplateValidator;
+import wtf.choco.veinminer.tool.template.ToolTemplate;
 
 /**
  * The central management for VeinMiner to handle everything regarding VeinMiner and its features.
  */
 public class VeinMinerManager {
 
-	private final Map<ToolCategory, ToolTemplate> toolTemplates = new EnumMap<>(ToolCategory.class);
+	private TemplateValidator templateValidator = null;
 	private final Map<ToolCategory, BlockList> blocklist = new EnumMap<>(ToolCategory.class);
 	private final BlockList globalBlocklist = new BlockList();
 
@@ -202,18 +205,21 @@ public class VeinMinerManager {
 	 * Load all tool templates from the configuration file to memory
 	 */
 	public void loadToolTemplates() {
-		this.toolTemplates.clear();
-
 		FileConfiguration config = plugin.getConfig();
-		for (String categoryName : config.getConfigurationSection("Tools").getKeys(false)) {
-			ToolCategory category = ToolCategory.getByName(categoryName);
+		ConfigurationSection templateSection = config.getConfigurationSection("ToolTemplates");
+		if (templateSection == null) return;
 
-			ConfigurationSection categoryTemplate = config.getConfigurationSection("Tools." + categoryName + "Tool");
-			if (categoryTemplate == null) continue;
+		TemplatePrecedence precedence = EnumUtils.getEnum(TemplatePrecedence.class, plugin.getConfig().getString("ToolTemplates.Precedence", "CATEGORY_SPECIFIC").toUpperCase());
+		TemplateValidator.ValidatorBuilder validatorBuilder = TemplateValidator.withPrecedence(precedence);
 
-			Material type = Material.matchMaterial(categoryTemplate.getString("Type"));
-			String name = ChatColor.translateAlternateColorCodes('&', categoryTemplate.getString("Name", ""));
-			List<String> lore = categoryTemplate.getStringList("Lore").stream().map(s -> ChatColor.translateAlternateColorCodes('&', s)).collect(Collectors.toList());
+		// Category templates
+		for (ToolCategory category : TemplateValidator.TEMPLATABLE_CATEGORIES) {
+			ConfigurationSection categorySection = templateSection.getConfigurationSection(category.getName());
+			if (categorySection == null) continue;
+
+			Material type = Material.matchMaterial(categorySection.getString("Type"));
+			String name = ChatColor.translateAlternateColorCodes('&', categorySection.getString("Name", ""));
+			List<String> lore = categorySection.getStringList("Lore").stream().map(s -> ChatColor.translateAlternateColorCodes('&', s)).collect(Collectors.toList());
 
 			ToolTemplate template = null;
 			if (type != null) {
@@ -222,39 +228,34 @@ public class VeinMinerManager {
 					continue;
 				}
 
-				template = new ToolTemplate(type, (name.isEmpty()) ? null : name, (lore.isEmpty()) ? null : lore);
+				template = new ToolTemplate(type, name, lore);
 			} else {
-				template = new ToolTemplate(category, (name.isEmpty()) ? null : name, (lore.isEmpty()) ? null : lore);
+				template = new ToolTemplate(category, name, lore);
 			}
 
-			this.toolTemplates.put(category, template);
+			validatorBuilder.template(category, template);
 		}
+
+		// Global template
+		ConfigurationSection globalSection = templateSection.getConfigurationSection("Global");
+		if (globalSection != null) {
+			Material type = Material.matchMaterial(globalSection.getString("Type"));
+			String name = ChatColor.translateAlternateColorCodes('&', globalSection.getString("Name", ""));
+			List<String> lore = globalSection.getStringList("Lore").stream().map(s -> ChatColor.translateAlternateColorCodes('&', s)).collect(Collectors.toList());
+
+			validatorBuilder.globalTemplate(new ToolTemplate(type, name, lore));
+		}
+
+		this.templateValidator = validatorBuilder.build();
 	}
 
 	/**
-	 * Set the tool template for the specified category. If null, the template will be removed
-	 * and default behaviour will be used.
+	 * Get the template validator instance.
 	 *
-	 * @param category the category for which to set a template
-	 * @param template the template to set, or null for none
+	 * @return the template validator
 	 */
-	public void setToolTemplate(ToolCategory category, ToolTemplate template) {
-		Preconditions.checkArgument(category != null, "Cannot set template for null category");
-		Preconditions.checkArgument(category.canHaveToolTemplate(), "The provided category (%s) cannot define a tool template", category.getName());
-
-		this.toolTemplates.put(category, (template != null) ? template : ToolTemplate.empty(category));
-	}
-
-	/**
-	 * Get the tool template used for the specified category. If no template is specified, an empty
-	 * template will be returned (not null, but always true).
-	 *
-	 * @param category the category whose template to get
-	 *
-	 * @return the category's template
-	 */
-	public ToolTemplate getToolTemplate(ToolCategory category) {
-		return toolTemplates.computeIfAbsent(category, ToolTemplate::empty);
+	public TemplateValidator getTemplateValidator() {
+		return templateValidator;
 	}
 
 	/**
@@ -392,7 +393,7 @@ public class VeinMinerManager {
 	 * Clear all localised data in the VeinMiner Manager.
 	 */
 	public void clearLocalisedData() {
-		this.toolTemplates.clear();
+		this.templateValidator.clear();
 		this.blocklist.values().forEach(BlockList::clear);
 		this.blocklist.clear();
 		this.globalBlocklist.clear();

@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.tool;
+package wtf.choco.veinminer.tool.template;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,9 +8,12 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
  * Represents a template for a {@link ToolCategory}'s vein mining tool. The {@link ItemStack}
@@ -26,7 +29,7 @@ public class ToolTemplate {
 	private final List<String> lore;
 
 	/**
-	 * Construct a new ToolTemplate with no specific type.
+	 * Construct a new ToolTemplate for all materials defined by the provided category.
 	 *
 	 * @param category the category to which this template belongs. Must not be null
 	 * @param name the name for which to check (null if none)
@@ -36,44 +39,30 @@ public class ToolTemplate {
 		Preconditions.checkArgument(category != null, "Category must not be null");
 
 		this.category = category;
-		this.name = name;
-		this.lore = (lore != null) ? new ArrayList<>(lore) : null;
 		this.specificType = Material.AIR;
+		this.name = (!StringUtils.isEmpty(name)) ? name : null;;
+		this.lore = (lore != null && !lore.isEmpty()) ? new ArrayList<>(lore) : null;
 	}
 
 	/**
-	 * Construct a new ToolTemplate with a specific type. The type provided must be one of the default
-	 * types defined by a {@link ToolCategory} (i.e. such that {@link ToolCategory#fromMaterial(Material)}
-	 * is not equal to {@link ToolCategory#HAND}
+	 * Construct a new ToolTemplate with a specific type.
 	 *
-	 * @param specificType the specific type for which to check. Must be encapsulated by a category. null
-	 * is also acceptable for hands, but may prove to be useless.
+	 * @param specificType the specific type for which to check. Can be null
 	 * @param name the name for which to check (null if none)
 	 * @param lore the lore for which to check (null if none)
 	 */
 	public ToolTemplate(Material specificType, String name, List<String> lore) {
-		this.category = ToolCategory.fromMaterial(specificType);
-		if (category == ToolCategory.HAND && specificType != null) {
-			throw new IllegalArgumentException("The provided material (" + specificType.getKey() + ") does not belong to any existing tool category");
-		}
+		Preconditions.checkArgument(specificType == null || specificType.isItem(), "The specified type must be an item. Blocks, technical blocks or air are not permitted");
 
-		this.specificType = specificType;
-		this.name = name;
-		this.lore = (lore != null) ? new ArrayList<>(lore) : null;
-	}
-
-	/**
-	 * Get the category to which this template belongs.
-	 *
-	 * @return the associated category
-	 */
-	public ToolCategory getCategory() {
-		return category;
+		this.category = null;
+		this.specificType = (specificType != null) ? specificType : Material.AIR;
+		this.name = (!StringUtils.isEmpty(name)) ? name : null;
+		this.lore = (lore != null && !lore.isEmpty()) ? new ArrayList<>(lore) : null;
 	}
 
 	/**
 	 * Get the specific type defined by this template. If {@link Material#AIR}, no specific type is
-	 * defined and all types defined by {@link #getCategory()} are valid.
+	 * defined.
 	 *
 	 * @return the specific type
 	 */
@@ -111,6 +100,27 @@ public class ToolTemplate {
 	}
 
 	/**
+	 * Get this template's category (if one exists). If no category is specified (i.e. {@link #isCategorized()}
+	 * is false), this method will return null.
+	 *
+	 * @return the template's category or null if none
+	 */
+	public ToolCategory getCategory() {
+		return category;
+	}
+
+	/**
+	 * Check whether or not this template is categorized. If true, this template may only be defined
+	 * on a specific category. If otherwise, this template may be defined for any category or as a
+	 * global template.
+	 *
+	 * @return true if categorized, false otherwise
+	 */
+	public boolean isCategorized() {
+		return category != null;
+	}
+
+	/**
 	 * Check whether or not the provided item matches this template.
 	 *
 	 * @param item the item to check
@@ -122,9 +132,9 @@ public class ToolTemplate {
 			return false;
 		}
 
-		if (!hasSpecificType() && !category.contains(item.getType())) {
+		if (isCategorized() && !category.contains(item.getType())) {
 			return false;
-		} else if (hasSpecificType() && specificType != item.getType()) {
+		} else if (hasSpecificType() && item.getType() != specificType) {
 			return false;
 		}
 

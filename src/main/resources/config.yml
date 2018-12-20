@@ -9,17 +9,23 @@
 
 # All tools may have optional tool templates which define a specific item for its category in order to use VeinMiner
 # All values for the template are optional. If not specified, it will not be checked.
-# If no template is specified at all, all default tools will be considered useable (as is default behaviour)
-# An example of a pickaxe template is as follows...
-# Tools:
+# How templates are checked is based on precedence. All possible precedences are as follows:
+# Precedence: GLOBAL - Only the global template is checked
+# Precedence: CATEGORY_SPECIFIC - Only the category-specific template is checked. If none, it defaults to VeinMiner's original behaviour
+# Precedence: CATEGORY_SPECIFIC_GLOBAL_DEFAULT - The category-specific template is checked first. If it doesn't match, the global template is then checked
+
+# An example of how to create templates is as follows (this goes right in the root of the config as its own option. Don't nest it anywhere)
+# ToolTemplates:
+#   Precedence: CATEGORY_SPECIFIC
+#   Global:
+#     Type: 'stone' <-- This type can be ANY type at all
+#     Name: "&6The VeinMining Stone" <-- Colour codes are supported
+#     Lore:
+#     - "Colours are supported in &8Lore as well!"
+#     - "Here is the second line of lore with &1colour!"
 #   Pickaxe:
-#     MaxVeinSize: 64
-#     Tool:
-#       Type: 'diamond_pickaxe'
-#       Name: "&cVeinMiner Pickaxe"
-#       Lore:
-#       - "&7Hold shift to use &6VeinMiner"
-#       - "&7Will mine all nearby ores"
+#     Type: 'diamond_pickaxe' <-- This type MUST be one of the tools defined by the Pickaxe category (i.e. wood, stone, gold, iron, etc. pickaxes)
+#     Name: "&cVeinMiner Pickaxe"
 
 MetricsEnabled: true
 PerformUpdateChecks: true

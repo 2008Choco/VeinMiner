@@ -26,6 +26,8 @@ import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
+import wtf.choco.veinminer.tool.template.TemplatePrecedence;
+import wtf.choco.veinminer.tool.template.TemplateValidator;
 import wtf.choco.veinminer.utils.NonNullHashSet;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
@@ -67,10 +69,14 @@ public class BreakBlockListener implements Listener {
 		if (!player.hasPermission("veinminer.veinmine." + category.getName().toLowerCase())) return;
 		if (playerData.isVeinMinerDisabled(category)) return;
 
+		TemplateValidator templateValidator = manager.getTemplateValidator();
+		if (!templateValidator.isValid(tool, category)) return;
+
 		Material blockType = block.getType();
 		BlockData blockData = block.getBlockData();
-		if (!manager.isVeinMineable(blockData, category)) return;
-		if (!manager.getToolTemplate(category).matches(tool)) return;
+		TemplatePrecedence precedence = templateValidator.getPrecedence();
+		if (precedence == TemplatePrecedence.CATEGORY_SPECIFIC && !manager.isVeinMineable(blockData, category)) return;
+		else if ((precedence == TemplatePrecedence.GLOBAL || precedence == TemplatePrecedence.CATEGORY_SPECIFIC_GLOBAL_DEFAULT) && !manager.isVeinMineable(blockData)) return;
 
 		// TIME TO VEINMINE
 		MaterialAlias alias = manager.getAliasFor(blockType);
