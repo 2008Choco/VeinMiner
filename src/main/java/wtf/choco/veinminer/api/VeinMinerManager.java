@@ -207,7 +207,10 @@ public class VeinMinerManager {
 	public void loadToolTemplates() {
 		FileConfiguration config = plugin.getConfig();
 		ConfigurationSection templateSection = config.getConfigurationSection("ToolTemplates");
-		if (templateSection == null) return;
+		if (templateSection == null) {
+			this.templateValidator = TemplateValidator.empty();
+			return;
+		}
 
 		TemplatePrecedence precedence = EnumUtils.getEnum(TemplatePrecedence.class, plugin.getConfig().getString("ToolTemplates.Precedence", "CATEGORY_SPECIFIC").toUpperCase());
 		TemplateValidator.ValidatorBuilder validatorBuilder = TemplateValidator.withPrecedence(precedence);
