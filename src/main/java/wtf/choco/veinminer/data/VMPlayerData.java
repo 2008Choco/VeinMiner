@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import wtf.choco.veinminer.pattern.PatternDefault;
+import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 
@@ -25,7 +25,7 @@ public final class VMPlayerData {
 
 	private static final Map<UUID, VMPlayerData> CACHE = new HashMap<>();
 
-	private VeinMiningPattern pattern = PatternDefault.get();
+	private VeinMiningPattern pattern = PatternExpansive.get();
 	private final Set<ToolCategory> disabledCategories = EnumSet.noneOf(ToolCategory.class);
 
 	private final UUID player;
@@ -68,7 +68,7 @@ public final class VMPlayerData {
 	 * @param pattern the pattern to set or null if default
 	 */
 	public void setPattern(VeinMiningPattern pattern) {
-		this.pattern = (pattern != null) ? pattern : PatternDefault.get();
+		this.pattern = (pattern != null) ? pattern : PatternExpansive.get();
 	}
 
 	/**

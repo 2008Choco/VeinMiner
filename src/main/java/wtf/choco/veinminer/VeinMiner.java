@@ -24,6 +24,8 @@ import wtf.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.listener.BreakBlockListener;
+import wtf.choco.veinminer.pattern.PatternThorough;
+import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
@@ -46,8 +48,11 @@ public class VeinMiner extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		this.manager = new VeinMinerManager(this);
-		this.patternRegistry = new PatternRegistry();
 		this.saveDefaultConfig();
+
+		this.patternRegistry = new PatternRegistry();
+		this.patternRegistry.registerPattern(PatternThorough.get());
+		this.patternRegistry.registerPattern(PatternExpansive.get());
 
 		ReflectionUtil.loadNMSClasses(Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]);
 

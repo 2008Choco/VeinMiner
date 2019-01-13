@@ -17,11 +17,6 @@ public class PatternRegistry {
 
 	private final Map<NamespacedKey, VeinMiningPattern> patterns = new HashMap<>();
 
-	public PatternRegistry() {
-		PatternDefault defaultPattern = PatternDefault.get();
-		this.patterns.put(defaultPattern.getKey(), defaultPattern);
-	}
-
 	/**
 	 * Register a new VeinMiningPattern implementation.
 	 *

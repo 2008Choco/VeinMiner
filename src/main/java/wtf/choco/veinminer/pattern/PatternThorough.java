@@ -15,11 +15,19 @@ import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
- * The default {@link VeinMiningPattern} implementation used by all players unless explicitly set.
+ * A {@link VeinMiningPattern} implementation that "pulsates" from the origin outwards. Every
+ * iteration, every block starting from the origin will be checks for adjacent blocks.
+ * <p>
+ * This pattern is less efficient than {@link PatternExpansive} when used for larger veins, but
+ * may be more performant when dealing with smaller veins.
+ * <p>
+ * This pattern should be considered as effectively deprecated. While not literally deprecated,
+ * the expansive pattern should be used in place of this as it will yield results more quickly
+ * and in an efficient manner.
  *
  * @author Parker Hawke - 2008Choco
  */
-public final class PatternDefault implements VeinMiningPattern {
+public final class PatternThorough implements VeinMiningPattern {
 
 	private static final VBlockFace[] LIMITED_FACES = {
 			VBlockFace.UP, VBlockFace.DOWN, VBlockFace.NORTH, VBlockFace.SOUTH, VBlockFace.EAST,
@@ -27,15 +35,15 @@ public final class PatternDefault implements VeinMiningPattern {
 			VBlockFace.SOUTH_WEST
 	};
 
-	private static PatternDefault instance;
+	private static PatternThorough instance;
 
 	private final VeinMiner plugin;
 	private final NamespacedKey key;
 	private final List<Block> blockBuffer = new ArrayList<>();
 
-	private PatternDefault() {
+	private PatternThorough() {
 		this.plugin = VeinMiner.getPlugin();
-		this.key = new NamespacedKey(plugin, "default");
+		this.key = new NamespacedKey(plugin, "thorough");
 	}
 
 	@Override
@@ -88,8 +96,8 @@ public final class PatternDefault implements VeinMiningPattern {
 	 *
 	 * @return the default pattern
 	 */
-	public static PatternDefault get() {
-		return (instance == null) ? instance = new PatternDefault() : instance;
+	public static PatternThorough get() {
+		return (instance == null) ? instance = new PatternThorough() : instance;
 	}
 
 }
