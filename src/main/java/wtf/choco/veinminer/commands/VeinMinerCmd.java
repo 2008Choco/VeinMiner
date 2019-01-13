@@ -250,13 +250,13 @@ public class VeinMinerCmd implements CommandExecutor {
 			if (!patternNamespace.contains(":")) {
 				patternNamespace = plugin.getName().toLowerCase() + ":" + patternNamespace;
 			} else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
-				player.sendMessage(CHAT_PREFIX + "Invalid ID. Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id" + ChatColor.GRAY + " (i.e. " + ChatColor.YELLOW + "veinminer:default" + ChatColor.GRAY + ")");
+				player.sendMessage(CHAT_PREFIX + "Invalid ID. Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id" + ChatColor.GRAY + " (i.e. " + ChatColor.YELLOW + "veinminer:expansive" + ChatColor.GRAY + ")");
 				return true;
 			}
 
 			VeinMiningPattern pattern = plugin.getPatternRegistry().getPattern(patternNamespace);
 			if (pattern == null) {
-				player.sendMessage(CHAT_PREFIX + "A pattern with the ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + " could not be found. Perhaps you meant " + ChatColor.YELLOW + "default" + ChatColor.GRAY + "?");
+				player.sendMessage(CHAT_PREFIX + "A pattern with the ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + " could not be found");
 				return true;
 			}
 
