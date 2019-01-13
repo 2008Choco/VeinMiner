@@ -29,27 +29,19 @@ import wtf.choco.veinminer.tool.ToolCategory;
  */
 public final class PatternThorough implements VeinMiningPattern {
 
-	private static final VBlockFace[] LIMITED_FACES = {
-			VBlockFace.UP, VBlockFace.DOWN, VBlockFace.NORTH, VBlockFace.SOUTH, VBlockFace.EAST,
-			VBlockFace.WEST, VBlockFace.NORTH_EAST, VBlockFace.NORTH_WEST, VBlockFace.SOUTH_EAST,
-			VBlockFace.SOUTH_WEST
-	};
-
 	private static PatternThorough instance;
 
-	private final VeinMiner plugin;
 	private final NamespacedKey key;
 	private final List<Block> blockBuffer = new ArrayList<>();
 
 	private PatternThorough() {
-		this.plugin = VeinMiner.getPlugin();
-		this.key = new NamespacedKey(plugin, "thorough");
+		this.key = new NamespacedKey(VeinMiner.getPlugin(), "thorough");
 	}
 
 	@Override
 	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias) {
 		int maxVeinSize = category.getMaxVeinSize();
-		VBlockFace[] facesToMine = getFacesToMine();
+		VBlockFace[] facesToMine = PatternUtils.getFacesToMine();
 
 		while (blocks.size() <= maxVeinSize) {
 			Iterator<Block> trackedBlocks = blocks.iterator();
@@ -61,7 +53,7 @@ public final class PatternThorough implements VeinMiningPattern {
 					}
 
 					Block nextBlock = face.getRelative(b);
-					if (blocks.contains(nextBlock) || !blockIsSameMaterial(type, nextBlock, alias)) {
+					if (blocks.contains(nextBlock) || !PatternUtils.isOfType(type, alias, nextBlock)) {
 						continue;
 					}
 
@@ -81,14 +73,6 @@ public final class PatternThorough implements VeinMiningPattern {
 	@Override
 	public NamespacedKey getKey() {
 		return key;
-	}
-
-	private boolean blockIsSameMaterial(VeinBlock type, Block block, MaterialAlias alias) {
-		return type.encapsulates(block) || (alias != null && alias.isAliased(block));
-	}
-
-	private VBlockFace[] getFacesToMine() {
-		return plugin.getConfig().getBoolean("IncludeEdges") ? VBlockFace.values() : LIMITED_FACES;
 	}
 
 	/**

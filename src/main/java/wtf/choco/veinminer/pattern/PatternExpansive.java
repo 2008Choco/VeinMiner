@@ -27,22 +27,13 @@ import wtf.choco.veinminer.tool.ToolCategory;
  */
 public final class PatternExpansive implements VeinMiningPattern {
 
-	private static final VBlockFace[] LIMITED_FACES = {
-			VBlockFace.UP, VBlockFace.DOWN, VBlockFace.NORTH, VBlockFace.SOUTH, VBlockFace.EAST,
-			VBlockFace.WEST, VBlockFace.NORTH_EAST, VBlockFace.NORTH_WEST, VBlockFace.SOUTH_EAST,
-			VBlockFace.SOUTH_WEST
-	};
-
 	private static PatternExpansive instance;
 
 	private final List<Block> buffer = new ArrayList<>(32), recent = new ArrayList<>(32);
-
-	private final VeinMiner plugin;
 	private final NamespacedKey key;
 
 	private PatternExpansive() {
-		this.plugin = VeinMiner.getPlugin();
-		this.key = new NamespacedKey(plugin, "expansive");
+		this.key = new NamespacedKey(VeinMiner.getPlugin(), "expansive");
 	}
 
 	@Override
@@ -50,14 +41,14 @@ public final class PatternExpansive implements VeinMiningPattern {
 		this.recent.add(origin); // For first iteration
 
 		int maxVeinSize = category.getMaxVeinSize();
-		VBlockFace[] facesToMine = getFacesToMine();
+		VBlockFace[] facesToMine = PatternUtils.getFacesToMine();
 
 		while (blocks.size() <= maxVeinSize) {
 			recentSearch:
 			for (Block current : recent) {
 				for (VBlockFace face : facesToMine) {
 					Block relative = face.getRelative(current);
-					if (blocks.contains(relative) || !blockIsSameMaterial(type, relative, alias)) {
+					if (blocks.contains(relative) || !PatternUtils.isOfType(type, alias, relative)) {
 						continue;
 					}
 
@@ -86,14 +77,6 @@ public final class PatternExpansive implements VeinMiningPattern {
 	@Override
 	public NamespacedKey getKey() {
 		return key;
-	}
-
-	private VBlockFace[] getFacesToMine() {
-		return plugin.getConfig().getBoolean("IncludeEdges") ? VBlockFace.values() : LIMITED_FACES;
-	}
-
-	private boolean blockIsSameMaterial(VeinBlock type, Block block, MaterialAlias alias) {
-		return type.encapsulates(block) || (alias != null && alias.isAliased(block));
 	}
 
 	/**
