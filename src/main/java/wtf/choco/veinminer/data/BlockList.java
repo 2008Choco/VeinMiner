@@ -207,6 +207,25 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 		return containsOnPredicate(block -> block.getBlockData().equals(data));
 	}
 
+	/**
+	 * Get the VeinBlock from this {@link BlockList} that encapsulates the given {@link BlockData}.
+	 * If no VeinBlock in this list encapsulates the BlockData, (i.e. {@link #contains(BlockData)}
+	 * is false) null is returned.
+	 *
+	 * @param data the data for which to get a VeinBlock
+	 *
+	 * @return the encapsulating VeinBlock for this list. null if none
+	 */
+	public VeinBlock getVeinBlock(BlockData data) {
+		for (VeinBlock block : blocks) {
+			if (block.encapsulates(data)) {
+				return block;
+			}
+		}
+
+		return null;
+	}
+
 	private boolean containsOnPredicate(Predicate<VeinBlock> predicate) {
 		for (VeinBlock block : blocks) {
 			if (predicate.test(block)) {

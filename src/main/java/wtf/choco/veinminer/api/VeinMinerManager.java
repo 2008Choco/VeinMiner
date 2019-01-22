@@ -173,6 +173,20 @@ public class VeinMinerManager {
 	}
 
 	/**
+	 * See {@link BlockList#getVeinBlock(BlockData)}. This search includes the specified category
+	 * as well as the global blocklist.
+	 *
+	 * @param data the block data for which to get a VeinBlock
+	 * @param category the category blocklist in which to retrieve a VeinBlock
+	 *
+	 * @return the vein block. null if none
+	 */
+	public VeinBlock getVeinBlockFromBlockList(BlockData data, ToolCategory category) {
+		VeinBlock global = globalBlocklist.getVeinBlock(data);
+		return (global != null) ? global : blocklist.get(category).getVeinBlock(data);
+	}
+
+	/**
 	 * Load all veinable blocks from the configuration file to memory.
 	 */
 	public void loadVeinableBlocks() {

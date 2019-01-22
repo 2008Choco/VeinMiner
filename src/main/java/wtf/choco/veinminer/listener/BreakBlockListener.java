@@ -85,7 +85,7 @@ public class BreakBlockListener implements Listener {
 		}
 
 		this.blocks.add(block);
-		VeinBlock type = VeinBlock.get(blockData);
+		VeinBlock type = manager.getVeinBlockFromBlockList(blockData, category);
 		VeinMiningPattern pattern = playerData.getPattern();
 		pattern.allocateBlocks(blocks, type, block, category, alias);
 		this.blocks.removeIf(Block::isEmpty);
