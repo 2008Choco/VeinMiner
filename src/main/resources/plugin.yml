@@ -3,7 +3,7 @@ main: wtf.choco.veinminer.VeinMiner
 version: ${project.version}
 description: ${project.description}
 author: 2008Choco
-softdepend: [NoCheatPlus, AAC, AntiAura]
+softdepend: [NoCheatPlus, AAC, AntiAura, Spartan]
 api-version: 1.13
 
 commands:
