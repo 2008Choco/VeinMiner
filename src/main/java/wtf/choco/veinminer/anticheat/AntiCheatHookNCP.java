@@ -31,8 +31,8 @@ public class AntiCheatHookNCP implements AntiCheatHook {
 
 	@Override
 	public void unexempt(Player player) {
-		if (!exempted.contains(player.getUniqueId())) return;
 		NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
+		this.exempted.remove(player.getUniqueId());
 	}
 
 	@Override
