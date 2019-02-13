@@ -40,7 +40,7 @@ public enum ActivationStrategy {
 	 * @return true if valid to vein mine, false otherwise
 	 */
 	public boolean isValid(Player player) {
-		return player != null && this.condition.test(player);
+		return player != null && player.isValid() && this.condition.test(player);
 	}
 
 	/**
