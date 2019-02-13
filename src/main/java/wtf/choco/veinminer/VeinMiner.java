@@ -20,6 +20,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
+import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCmd;
 import wtf.choco.veinminer.commands.VeinMinerCmdTabCompleter;
@@ -63,6 +64,7 @@ public class VeinMiner extends JavaPlugin {
 		this.registerAntiCheatHookIfEnabled(manager, "NoCheatPlus", AntiCheatHookNCP::new);
 		this.registerAntiCheatHookIfEnabled(manager, "AntiAura", AntiCheatHookAntiAura::new);
 		this.registerAntiCheatHookIfEnabled(manager, "AAC", AntiCheatHookAAC::new);
+		this.registerAntiCheatHookIfEnabled(manager, "Spartan", AntiCheatHookSpartan::new);
 
 		// Register events
 		this.getLogger().info("Registering events");

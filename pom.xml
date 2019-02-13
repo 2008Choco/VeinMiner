@@ -78,6 +78,12 @@
       <version>3.15.0</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>me.vagdedes</groupId>
+      <artifactId>SpartanAPI</artifactId>
+      <version>b222</version>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- bStats Maven -->
     <dependency>
