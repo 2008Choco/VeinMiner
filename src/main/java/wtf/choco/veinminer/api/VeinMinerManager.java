@@ -109,7 +109,7 @@ public class VeinMinerManager {
 	 * @see VeinBlock#encapsulates(BlockData)
 	 */
 	public boolean isVeinMineable(BlockData data, ToolCategory category) {
-		return globalBlocklist.contains(data) || blocklist.get(category).contains(data);
+		return globalBlocklist.contains(data) || getBlockList(category).contains(data);
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class VeinMinerManager {
 	 * @see VeinBlock#encapsulates(Material)
 	 */
 	public boolean isVeinMineable(Material material, ToolCategory category) {
-		return globalBlocklist.contains(material) || blocklist.get(category).contains(material);
+		return globalBlocklist.contains(material) || getBlockList(category).contains(material);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class VeinMinerManager {
 	 */
 	public VeinBlock getVeinBlockFromBlockList(BlockData data, ToolCategory category) {
 		VeinBlock global = globalBlocklist.getVeinBlock(data);
-		return (global != null) ? global : blocklist.get(category).getVeinBlock(data);
+		return (global != null) ? global : getBlockList(category).getVeinBlock(data);
 	}
 
 	/**
