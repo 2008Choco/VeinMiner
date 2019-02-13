@@ -157,17 +157,20 @@ public class VeinMiner extends JavaPlugin {
 	 * as to support VeinMining and not false-flag players with fast-break.
 	 *
 	 * @param hook the hook to register
+	 *
+	 * @return true if successful, false if a hook for a plugin with a similar name is already registered
 	 */
-	public void registerAntiCheatHook(AntiCheatHook hook) {
+	public boolean registerAntiCheatHook(AntiCheatHook hook) {
 		Preconditions.checkNotNull(hook, "Cannot register a null anticheat hook implementation");
 
 		for (AntiCheatHook anticheatHook : anticheatHooks) {
 			if (anticheatHook.getPluginName().equals(hook.getPluginName())) {
-				throw new IllegalStateException("Anticheat Hook for plugin " + anticheatHook.getPluginName() + " already registered");
+				return false;
 			}
 		}
 
 		this.anticheatHooks.add(hook);
+		return true;
 	}
 
 	/**
@@ -182,18 +185,17 @@ public class VeinMiner extends JavaPlugin {
 	private <T extends AntiCheatHook> void registerAntiCheatHookIfEnabled(PluginManager manager, String pluginName, Supplier<T> hookSupplier) {
 		if (!manager.isPluginEnabled(pluginName)) return;
 
-		try {
-			T hook = hookSupplier.get();
-			this.registerAntiCheatHook(hook);
-
-			if (hook instanceof Listener) {
-				manager.registerEvents((Listener) hook, this);
-			}
-
-			this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + hook.getPluginName() + "\"");
-		} catch (IllegalStateException e) {
+		T hook = hookSupplier.get();
+		if (!registerAntiCheatHook(hook)) {
 			this.getLogger().info("Tried to register hook for plugin " + pluginName + " but one was already registered. Not overriding...");
+			return;
 		}
+
+		if (hook instanceof Listener) {
+			manager.registerEvents((Listener) hook, this);
+		}
+
+		this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + hook.getPluginName() + "\"");
 	}
 
 }
