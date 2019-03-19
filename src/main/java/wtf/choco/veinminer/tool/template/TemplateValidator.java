@@ -8,6 +8,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.tool.ToolCategory;
 
@@ -26,7 +28,7 @@ public final class TemplateValidator {
 
 	private final Map<ToolCategory, ToolTemplate> categoryTemplates;
 
-	private TemplateValidator(TemplatePrecedence precedence, ToolTemplate globalTemplate, Map<ToolCategory, ToolTemplate> categoryTemplates) {
+	private TemplateValidator(@NotNull TemplatePrecedence precedence, @Nullable ToolTemplate globalTemplate, @Nullable Map<ToolCategory, ToolTemplate> categoryTemplates) {
 		this.precedence = precedence;
 		this.globalTemplate = globalTemplate;
 		this.categoryTemplates = (categoryTemplates != null) ? new EnumMap<>(categoryTemplates) : new EnumMap<>(ToolCategory.class);
@@ -40,7 +42,8 @@ public final class TemplateValidator {
 	 *
 	 * @return the validator builder to further define templates and parameters
 	 */
-	public static ValidatorBuilder withTemplate(ToolCategory category, ToolTemplate template) {
+	@NotNull
+	public static ValidatorBuilder withTemplate(@NotNull ToolCategory category, @NotNull ToolTemplate template) {
 		Preconditions.checkArgument(category != null, "Cannot define a template for a null category");
 		Preconditions.checkArgument(template != null, "Cannot set a null template whilst building the validator");
 
@@ -54,7 +57,8 @@ public final class TemplateValidator {
 	 *
 	 * @return the validator builder to further define templates and parameters
 	 */
-	public static ValidatorBuilder withGlobalTemplate(ToolTemplate template) {
+	@NotNull
+	public static ValidatorBuilder withGlobalTemplate(@NotNull ToolTemplate template) {
 		Preconditions.checkArgument(template != null, "Cannot set a null global template whilst building the validator");
 		return new ValidatorBuilder(template);
 	}
@@ -67,7 +71,8 @@ public final class TemplateValidator {
 	 *
 	 * @return the validator builder to further define templates and parameters
 	 */
-	public static ValidatorBuilder withPrecedence(TemplatePrecedence precedence) {
+	@NotNull
+	public static ValidatorBuilder withPrecedence(@NotNull TemplatePrecedence precedence) {
 		Preconditions.checkArgument(precedence != null, "Precedence must not be null");
 		return new ValidatorBuilder(precedence);
 	}
@@ -78,6 +83,7 @@ public final class TemplateValidator {
 	 *
 	 * @return the empty template validator
 	 */
+	@NotNull
 	public static TemplateValidator empty() {
 		return new TemplateValidator(TemplatePrecedence.CATEGORY_SPECIFIC, null, null);
 	}
@@ -87,7 +93,7 @@ public final class TemplateValidator {
 	 *
 	 * @param precedence the precedence to set
 	 */
-	public void setPrecedence(TemplatePrecedence precedence) {
+	public void setPrecedence(@NotNull TemplatePrecedence precedence) {
 		this.precedence = precedence;
 	}
 
@@ -96,6 +102,7 @@ public final class TemplateValidator {
 	 *
 	 * @return the template precedence
 	 */
+	@NotNull
 	public TemplatePrecedence getPrecedence() {
 		return precedence;
 	}
@@ -105,7 +112,7 @@ public final class TemplateValidator {
 	 *
 	 * @param template the global template to set
 	 */
-	public void setGlobalTemplate(ToolTemplate template) {
+	public void setGlobalTemplate(@Nullable ToolTemplate template) {
 		this.globalTemplate = template;
 	}
 
@@ -114,6 +121,7 @@ public final class TemplateValidator {
 	 *
 	 * @return the global template
 	 */
+	@Nullable
 	public ToolTemplate getGlobalTemplate() {
 		return globalTemplate;
 	}
@@ -133,7 +141,7 @@ public final class TemplateValidator {
 	 * @param category the category for which to set a template
 	 * @param template the template to set
 	 */
-	public void setTemplate(ToolCategory category, ToolTemplate template) {
+	public void setTemplate(@NotNull ToolCategory category, @Nullable ToolTemplate template) {
 		if (template != null) {
 			this.categoryTemplates.put(category, template);
 		} else {
@@ -148,7 +156,8 @@ public final class TemplateValidator {
 	 *
 	 * @return the template. null if none defined for the specified category
 	 */
-	public ToolTemplate getTemplate(ToolCategory category) {
+	@Nullable
+	public ToolTemplate getTemplate(@NotNull ToolCategory category) {
 		return categoryTemplates.get(category);
 	}
 
@@ -159,7 +168,7 @@ public final class TemplateValidator {
 	 *
 	 * @return true if a template is defined, false otherwise
 	 */
-	public boolean hasTemplate(ToolCategory category) {
+	public boolean hasTemplate(@NotNull ToolCategory category) {
 		return categoryTemplates.containsKey(category);
 	}
 
@@ -180,7 +189,7 @@ public final class TemplateValidator {
 	 *
 	 * @return true if valid, false otherwise
 	 */
-	public boolean isValid(ItemStack item, ToolCategory category) {
+	public boolean isValid(@Nullable ItemStack item, @NotNull ToolCategory category) {
 		if (item == null) { // If null, true if HAND, false if another category
 			return category == ToolCategory.HAND;
 		}
@@ -210,16 +219,16 @@ public final class TemplateValidator {
 		private TemplatePrecedence precedence = TemplatePrecedence.CATEGORY_SPECIFIC;
 		private Map<ToolCategory, ToolTemplate> categoryTemplates = null;
 
-		private ValidatorBuilder(ToolCategory category, ToolTemplate template) {
+		private ValidatorBuilder(@NotNull ToolCategory category, @Nullable ToolTemplate template) {
 			this.categoryTemplates = new EnumMap<>(ToolCategory.class);
 			this.categoryTemplates.put(category, template);
 		}
 
-		private ValidatorBuilder(ToolTemplate globalTemplate) {
+		private ValidatorBuilder(@Nullable ToolTemplate globalTemplate) {
 			this.globalTemplate = globalTemplate;
 		}
 
-		private ValidatorBuilder(TemplatePrecedence precedence) {
+		private ValidatorBuilder(@NotNull TemplatePrecedence precedence) {
 			this.precedence = precedence;
 		}
 
@@ -231,7 +240,8 @@ public final class TemplateValidator {
 		 *
 		 * @return this instance. Allows for chained method invocations
 		 */
-		public ValidatorBuilder template(ToolCategory category, ToolTemplate template) {
+		@NotNull
+		public ValidatorBuilder template(@NotNull ToolCategory category, @NotNull ToolTemplate template) {
 			Preconditions.checkArgument(category != null, "Cannot define a template for a null category");
 			Preconditions.checkArgument(template != null, "Cannot set a null template whilst building the validator");
 
@@ -250,7 +260,8 @@ public final class TemplateValidator {
 		 *
 		 * @return this instance. Allows for chained method invocations
 		 */
-		public ValidatorBuilder globalTemplate(ToolTemplate template) {
+		@NotNull
+		public ValidatorBuilder globalTemplate(@NotNull ToolTemplate template) {
 			Preconditions.checkArgument(template != null, "Cannot set a null global template whilst building the validator");
 
 			this.globalTemplate = template;
@@ -264,7 +275,8 @@ public final class TemplateValidator {
 		 *
 		 * @return this instance. Allows for chained method invocations
 		 */
-		public ValidatorBuilder precedence(TemplatePrecedence precedence) {
+		@NotNull
+		public ValidatorBuilder precedence(@NotNull TemplatePrecedence precedence) {
 			Preconditions.checkArgument(precedence != null, "Precedence must not be null");
 
 			this.precedence = precedence;
@@ -276,6 +288,7 @@ public final class TemplateValidator {
 		 *
 		 * @return the created validator
 		 */
+		@NotNull
 		public TemplateValidator build() {
 			return new TemplateValidator(precedence, globalTemplate, categoryTemplates);
 		}

@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
 
@@ -80,13 +82,13 @@ public enum ToolCategory {
 	private final Set<Material> materials;
 	private final boolean canHaveToolTemplate;
 
-	private ToolCategory(String name, boolean canHaveToolTemplate, Material... materials) {
+	private ToolCategory(@NotNull String name, boolean canHaveToolTemplate, @NotNull Material... materials) {
 		this.name = name;
 		this.canHaveToolTemplate = canHaveToolTemplate;
-		this.materials = (materials.length != 0) ? EnumSet.of(materials[0], materials) : EnumSet.noneOf(Material.class);
+		this.materials = Collections.unmodifiableSet((materials.length != 0) ? EnumSet.of(materials[0], materials) : EnumSet.noneOf(Material.class));
 	}
 
-	private ToolCategory(String name, Material... materials) {
+	private ToolCategory(@NotNull String name, @NotNull Material... materials) {
 		this(name, true, materials);
 	}
 
@@ -95,6 +97,7 @@ public enum ToolCategory {
 	 *
 	 * @return the name
 	 */
+	@NotNull
 	public String getName() {
 		return name;
 	}
@@ -113,8 +116,9 @@ public enum ToolCategory {
 	 *
 	 * @return all associated tool materials
 	 */
+	@NotNull
 	public Set<Material> getMaterials() {
-		return Collections.unmodifiableSet(materials);
+		return materials; // Immutable
 	}
 
 	/**
@@ -124,7 +128,7 @@ public enum ToolCategory {
 	 *
 	 * @return true if contained in this category, false otherwise
 	 */
-	public boolean contains(Material material) {
+	public boolean contains(@NotNull Material material) {
 		return materials.contains(material);
 	}
 
@@ -146,7 +150,8 @@ public enum ToolCategory {
 	 *
 	 * @return the ToolCategory with the given name. null if none
 	 */
-	public static ToolCategory getByName(String name) {
+	@Nullable
+	public static ToolCategory getByName(@NotNull String name) {
 		for (ToolCategory category : values())
 			if (category.getName().equalsIgnoreCase(name)) return category;
 		return null;
@@ -160,7 +165,8 @@ public enum ToolCategory {
 	 *
 	 * @return the ToolCategory associated with the specified material. {@link #HAND} if none
 	 */
-	public static ToolCategory fromMaterial(Material material) {
+	@NotNull
+	public static ToolCategory fromMaterial(@NotNull Material material) {
 		for (ToolCategory category : values()) {
 			if (category.contains(material)) {
 				return category;
@@ -178,7 +184,8 @@ public enum ToolCategory {
 	 *
 	 * @return the ToolCategory associated with the specified item. {@link #HAND} if none
 	 */
-	public static ToolCategory fromItemStack(ItemStack item) {
+	@NotNull
+	public static ToolCategory fromItemStack(@NotNull ItemStack item) {
 		return (item != null) ? fromMaterial(item.getType()) : HAND;
 	}
 

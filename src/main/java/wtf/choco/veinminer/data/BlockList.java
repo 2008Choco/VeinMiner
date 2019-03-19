@@ -8,6 +8,8 @@ import java.util.function.Predicate;
 
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.data.block.VeinBlock;
 
@@ -28,7 +30,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @param lists the block lists whose values should be included
 	 */
-	public BlockList(BlockList... lists) {
+	public BlockList(@NotNull BlockList... lists) {
 		int expectedSize = 0; // Obviously doesn't take into consideration duplicates
 		for (BlockList list : lists) {
 			expectedSize += list.size();
@@ -45,7 +47,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @param list the block list whose values should be included
 	 */
-	public BlockList(BlockList list) {
+	public BlockList(@NotNull BlockList list) {
 		this(list.size());
 		this.addAll(list);
 	}
@@ -73,7 +75,8 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @return the VeinBlock added to this list
 	 */
-	public VeinBlock add(BlockData data) {
+	@NotNull
+	public VeinBlock add(@NotNull BlockData data) {
 		VeinBlock block = VeinBlock.get(data);
 		this.add(block);
 		return block;
@@ -86,7 +89,8 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @return the VeinBlock added to this list
 	 */
-	public VeinBlock add(Material material) {
+	@NotNull
+	public VeinBlock add(@NotNull Material material) {
 		// Remove any specific data with this type before adding a wildcard
 		Iterator<VeinBlock> iterator = iterator();
 		while (iterator.hasNext()) {
@@ -108,7 +112,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @return true if added, false if already present
 	 */
-	public boolean add(VeinBlock block) {
+	public boolean add(@NotNull VeinBlock block) {
 		return blocks.add(block);
 	}
 
@@ -120,7 +124,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @return true if at least one block was added, false otherwise
 	 */
-	public boolean addAll(Iterable<? extends VeinBlock> values) {
+	public boolean addAll(@NotNull Iterable<? extends VeinBlock> values) {
 		boolean changed = false;
 
 		for (VeinBlock block : values) {
@@ -135,7 +139,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @param block the block to remove
 	 */
-	public void remove(VeinBlock block) {
+	public void remove(@NotNull VeinBlock block) {
 		this.blocks.remove(block);
 	}
 
@@ -145,7 +149,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @param data the data to remove
 	 */
-	public void remove(BlockData data) {
+	public void remove(@NotNull BlockData data) {
 		this.blocks.removeIf(block -> block.getBlockData().equals(data));
 	}
 
@@ -154,7 +158,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @param material the material to remove
 	 */
-	public void removeAll(Material material) {
+	public void removeAll(@NotNull Material material) {
 		this.blocks.removeIf(block -> block.getType() == material);
 	}
 
@@ -165,7 +169,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @return true if present, false otherwise
 	 */
-	public boolean contains(VeinBlock block) {
+	public boolean contains(@NotNull VeinBlock block) {
 		return blocks.contains(block);
 	}
 
@@ -181,7 +185,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @see #containsExact(BlockData)
 	 */
-	public boolean contains(BlockData data) {
+	public boolean contains(@NotNull BlockData data) {
 		return containsOnPredicate(block -> block.encapsulates(data));
 	}
 
@@ -192,7 +196,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @return true if present, false otherwise
 	 */
-	public boolean contains(Material material) {
+	public boolean contains(@NotNull Material material) {
 		return containsOnPredicate(block -> block.getType() == material);
 	}
 
@@ -203,7 +207,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @return true if present, false otherwise
 	 */
-	public boolean containsExact(BlockData data) {
+	public boolean containsExact(@NotNull BlockData data) {
 		return containsOnPredicate(block -> block.getBlockData().equals(data));
 	}
 
@@ -216,7 +220,8 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	 *
 	 * @return the encapsulating VeinBlock for this list. null if none
 	 */
-	public VeinBlock getVeinBlock(BlockData data) {
+	@Nullable
+	public VeinBlock getVeinBlock(@NotNull BlockData data) {
 		for (VeinBlock block : blocks) {
 			if (block.encapsulates(data)) {
 				return block;
@@ -226,7 +231,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 		return null;
 	}
 
-	private boolean containsOnPredicate(Predicate<VeinBlock> predicate) {
+	private boolean containsOnPredicate(@NotNull Predicate<VeinBlock> predicate) {
 		for (VeinBlock block : blocks) {
 			if (predicate.test(block)) {
 				return true;
@@ -253,11 +258,13 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 	}
 
 	@Override
+	@NotNull
 	public Iterator<VeinBlock> iterator() {
 		return blocks.iterator();
 	}
 
 	@Override
+	@NotNull
 	public BlockList clone() {
 		return new BlockList(this);
 	}

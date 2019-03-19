@@ -3,6 +3,7 @@ package wtf.choco.veinminer.api.event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 
@@ -16,7 +17,7 @@ public class PlayerSwitchPatternEvent extends PlayerEvent {
 
 	private final VeinMiningPattern oldPattern, newPattern;
 
-	public PlayerSwitchPatternEvent(Player player, VeinMiningPattern oldPattern, VeinMiningPattern newPattern) {
+	public PlayerSwitchPatternEvent(@NotNull Player player, @NotNull VeinMiningPattern oldPattern, @NotNull VeinMiningPattern newPattern) {
 		super(player);
 
 		this.oldPattern = oldPattern;
@@ -28,6 +29,7 @@ public class PlayerSwitchPatternEvent extends PlayerEvent {
 	 *
 	 * @return the old pattern
 	 */
+	@NotNull
 	public VeinMiningPattern getOldPattern() {
 		return oldPattern;
 	}
@@ -37,6 +39,7 @@ public class PlayerSwitchPatternEvent extends PlayerEvent {
 	 *
 	 * @return the new pattern
 	 */
+	@NotNull
 	public VeinMiningPattern getNewPattern() {
 		return newPattern;
 	}

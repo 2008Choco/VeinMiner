@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public final class ReflectionUtil {
 
@@ -25,7 +26,7 @@ public final class ReflectionUtil {
 
 	private ReflectionUtil() { }
 
-	public static boolean breakBlock(Player player, Block block) {
+	public static boolean breakBlock(@NotNull Player player, @NotNull Block block) {
 		Preconditions.checkNotNull(player, "A null player is incapable of breaking blocks");
 		Preconditions.checkNotNull(block, "Cannot break a null block");
 
@@ -45,7 +46,7 @@ public final class ReflectionUtil {
 		return false;
 	}
 
-	public static void loadNMSClasses(String version) {
+	public static void loadNMSClasses(@NotNull String version) {
 		if (nmsPlayer != null) return;
 
 		ReflectionUtil.version = version.concat(".");

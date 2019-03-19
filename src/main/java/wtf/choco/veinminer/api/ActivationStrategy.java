@@ -5,6 +5,8 @@ import java.util.function.Predicate;
 import com.google.common.base.Predicates;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents the different methods of activating VeinMiner.
@@ -28,7 +30,7 @@ public enum ActivationStrategy {
 
 	private final Predicate<Player> condition;
 
-	private ActivationStrategy(Predicate<Player> condition) {
+	private ActivationStrategy(@NotNull Predicate<Player> condition) {
 		this.condition = condition;
 	}
 
@@ -39,7 +41,7 @@ public enum ActivationStrategy {
 	 *
 	 * @return true if valid to vein mine, false otherwise
 	 */
-	public boolean isValid(Player player) {
+	public boolean isValid(@NotNull Player player) {
 		return player != null && player.isValid() && this.condition.test(player);
 	}
 
@@ -50,7 +52,8 @@ public enum ActivationStrategy {
 	 *
 	 * @return the resulting activation. null if none found
 	 */
-	public static ActivationStrategy getByName(String name) {
+	@Nullable
+	public static ActivationStrategy getByName(@NotNull String name) {
 		for (ActivationStrategy activation : values())
 			if (activation.name().equalsIgnoreCase(name)) return activation;
 		return null;

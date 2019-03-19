@@ -3,6 +3,8 @@ package wtf.choco.veinminer.pattern;
 import java.util.Set;
 
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
@@ -32,6 +34,6 @@ public interface BlockAllocator {
 	 *
 	 * @see VeinMiningPattern#allocateBlocks(Set, VeinBlock, Block, ToolCategory, MaterialAlias)
 	 */
-	public void allocate(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias);
+	public void allocate(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category, @Nullable MaterialAlias alias);
 
 }

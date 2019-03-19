@@ -11,6 +11,8 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
@@ -30,7 +32,7 @@ public final class VMPlayerData {
 
 	private final UUID player;
 
-	private VMPlayerData(UUID player) {
+	private VMPlayerData(@NotNull UUID player) {
 		this.player = player;
 	}
 
@@ -39,6 +41,7 @@ public final class VMPlayerData {
 	 *
 	 * @return the owning player
 	 */
+	@Nullable
 	public OfflinePlayer getPlayer() {
 		return Bukkit.getOfflinePlayer(player);
 	}
@@ -49,6 +52,7 @@ public final class VMPlayerData {
 	 *
 	 * @return the owning player
 	 */
+	@Nullable
 	public Player getPlayerOnline() {
 		return Bukkit.getPlayer(player);
 	}
@@ -58,6 +62,7 @@ public final class VMPlayerData {
 	 *
 	 * @return the player's vein mining pattern
 	 */
+	@NotNull
 	public VeinMiningPattern getPattern() {
 		return pattern;
 	}
@@ -67,7 +72,7 @@ public final class VMPlayerData {
 	 *
 	 * @param pattern the pattern to set or null if default
 	 */
-	public void setPattern(VeinMiningPattern pattern) {
+	public void setPattern(@Nullable VeinMiningPattern pattern) {
 		this.pattern = (pattern != null) ? pattern : PatternExpansive.get();
 	}
 
@@ -83,7 +88,7 @@ public final class VMPlayerData {
 	 *
 	 * @param category the category to enable
 	 */
-	public void enableVeinMiner(ToolCategory category) {
+	public void enableVeinMiner(@NotNull ToolCategory category) {
 		Preconditions.checkArgument(category != null, "Cannot enable null category");
 		this.disabledCategories.remove(category);
 	}
@@ -102,7 +107,7 @@ public final class VMPlayerData {
 	 *
 	 * @param category the category to disable
 	 */
-	public void disableVeinMiner(ToolCategory category) {
+	public void disableVeinMiner(@NotNull ToolCategory category) {
 		Preconditions.checkArgument(category != null, "Cannot disable null category");
 		this.disabledCategories.add(category);
 	}
@@ -126,7 +131,7 @@ public final class VMPlayerData {
 	 * @param enabled whether or not to enable VeinMiner
 	 * @param category the category to enable (or disable)
 	 */
-	public void setVeinMinerEnabled(boolean enabled, ToolCategory category) {
+	public void setVeinMinerEnabled(boolean enabled, @NotNull ToolCategory category) {
 		if (enabled) {
 			this.enableVeinMiner(category);
 		} else {
@@ -150,7 +155,7 @@ public final class VMPlayerData {
 	 *
 	 * @return true if enabled, false otherwise
 	 */
-	public boolean isVeinMinerEnabled(ToolCategory category) {
+	public boolean isVeinMinerEnabled(@NotNull ToolCategory category) {
 		return !disabledCategories.contains(category);
 	}
 
@@ -170,7 +175,7 @@ public final class VMPlayerData {
 	 *
 	 * @return true if disabled, false otherwise
 	 */
-	public boolean isVeinMinerDisabled(ToolCategory category) {
+	public boolean isVeinMinerDisabled(@NotNull ToolCategory category) {
 		return disabledCategories.contains(category);
 	}
 
@@ -191,7 +196,7 @@ public final class VMPlayerData {
 	 *
 	 * @return the player data
 	 */
-	public static VMPlayerData get(OfflinePlayer player) {
+	public static VMPlayerData get(@NotNull OfflinePlayer player) {
 		Preconditions.checkArgument(player != null, "Cannot get data for null player");
 		return CACHE.computeIfAbsent(player.getUniqueId(), VMPlayerData::new);
 	}

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VBlockFace;
@@ -84,6 +85,7 @@ public final class PatternExpansive implements VeinMiningPattern {
 	 *
 	 * @return the expansive pattern
 	 */
+	@NotNull
 	public static PatternExpansive get() {
 		return (instance == null) ? instance = new PatternExpansive() : instance;
 	}

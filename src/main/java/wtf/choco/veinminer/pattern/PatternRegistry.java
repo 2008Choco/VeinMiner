@@ -9,6 +9,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A registry to register any custom implementations of {@link VeinMiningPattern}.
@@ -22,7 +24,7 @@ public class PatternRegistry {
 	 *
 	 * @param pattern the pattern to register
 	 */
-	public void registerPattern(VeinMiningPattern pattern) {
+	public void registerPattern(@NotNull VeinMiningPattern pattern) {
 		Preconditions.checkNotNull(pattern, "Cannot register a null pattern");
 		Preconditions.checkNotNull(pattern.getKey(), "Vein mining patterns must have a non-null key");
 		Preconditions.checkArgument(!patterns.containsKey(pattern.getKey()), "Patterns must have a unique key (%s)", pattern.getKey().toString());
@@ -37,7 +39,8 @@ public class PatternRegistry {
 	 *
 	 * @return the pattern. null if no pattern matches the given key
 	 */
-	public VeinMiningPattern getPattern(NamespacedKey key) {
+	@Nullable
+	public VeinMiningPattern getPattern(@NotNull NamespacedKey key) {
 		return patterns.get(key);
 	}
 
@@ -49,7 +52,8 @@ public class PatternRegistry {
 	 *
 	 * @return the pattern. The default pattern if no pattern matches the given key
 	 */
-	public VeinMiningPattern getPatternOrDefault(NamespacedKey key, VeinMiningPattern defaultPattern) {
+	@NotNull
+	public VeinMiningPattern getPatternOrDefault(@NotNull NamespacedKey key, @NotNull VeinMiningPattern defaultPattern) {
 		return patterns.getOrDefault(key, defaultPattern);
 	}
 
@@ -59,8 +63,15 @@ public class PatternRegistry {
 	 * @param key the key of the pattern to retrieve
 	 * @return the pattern. null if no pattern matches the given key
 	 */
-	public VeinMiningPattern getPattern(String key) {
-		return getPatternOrDefault(key, null);
+	@Nullable
+	public VeinMiningPattern getPattern(@NotNull String key) {
+		for (Entry<NamespacedKey, VeinMiningPattern> entry : patterns.entrySet()) {
+			if (entry.getKey().toString().equals(key)) {
+				return entry.getValue();
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -72,7 +83,8 @@ public class PatternRegistry {
 	 *
 	 * @return the pattern. The default pattern if no pattern matches the given key
 	 */
-	public VeinMiningPattern getPatternOrDefault(String key, VeinMiningPattern defaultPattern) {
+	@NotNull
+	public VeinMiningPattern getPatternOrDefault(@NotNull String key, @NotNull VeinMiningPattern defaultPattern) {
 		for (Entry<NamespacedKey, VeinMiningPattern> entry : patterns.entrySet()) {
 			if (entry.getKey().toString().equals(key)) {
 				return entry.getValue();
@@ -87,8 +99,7 @@ public class PatternRegistry {
 	 *
 	 * @param pattern the pattern to unregister
 	 */
-	public void unregisterPattern(VeinMiningPattern pattern) {
-		if (pattern == null) return;
+	public void unregisterPattern(@NotNull VeinMiningPattern pattern) {
 		this.patterns.remove(pattern.getKey());
 	}
 
@@ -97,7 +108,7 @@ public class PatternRegistry {
 	 *
 	 * @param key the key of the pattern to unregister
 	 */
-	public void unregisterPattern(NamespacedKey key) {
+	public void unregisterPattern(@NotNull NamespacedKey key) {
 		this.patterns.remove(key);
 	}
 
@@ -106,6 +117,7 @@ public class PatternRegistry {
 	 *
 	 * @return all registered patterns
 	 */
+	@NotNull
 	public Set<VeinMiningPattern> getPatterns() {
 		return ImmutableSet.copyOf(patterns.values());
 	}

@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
 
@@ -26,6 +28,7 @@ public interface VeinBlock {
 	 *
 	 * @return the material type
 	 */
+	@NotNull
 	public Material getType();
 
 	/**
@@ -44,6 +47,7 @@ public interface VeinBlock {
 	 *
 	 * @return the block data
 	 */
+	@NotNull
 	public BlockData getBlockData();
 
 	/**
@@ -62,7 +66,7 @@ public interface VeinBlock {
 	 * @see #encapsulates(BlockData)
 	 * @see #encapsulates(Material)
 	 */
-	public boolean encapsulates(Block block);
+	public boolean encapsulates(@NotNull Block block);
 
 	/**
 	 * Check whether or not the provided data is encapsulated by this VeinBlock. If
@@ -80,7 +84,7 @@ public interface VeinBlock {
 	 * @see #encapsulates(Block)
 	 * @see #encapsulates(Material)
 	 */
-	public boolean encapsulates(BlockData data);
+	public boolean encapsulates(@NotNull BlockData data);
 
 	/**
 	 * Check whether or not the provided material is encapsulated by this VeinBlock. If
@@ -105,7 +109,7 @@ public interface VeinBlock {
 	 * @see #encapsulates(Block)
 	 * @see #encapsulates(BlockData)
 	 */
-	public boolean encapsulates(Material material);
+	public boolean encapsulates(@NotNull Material material);
 
 	/**
 	 * Get this VeinBlock instance as a readable data String. Similar to how
@@ -115,6 +119,7 @@ public interface VeinBlock {
 	 *
 	 * @return the human-readable data string
 	 */
+	@NotNull
 	public String asDataString();
 
 	/**
@@ -124,7 +129,8 @@ public interface VeinBlock {
 	 *
 	 * @return the VeinBlock instance
 	 */
-	public static VeinBlock get(Material material) {
+	@NotNull
+	public static VeinBlock get(@NotNull Material material) {
 		Preconditions.checkArgument(material != null, "Cannot get VeinBlock with null type");
 		return BlockCache.MATERIAL.getOrCache(material, VeinBlockMaterial::new);
 	}
@@ -136,7 +142,8 @@ public interface VeinBlock {
 	 *
 	 * @return the VeinBlock instance
 	 */
-	public static VeinBlock get(BlockData data) {
+	@NotNull
+	public static VeinBlock get(@NotNull BlockData data) {
 		Preconditions.checkArgument(data != null, "Cannot get VeinBlock with null data");
 		return BlockCache.BLOCK_DATA.getOrCache(data, VeinBlockDatable::new);
 	}
@@ -155,9 +162,10 @@ public interface VeinBlock {
 	 *
 	 * @param value the value from which to get a VeinBlock instance.
 	 *
-	 * @return the parsed VeinBlock instance
+	 * @return the parsed VeinBlock instance. null if malformed
 	 */
-	public static VeinBlock fromString(String value) {
+	@Nullable
+	public static VeinBlock fromString(@NotNull String value) {
 		Matcher matcher = VeinMiner.BLOCK_DATA_PATTERN.matcher(value);
 		if (!matcher.find()) {
 			return null;

@@ -15,6 +15,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
@@ -73,8 +74,10 @@ public class VeinMiner extends JavaPlugin {
 		// Register commands
 		this.getLogger().info("Registering commands");
 		PluginCommand veinminerCmd = getCommand("veinminer");
-		veinminerCmd.setExecutor(new VeinMinerCmd(this));
-		veinminerCmd.setTabCompleter(new VeinMinerCmdTabCompleter(this));
+		if (veinminerCmd != null) {
+			veinminerCmd.setExecutor(new VeinMinerCmd(this));
+			veinminerCmd.setTabCompleter(new VeinMinerCmdTabCompleter(this));
+		}
 
 		// Metrics
 		if (getConfig().getBoolean("MetricsEnabled", true)) {
@@ -160,7 +163,7 @@ public class VeinMiner extends JavaPlugin {
 	 *
 	 * @return true if successful, false if a hook for a plugin with a similar name is already registered
 	 */
-	public boolean registerAntiCheatHook(AntiCheatHook hook) {
+	public boolean registerAntiCheatHook(@NotNull AntiCheatHook hook) {
 		Preconditions.checkNotNull(hook, "Cannot register a null anticheat hook implementation");
 
 		for (AntiCheatHook anticheatHook : anticheatHooks) {
@@ -178,11 +181,12 @@ public class VeinMiner extends JavaPlugin {
 	 *
 	 * @return all anticheat hooks
 	 */
+	@NotNull
 	public List<AntiCheatHook> getAnticheatHooks() {
 		return Collections.unmodifiableList(anticheatHooks);
 	}
 
-	private <T extends AntiCheatHook> void registerAntiCheatHookIfEnabled(PluginManager manager, String pluginName, Supplier<T> hookSupplier) {
+	private <@NotNull T extends AntiCheatHook> void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<T> hookSupplier) {
 		if (!manager.isPluginEnabled(pluginName)) return;
 
 		T hook = hookSupplier.get();

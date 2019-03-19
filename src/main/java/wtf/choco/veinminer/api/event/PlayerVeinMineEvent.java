@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
@@ -25,7 +26,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	private final Set<Block> blocks;
 	private final VeinMiningPattern pattern;
 
-	public PlayerVeinMineEvent(Player who, VeinBlock type, ToolCategory category, Set<Block> blocks, VeinMiningPattern pattern) {
+	public PlayerVeinMineEvent(@NotNull Player who, @NotNull VeinBlock type, @NotNull ToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
 		super(who);
 
 		this.type = type;
@@ -40,6 +41,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 *
 	 * @return the blocks to be affected by this event
 	 */
+	@NotNull
 	public Set<Block> getBlocks() {
 		return blocks;
 	}
@@ -49,6 +51,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 *
 	 * @return the affected block
 	 */
+	@NotNull
 	public VeinBlock getAffectedBlock() {
 		return type;
 	}
@@ -58,6 +61,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 *
 	 * @return the tool used
 	 */
+	@NotNull
 	public ToolCategory getCategory() {
 		return category;
 	}
@@ -67,6 +71,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 	 *
 	 * @return the pattern used
 	 */
+	@NotNull
 	public VeinMiningPattern getPattern() {
 		return pattern;
 	}

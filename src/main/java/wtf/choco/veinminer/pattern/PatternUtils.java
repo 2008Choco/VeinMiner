@@ -1,6 +1,8 @@
 package wtf.choco.veinminer.pattern;
 
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VBlockFace;
@@ -33,7 +35,7 @@ public final class PatternUtils {
 	 *
 	 * @return true if the provided block is of that type or aliased, false otherwise
 	 */
-	public static boolean isOfType(VeinBlock type, MaterialAlias alias, Block block) {
+	public static boolean isOfType(@NotNull VeinBlock type, @Nullable MaterialAlias alias, @NotNull Block block) {
 		return type.encapsulates(block) || (alias != null && alias.isAliased(block));
 	}
 
@@ -42,6 +44,7 @@ public final class PatternUtils {
 	 *
 	 * @return the block face array
 	 */
+	@NotNull
 	public static VBlockFace[] getFacesToMine() {
 		return VEINMINER.getConfig().getBoolean("IncludeEdges") ? VBlockFace.values() : LIMITED_FACES;
 	}

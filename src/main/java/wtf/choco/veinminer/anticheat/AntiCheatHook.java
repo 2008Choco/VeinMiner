@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.anticheat;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a hook for an anticheat plugin. Implementations of this hook should exempt and
@@ -13,6 +14,7 @@ public interface AntiCheatHook {
 	 *
 	 * @return this plugin hook
 	 */
+	@NotNull
 	public String getPluginName();
 
 	/**
@@ -20,14 +22,14 @@ public interface AntiCheatHook {
 	 *
 	 * @param player the player to exempt
 	 */
-	public void exempt(Player player);
+	public void exempt(@NotNull Player player);
 
 	/**
 	 * Unexempt a player from a fast-break check in the hooked anticheat
 	 *
 	 * @param player the player to unexempt
 	 */
-	public void unexempt(Player player);
+	public void unexempt(@NotNull Player player);
 
 	/**
 	 * Check whether the provided player should be unexempted. This is a special-case method used to
@@ -38,7 +40,7 @@ public interface AntiCheatHook {
 	 * @param player the player to check
 	 * @return true if should unexempt, false otherwise
 	 */
-	public default boolean shouldUnexempt(Player player) {
+	public default boolean shouldUnexempt(@NotNull Player player) {
 		return true;
 	}
 

@@ -16,6 +16,8 @@ import com.google.gson.JsonSyntaxException;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A utility class to assist in checking for updates for plugins uploaded to
@@ -62,7 +64,7 @@ public final class UpdateChecker {
 	private final int pluginID;
 	private final VersionScheme versionScheme;
 
-	private UpdateChecker(JavaPlugin plugin, int pluginID, VersionScheme versionScheme) {
+	private UpdateChecker(@NotNull JavaPlugin plugin, int pluginID, @NotNull VersionScheme versionScheme) {
 		this.plugin = plugin;
 		this.pluginID = pluginID;
 		this.versionScheme = versionScheme;
@@ -74,6 +76,7 @@ public final class UpdateChecker {
 	 *
 	 * @return a future update result
 	 */
+	@NotNull
 	public CompletableFuture<UpdateResult> requestUpdateCheck() {
 		return CompletableFuture.supplyAsync(() -> {
 			int responseCode = -1;
@@ -119,6 +122,7 @@ public final class UpdateChecker {
 	 *
 	 * @return the last update check result. null if none.
 	 */
+	@Nullable
 	public UpdateResult getLastResult() {
 		return lastResult;
 	}
@@ -141,7 +145,7 @@ public final class UpdateChecker {
 	 *
 	 * @return the UpdateChecker instance
 	 */
-	public static UpdateChecker init(JavaPlugin plugin, int pluginID, VersionScheme versionScheme) {
+	public static UpdateChecker init(@NotNull JavaPlugin plugin, int pluginID, @NotNull VersionScheme versionScheme) {
 		Preconditions.checkArgument(plugin != null, "Plugin cannot be null");
 		Preconditions.checkArgument(pluginID > 0, "Plugin ID must be greater than 0");
 		Preconditions.checkArgument(versionScheme != null, "null version schemes are unsupported");
@@ -161,7 +165,7 @@ public final class UpdateChecker {
 	 *
 	 * @return the UpdateChecker instance
 	 */
-	public static UpdateChecker init(JavaPlugin plugin, int pluginID) {
+	public static UpdateChecker init(@NotNull JavaPlugin plugin, int pluginID) {
 		return init(plugin, pluginID, VERSION_SCHEME_DECIMAL);
 	}
 
@@ -171,6 +175,7 @@ public final class UpdateChecker {
 	 *
 	 * @return the UpdateChecker instance
 	 */
+	@NotNull
 	public static UpdateChecker get() {
 		Preconditions.checkState(instance != null, "Instance has not yet been initialized. Be sure #init() has been invoked");
 		return instance;
@@ -202,7 +207,8 @@ public final class UpdateChecker {
 		 *
 		 * @return the greater of the two versions. null if unsupported version schemes
 		 */
-		public String compareVersions(String first, String second);
+		@Nullable
+		public String compareVersions(@NotNull String first, @NotNull String second);
 
 	}
 
@@ -267,12 +273,12 @@ public final class UpdateChecker {
 			UpdateChecker.this.lastResult = this;
 		}
 
-		private UpdateResult(UpdateReason reason, String newestVersion) {
+		private UpdateResult(@NotNull UpdateReason reason, @NotNull String newestVersion) {
 			this.reason = reason;
 			this.newestVersion = newestVersion;
 		}
 
-		private UpdateResult(UpdateReason reason) {
+		private UpdateResult(@NotNull UpdateReason reason) {
 			Preconditions.checkArgument(reason != UpdateReason.NEW_UPDATE, "Reasons that require updates must also provide the latest version String");
 			this.reason = reason;
 			this.newestVersion = plugin.getDescription().getVersion();
@@ -283,6 +289,7 @@ public final class UpdateChecker {
 		 *
 		 * @return the reason
 		 */
+		@NotNull
 		public UpdateReason getReason() {
 			return reason;
 		}
@@ -302,6 +309,7 @@ public final class UpdateChecker {
 		 *
 		 * @return the newest version of the plugin
 		 */
+		@NotNull
 		public String getNewestVersion() {
 			return newestVersion;
 		}

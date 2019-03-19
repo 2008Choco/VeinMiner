@@ -3,7 +3,8 @@ package wtf.choco.veinminer.listener;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.EnumUtils;
+import com.google.common.base.Enums;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -15,6 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
@@ -40,7 +43,7 @@ public class BreakBlockListener implements Listener {
 	private final VeinMiner plugin;
 	private final VeinMinerManager manager;
 
-	public BreakBlockListener(VeinMiner plugin) {
+	public BreakBlockListener(@NotNull VeinMiner plugin) {
 		this.plugin = plugin;
 		this.manager = plugin.getVeinMinerManager();
 	}
@@ -58,10 +61,7 @@ public class BreakBlockListener implements Listener {
 		ToolCategory category = ToolCategory.fromItemStack(tool);
 
 		// Activation check
-		ActivationStrategy activation = EnumUtils.getEnum(ActivationStrategy.class, plugin.getConfig().getString("ActivationMode", "SNEAK"));
-		if (activation == null) {
-			activation = ActivationStrategy.SNEAK;
-		}
+		ActivationStrategy activation = Enums.getIfPresent(ActivationStrategy.class, plugin.getConfig().getString("ActivationMode", "SNEAK")).or(ActivationStrategy.SNEAK);
 
 		// Invalid player state check
 		VMPlayerData playerData = VMPlayerData.get(player);
@@ -70,7 +70,7 @@ public class BreakBlockListener implements Listener {
 		if (playerData.isVeinMinerDisabled(category)) return;
 
 		TemplateValidator templateValidator = manager.getTemplateValidator();
-		if (!templateValidator.isValid(tool, category)) return;
+		if (templateValidator == null || !templateValidator.isValid(tool, category)) return;
 
 		Material blockType = block.getType();
 		BlockData blockData = block.getBlockData();
@@ -86,6 +86,8 @@ public class BreakBlockListener implements Listener {
 
 		this.blocks.add(block);
 		VeinBlock type = manager.getVeinBlockFromBlockList(blockData, category);
+		if (type == null) return;
+
 		VeinMiningPattern pattern = playerData.getPattern();
 		pattern.allocateBlocks(blocks, type, block, category, alias);
 		this.blocks.removeIf(Block::isEmpty);
@@ -105,7 +107,12 @@ public class BreakBlockListener implements Listener {
 		// Actually destroying the allocated blocks
 		int maxDurability = tool.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
 		for (Block b : blocks) {
-			if (category != ToolCategory.HAND && (tool.getType() == Material.AIR || ((Damageable) tool.getItemMeta()).getDamage() >= maxDurability)) break;
+			if (category != ToolCategory.HAND) {
+				if (tool.getType() == Material.AIR) break;
+
+				ItemMeta meta = tool.getItemMeta();
+				if (meta == null || ((Damageable) meta).getDamage() >= maxDurability) break;
+			}
 
 			Material currentType = b.getType();
 			if (ReflectionUtil.breakBlock(player, b)) {

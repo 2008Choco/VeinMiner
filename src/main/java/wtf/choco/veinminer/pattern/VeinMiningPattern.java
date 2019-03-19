@@ -7,6 +7,8 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
@@ -34,7 +36,7 @@ public interface VeinMiningPattern extends Keyed {
 	 * @param category the tool category used to break the block
 	 * @param alias an alias of the block being broken if one exists. May be null
 	 */
-	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias);
+	public void allocateBlocks(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category, @Nullable MaterialAlias alias);
 
 	/**
 	 * Allocate the blocks that should be broken by the vein mining pattern. Note that the breaking
@@ -50,7 +52,7 @@ public interface VeinMiningPattern extends Keyed {
 	 * @param origin the block where the vein mine was initiated
 	 * @param category the tool category used to break the block
 	 */
-	public default void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category) {
+	public default void allocateBlocks(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category) {
 		this.allocateBlocks(blocks, type, origin, category, null);
 	}
 
@@ -62,7 +64,8 @@ public interface VeinMiningPattern extends Keyed {
 	 *
 	 * @return the resulting VeinMiningPattern instance
 	 */
-	public static VeinMiningPattern createNewPattern(NamespacedKey key, BlockAllocator blockAllocator) {
+	@NotNull
+	public static VeinMiningPattern createNewPattern(@NotNull NamespacedKey key, @NotNull BlockAllocator blockAllocator) {
 		Preconditions.checkNotNull(key, "Pattern must not have a null key");
 		Preconditions.checkNotNull(blockAllocator, "Block computer must not be null");
 

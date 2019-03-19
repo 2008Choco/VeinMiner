@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
 
 final class BlockCache<T> {
 
@@ -15,11 +16,11 @@ final class BlockCache<T> {
 
 	private final Map<T, VeinBlock> cached;
 
-	private BlockCache(Map<T, VeinBlock> backingMap) {
+	private BlockCache(@NotNull Map<T, VeinBlock> backingMap) {
 		this.cached = backingMap;
 	}
 
-	protected VeinBlock getOrCache(T type, Function<T, VeinBlock> defaultSupplier) {
+	protected VeinBlock getOrCache(@NotNull T type, @NotNull Function<T, VeinBlock> defaultSupplier) {
 		return cached.computeIfAbsent(type, defaultSupplier);
 	}
 

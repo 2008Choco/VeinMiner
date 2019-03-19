@@ -1,16 +1,19 @@
 package wtf.choco.veinminer.data.block;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
 
 class VeinBlockDatable implements VeinBlock {
 
 	private final BlockData data;
 
-	protected VeinBlockDatable(BlockData data) {
+	protected VeinBlockDatable(@NotNull BlockData data) {
+		Preconditions.checkArgument(data != null, "Cannot create datable VeinBlock for null BlockData");
 		this.data = data.clone();
 	}
 

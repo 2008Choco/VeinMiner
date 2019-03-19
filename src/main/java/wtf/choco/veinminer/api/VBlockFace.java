@@ -3,6 +3,7 @@ package wtf.choco.veinminer.api;
 import com.google.common.base.Preconditions;
 
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents all possible relative directions of a block supported by VeinMiner.
@@ -85,7 +86,8 @@ public enum VBlockFace {
 	 *
 	 * @return the relative block
 	 */
-	public Block getRelative(Block block) {
+	@NotNull
+	public Block getRelative(@NotNull Block block) {
 		Preconditions.checkNotNull(block, "Cannot get the relative block of a null block");
 		return block.getWorld().getBlockAt(block.getX() + xTranslation, block.getY() + yTranslation, block.getZ() + zTranslation);
 	}

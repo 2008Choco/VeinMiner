@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.tool.ToolCategory;
 
@@ -35,12 +37,12 @@ public class ToolTemplate {
 	 * @param name the name for which to check (null if none)
 	 * @param lore the lore for which to check (null if none)
 	 */
-	public ToolTemplate(ToolCategory category, String name, List<String> lore) {
+	public ToolTemplate(@NotNull ToolCategory category, @Nullable String name, @Nullable List<String> lore) {
 		Preconditions.checkArgument(category != null, "Category must not be null");
 
 		this.category = category;
 		this.specificType = Material.AIR;
-		this.name = (!StringUtils.isEmpty(name)) ? name : null;;
+		this.name = (!StringUtils.isEmpty(name)) ? name : null;
 		this.lore = (lore != null && !lore.isEmpty()) ? new ArrayList<>(lore) : null;
 	}
 
@@ -51,7 +53,7 @@ public class ToolTemplate {
 	 * @param name the name for which to check (null if none)
 	 * @param lore the lore for which to check (null if none)
 	 */
-	public ToolTemplate(Material specificType, String name, List<String> lore) {
+	public ToolTemplate(@NotNull Material specificType, @Nullable String name, @Nullable List<String> lore) {
 		Preconditions.checkArgument(specificType == null || specificType.isItem(), "The specified type must be an item. Blocks, technical blocks or air are not permitted");
 
 		this.category = null;
@@ -66,6 +68,7 @@ public class ToolTemplate {
 	 *
 	 * @return the specific type
 	 */
+	@NotNull
 	public Material getSpecificType() {
 		return specificType;
 	}
@@ -85,6 +88,7 @@ public class ToolTemplate {
 	 *
 	 * @return the name of the template. null if none
 	 */
+	@Nullable
 	public String getName() {
 		return name;
 	}
@@ -95,6 +99,7 @@ public class ToolTemplate {
 	 *
 	 * @return the lore of the template. null if none
 	 */
+	@Nullable
 	public List<String> getLore() {
 		return (lore != null) ? Collections.unmodifiableList(lore) : null;
 	}
@@ -105,6 +110,7 @@ public class ToolTemplate {
 	 *
 	 * @return the template's category or null if none
 	 */
+	@Nullable
 	public ToolCategory getCategory() {
 		return category;
 	}
@@ -127,9 +133,9 @@ public class ToolTemplate {
 	 *
 	 * @return true if matches, false otherwise
 	 */
-	public boolean matches(ItemStack item) {
-		if (category != ToolCategory.HAND && item == null) {
-			return false;
+	public boolean matches(@Nullable ItemStack item) {
+		if (item == null) {
+			return category == ToolCategory.HAND;
 		}
 
 		if (isCategorized() && !category.contains(item.getType())) {
@@ -139,11 +145,11 @@ public class ToolTemplate {
 		}
 
 		ItemMeta meta = item.getItemMeta();
-		if (name != null && (meta == null || !meta.hasDisplayName() || !meta.getDisplayName().equals(name))) {
+		if (name != null && (meta == null || !name.equals(meta.getDisplayName()))) {
 			return false;
 		}
 
-		if (lore != null && (meta == null || !meta.hasLore() || !meta.getLore().equals(lore))) {
+		if (lore != null && (meta == null || !meta.hasLore() || !lore.equals(meta.getLore()))) {
 			return false;
 		}
 

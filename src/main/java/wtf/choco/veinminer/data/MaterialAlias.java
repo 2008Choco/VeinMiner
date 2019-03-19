@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.data.block.VeinBlock;
 
@@ -25,13 +26,13 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @param blocks the blocks to alias
 	 */
-	public MaterialAlias(VeinBlock... blocks) {
+	public MaterialAlias(@NotNull VeinBlock... blocks) {
 		for (VeinBlock block : blocks) {
 			this.blocks.add(block);
 		}
 	}
 
-	private MaterialAlias(Set<VeinBlock> blocks) {
+	private MaterialAlias(@NotNull Set<VeinBlock> blocks) {
 		this.blocks.addAll(blocks);
 	}
 
@@ -40,7 +41,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @param block the block to add
 	 */
-	public void addAlias(VeinBlock block) {
+	public void addAlias(@NotNull VeinBlock block) {
 		Preconditions.checkNotNull(block, "Cannot add a null alias");
 		this.blocks.add(block);
 	}
@@ -50,7 +51,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @param block the block to remove
 	 */
-	public void removeAlias(VeinBlock block) {
+	public void removeAlias(@NotNull VeinBlock block) {
 		this.blocks.remove(block);
 	}
 
@@ -59,7 +60,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @param data the data to remove
 	 */
-	public void removeAlias(BlockData data) {
+	public void removeAlias(@NotNull BlockData data) {
 		Iterator<VeinBlock> blockIterator = this.iterator();
 
 		while (blockIterator.hasNext()) {
@@ -74,7 +75,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @param material the material to remove
 	 */
-	public void removeAlias(Material material) {
+	public void removeAlias(@NotNull Material material) {
 		Iterator<VeinBlock> blockIterator = this.iterator();
 
 		while (blockIterator.hasNext()) {
@@ -91,7 +92,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @return true if aliased, false otherwise
 	 */
-	public boolean isAliased(VeinBlock block) {
+	public boolean isAliased(@NotNull VeinBlock block) {
 		return blocks.contains(block);
 	}
 
@@ -102,7 +103,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @return true if aliased, false otherwise
 	 */
-	public boolean isAliased(BlockData data) {
+	public boolean isAliased(@NotNull BlockData data) {
 		return blocks.stream().anyMatch(b -> b.encapsulates(data));
 	}
 
@@ -113,7 +114,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @return true if aliased, false otherwise
 	 */
-	public boolean isAliased(Block block) {
+	public boolean isAliased(@NotNull Block block) {
 		return block != null && isAliased(block.getBlockData());
 	}
 
@@ -124,7 +125,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @return true if aliased, false otherwise
 	 */
-	public boolean isAliased(Material material) {
+	public boolean isAliased(@NotNull Material material) {
 		return blocks.stream().anyMatch(b -> b.getType() == material);
 	}
 
@@ -134,16 +135,19 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 	 *
 	 * @return all aliased blocks
 	 */
+	@NotNull
 	public Set<VeinBlock> getAliasedBlocks() {
 		return new HashSet<>(blocks);
 	}
 
 	@Override
+	@NotNull
 	public Iterator<VeinBlock> iterator() {
 		return blocks.iterator();
 	}
 
 	@Override
+	@NotNull
 	public MaterialAlias clone() {
 		return new MaterialAlias(blocks);
 	}
