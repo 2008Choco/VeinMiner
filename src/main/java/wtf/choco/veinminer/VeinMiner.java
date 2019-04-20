@@ -162,9 +162,14 @@ public class VeinMiner extends JavaPlugin {
 	 * @param hook the hook to register
 	 *
 	 * @return true if successful, false if a hook for a plugin with a similar name is already registered
+	 * or the hook is unsupported according to {@link AntiCheatHook#isSupported()}.
 	 */
 	public boolean registerAntiCheatHook(@NotNull AntiCheatHook hook) {
 		Preconditions.checkNotNull(hook, "Cannot register a null anticheat hook implementation");
+
+		if (!hook.isSupported()) {
+			return false;
+		}
 
 		for (AntiCheatHook anticheatHook : anticheatHooks) {
 			if (anticheatHook.getPluginName().equals(hook.getPluginName())) {
