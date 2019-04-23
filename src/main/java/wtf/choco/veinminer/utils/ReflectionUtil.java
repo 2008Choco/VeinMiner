@@ -46,7 +46,7 @@ public final class ReflectionUtil {
 		return false;
 	}
 
-	public static void loadNMSClasses(@NotNull String version) {
+	public static void init(@NotNull String version) {
 		if (nmsPlayer != null) return;
 
 		ReflectionUtil.version = version.concat(".");

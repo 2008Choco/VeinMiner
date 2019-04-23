@@ -58,7 +58,7 @@ public class VeinMiner extends JavaPlugin {
 		this.patternRegistry.registerPattern(PatternThorough.get());
 		this.patternRegistry.registerPattern(PatternExpansive.get());
 
-		ReflectionUtil.loadNMSClasses(Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]);
+		ReflectionUtil.init(Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]);
 
 		// Enable anticheat hooks if required
 		PluginManager manager = Bukkit.getPluginManager();
