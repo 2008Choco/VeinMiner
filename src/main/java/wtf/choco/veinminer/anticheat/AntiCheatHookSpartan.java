@@ -13,33 +13,33 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The default Spartan hook implementation
  */
-public class AntiCheatHookSpartan implements AntiCheatHook {
+public final class AntiCheatHookSpartan implements AntiCheatHook {
 
-	private final Set<UUID> exempted = new HashSet<>();
+    private final Set<UUID> exempted = new HashSet<>();
 
-	@Override
-	@NotNull
-	public String getPluginName() {
-		return "Spartan";
-	}
+    @Override
+    @NotNull
+    public String getPluginName() {
+        return "Spartan";
+    }
 
-	@Override
-	public void exempt(@NotNull Player player) {
-		if (API.isBypassing(player, HackType.FastBreak)) return;
+    @Override
+    public void exempt(@NotNull Player player) {
+        if (API.isBypassing(player, HackType.FastBreak)) return;
 
-		API.stopCheck(player, HackType.FastBreak);
-		this.exempted.add(player.getUniqueId());
-	}
+        API.stopCheck(player, HackType.FastBreak);
+        this.exempted.add(player.getUniqueId());
+    }
 
-	@Override
-	public void unexempt(@NotNull Player player) {
-		API.startCheck(player, HackType.FastBreak);
-		this.exempted.remove(player.getUniqueId());
-	}
+    @Override
+    public void unexempt(@NotNull Player player) {
+        API.startCheck(player, HackType.FastBreak);
+        this.exempted.remove(player.getUniqueId());
+    }
 
-	@Override
-	public boolean shouldUnexempt(@NotNull Player player) {
-		return exempted.contains(player.getUniqueId());
-	}
+    @Override
+    public boolean shouldUnexempt(@NotNull Player player) {
+        return exempted.contains(player.getUniqueId());
+    }
 
 }

@@ -28,66 +28,66 @@ import wtf.choco.veinminer.tool.ToolCategory;
  */
 public final class PatternExpansive implements VeinMiningPattern {
 
-	private static PatternExpansive instance;
+    private static PatternExpansive instance;
 
-	private final List<Block> buffer = new ArrayList<>(32), recent = new ArrayList<>(32);
-	private final NamespacedKey key;
+    private final List<Block> buffer = new ArrayList<>(32), recent = new ArrayList<>(32);
+    private final NamespacedKey key;
 
-	private PatternExpansive() {
-		this.key = new NamespacedKey(VeinMiner.getPlugin(), "expansive");
-	}
+    private PatternExpansive() {
+        this.key = new NamespacedKey(VeinMiner.getPlugin(), "expansive");
+    }
 
-	@Override
-	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias) {
-		this.recent.add(origin); // For first iteration
+    @Override
+    public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias) {
+        this.recent.add(origin); // For first iteration
 
-		int maxVeinSize = category.getMaxVeinSize();
-		VBlockFace[] facesToMine = PatternUtils.getFacesToMine();
+        int maxVeinSize = category.getMaxVeinSize();
+        VBlockFace[] facesToMine = PatternUtils.getFacesToMine();
 
-		while (blocks.size() <= maxVeinSize) {
-			recentSearch:
-			for (Block current : recent) {
-				for (VBlockFace face : facesToMine) {
-					Block relative = face.getRelative(current);
-					if (blocks.contains(relative) || !PatternUtils.isOfType(type, alias, relative)) {
-						continue;
-					}
+        while (blocks.size() <= maxVeinSize) {
+            recentSearch:
+            for (Block current : recent) {
+                for (VBlockFace face : facesToMine) {
+                    Block relative = face.getRelative(current);
+                    if (blocks.contains(relative) || !PatternUtils.isOfType(type, alias, relative)) {
+                        continue;
+                    }
 
-					if (blocks.size() + buffer.size() > maxVeinSize) {
-						break recentSearch;
-					}
+                    if (blocks.size() + buffer.size() > maxVeinSize) {
+                        break recentSearch;
+                    }
 
-					this.buffer.add(relative);
-				}
-			}
+                    this.buffer.add(relative);
+                }
+            }
 
-			if (buffer.size() == 0) { // No more blocks to allocate :D
-				break;
-			}
+            if (buffer.size() == 0) { // No more blocks to allocate :D
+                break;
+            }
 
-			this.recent.clear();
-			this.recent.addAll(buffer);
-			blocks.addAll(buffer);
+            this.recent.clear();
+            this.recent.addAll(buffer);
+            blocks.addAll(buffer);
 
-			this.buffer.clear();
-		}
+            this.buffer.clear();
+        }
 
-		this.recent.clear();
-	}
+        this.recent.clear();
+    }
 
-	@Override
-	public NamespacedKey getKey() {
-		return key;
-	}
+    @Override
+    public NamespacedKey getKey() {
+        return key;
+    }
 
-	/**
-	 * Get a singleton instance of the expansive pattern.
-	 *
-	 * @return the expansive pattern
-	 */
-	@NotNull
-	public static PatternExpansive get() {
-		return (instance == null) ? instance = new PatternExpansive() : instance;
-	}
+    /**
+     * Get a singleton instance of the expansive pattern.
+     *
+     * @return the expansive pattern
+     */
+    @NotNull
+    public static PatternExpansive get() {
+        return (instance == null) ? instance = new PatternExpansive() : instance;
+    }
 
 }

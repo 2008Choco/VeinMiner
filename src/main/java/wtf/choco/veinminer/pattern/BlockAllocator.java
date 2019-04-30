@@ -17,23 +17,23 @@ import wtf.choco.veinminer.tool.ToolCategory;
 @FunctionalInterface
 public interface BlockAllocator {
 
-	/**
-	 * Allocate the blocks that should be broken by the vein mining pattern. Note that the breaking
-	 * of the blocks should not be handled by the pattern, but rather the plugin itself. This method
-	 * serves primarily to search for valid blocks to break in a vein.
-	 * <p>
-	 * <b>NOTE:</b> If null is added to the "blocks" set, a NullPointerException will be thrown and
-	 * the method will fail.
-	 *
-	 * @param blocks a set of all blocks to break. Valid blocks should be added here. The "origin"
-	 * block passed to this method will be added automatically
-	 * @param type the type of VeinBlock being vein mined
-	 * @param origin the block where the vein mine was initiated
-	 * @param category the tool category used to break the block
-	 * @param alias an alias of the block being broken if one exists. May be null
-	 *
-	 * @see VeinMiningPattern#allocateBlocks(Set, VeinBlock, Block, ToolCategory, MaterialAlias)
-	 */
-	public void allocate(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category, @Nullable MaterialAlias alias);
+    /**
+     * Allocate the blocks that should be broken by the vein mining pattern. Note that the breaking
+     * of the blocks should not be handled by the pattern, but rather the plugin itself. This method
+     * serves primarily to search for valid blocks to break in a vein.
+     * <p>
+     * <b>NOTE:</b> If null is added to the "blocks" set, a NullPointerException will be thrown and
+     * the method will fail.
+     *
+     * @param blocks a set of all blocks to break. Valid blocks should be added here. The "origin"
+     * block passed to this method will be added automatically
+     * @param type the type of VeinBlock being vein mined
+     * @param origin the block where the vein mine was initiated
+     * @param category the tool category used to break the block
+     * @param alias an alias of the block being broken if one exists. May be null
+     *
+     * @see VeinMiningPattern#allocateBlocks(Set, VeinBlock, Block, ToolCategory, MaterialAlias)
+     */
+    public void allocate(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category, @Nullable MaterialAlias alias);
 
 }

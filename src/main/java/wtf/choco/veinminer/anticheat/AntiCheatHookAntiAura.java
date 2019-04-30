@@ -13,48 +13,48 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The default AntiAura hook implementation
  */
-public class AntiCheatHookAntiAura implements AntiCheatHook {
+public final class AntiCheatHookAntiAura implements AntiCheatHook {
 
-	private final double version;
-	private final Set<UUID> exempted = new HashSet<>();
+    private final double version;
+    private final Set<UUID> exempted = new HashSet<>();
 
-	public AntiCheatHookAntiAura() {
-		Plugin antiaura = Bukkit.getPluginManager().getPlugin("AntiAura");
-		if (antiaura == null) {
-			throw new UnsupportedOperationException("Attempted to construct AntiAura hook while AntiAura is not installed");
-		}
+    public AntiCheatHookAntiAura() {
+        Plugin antiaura = Bukkit.getPluginManager().getPlugin("AntiAura");
+        if (antiaura == null) {
+            throw new UnsupportedOperationException("Attempted to construct AntiAura hook while AntiAura is not installed");
+        }
 
-		this.version = NumberUtils.toDouble(antiaura.getDescription().getVersion(), -1.0);
-	}
+        this.version = NumberUtils.toDouble(antiaura.getDescription().getVersion(), -1.0);
+    }
 
-	@Override
-	@NotNull
-	public String getPluginName() {
-		return "AntiAura";
-	}
+    @Override
+    @NotNull
+    public String getPluginName() {
+        return "AntiAura";
+    }
 
-	@Override
-	public void exempt(@NotNull Player player) {
-		if (AntiAuraAPI.API.isExemptedFromFastBreak(player)) return;
+    @Override
+    public void exempt(@NotNull Player player) {
+        if (AntiAuraAPI.API.isExemptedFromFastBreak(player)) return;
 
-		AntiAuraAPI.API.toggleExemptFromFastBreak(player);
-		this.exempted.add(player.getUniqueId());
-	}
+        AntiAuraAPI.API.toggleExemptFromFastBreak(player);
+        this.exempted.add(player.getUniqueId());
+    }
 
-	@Override
-	public void unexempt(@NotNull Player player) {
-		AntiAuraAPI.API.toggleExemptFromFastBreak(player);
-		this.exempted.remove(player.getUniqueId());
-	}
+    @Override
+    public void unexempt(@NotNull Player player) {
+        AntiAuraAPI.API.toggleExemptFromFastBreak(player);
+        this.exempted.remove(player.getUniqueId());
+    }
 
-	@Override
-	public boolean shouldUnexempt(@NotNull Player player) {
-		return exempted.contains(player.getUniqueId());
-	}
+    @Override
+    public boolean shouldUnexempt(@NotNull Player player) {
+        return exempted.contains(player.getUniqueId());
+    }
 
-	@Override
-	public boolean isSupported() {
-		return version >= 10.83;
-	}
+    @Override
+    public boolean isSupported() {
+        return version >= 10.83;
+    }
 
 }

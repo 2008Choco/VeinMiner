@@ -29,59 +29,59 @@ import wtf.choco.veinminer.tool.ToolCategory;
  */
 public final class PatternThorough implements VeinMiningPattern {
 
-	private static PatternThorough instance;
+    private static PatternThorough instance;
 
-	private final NamespacedKey key;
-	private final List<Block> blockBuffer = new ArrayList<>();
+    private final NamespacedKey key;
+    private final List<Block> blockBuffer = new ArrayList<>();
 
-	private PatternThorough() {
-		this.key = new NamespacedKey(VeinMiner.getPlugin(), "thorough");
-	}
+    private PatternThorough() {
+        this.key = new NamespacedKey(VeinMiner.getPlugin(), "thorough");
+    }
 
-	@Override
-	public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias) {
-		int maxVeinSize = category.getMaxVeinSize();
-		VBlockFace[] facesToMine = PatternUtils.getFacesToMine();
+    @Override
+    public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias) {
+        int maxVeinSize = category.getMaxVeinSize();
+        VBlockFace[] facesToMine = PatternUtils.getFacesToMine();
 
-		while (blocks.size() <= maxVeinSize) {
-			Iterator<Block> trackedBlocks = blocks.iterator();
-			while (trackedBlocks.hasNext() && blocks.size() + blockBuffer.size() <= maxVeinSize) {
-				Block b = trackedBlocks.next();
-				for (VBlockFace face : facesToMine) {
-					if (blocks.size() + blockBuffer.size() >= maxVeinSize) {
-						break;
-					}
+        while (blocks.size() <= maxVeinSize) {
+            Iterator<Block> trackedBlocks = blocks.iterator();
+            while (trackedBlocks.hasNext() && blocks.size() + blockBuffer.size() <= maxVeinSize) {
+                Block b = trackedBlocks.next();
+                for (VBlockFace face : facesToMine) {
+                    if (blocks.size() + blockBuffer.size() >= maxVeinSize) {
+                        break;
+                    }
 
-					Block nextBlock = face.getRelative(b);
-					if (blocks.contains(nextBlock) || !PatternUtils.isOfType(type, alias, nextBlock)) {
-						continue;
-					}
+                    Block nextBlock = face.getRelative(b);
+                    if (blocks.contains(nextBlock) || !PatternUtils.isOfType(type, alias, nextBlock)) {
+                        continue;
+                    }
 
-					this.blockBuffer.add(nextBlock);
-				}
-			}
+                    this.blockBuffer.add(nextBlock);
+                }
+            }
 
-			if (blockBuffer.size() == 0) {
-				break;
-			}
+            if (blockBuffer.size() == 0) {
+                break;
+            }
 
-			blocks.addAll(blockBuffer);
-			this.blockBuffer.clear();
-		}
-	}
+            blocks.addAll(blockBuffer);
+            this.blockBuffer.clear();
+        }
+    }
 
-	@Override
-	public NamespacedKey getKey() {
-		return key;
-	}
+    @Override
+    public NamespacedKey getKey() {
+        return key;
+    }
 
-	/**
-	 * Get a singleton instance of the default pattern.
-	 *
-	 * @return the default pattern
-	 */
-	public static PatternThorough get() {
-		return (instance == null) ? instance = new PatternThorough() : instance;
-	}
+    /**
+     * Get a singleton instance of the default pattern.
+     *
+     * @return the default pattern
+     */
+    public static PatternThorough get() {
+        return (instance == null) ? instance = new PatternThorough() : instance;
+    }
 
 }

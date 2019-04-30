@@ -15,20 +15,20 @@ import com.google.common.base.Preconditions;
  */
 public class NonNullHashSet<T> extends HashSet<T> {
 
-	private static final long serialVersionUID = -8852239071748358532L;
+    private static final long serialVersionUID = -8852239071748358532L;
 
-	@Override
-	public boolean add(T element) {
-		Preconditions.checkNotNull(element, "NonNullHashSet does not support the addition of null values");
-		return super.add(element);
-	}
+    @Override
+    public boolean add(T element) {
+        Preconditions.checkNotNull(element, "NonNullHashSet does not support the addition of null values");
+        return super.add(element);
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends T> c) {
-		Preconditions.checkNotNull(c, "NonNullHashSet does not support the addition of null values");
-		Preconditions.checkState(!c.contains(null), "NonNullHashSet does not support the addition of null values");
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        Preconditions.checkNotNull(c, "NonNullHashSet does not support the addition of null values");
+        Preconditions.checkState(!c.contains(null), "NonNullHashSet does not support the addition of null values");
 
-		return super.addAll(c);
-	}
+        return super.addAll(c);
+    }
 
 }

@@ -15,30 +15,30 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The default Advanced AntiCheat (AAC) hook implementation
  */
-public class AntiCheatHookAAC implements AntiCheatHook, Listener {
+public final class AntiCheatHookAAC implements AntiCheatHook, Listener {
 
-	private final Set<UUID> exemptedUsers = new HashSet<>();
+    private final Set<UUID> exemptedUsers = new HashSet<>();
 
-	@Override
-	@NotNull
-	public String getPluginName() {
-		return "AAC";
-	}
+    @Override
+    @NotNull
+    public String getPluginName() {
+        return "AAC";
+    }
 
-	@Override
-	public void exempt(@NotNull Player player) {
-		this.exemptedUsers.add(player.getUniqueId());
-	}
+    @Override
+    public void exempt(@NotNull Player player) {
+        this.exemptedUsers.add(player.getUniqueId());
+    }
 
-	@Override
-	public void unexempt(@NotNull Player player) {
-		this.exemptedUsers.remove(player.getUniqueId());
-	}
+    @Override
+    public void unexempt(@NotNull Player player) {
+        this.exemptedUsers.remove(player.getUniqueId());
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onAACViolation(PlayerViolationEvent event) {
-		if (!exemptedUsers.contains(event.getPlayer().getUniqueId())) return;
-		event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onAACViolation(PlayerViolationEvent event) {
+        if (!exemptedUsers.contains(event.getPlayer().getUniqueId())) return;
+        event.setCancelled(true);
+    }
 
 }
