@@ -102,7 +102,7 @@ public final class BreakBlockListener implements Listener {
 
         // Anticheat support
         List<AntiCheatHook> hooks = plugin.getAnticheatHooks();
-        hooks.stream().forEach(h -> h.exempt(player));
+        hooks.forEach(h -> h.exempt(player));
 
         // Actually destroying the allocated blocks
         int maxDurability = tool.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
