@@ -30,7 +30,7 @@ public enum ActivationStrategy {
 
     private final Predicate<Player> condition;
 
-    private ActivationStrategy(@NotNull Predicate<Player> condition) {
+    ActivationStrategy(@NotNull Predicate<Player> condition) {
         this.condition = condition;
     }
 
