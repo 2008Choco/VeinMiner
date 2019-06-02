@@ -212,7 +212,7 @@ public final class VeinMinerCmd implements CommandExecutor {
                 if (plugin.getConfig().getBoolean("SortBlocklistAlphabetically", true)) {
                     blocklistIterable = new LinkedList<>();
                     Iterables.addAll((List<VeinBlock>) blocklistIterable, manager.getBlockList(category));
-                    ((LinkedList<VeinBlock>) blocklistIterable).sort((first, second) -> first.getType().getKey().getKey().compareTo(second.getType().getKey().getKey()));
+                    ((LinkedList<VeinBlock>) blocklistIterable).sort(Comparator.comparing(veinBlock -> veinBlock.getType().getKey().getKey()));
                 } else {
                     blocklistIterable = manager.getBlockList(category);
                 }
