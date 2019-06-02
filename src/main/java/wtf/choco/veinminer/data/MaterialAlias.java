@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.data;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -27,9 +28,7 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
      * @param blocks the blocks to alias
      */
     public MaterialAlias(@NotNull VeinBlock... blocks) {
-        for (VeinBlock block : blocks) {
-            this.blocks.add(block);
-        }
+        Collections.addAll(this.blocks, blocks);
     }
 
     private MaterialAlias(@NotNull Set<VeinBlock> blocks) {
