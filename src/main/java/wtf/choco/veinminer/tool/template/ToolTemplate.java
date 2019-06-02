@@ -149,11 +149,7 @@ public class ToolTemplate {
             return false;
         }
 
-        if (lore != null && (meta == null || !meta.hasLore() || !lore.equals(meta.getLore()))) {
-            return false;
-        }
-
-        return true;
+        return lore == null || (meta != null && meta.hasLore() && lore.equals(meta.getLore()));
     }
 
     /**
