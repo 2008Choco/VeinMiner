@@ -46,7 +46,7 @@ public enum VBlockFace {
 
     private final int xTranslation, yTranslation, zTranslation;
 
-    private VBlockFace(int xTranslation, int yTranslation, int zTranslation) {
+    VBlockFace(int xTranslation, int yTranslation, int zTranslation) {
         this.xTranslation = xTranslation;
         this.yTranslation = yTranslation;
         this.zTranslation = zTranslation;
