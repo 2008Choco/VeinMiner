@@ -82,13 +82,13 @@ public enum ToolCategory {
     private final Set<Material> materials;
     private final boolean canHaveToolTemplate;
 
-    private ToolCategory(@NotNull String name, boolean canHaveToolTemplate, @NotNull Material... materials) {
+    ToolCategory(@NotNull String name, boolean canHaveToolTemplate, @NotNull Material... materials) {
         this.name = name;
         this.canHaveToolTemplate = canHaveToolTemplate;
         this.materials = Collections.unmodifiableSet((materials.length != 0) ? EnumSet.of(materials[0], materials) : EnumSet.noneOf(Material.class));
     }
 
-    private ToolCategory(@NotNull String name, @NotNull Material... materials) {
+    ToolCategory(@NotNull String name, @NotNull Material... materials) {
         this(name, true, materials);
     }
 
