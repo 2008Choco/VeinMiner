@@ -2,6 +2,7 @@ package wtf.choco.veinminer.commands;
 
 import static wtf.choco.veinminer.VeinMiner.CHAT_PREFIX;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
