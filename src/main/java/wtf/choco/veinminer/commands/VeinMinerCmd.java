@@ -2,6 +2,7 @@ package wtf.choco.veinminer.commands;
 
 import static wtf.choco.veinminer.VeinMiner.CHAT_PREFIX;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -212,7 +213,7 @@ public final class VeinMinerCmd implements CommandExecutor {
                 if (plugin.getConfig().getBoolean("SortBlocklistAlphabetically", true)) {
                     blocklistIterable = new LinkedList<>();
                     Iterables.addAll((List<VeinBlock>) blocklistIterable, manager.getBlockList(category));
-                    ((LinkedList<VeinBlock>) blocklistIterable).sort((first, second) -> first.getType().getKey().getKey().compareTo(second.getType().getKey().getKey()));
+                    ((LinkedList<VeinBlock>) blocklistIterable).sort(Comparator.comparing(veinBlock -> veinBlock.getType().getKey().getKey()));
                 } else {
                     blocklistIterable = manager.getBlockList(category);
                 }

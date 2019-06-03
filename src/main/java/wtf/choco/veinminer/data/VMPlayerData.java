@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.data;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,9 +98,7 @@ public final class VMPlayerData {
      * Disable VeinMiner for this player (all categories).
      */
     public void disableVeinMiner() {
-        for (ToolCategory category : ToolCategory.values()) {
-            this.disabledCategories.add(category);
-        }
+        Collections.addAll(this.disabledCategories, ToolCategory.values());
     }
 
     /**
