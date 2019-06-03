@@ -11,7 +11,6 @@ import com.google.common.base.Preconditions;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +23,6 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCmd;
-import wtf.choco.veinminer.commands.VeinMinerCmdTabCompleter;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.listener.BreakBlockListener;
@@ -73,11 +71,7 @@ public class VeinMiner extends JavaPlugin {
 
         // Register commands
         this.getLogger().info("Registering commands");
-        PluginCommand veinminerCmd = getCommand("veinminer");
-        if (veinminerCmd != null) {
-            veinminerCmd.setExecutor(new VeinMinerCmd(this));
-            veinminerCmd.setTabCompleter(new VeinMinerCmdTabCompleter(this));
-        }
+        new VeinMinerCmd(this).assignTo(getCommand("veinminer"));
 
         // Metrics
         if (getConfig().getBoolean("MetricsEnabled", true)) {
