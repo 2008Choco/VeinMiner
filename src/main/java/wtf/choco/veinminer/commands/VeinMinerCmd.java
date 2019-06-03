@@ -296,3 +296,4 @@ public final class VeinMinerCmd implements CommandExecutor {
     }
 
 }
+
