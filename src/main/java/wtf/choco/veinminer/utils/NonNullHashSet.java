@@ -26,7 +26,9 @@ public class NonNullHashSet<T> extends HashSet<T> {
     @Override
     public boolean addAll(Collection<? extends T> c) {
         Preconditions.checkNotNull(c, "NonNullHashSet does not support the addition of null values");
-        Preconditions.checkState(!c.contains(null), "NonNullHashSet does not support the addition of null values");
+        if (c.contains(null)) {
+            throw new NullPointerException("NonNullHashSet does not support the addition of null values");
+        }
 
         return super.addAll(c);
     }
