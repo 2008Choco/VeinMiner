@@ -31,9 +31,7 @@ public interface BlockAllocator {
      * @param origin the block where the vein mine was initiated
      * @param category the tool category used to break the block
      * @param alias an alias of the block being broken if one exists. May be null
-     *
-     * @see VeinMiningPattern#allocateBlocks(Set, VeinBlock, Block, ToolCategory, MaterialAlias)
      */
-    public void allocate(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category, @Nullable MaterialAlias alias);
+    public void allocateBlocks(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category, @Nullable MaterialAlias alias);
 
 }
