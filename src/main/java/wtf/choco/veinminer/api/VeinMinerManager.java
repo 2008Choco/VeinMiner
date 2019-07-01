@@ -198,7 +198,7 @@ public class VeinMinerManager {
         for (String tool : blocklistSection.getKeys(false)) {
             ToolCategory category = ToolCategory.get(tool);
             if (category == null) {
-                if (!tool.equalsIgnoreCase("all")) { // Special case for "all". If all, don't show an error
+                if (!tool.equalsIgnoreCase("all") && !tool.equalsIgnoreCase("hand")) { // Special case for "all" and "hand". Don't show an error
                     this.plugin.getLogger().warning("Attempted to create blocklist for the non-existent category, " + tool + "... ignoring.");
                 }
 
