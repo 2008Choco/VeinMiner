@@ -1,70 +1,53 @@
 package wtf.choco.veinminer.api;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Enums;
 import com.google.common.base.Preconditions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
-import wtf.choco.veinminer.tool.template.TemplatePrecedence;
-import wtf.choco.veinminer.tool.template.TemplateValidator;
-import wtf.choco.veinminer.tool.template.ToolTemplate;
+import wtf.choco.veinminer.tool.ToolTemplate;
+import wtf.choco.veinminer.tool.ToolTemplateItemStack;
+import wtf.choco.veinminer.tool.ToolTemplateMaterial;
 
 /**
  * The central management for VeinMiner to handle everything regarding VeinMiner and its features.
  */
 public class VeinMinerManager {
 
-    private TemplateValidator templateValidator = null;
-    private final Map<ToolCategory, BlockList> blocklist = new EnumMap<>(ToolCategory.class);
     private final BlockList globalBlocklist = new BlockList();
-
     private final List<MaterialAlias> aliases = new ArrayList<>();
-    private final Set<UUID> disabledWorlds = new HashSet<>();
+    private final AlgorithmConfig config;
 
     private final VeinMiner plugin;
 
     public VeinMinerManager(@NotNull VeinMiner plugin) {
         this.plugin = plugin;
-    }
-
-    /**
-     * Get the {@link BlockList} defined for the specified tool category
-     *
-     * @param category the category for which to get the blocklist. If null, the
-     * global blocklist will be returned
-     *
-     * @return the category's blocklist
-     */
-    @NotNull
-    public BlockList getBlockList(@Nullable ToolCategory category) {
-        if (category == null) { // Yea, yea... ternary. Whatever.
-            return globalBlocklist;
-        }
-
-        // Ideally it should never compute, but just in case
-        return blocklist.computeIfAbsent(category, cat -> new BlockList(0));
+        this.config = plugin.createDefaultAlgorithmConfig();
     }
 
     /**
@@ -83,20 +66,21 @@ public class VeinMinerManager {
      * contain unique block-state combinations from all categories and the global blocklist.
      * Any changes made to the returned block list will not affect the underlying blocklist,
      * therefore if any changes are required, they should be done to those returned by
-     * {@link #getBlockList(ToolCategory)} or {@link #getBlockListGlobal()}
+     * {@link ToolCategory#getBlocklist()} or {@link #getBlockListGlobal()}
      *
      * @return get all veinmineable blocks
      *
-     * @see #getBlockList(ToolCategory)
+     * @see ToolCategory#getBlocklist()
      * @see #getBlockListGlobal()
      */
     @NotNull
     public BlockList getAllVeinMineableBlocks() {
-        BlockList[] lists = new BlockList[blocklist.size() + 1];
+        Collection<ToolCategory> categories = ToolCategory.getAll();
+        BlockList[] lists = new BlockList[categories.size() + 1];
 
         int index = 0;
-        for (BlockList list : blocklist.values()) {
-            lists[index++] = list;
+        for (ToolCategory category : categories) {
+            lists[index++] = category.getBlocklist();
         }
         lists[index] = globalBlocklist;
 
@@ -113,8 +97,8 @@ public class VeinMinerManager {
      *
      * @see VeinBlock#encapsulates(BlockData)
      */
-    public boolean isVeinMineable(@NotNull BlockData data, @Nullable ToolCategory category) {
-        return globalBlocklist.contains(data) || getBlockList(category).contains(data);
+    public boolean isVeinMineable(@NotNull BlockData data, @NotNull ToolCategory category) {
+        return globalBlocklist.contains(data) || category.getBlocklist().contains(data);
     }
 
     /**
@@ -127,8 +111,8 @@ public class VeinMinerManager {
      *
      * @see VeinBlock#encapsulates(Material)
      */
-    public boolean isVeinMineable(@NotNull Material material, @Nullable ToolCategory category) {
-        return globalBlocklist.contains(material) || getBlockList(category).contains(material);
+    public boolean isVeinMineable(@NotNull Material material, @NotNull ToolCategory category) {
+        return globalBlocklist.contains(material) || category.getBlocklist().contains(material);
     }
 
     /**
@@ -145,8 +129,8 @@ public class VeinMinerManager {
             return true;
         }
 
-        for (BlockList list : blocklist.values()) {
-            if (list.contains(data)) {
+        for (ToolCategory category : ToolCategory.getAll()) {
+            if (category.getBlocklist().contains(data)) {
                 return true;
             }
         }
@@ -168,8 +152,8 @@ public class VeinMinerManager {
             return true;
         }
 
-        for (BlockList list : blocklist.values()) {
-            if (list.contains(material)) {
+        for (ToolCategory category : ToolCategory.getAll()) {
+            if (category.getBlocklist().contains(material)) {
                 return true;
             }
         }
@@ -187,9 +171,18 @@ public class VeinMinerManager {
      * @return the vein block. null if none
      */
     @Nullable
-    public VeinBlock getVeinBlockFromBlockList(@NotNull BlockData data, @Nullable ToolCategory category) {
+    public VeinBlock getVeinBlockFromBlockList(@NotNull BlockData data, @NotNull ToolCategory category) {
         VeinBlock global = globalBlocklist.getVeinBlock(data);
-        return (global != null) ? global : getBlockList(category).getVeinBlock(data);
+        return (global != null) ? global : category.getBlocklist().getVeinBlock(data);
+    }
+
+    /**
+     * Get the global algorithm config.
+     *
+     * @return global algorithm config
+     */
+    public AlgorithmConfig getConfig() {
+        return config;
     }
 
     /**
@@ -200,7 +193,7 @@ public class VeinMinerManager {
         if (blocklistSection == null) return;
 
         for (String tool : blocklistSection.getKeys(false)) {
-            ToolCategory category = ToolCategory.getByName(tool);
+            ToolCategory category = ToolCategory.get(tool);
             if (category == null) {
                 if (!tool.equalsIgnoreCase("all")) { // Special case for "all". If all, don't show an error
                     this.plugin.getLogger().warning("Attempted to create blocklist for the non-existent category, " + tool + "... ignoring.");
@@ -209,13 +202,13 @@ public class VeinMinerManager {
                 continue;
             }
 
-            BlockList blocklist = getBlockList(category);
+            BlockList blocklist = category.getBlocklist();
             List<String> blocks = plugin.getConfig().getStringList("BlockList." + tool);
 
             for (String value : blocks) {
                 VeinBlock block = VeinBlock.fromString(value);
                 if (block == null) {
-                    this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states for blocklist \"" + category.getName() + "\". Given: " + value);
+                    this.plugin.getLogger().warning("Unknown block type (was it an item?) and/or block states for blocklist \"" + category.getId() + "\". Given: " + value);
                     continue;
                 }
 
@@ -225,146 +218,122 @@ public class VeinMinerManager {
     }
 
     /**
-     * Load all tool templates from the configuration file to memory
+     * Load all tool categories from the configuration file to memory.
      */
-    public void loadToolTemplates() {
-        FileConfiguration config = plugin.getConfig();
-        ConfigurationSection templateSection = config.getConfigurationSection("ToolTemplates");
-        if (templateSection == null) {
-            this.templateValidator = TemplateValidator.empty();
-            return;
-        }
+    @SuppressWarnings("unchecked")
+    public void loadToolCategories() {
+        FileConfiguration categoriesConfig = plugin.getCategoriesConfig();
 
-        TemplatePrecedence precedence = Enums.getIfPresent(TemplatePrecedence.class, plugin.getConfig().getString("ToolTemplates.Precedence", "CATEGORY_SPECIFIC")).or(TemplatePrecedence.CATEGORY_SPECIFIC);
-        TemplateValidator.ValidatorBuilder validatorBuilder = TemplateValidator.withPrecedence(precedence);
+        for (String key : categoriesConfig.getKeys(false)) {
+            ToolCategory category = new ToolCategory(this, key);
+            ConfigurationSection root = categoriesConfig.getConfigurationSection(key);
+            if (root == null) continue;
 
-        // Category templates
-        for (ToolCategory category : TemplateValidator.TEMPLATABLE_CATEGORIES) {
-            ConfigurationSection categorySection = templateSection.getConfigurationSection(category.getName());
-            if (categorySection == null) continue;
+            // Per-category configuration
+            AlgorithmConfig algorithmConfig = category.getConfig();
+            if (root.contains("RepairFriendlyVeinMiner")) {
+                algorithmConfig.repairFriendly(root.getBoolean("RepairFriendlyVeinMiner"));
+            }
+            if (root.contains("IncludeEdges")) {
+                algorithmConfig.includeEdges(root.getBoolean("IncludeEdges"));
+            }
+            if (root.contains("MaxVeinSize")) {
+                algorithmConfig.maxVeinSize(Math.max(root.getInt("MaxVeinSize"), 1));
+            }
+            if (root.contains("DisabledWorlds")) {
+                for (String worldName : root.getStringList("DisabledWorlds")) {
+                    World world = Bukkit.getWorld(worldName);
+                    if (world == null) continue;
 
-            String typeString = categorySection.getString("Type", "AIR");
-            if (typeString == null) continue;
-
-            Material type = Material.matchMaterial(typeString);
-            if (type == Material.AIR) continue;
-
-            String name = categorySection.getString("Name", "");
-            if (name == null) continue;
-
-            name = ChatColor.translateAlternateColorCodes('&', name);
-            List<String> lore = categorySection.getStringList("Lore").stream().map(s -> ChatColor.translateAlternateColorCodes('&', s)).collect(Collectors.toList());
-
-            ToolTemplate template = null;
-            if (type != null) {
-                if (!category.contains(type)) {
-                    this.plugin.getLogger().warning("Invalid material type " + type.getKey() + " for category " + category.getName() + ". Ignoring...");
-                    continue;
+                    algorithmConfig.disabledWorld(world);
                 }
-
-                template = new ToolTemplate(type, name, lore);
-            } else {
-                template = new ToolTemplate(category, name, lore);
             }
 
-            validatorBuilder.template(category, template);
-        }
-
-        // Global template
-        ConfigurationSection globalSection = templateSection.getConfigurationSection("Global");
-        if (globalSection != null) {
-            String typeString = globalSection.getString("Type", "AIR");
-            Material type = Material.matchMaterial(typeString != null ? typeString.toUpperCase() : "DIAMOND_PICKAXE");
-            if (type == null) {
-                type = Material.DIAMOND_PICKAXE;
-            }
-
-            String name = globalSection.getString("Name", "");
-            name = (name != null) ? ChatColor.translateAlternateColorCodes('&', name) : name;
-
-            List<String> lore = globalSection.getStringList("Lore").stream().map(s -> ChatColor.translateAlternateColorCodes('&', s)).collect(Collectors.toList());
-            validatorBuilder.globalTemplate(new ToolTemplate(type, name, lore));
-        }
-
-        this.templateValidator = validatorBuilder.build();
-    }
-
-    /**
-     * Get the template validator instance.
-     *
-     * @return the template validator
-     */
-    @Nullable
-    public TemplateValidator getTemplateValidator() {
-        return templateValidator;
-    }
-
-    /**
-     * Load all disabled worlds from the configuration file to memory.
-     */
-    public void loadDisabledWorlds() {
-        this.disabledWorlds.clear();
-
-        for (String worldName : plugin.getConfig().getStringList("DisabledWorlds")) {
-            World world = Bukkit.getWorld(worldName);
-
-            if (world == null) {
-                this.plugin.getLogger().info("Unknown world found... \"" + worldName + "\". Ignoring...");
+            List<?> itemsList = root.getList("Items");
+            if (itemsList == null) {
+                this.plugin.getLogger().severe("No item list provided for category with ID " + category.getId());
                 continue;
             }
 
-            this.disabledWorlds.add(world.getUID());
+            // Tool configuration
+            for (Object tool : itemsList) {
+                ToolTemplate template = null;
+                if (tool == null) continue;
+
+                if (tool instanceof String) {
+                    Material type = Material.matchMaterial((String) tool);
+                    if (type == null) {
+                        this.plugin.getLogger().warning("Unknown material of type \"" + tool + "\" provided, ignoring...");
+                        continue;
+                    }
+
+                    template = new ToolTemplateMaterial(category, type);
+                } else if (tool instanceof Map<?, ?>) {
+                    Map<String, Object> templateRoot = (Map<String, Object>) tool;
+
+                    // Material value
+                    Material material = getMaterialKey(templateRoot);
+                    if (material == null) {
+                        this.plugin.getLogger().warning("Tried to create item with missing or invalid type... material must be declared");
+                        continue;
+                    }
+
+                    ItemStack item = new ItemStack(material);
+                    ItemMeta meta = item.getItemMeta();
+                    if (meta == null) continue; // Stupid nullability annotations :(
+
+                    // Additional meta
+                    Object name = templateRoot.get("Name");
+                    Object lore = templateRoot.get("Lore");
+
+                    if (name instanceof String) {
+                        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name.toString()));
+                    }
+
+                    if (lore instanceof String) {
+                        meta.setLore(Arrays.asList(ChatColor.translateAlternateColorCodes('&', (String) lore)));
+                    } else if (lore instanceof List) {
+                        List<String> loreList = ((List<Object>) lore).stream().filter(o -> o instanceof String)
+                            .map(s -> ChatColor.translateAlternateColorCodes('&', (String) s)).collect(Collectors.toList());
+                        if (loreList.isEmpty()) continue;
+
+                        meta.setLore(loreList);
+                    }
+
+                    item.setItemMeta(meta);
+                    template = new ToolTemplateItemStack(category, item);
+
+                    // Template configuration
+                    AlgorithmConfig config = template.getConfig();
+
+                    Object repairFriendlyVeinMiner = templateRoot.get("RepairFriendlyVeinMiner");
+                    Object includeEdges = templateRoot.get("IncludeEdges");
+                    Object maxVeinSize = templateRoot.get("MaxVeinSize");
+                    Object disabledWorlds = templateRoot.get("DisabledWorlds");
+
+                    if (repairFriendlyVeinMiner instanceof Boolean) {
+                        config.repairFriendly((boolean) repairFriendlyVeinMiner);
+                    }
+                    if (includeEdges instanceof Boolean) {
+                        config.repairFriendly((boolean) includeEdges);
+                    }
+                    if (maxVeinSize instanceof Integer) {
+                        config.maxVeinSize(Math.max((int) maxVeinSize, 1));
+                    }
+                    if (disabledWorlds instanceof List) {
+                        ((List<Object>) disabledWorlds).stream().filter(o -> o instanceof String).map(s -> UUID.fromString((String) s))
+                            .distinct().map(Bukkit::getWorld).forEach(w -> {
+                                if (w == null) return;
+                                config.disabledWorld(w);
+                            });
+                    }
+                }
+
+                if (template != null) {
+                    category.addTool(template);
+                }
+            }
         }
-    }
-
-    /**
-     * Check whether a world has VeinMiner disabled or not.
-     *
-     * @param world the world to check
-     *
-     * @return true if the world has VeinMiner disabled, false otherwise
-     */
-    public boolean isDisabledInWorld(@NotNull World world) {
-        Preconditions.checkNotNull(world, "Cannot check state of veinminer in null world");
-        return disabledWorlds.contains(world.getUID());
-    }
-
-    /**
-     * Get a set of all worlds in which VeinMiner is disabled. A copy of the set is returned,
-     * therefore any changes made to the returned set will not affect the disabled worlds.
-     *
-     * @return a set of all disabled worlds
-     */
-    @NotNull
-    public Set<World> getDisabledWorlds() {
-        return disabledWorlds.stream().map(Bukkit::getWorld).collect(Collectors.toSet());
-    }
-
-    /**
-     * Disable vein miner in a specific world.
-     *
-     * @param world the world for which to disable VeinMiner
-     */
-    public void setDisabledInWorld(@NotNull World world) {
-        Preconditions.checkNotNull(world, "Cannot disable veinminer in null world");
-        this.disabledWorlds.add(world.getUID());
-    }
-
-    /**
-     * Enable VeinMiner in a specific world.
-     *
-     * @param world the world for which to enabled VeinMiner
-     */
-    public void setEnabledInWorld(@NotNull World world) {
-        Preconditions.checkNotNull(world, "Cannot enable veinminer in null world");
-        this.disabledWorlds.remove(world.getUID());
-    }
-
-    /**
-     * Clear all worlds from the blacklist.
-     */
-    public void clearDisabledWorlds() {
-        this.disabledWorlds.clear();
     }
 
     /**
@@ -411,6 +380,20 @@ public class VeinMinerManager {
     }
 
     /**
+     * Get the alias associated with a block. An alias will be retrieved by the block's type,
+     * and if none, the block's data.
+     *
+     * @param block the block to reference
+     *
+     * @return the associated alias. null if none
+     */
+    @Nullable
+    public MaterialAlias getAliasFor(@NotNull Block block) {
+        MaterialAlias alias = getAliasFor(block.getType());
+        return (alias != null) ? alias : getAliasFor(block.getBlockData());
+    }
+
+    /**
      * Load all material aliases from config to memory.
      */
     public void loadMaterialAliases() {
@@ -437,13 +420,24 @@ public class VeinMinerManager {
      * Clear all localised data in the VeinMiner Manager.
      */
     public void clearLocalisedData() {
-        this.templateValidator.clear();
-        this.blocklist.values().forEach(BlockList::clear);
-        this.blocklist.clear();
         this.globalBlocklist.clear();
-
-        this.disabledWorlds.clear();
         this.aliases.clear();
+    }
+
+    @Nullable
+    private Material getMaterialKey(Map<String, Object> map) {
+        Object possibleMapping = map.get("Material");
+        if (possibleMapping instanceof String) {
+            return Material.matchMaterial((String) possibleMapping);
+        }
+
+        for (Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getValue() == null) {
+                return Material.matchMaterial(entry.getKey());
+            }
+        }
+
+        return Material.AIR;
     }
 
 }

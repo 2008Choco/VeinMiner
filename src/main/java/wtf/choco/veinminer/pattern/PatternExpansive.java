@@ -10,9 +10,11 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VBlockFace;
+import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
+import wtf.choco.veinminer.tool.ToolTemplate;
 
 /**
  * A {@link VeinMiningPattern} implementation that "expands" to search for similar blocks. Using the
@@ -38,13 +40,13 @@ public final class PatternExpansive implements VeinMiningPattern {
     }
 
     @Override
-    public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias) {
+    public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, ToolTemplate toolTemplate, AlgorithmConfig algorithmConfig, MaterialAlias alias) {
         this.recent.add(origin); // For first iteration
 
-        int maxVeinSize = category.getMaxVeinSize();
-        VBlockFace[] facesToMine = PatternUtils.getFacesToMine();
+        int maxVeinSize = algorithmConfig.getMaxVeinSize();
+        VBlockFace[] facesToMine = PatternUtils.getFacesToMine(algorithmConfig);
 
-        while (blocks.size() <= maxVeinSize) {
+        while (blocks.size() < maxVeinSize) {
             recentSearch:
             for (Block current : recent) {
                 for (VBlockFace face : facesToMine) {

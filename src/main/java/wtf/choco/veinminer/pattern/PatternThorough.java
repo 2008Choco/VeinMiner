@@ -10,9 +10,11 @@ import org.bukkit.block.Block;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VBlockFace;
+import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
+import wtf.choco.veinminer.tool.ToolTemplate;
 
 /**
  * A {@link VeinMiningPattern} implementation that "pulsates" from the origin outwards. Every
@@ -39,11 +41,11 @@ public final class PatternThorough implements VeinMiningPattern {
     }
 
     @Override
-    public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, MaterialAlias alias) {
-        int maxVeinSize = category.getMaxVeinSize();
-        VBlockFace[] facesToMine = PatternUtils.getFacesToMine();
+    public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, ToolTemplate toolTemplate, AlgorithmConfig algorithmConfig, MaterialAlias alias) {
+        int maxVeinSize = algorithmConfig.getMaxVeinSize();
+        VBlockFace[] facesToMine = PatternUtils.getFacesToMine(algorithmConfig);
 
-        while (blocks.size() <= maxVeinSize) {
+        while (blocks.size() < maxVeinSize) {
             Iterator<Block> trackedBlocks = blocks.iterator();
             while (trackedBlocks.hasNext() && blocks.size() + blockBuffer.size() <= maxVeinSize) {
                 Block b = trackedBlocks.next();

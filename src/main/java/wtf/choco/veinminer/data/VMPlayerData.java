@@ -1,8 +1,7 @@
 package wtf.choco.veinminer.data;
 
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public final class VMPlayerData {
     private static final Map<UUID, VMPlayerData> CACHE = new HashMap<>();
 
     private VeinMiningPattern pattern = PatternExpansive.get();
-    private final Set<ToolCategory> disabledCategories = EnumSet.noneOf(ToolCategory.class);
+    private final Set<ToolCategory> disabledCategories = new HashSet<>();
 
     private final UUID player;
 
@@ -98,7 +97,7 @@ public final class VMPlayerData {
      * Disable VeinMiner for this player (all categories).
      */
     public void disableVeinMiner() {
-        Collections.addAll(this.disabledCategories, ToolCategory.values());
+        this.disabledCategories.addAll(ToolCategory.getAll());
     }
 
     /**
@@ -164,7 +163,7 @@ public final class VMPlayerData {
      * @return true if disabled, false otherwise
      */
     public boolean isVeinMinerDisabled() {
-        return disabledCategories.size() >= ToolCategory.values().length;
+        return disabledCategories.size() >= ToolCategory.getRegisteredAmount();
     }
 
     /**

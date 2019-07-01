@@ -1,5 +1,6 @@
 package wtf.choco.veinminer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,9 @@ import com.google.common.base.Preconditions;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,12 +27,14 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCmd;
+import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.PatternThorough;
+import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
@@ -46,12 +52,23 @@ public class VeinMiner extends JavaPlugin {
     private VeinMinerManager manager;
     private PatternRegistry patternRegistry;
 
+    private FileConfiguration categoriesConfig;
+
     @Override
     public void onEnable() {
         instance = this;
         this.manager = new VeinMinerManager(this);
+
+        // Configuration handling
         this.saveDefaultConfig();
 
+        File file = new File(getDataFolder(), "categories.yml");
+        if (!file.exists()) { // Doing this only to remove the unnecessary warning from Bukkit when saving an existing file -,-
+            this.saveResource("categories.yml", false);
+        }
+        this.categoriesConfig = YamlConfiguration.loadConfiguration(file);
+
+        // Pattern registration
         this.patternRegistry = new PatternRegistry();
         this.patternRegistry.registerPattern(PatternThorough.get());
         this.patternRegistry.registerPattern(PatternExpansive.get());
@@ -80,14 +97,13 @@ public class VeinMiner extends JavaPlugin {
             Metrics metrics = new Metrics(this);
             metrics.addCustomChart(new Metrics.AdvancedPie("blocks_veinmined", StatTracker.get()::getVeinMinedCountAsData));
 
-            this.getLogger().info("Thank you for enabling Metrics! I greatly appreciate the use of plugin statistics");
+            this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
         }
 
         // Load blocks to the veinable list
         this.getLogger().info("Loading configuration options to local memory");
-        this.manager.loadToolTemplates();
+        this.manager.loadToolCategories();
         this.manager.loadVeinableBlocks();
-        this.manager.loadDisabledWorlds();
         this.manager.loadMaterialAliases();
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
@@ -120,6 +136,7 @@ public class VeinMiner extends JavaPlugin {
         this.anticheatHooks.clear();
         VMPlayerData.clearCache();
         VeinBlock.clearCache();
+        ToolCategory.clearCategories();
     }
 
     /**
@@ -147,6 +164,16 @@ public class VeinMiner extends JavaPlugin {
      */
     public PatternRegistry getPatternRegistry() {
         return patternRegistry;
+    }
+
+    /**
+     * Get an instance of the categories configuration file.
+     *
+     * @return the categories config
+     */
+    @NotNull
+    public FileConfiguration getCategoriesConfig() {
+        return categoriesConfig;
     }
 
     /**
@@ -185,10 +212,42 @@ public class VeinMiner extends JavaPlugin {
         return Collections.unmodifiableList(anticheatHooks);
     }
 
-    private <@NotNull T extends AntiCheatHook> void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<T> hookSupplier) {
+    /**
+     * Create an {@link AlgorithmConfig} based on the current root settings defined in the
+     * config.yml. These settings are considered "default".
+     *
+     * @return the default algorithm config
+     */
+    @NotNull
+    public AlgorithmConfig createDefaultAlgorithmConfig() {
+        FileConfiguration config = getConfig();
+
+        AlgorithmConfig algorithmConfig = new AlgorithmConfig().defaultValues();
+        if (config.contains("RepairFriendlyVeinMiner")) {
+            algorithmConfig.repairFriendly(config.getBoolean("RepairFriendlyVeinMiner"));
+        }
+        if (config.contains("IncludeEdges")) {
+            algorithmConfig.includeEdges(config.getBoolean("IncludeEdges"));
+        }
+        if (config.contains("MaxVeinSize")) {
+            algorithmConfig.maxVeinSize(Math.max(config.getInt("MaxVeinSize"), 1));
+        }
+        if (config.contains("DisabledWorlds")) {
+            for (String worldName : config.getStringList("DisabledWorlds")) {
+                World world = Bukkit.getWorld(worldName);
+                if (world == null) continue;
+
+                algorithmConfig.disabledWorld(world);
+            }
+        }
+
+        return algorithmConfig;
+    }
+
+    private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
         if (!manager.isPluginEnabled(pluginName)) return;
 
-        T hook = hookSupplier.get();
+        AntiCheatHook hook = hookSupplier.get();
         if (!registerAntiCheatHook(hook)) {
             this.getLogger().info("Tried to register hook for plugin " + pluginName + " but one was already registered. Not overriding...");
             return;

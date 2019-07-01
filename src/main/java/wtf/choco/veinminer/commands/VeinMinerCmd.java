@@ -35,11 +35,9 @@ import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
 public final class VeinMinerCmd implements TabExecutor {
 
     private final VeinMiner plugin;
-    private final VeinMinerManager manager;
 
     public VeinMinerCmd(VeinMiner plugin) {
         this.plugin = plugin;
-        this.manager = plugin.getVeinMinerManager();
     }
 
     @Override
@@ -57,10 +55,12 @@ public final class VeinMinerCmd implements TabExecutor {
             }
 
             this.plugin.reloadConfig();
-            this.manager.loadToolTemplates();
-            this.manager.loadVeinableBlocks();
-            this.manager.loadDisabledWorlds();
-            this.manager.loadMaterialAliases();
+            ToolCategory.clearCategories();
+
+            VeinMinerManager manager = plugin.getVeinMinerManager();
+            manager.loadToolCategories();
+            manager.loadVeinableBlocks();
+            manager.loadMaterialAliases();
 
             sender.sendMessage(CHAT_PREFIX + ChatColor.GREEN + "VeinMiner configuration successfully reloaded");
         }
@@ -98,7 +98,7 @@ public final class VeinMinerCmd implements TabExecutor {
             VMPlayerData playerData = VMPlayerData.get(player);
             // Toggle a specific tool
             if (args.length >= 2) {
-                ToolCategory category = ToolCategory.getByName(args[1]);
+                ToolCategory category = ToolCategory.get(args[1]);
                 if (category == null) {
                     player.sendMessage(CHAT_PREFIX + "Invalid tool category: " + ChatColor.YELLOW + args[1]);
                     return true;
@@ -107,7 +107,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 playerData.setVeinMinerEnabled(!playerData.isVeinMinerEnabled(), category);
                 player.sendMessage(CHAT_PREFIX + "VeinMiner successfully toggled "
                     + (playerData.isVeinMinerDisabled(category) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
-                    + ChatColor.GRAY + " for tool " + ChatColor.YELLOW + category.getName().toLowerCase());
+                    + ChatColor.GRAY + " for tool " + ChatColor.YELLOW + category.getId().toLowerCase());
             }
 
             // Toggle all tools
@@ -126,7 +126,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 return true;
             }
 
-            ToolCategory category = ToolCategory.getByName(args[1]);
+            ToolCategory category = ToolCategory.get(args[1]);
 
             if (category == null) {
                 sender.sendMessage(CHAT_PREFIX + "Invalid tool category: " + ChatColor.YELLOW + args[1]);
@@ -156,8 +156,8 @@ public final class VeinMinerCmd implements TabExecutor {
                     return true;
                 }
 
-                List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
-                BlockList blocklist = manager.getBlockList(category);
+                List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getId());
+                BlockList blocklist = category.getBlocklist();
 
                 if (blocklist.contains(block)) {
                     sender.sendMessage(CHAT_PREFIX + "A block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " is already on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
@@ -167,7 +167,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 blocklist.add(block);
 
                 configBlocklist.add(block.asDataString());
-                this.plugin.getConfig().set("BlockList." + category.getName(), configBlocklist);
+                this.plugin.getConfig().set("BlockList." + category.getId(), configBlocklist);
                 this.plugin.saveConfig();
                 this.plugin.reloadConfig();
 
@@ -192,8 +192,8 @@ public final class VeinMinerCmd implements TabExecutor {
                     return true;
                 }
 
-                List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getName());
-                BlockList blocklist = manager.getBlockList(category);
+                List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getId());
+                BlockList blocklist = category.getBlocklist();
 
                 if (!blocklist.contains(block)) {
                     sender.sendMessage(CHAT_PREFIX + "No block with the ID " + ChatColor.YELLOW + args[3] + ChatColor.GRAY + " was found on the " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + " blocklist");
@@ -202,7 +202,7 @@ public final class VeinMinerCmd implements TabExecutor {
 
                 blocklist.remove(block);
                 configBlocklist.remove(block.asDataString());
-                this.plugin.getConfig().set("BlockList." + category.getName(), configBlocklist);
+                this.plugin.getConfig().set("BlockList." + category.getId(), configBlocklist);
                 this.plugin.saveConfig();
                 this.plugin.reloadConfig();
 
@@ -211,7 +211,7 @@ public final class VeinMinerCmd implements TabExecutor {
 
             // /veinminer blocklist <tool> list
             else if (args[2].equalsIgnoreCase("list")) {
-                if (!sender.hasPermission("veinminer.blocklist.list." + category.getName().toLowerCase())) {
+                if (!sender.hasPermission("veinminer.blocklist.list." + category.getId().toLowerCase())) {
                     sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
                     return true;
                 }
@@ -219,13 +219,13 @@ public final class VeinMinerCmd implements TabExecutor {
                 Iterable<VeinBlock> blocklistIterable;
                 if (plugin.getConfig().getBoolean("SortBlocklistAlphabetically", true)) {
                     blocklistIterable = new LinkedList<>();
-                    Iterables.addAll((List<VeinBlock>) blocklistIterable, manager.getBlockList(category));
+                    Iterables.addAll((List<VeinBlock>) blocklistIterable, category.getBlocklist());
                     ((LinkedList<VeinBlock>) blocklistIterable).sort(Comparator.comparing(veinBlock -> veinBlock.getType().getKey().getKey()));
                 } else {
-                    blocklistIterable = manager.getBlockList(category);
+                    blocklistIterable = category.getBlocklist();
                 }
 
-                sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Tool = " + category + "): ");
+                sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "VeinMiner Blocklist (Category = " + category.getId() + "): ");
                 blocklistIterable.forEach(block -> sender.sendMessage(ChatColor.YELLOW + "  - " + block.asDataString()));
             }
 
@@ -306,8 +306,8 @@ public final class VeinMinerCmd implements TabExecutor {
 
         else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("blocklist")) {
-                for (ToolCategory category : ToolCategory.values()) {
-                    values.add(category.name().toLowerCase());
+                for (ToolCategory category : ToolCategory.getAll()) {
+                    values.add(category.getId().toLowerCase());
                 }
             }
 
@@ -354,8 +354,8 @@ public final class VeinMinerCmd implements TabExecutor {
     private boolean canVeinMine(Player player) {
         if (player.hasPermission("veinminer.veinmine.*")) return true;
 
-        for (ToolCategory category : ToolCategory.values())
-            if (player.hasPermission("veinminer.veinmine." + category.getName().toLowerCase())) return true;
+        for (ToolCategory category : ToolCategory.getAll())
+            if (player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase())) return true;
         return false;
     }
 

@@ -4,8 +4,8 @@ import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VBlockFace;
+import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
 
@@ -16,7 +16,6 @@ import wtf.choco.veinminer.data.block.VeinBlock;
  */
 public final class PatternUtils {
 
-    private static final VeinMiner VEINMINER = VeinMiner.getPlugin();
     private static final VBlockFace[] LIMITED_FACES = {
             VBlockFace.UP, VBlockFace.DOWN, VBlockFace.NORTH, VBlockFace.SOUTH, VBlockFace.EAST,
             VBlockFace.WEST, VBlockFace.NORTH_EAST, VBlockFace.NORTH_WEST, VBlockFace.SOUTH_EAST,
@@ -42,11 +41,13 @@ public final class PatternUtils {
     /**
      * Get an array of VBlockFaces to mine based on VeinMiner's "IncludeEdges" configuration.
      *
+     * @param algorithmConfig the algorithm configuration
+     *
      * @return the block face array
      */
     @NotNull
-    public static VBlockFace[] getFacesToMine() {
-        return VEINMINER.getConfig().getBoolean("IncludeEdges") ? VBlockFace.values() : LIMITED_FACES;
+    public static VBlockFace[] getFacesToMine(@NotNull AlgorithmConfig algorithmConfig) {
+        return algorithmConfig.includesEdges() ? VBlockFace.values() : LIMITED_FACES;
     }
 
 }

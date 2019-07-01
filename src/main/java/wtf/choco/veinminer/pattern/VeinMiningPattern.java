@@ -8,10 +8,13 @@ import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.MaterialAlias;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.tool.ToolCategory;
+import wtf.choco.veinminer.tool.ToolTemplate;
 
 /**
  * Represents a mining algorithm capable of allocating which blocks should be broken by VeinMiner
@@ -33,9 +36,11 @@ public interface VeinMiningPattern extends Keyed, BlockAllocator {
      * @param type the type of VeinBlock being vein mined
      * @param origin the block where the vein mine was initiated
      * @param category the tool category used to break the block
+     * @param template the tool template used to break the block. May be null
+     * @param algorithmConfig the algorithm configuration
      */
-    public default void allocateBlocks(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category) {
-        this.allocateBlocks(blocks, type, origin, category, null);
+    public default void allocateBlocks(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category, @Nullable ToolTemplate template, @NotNull AlgorithmConfig algorithmConfig) {
+        this.allocateBlocks(blocks, type, origin, category, template, algorithmConfig, null);
     }
 
     /**
@@ -57,8 +62,8 @@ public interface VeinMiningPattern extends Keyed, BlockAllocator {
 
         return new VeinMiningPattern() {
             @Override
-            public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory tool, MaterialAlias alias) {
-                blockAllocator.allocateBlocks(blocks, type, origin, tool, alias);
+            public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, ToolTemplate template, AlgorithmConfig algorithmConfig, MaterialAlias alias) {
+                blockAllocator.allocateBlocks(blocks, type, origin, category, template, algorithmConfig, alias);
             }
 
             @Override

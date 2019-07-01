@@ -1,192 +1,276 @@
 package wtf.choco.veinminer.tool;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.api.VeinMinerManager;
+import wtf.choco.veinminer.data.AlgorithmConfig;
+import wtf.choco.veinminer.data.BlockList;
+import wtf.choco.veinminer.utils.Pair;
+import wtf.choco.veinminer.utils.ItemValidator;
 
 /**
- * Tool categories recognised by VeinMiner and it's code. Tool materials are limited
- * to those listed in the enumeration.
+ * Represents a category of tools recognized by VeinMiner. Categories may possess
+ * their own {@link AlgorithmConfig}, {@link BlockList} and set of {@link ToolTemplate}s
+ * which further specifies its criteria when players vein mine.
  */
-public enum ToolCategory {
+public class ToolCategory {
+
+    private static final Map<String, ToolCategory> CATEGORIES = new HashMap<>();
+
+    public static final ToolCategory HAND = new ToolCategory(VeinMiner.getPlugin().getVeinMinerManager(), "Hand");
+
+    private final String id;
+    private final AlgorithmConfig config;
+    private final List<ToolTemplate> tools;
+    private final BlockList blocklist;
 
     /**
-     * Represents a pickaxe of various materials. This includes:
-     * <ul>
-     *   <li>Wooden Pickaxe
-     *   <li>Stone Pickaxe
-     *   <li>Golden Pickaxe
-     *   <li>Iron Pickaxe
-     *   <li>Diamond Pickaxe
-     * </ul>
-     */
-    PICKAXE("Pickaxe", Material.WOODEN_PICKAXE, Material.STONE_PICKAXE, Material.GOLDEN_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE),
-
-    /**
-     * Represents an axe of various materials. This includes:
-     * <ul>
-     *   <li>Wooden Axe
-     *   <li>Stone Axe
-     *   <li>Golden Axe
-     *   <li>Iron Axe
-     *   <li>Diamond Axe
-     * </ul>
-     */
-    AXE("Axe", Material.WOODEN_AXE, Material.STONE_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.DIAMOND_AXE),
-
-    /**
-     * Represents a shovel of various materials. This includes:
-     * <ul>
-     *   <li>Wooden Shovel
-     *   <li>Stone Shovel
-     *   <li>Golden Shovel
-     *   <li>Iron Shovel
-     *   <li>Diamond Shovel
-     * </ul>
-     */
-    SHOVEL("Shovel", Material.WOODEN_SHOVEL, Material.STONE_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.DIAMOND_SHOVEL),
-
-    /**
-     * Represents a hoe of various materials. This includes:
-     * <ul>
-     *   <li>Wooden Hoe
-     *   <li>Stone Hoe
-     *   <li>Golden Hoe
-     *   <li>Iron Hoe
-     *   <li>Diamond Hoe
-     * </ul>
-     */
-    HOE("Hoe", Material.WOODEN_HOE, Material.STONE_HOE, Material.GOLDEN_HOE, Material.IRON_HOE, Material.DIAMOND_HOE),
-
-    /**
-     * Represents shears
-     */
-    SHEARS("Shears", Material.SHEARS),
-
-    /**
-     * Represent's a player's hands; i.e. no tool at all
-     */
-    HAND("Hand", false);
-
-
-    private static final VeinMiner plugin = VeinMiner.getPlugin();
-
-    private final String name;
-    private final Set<Material> materials;
-    private final boolean canHaveToolTemplate;
-
-    private ToolCategory(@NotNull String name, boolean canHaveToolTemplate, @NotNull Material... materials) {
-        this.name = name;
-        this.canHaveToolTemplate = canHaveToolTemplate;
-        this.materials = Collections.unmodifiableSet((materials.length != 0) ? EnumSet.of(materials[0], materials) : EnumSet.noneOf(Material.class));
-    }
-
-    private ToolCategory(@NotNull String name, @NotNull Material... materials) {
-        this(name, true, materials);
-    }
-
-    /**
-     * Get the name for this tool used in the configuration file.
+     * Construct and register a new tool category.
      *
-     * @return the name
+     * @param manager the vein miner manager instance
+     * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
+     * @param blocklist the category block list
+     * @param tools the tools that apply to this category
+     */
+    public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id, @NotNull BlockList blocklist, @NotNull ToolTemplate... tools) {
+        Preconditions.checkArgument(manager != null, "Vein miner manager must not be null");
+        Preconditions.checkArgument(id != null, "Category ID must not be null");
+        Preconditions.checkArgument(blocklist != null, "Blocklist must not be null");
+        Preconditions.checkArgument(tools != null, "Tools must not be null");
+
+        this.config = new AlgorithmConfig(manager.getConfig());
+        this.id = WordUtils.capitalizeFully(id);
+        this.tools = new ArrayList<>();
+        this.blocklist = blocklist;
+
+        for (ToolTemplate template : tools) {
+            this.tools.add(template);
+        }
+
+        CATEGORIES.putIfAbsent(id.toLowerCase(), this);
+    }
+
+    /**
+     * Construct and register a new tool category with an empty block list.
+     *
+     * @param manager the vein miner manager instance
+     * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
+     * @param tools the tools that apply to this category
+     */
+    public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id, @NotNull ToolTemplate... tools) {
+        this(manager, id, new BlockList(), tools);
+    }
+
+    /**
+     * Get the unique id of this tool category.
+     *
+     * @return this category's id
      */
     @NotNull
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     /**
-     * Check whether or not this tool category may specify a tool template.
+     * Get the algorithm config for this tool category. This category should have precedence
+     * over the global algorithm config.
      *
-     * @return true if a template is possible, false otherwise
-     */
-    public boolean canHaveToolTemplate() {
-        return canHaveToolTemplate;
-    }
-
-    /**
-     * Get all Materials associated with this tool category.
-     *
-     * @return all associated tool materials
+     * @return the algorithm config
      */
     @NotNull
-    public Set<Material> getMaterials() {
-        return materials; // Immutable
+    public AlgorithmConfig getConfig() {
+        return config;
     }
 
     /**
-     * Check whether or not the provided material is considered a part of this category.
+     * Add a tool template to this tool category
      *
-     * @param material the material to check
-     *
-     * @return true if contained in this category, false otherwise
+     * @param template the template to add
      */
-    public boolean contains(@NotNull Material material) {
-        return materials.contains(material);
+    public void addTool(@NotNull ToolTemplate template) {
+        Preconditions.checkArgument(template != null, "Cannot add a null template");
+
+        if (tools.contains(template)) {
+            return;
+        }
+
+        this.tools.add(template);
     }
 
     /**
-     * Get the maximum vein size this tool category is capable of breaking. This option is specified
-     * in and directly retrieved from the configuration file.
+     * Remove a tool template from this tool category
      *
-     * @return the maximum vein size. Defaults to 64 if not explicitly set
+     * @param template the template to remove
+     *
+     * @return true if removed, false otherwise
      */
-    public int getMaxVeinSize() {
-        return plugin.getConfig().getInt("Tools." + name + ".MaxVeinSize", 64);
+    public boolean removeTool(@NotNull ToolTemplate template) {
+        return tools.remove(template);
     }
 
     /**
-     * Get a tool category based on its name used in the configuration file. null if no VeinTool with
-     * the given name exists.
+     * Remove all tool templates from this tool category that match the provided item.
      *
-     * @param name the name of the category. Case insensitive
+     * @param item the item to remove
      *
-     * @return the ToolCategory with the given name. null if none
+     * @return true if removed, false otherwise
+     */
+    public boolean removeTool(@NotNull ItemStack item) {
+        return tools.removeIf(t -> t.matches(item));
+    }
+
+    /**
+     * Remove all tool templates from this tool category that match the provided material.
+     * This will not remove any templates that have specific meta such as a name or lore,
+     * only material templates (i.e. a regular diamond pickaxe or stone axe).
+     *
+     * @param material the material to remove
+     *
+     * @return true if removed, false otherwise
+     */
+    public boolean removeTool(@NotNull Material material) {
+        return tools.removeIf(t -> t instanceof ToolTemplateMaterial && ((ToolTemplateMaterial) t).getMaterial() == material);
+    }
+
+    /**
+     * Get a list of all tool templates that apply to this category. Any changes made to
+     * the returned collection will not reflect upon the category.
+     *
+     * @return the tool templates
+     */
+    @NotNull
+    public List<ToolTemplate> getTools() {
+        return new ArrayList<>(tools);
+    }
+
+    /**
+     * Clear all tool templates from this category.
+     */
+    public void clearTools() {
+        this.tools.clear();
+    }
+
+    /**
+     * Get the blocklist for this category.
+     *
+     * @return the blocklist
+     */
+    @NotNull
+    public BlockList getBlocklist() {
+        return blocklist;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || (obj instanceof ToolCategory && id.equals(((ToolCategory) obj).id));
+    }
+
+    /**
+     * Get a tool category based on its (case-insensitive) id.
+     *
+     * @param id the id of the category to get
+     *
+     * @return the tool category. null if none
      */
     @Nullable
-    public static ToolCategory getByName(@NotNull String name) {
-        for (ToolCategory category : values())
-            if (category.getName().equalsIgnoreCase(name)) return category;
-        return null;
+    public static ToolCategory get(@NotNull String id) {
+        return CATEGORIES.get(id.toLowerCase());
     }
 
     /**
-     * Get the tool category associated with the specified material. If none exist, {@link #HAND} is
-     * returned.
+     * Get a tool category based on the provided tool. If the tool applies to a category,
+     * it will be returned. If more than one category includes this tool, the category that
+     * was registered first will be returned.
      *
-     * @param material the material for which to search
+     * @param item the item whose category to get
      *
-     * @return the ToolCategory associated with the specified material. {@link #HAND} if none
+     * @return the tool category. null if none
      */
-    @NotNull
-    public static ToolCategory fromMaterial(@NotNull Material material) {
-        for (ToolCategory category : values()) {
-            if (category.contains(material)) {
+    @Nullable
+    public static ToolCategory get(@Nullable ItemStack item) {
+        if (ItemValidator.isEmpty(item)) {
+            return ToolCategory.HAND;
+        }
+
+        for (ToolCategory category : CATEGORIES.values()) {
+            if (category.getTools().stream().anyMatch(t -> t.matches(item))) {
                 return category;
             }
         }
 
-        return HAND;
+        return null;
     }
 
     /**
-     * Get the tool category associated with the specific item. If none exist or the item is null,
-     * {@link #HAND} is returned.
+     * Get a tool category based on the provided tool as well as the template against which
+     * the tool was matched. If the tool applies to a category, it will be returned. If more
+     * than one category includes this tool, the category that was registered first will be
+     * returned.
      *
-     * @param item the item for which to search
+     * @param item the item whose category to get
      *
-     * @return the ToolCategory associated with the specified item. {@link #HAND} if none
+     * @return the tool category and matched template. null if none
      */
     @NotNull
-    public static ToolCategory fromItemStack(@NotNull ItemStack item) {
-        return (item != null) ? fromMaterial(item.getType()) : HAND;
+    public static Pair<ToolCategory, ToolTemplate> getWithTemplate(@Nullable ItemStack item) {
+        if (ItemValidator.isEmpty(item)) {
+            return new Pair<>(ToolCategory.HAND, null);
+        }
+
+        for (ToolCategory category : CATEGORIES.values()) {
+            for (ToolTemplate template : category.getTools()) {
+                if (template.matches(item)) {
+                    return new Pair<>(category, template);
+                }
+            }
+        }
+
+        return Pair.empty();
+    }
+
+    /**
+     * Get the amount of tool categories registered.
+     *
+     * @return the amount of registered categories
+     */
+    public static int getRegisteredAmount() {
+        return CATEGORIES.size();
+    }
+
+    /**
+     * Get an immutable collection of all registered tool categories.
+     *
+     * @return all tool categories
+     */
+    @NotNull
+    public static Collection<ToolCategory> getAll() {
+        return ImmutableList.copyOf(CATEGORIES.values());
+    }
+
+    /**
+     * Clear all registered categories.
+     */
+    public static void clearCategories() {
+        CATEGORIES.clear();
     }
 
 }
