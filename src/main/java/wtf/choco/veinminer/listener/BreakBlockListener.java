@@ -70,7 +70,7 @@ public final class BreakBlockListener implements Listener {
         VMPlayerData playerData = VMPlayerData.get(player);
         if (!activation.isValid(player) || algorithmConfig.isDisabledWorld(origin.getWorld())
                 || player.getGameMode() != GameMode.SURVIVAL
-//                || player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase()) TODO: Completely broken... fix this u lazy bum
+                || !player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase())
                 || playerData.isVeinMinerDisabled(category) || !ItemValidator.isValid(item, category)) {
             return;
         }

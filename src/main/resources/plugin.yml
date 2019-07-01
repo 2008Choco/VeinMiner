@@ -16,13 +16,6 @@ permissions:
   veinminer.veinmine.*:
     description: Allow the use of VeinMiner for all tool categories
     default: true
-    children:
-      veinminer.veinmine.pickaxe: true
-      veinminer.veinmine.axe: true
-      veinminer.veinmine.shovel: true
-      veinminer.veinmine.hoe: true
-      veinminer.veinmine.shears: true
-      veinminer.veinmine.hand: true
 
   veinminer.reload:
     description: Allow the use of the '/veinminer reload' subcommand
@@ -45,10 +38,3 @@ permissions:
   veinminer.blocklist.list.*:
     description: Allow the use of the '/veinminer blocklist list' subcommand
     default: op
-    children:
-      veinminer.blocklist.list.pickaxe: true
-      veinminer.blocklist.list.axe: true
-      veinminer.blocklist.list.shovel: true
-      veinminer.blocklist.list.hoe: true
-      veinminer.blocklist.list.shears: true
-      veinminer.blocklist.list.hand: true

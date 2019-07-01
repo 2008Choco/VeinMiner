@@ -19,8 +19,8 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.BlockList;
-import wtf.choco.veinminer.utils.Pair;
 import wtf.choco.veinminer.utils.ItemValidator;
+import wtf.choco.veinminer.utils.Pair;
 
 /**
  * Represents a category of tools recognized by VeinMiner. Categories may possess
@@ -53,7 +53,7 @@ public class ToolCategory {
         Preconditions.checkArgument(tools != null, "Tools must not be null");
 
         this.config = new AlgorithmConfig(manager.getConfig());
-        this.id = WordUtils.capitalizeFully(id);
+        this.id = WordUtils.capitalizeFully(id).replace(" ", "");
         this.tools = new ArrayList<>();
         this.blocklist = blocklist;
 

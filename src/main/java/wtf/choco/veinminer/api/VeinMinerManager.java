@@ -21,6 +21,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -334,6 +337,26 @@ public class VeinMinerManager {
                 }
             }
         }
+
+        // Handle dynamic permissions
+        Collection<ToolCategory> categories = ToolCategory.getAll();
+        if (categories.size() >= 1) {
+            PluginManager pluginManager = Bukkit.getPluginManager();
+            Permission veinminePermissionParent = getOrRegisterPermission(pluginManager, "veinminer.veinmine.*");
+            Permission listPermissionParent = getOrRegisterPermission(pluginManager, "veinminer.blocklist.list.*");
+
+            for (ToolCategory category : categories) {
+                String id = category.getId().toLowerCase();
+                Permission veinminePermission = new Permission("veinminer.veinmine." + id, "Allows players to vein mine using the " + category.getId() + " category", PermissionDefault.OP);
+                Permission listPermission = new Permission("veinminer.blocklist.list." + id, "Allows players to list blocks in the " + category.getId() + " category", PermissionDefault.OP);
+
+                veinminePermissionParent.getChildren().put(veinminePermission.getName(), true);
+                listPermissionParent.getChildren().put(listPermission.getName(), true);
+            }
+
+            veinminePermissionParent.recalculatePermissibles();
+            listPermissionParent.recalculatePermissibles();
+        }
     }
 
     /**
@@ -438,6 +461,17 @@ public class VeinMinerManager {
         }
 
         return Material.AIR;
+    }
+
+    @NotNull
+    private Permission getOrRegisterPermission(@NotNull PluginManager manager, @NotNull String permissionName) {
+        Permission permission = manager.getPermission(permissionName);
+        if (permission == null) {
+            permission = new Permission(permissionName, PermissionDefault.OP);
+            manager.addPermission(permission);
+        }
+
+        return permission;
     }
 
 }
