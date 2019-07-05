@@ -21,7 +21,7 @@ import wtf.choco.veinminer.VeinMiner;
  *
  * @author Parker Hawke - 2008Choco
  */
-public interface VeinBlock {
+public interface VeinBlock extends Comparable<VeinBlock> {
 
     /**
      * Get the Bukkit {@link Material} represented by this block
@@ -121,6 +121,11 @@ public interface VeinBlock {
      */
     @NotNull
     public String asDataString();
+
+    @Override
+    public default int compareTo(VeinBlock other) {
+        return getType().getKey().getKey().compareTo(other.getType().getKey().getKey());
+    }
 
     /**
      * Get a VeinBlock based on type with no additional block states.
