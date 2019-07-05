@@ -171,7 +171,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 this.plugin.saveConfig();
                 this.plugin.reloadConfig();
 
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("Block ID &y" + block.asDataString() + " %gsuccessfully added to the blocklist", ChatColor.YELLOW, ChatColor.GRAY));
+                sender.sendMessage(CHAT_PREFIX + Chat.translate("Block ID %y" + block.asDataString() + " %gsuccessfully added to the blocklist", ChatColor.YELLOW, ChatColor.GRAY));
             }
 
             // /veinminer blocklist <category> remove
@@ -206,7 +206,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 this.plugin.saveConfig();
                 this.plugin.reloadConfig();
 
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("Block ID &y" + block.asDataString() + " %gsuccessfully removed from the blocklist", ChatColor.YELLOW, ChatColor.GRAY));
+                sender.sendMessage(CHAT_PREFIX + Chat.translate("Block ID %y" + block.asDataString() + " %gsuccessfully removed from the blocklist", ChatColor.YELLOW, ChatColor.GRAY));
             }
 
             // /veinminer blocklist <tool> list
