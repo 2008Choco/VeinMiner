@@ -79,4 +79,9 @@ public final class ToolTemplateMaterial implements ToolTemplate, Comparable<Tool
         return category == other.category && material == other.material;
     }
 
+    @Override
+    public String toString() {
+        return material.getKey().toString();
+    }
+
 }

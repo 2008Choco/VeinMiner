@@ -1,12 +1,16 @@
 package wtf.choco.veinminer;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 
 import org.bstats.bukkit.Metrics;
@@ -52,6 +56,7 @@ public class VeinMiner extends JavaPlugin {
     private VeinMinerManager manager;
     private PatternRegistry patternRegistry;
 
+    private File categoriesFile;
     private FileConfiguration categoriesConfig;
 
     @Override
@@ -62,11 +67,11 @@ public class VeinMiner extends JavaPlugin {
         // Configuration handling
         this.saveDefaultConfig();
 
-        File file = new File(getDataFolder(), "categories.yml");
-        if (!file.exists()) { // Doing this only to remove the unnecessary warning from Bukkit when saving an existing file -,-
+        this.categoriesFile = new File(getDataFolder(), "categories.yml");
+        if (!categoriesFile.exists()) { // Doing this only to remove the unnecessary warning from Bukkit when saving an existing file -,-
             this.saveResource("categories.yml", false);
         }
-        this.categoriesConfig = YamlConfiguration.loadConfiguration(file);
+        this.categoriesConfig = YamlConfiguration.loadConfiguration(categoriesFile);
 
         // Pattern registration
         this.patternRegistry = new PatternRegistry();
@@ -174,6 +179,25 @@ public class VeinMiner extends JavaPlugin {
     @NotNull
     public FileConfiguration getCategoriesConfig() {
         return categoriesConfig;
+    }
+
+    public void saveCategoriesConfig() {
+        try {
+            categoriesConfig.save(categoriesFile);
+        } catch (IOException ex) {
+            getLogger().severe("Could not save config to " + categoriesFile);
+        }
+    }
+
+    public void reloadCategoriesConfig() {
+        categoriesConfig = YamlConfiguration.loadConfiguration(categoriesFile);
+
+        InputStream defConfigStream = getResource("categories.yml");
+        if (defConfigStream == null) {
+            return;
+        }
+
+        categoriesConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
     }
 
     /**

@@ -11,6 +11,7 @@ MetricsEnabled: true
 PerformUpdateChecks: true
 
 SortBlocklistAlphabetically: true
+SortToolListAlphabetically: true
 ActivationMode: SNEAK
 RepairFriendlyVeinminer: false
 IncludeEdges: true

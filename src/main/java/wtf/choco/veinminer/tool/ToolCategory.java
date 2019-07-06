@@ -147,6 +147,30 @@ public class ToolCategory {
     }
 
     /**
+     * Check whether or not the provided item is a part of this category. The item's name
+     * and lore will be taken into consideration.
+     *
+     * @param item the item to check
+     *
+     * @return true if contained, false otherwise
+     */
+    public boolean containsTool(ItemStack item) {
+        return tools.stream().anyMatch(t -> (t instanceof ToolTemplateItemStack) && t.matches(item));
+    }
+
+    /**
+     * Check whether or not the provided material is a part of this category.
+     *
+     * @param material the material to check
+     *
+     * @return true if contained, false otherwise
+     */
+    public boolean containsTool(Material material) {
+        ItemStack item = new ItemStack(material);
+        return tools.stream().anyMatch(t -> (t instanceof ToolTemplateMaterial) && t.matches(item));
+    }
+
+    /**
      * Get a list of all tool templates that apply to this category. Any changes made to
      * the returned collection will not reflect upon the category.
      *

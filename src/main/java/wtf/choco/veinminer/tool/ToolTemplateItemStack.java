@@ -8,6 +8,7 @@ import java.util.Objects;
 import com.google.common.base.Preconditions;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -137,6 +138,34 @@ public class ToolTemplateItemStack implements ToolTemplate {
 
         ToolTemplateItemStack other = (ToolTemplateItemStack) obj;
         return type == other.type && Objects.equals(name, other.name) && Objects.equals(lore, other.lore);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(type.getKey().toString());
+
+        boolean data = (name != null || lore != null);
+        if (data) {
+            result.append(" (");
+        }
+
+        if (name != null) {
+            result.append("Name: \"" + ChatColor.stripColor(name) + "\"");
+        }
+
+        if (lore != null) {
+            if (name != null) {
+                result.append(", ");
+            }
+
+            result.append("Lore: " + ChatColor.stripColor(lore.toString()));
+        }
+
+        if (data) {
+            result.append(')');
+        }
+
+        return result.toString();
     }
 
 }

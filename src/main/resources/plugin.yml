@@ -9,7 +9,7 @@ api-version: 1.13
 commands:
   veinminer:
     description: The main command for VeinMiner
-    usage: /<command> <version|reload|blocklist|toggle|pattern>
+    usage: /<command> <version|reload|blocklist|toollist|toggle|pattern>
     aliases: [vm]
 
 permissions:
@@ -34,6 +34,14 @@ permissions:
       veinminer.blocklist.add: true
       veinminer.blocklist.remove: true
       veinminer.blocklist.list.*: true
+
+  veinminer.toollist.*:
+    description: Allow the use of the '/veinminer toollist' subcommand
+    default: op
+    children:
+      veinminer.toollist.add: true
+      veinminer.toollist.remove: true
+      veinminer.toollist.list.*: true
 
   veinminer.blocklist.list.*:
     description: Allow the use of the '/veinminer blocklist list' subcommand

@@ -11,11 +11,13 @@ import com.google.common.collect.Iterables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +30,8 @@ import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
+import wtf.choco.veinminer.tool.ToolTemplate;
+import wtf.choco.veinminer.tool.ToolTemplateMaterial;
 import wtf.choco.veinminer.utils.Chat;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
@@ -236,6 +240,121 @@ public final class VeinMinerCmd implements TabExecutor {
             }
         }
 
+        else if (args[0].equalsIgnoreCase("toollist")) {
+            if (args.length < 2) {
+                sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist <tool> <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                return true;
+            }
+
+            ToolCategory category = ToolCategory.get(args[1]);
+
+            if (category == null) {
+                sender.sendMessage(CHAT_PREFIX + "Invalid tool category: " + ChatColor.YELLOW + args[1]);
+                return true;
+            }
+
+            if (args.length < 3) {
+                sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                return true;
+            }
+
+            // /veinminer toollist <tool> add
+            if (args[2].equalsIgnoreCase("add")) {
+                if (!sender.hasPermission("veinminer.toollist.add")) {
+                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    return true;
+                }
+
+                if (args.length < 4) {
+                    sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " add <item>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                    return true;
+                }
+
+                Material tool = Material.matchMaterial(args[3]);
+                if (tool == null) {
+                    sender.sendMessage(VeinMiner.CHAT_PREFIX + Chat.translate("%rUnknown item. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW));
+                    return true;
+                }
+
+                if (category.containsTool(tool)) {
+                    sender.sendMessage(CHAT_PREFIX + Chat.translate("An item with the ID %y" + args[3] + " %gis already on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY));
+                    return true;
+                }
+
+                FileConfiguration categoriesConfig = plugin.getCategoriesConfig();
+                @SuppressWarnings("unchecked")
+                List<Object> configToolList = (List<Object>) categoriesConfig.getList(category.getId() + ".Items", new ArrayList<>());
+                if (configToolList == null) return true;
+
+                configToolList.add(tool.getKey().toString());
+
+                category.addTool(new ToolTemplateMaterial(category, tool));
+                categoriesConfig.set(category.getId() + ".Items", configToolList);
+                this.plugin.saveCategoriesConfig();
+                this.plugin.reloadCategoriesConfig();
+
+                sender.sendMessage(CHAT_PREFIX + Chat.translate("Item ID %y" + tool.getKey() + " %gsuccessfully added to the tool list", ChatColor.YELLOW, ChatColor.GRAY));
+            }
+
+            // /veinminer toollist <tool> remove
+            else if (args[2].equalsIgnoreCase("remove")) {
+                if (!sender.hasPermission("veinminer.toollist.remove")) {
+                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    return true;
+                }
+
+                if (args.length < 4) {
+                    sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " remove <item>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                    return true;
+                }
+
+                Material tool = Material.matchMaterial(args[3]);
+                if (tool == null) {
+                    sender.sendMessage(VeinMiner.CHAT_PREFIX + Chat.translate("%rUnknown item. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW));
+                    return true;
+                }
+
+                if (!category.containsTool(tool)) {
+                    sender.sendMessage(CHAT_PREFIX + Chat.translate("An item with the ID %y" + args[3] + " %gis not on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY));
+                    return true;
+                }
+
+                FileConfiguration categoriesConfig = plugin.getCategoriesConfig();
+                @SuppressWarnings("unchecked")
+                List<Object> configToolList = (List<Object>) categoriesConfig.getList(category.getId() + ".Items", new ArrayList<>());
+                if (configToolList == null) return true;
+
+                configToolList.remove(tool.getKey().toString());
+
+                category.removeTool(tool);
+                categoriesConfig.set(category.getId() + ".Items", configToolList);
+                this.plugin.saveCategoriesConfig();
+                this.plugin.reloadCategoriesConfig();
+
+                sender.sendMessage(CHAT_PREFIX + Chat.translate("Item ID %y" + tool.getKey() + " %gsuccessfully removed from the tool list", ChatColor.YELLOW, ChatColor.GRAY));
+            }
+
+            // /veinminer toollist <tool> list
+            else if (args[2].equalsIgnoreCase("list")) {
+                if (!sender.hasPermission("veinminer.toollist." + category.getId().toLowerCase())) {
+                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    return true;
+                }
+
+                Iterable<ToolTemplate> toolListIterable;
+//                if (plugin.getConfig().getBoolean("SortBlocklistAlphabetically", true)) {
+//                    toolListIterable = new ArrayList<>();
+//                    Iterables.addAll((List<ToolTemplate>) toolListIterable, category.getTools());
+//                    Collections.sort((List<ToolTemplate>) toolListIterable);
+//                } else {
+                    toolListIterable = category.getTools();
+//                }
+
+                sender.sendMessage(Chat.translate("%y%bVeinMiner Blocklist (Category = " + category.getId() + ")", ChatColor.YELLOW, ChatColor.BOLD));
+                toolListIterable.forEach(tool -> sender.sendMessage(ChatColor.YELLOW + "  - " + tool));
+            }
+        }
+
         else if (args[0].equalsIgnoreCase("pattern")) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage("VeinMiner patterns cannot be changed from the console...");
@@ -278,7 +397,7 @@ public final class VeinMinerCmd implements TabExecutor {
 
         // Unknown command usage
         else {
-            sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gUnknown parameter, %a" + args[0] + "%g. %y/" + label + " <reload|version|blocklist|toggle|pattern>", ChatColor.RED, ChatColor.GRAY, ChatColor.AQUA, ChatColor.YELLOW));
+            sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gUnknown parameter, %a" + args[0] + "%g. %y/" + label + " <version|reload|blocklist|toollist|toggle|pattern>", ChatColor.RED, ChatColor.GRAY, ChatColor.AQUA, ChatColor.YELLOW));
             return true;
         }
 
@@ -299,13 +418,16 @@ public final class VeinMinerCmd implements TabExecutor {
             if (hasBlocklistPerms(sender)) {
                 values.add("blocklist");
             }
+            if (hasToolListPerms(sender)) {
+                values.add("toollist");
+            }
             if (sender.hasPermission("veinminer.pattern")) {
                 values.add("pattern");
             }
         }
 
         else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("blocklist")) {
+            if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("blocklist") || args[0].equalsIgnoreCase("toollist")) {
                 for (ToolCategory category : ToolCategory.getAll()) {
                     values.add(category.getId().toLowerCase());
                 }
@@ -319,14 +441,15 @@ public final class VeinMinerCmd implements TabExecutor {
         }
 
         else if (args.length == 3) {
-            if (args[0].equalsIgnoreCase("blocklist")) {
-                if (sender.hasPermission("veinminer.blocklist.add")) {
+            String listType = args[0].toLowerCase();
+            if (listType.equals("blocklist") || listType.equals("toollist")) {
+                if (sender.hasPermission("veinminer." + listType + ".add")) {
                     values.add("add");
                 }
-                if (sender.hasPermission("veinminer.blocklist.remove")) {
+                if (sender.hasPermission("veinminer." + listType + ".remove")) {
                     values.add("remove");
                 }
-                if (sender.hasPermission("veinminer.blocklist.list.*")) {
+                if (sender.hasPermission("veinminer." + listType + ".list.*")) {
                     values.add("list");
                 }
             }
@@ -349,6 +472,12 @@ public final class VeinMinerCmd implements TabExecutor {
         return sender.hasPermission("veinminer.blocklist.add")
             || sender.hasPermission("veinminer.blocklist.remove")
             || sender.hasPermission("veinminer.blocklist.list.*");
+    }
+
+    private boolean hasToolListPerms(CommandSender sender) {
+        return sender.hasPermission("veinminer.toollist.add")
+                || sender.hasPermission("veinminer.toollist.remove")
+                || sender.hasPermission("veinminer.toollist.list.*");
     }
 
     private boolean canVeinMine(Player player) {
