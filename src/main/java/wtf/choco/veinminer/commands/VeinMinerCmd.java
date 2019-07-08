@@ -476,13 +476,11 @@ public final class VeinMinerCmd implements TabExecutor {
 
     private boolean hasToolListPerms(CommandSender sender) {
         return sender.hasPermission("veinminer.toollist.add")
-                || sender.hasPermission("veinminer.toollist.remove")
-                || sender.hasPermission("veinminer.toollist.list.*");
+            || sender.hasPermission("veinminer.toollist.remove")
+            || sender.hasPermission("veinminer.toollist.list.*");
     }
 
     private boolean canVeinMine(Player player) {
-        if (player.hasPermission("veinminer.veinmine.*")) return true;
-
         for (ToolCategory category : ToolCategory.getAll())
             if (player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase())) return true;
         return false;

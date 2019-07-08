@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +30,7 @@ import wtf.choco.veinminer.utils.Pair;
 public class ToolCategory {
 
     private static final Map<String, ToolCategory> CATEGORIES = new HashMap<>();
+    private static final Pattern VALID_ID = Pattern.compile("[A-Za-z0-9]+", Pattern.CASE_INSENSITIVE);
 
     public static final ToolCategory HAND = new ToolCategory(VeinMiner.getPlugin().getVeinMinerManager(), "Hand");
 
@@ -39,29 +40,42 @@ public class ToolCategory {
     private final BlockList blocklist;
 
     /**
+     * Construct and register a new tool category with an empty block and tool list.
+     *
+     * @param manager the vein miner manager instance
+     * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
+     * Must match [A-Za-z0-9]
+     * @param blocklist the category block list
+     */
+    public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id, @NotNull BlockList blocklist) {
+        Preconditions.checkArgument(manager != null, "Vein miner manager must not be null");
+        Preconditions.checkArgument(id != null && VALID_ID.matcher(id).matches(), "Invalid category ID. Must be non-null and alphanumeric with no spaces");
+        Preconditions.checkArgument(blocklist != null, "Blocklist must not be null");
+
+        this.config = new AlgorithmConfig(manager.getConfig());
+        this.id = id;
+        this.tools = new ArrayList<>();
+        this.blocklist = blocklist;
+
+        CATEGORIES.putIfAbsent(id.toLowerCase(), this);
+    }
+
+    /**
      * Construct and register a new tool category.
      *
      * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
+     * Must match [A-Za-z0-9]
      * @param blocklist the category block list
      * @param tools the tools that apply to this category
      */
     public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id, @NotNull BlockList blocklist, @NotNull ToolTemplate... tools) {
-        Preconditions.checkArgument(manager != null, "Vein miner manager must not be null");
-        Preconditions.checkArgument(id != null, "Category ID must not be null");
-        Preconditions.checkArgument(blocklist != null, "Blocklist must not be null");
+        this(manager, id, blocklist);
         Preconditions.checkArgument(tools != null, "Tools must not be null");
-
-        this.config = new AlgorithmConfig(manager.getConfig());
-        this.id = WordUtils.capitalizeFully(id).replace(" ", "");
-        this.tools = new ArrayList<>();
-        this.blocklist = blocklist;
 
         for (ToolTemplate template : tools) {
             this.tools.add(template);
         }
-
-        CATEGORIES.putIfAbsent(id.toLowerCase(), this);
     }
 
     /**
@@ -69,10 +83,22 @@ public class ToolCategory {
      *
      * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
+     * Must match [A-Za-z0-9]
      * @param tools the tools that apply to this category
      */
     public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id, @NotNull ToolTemplate... tools) {
         this(manager, id, new BlockList(), tools);
+    }
+
+    /**
+     * Construct and register a new tool category with an empty block list.
+     *
+     * @param manager the vein miner manager instance
+     * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
+     * Must match [A-Za-z0-9]
+     */
+    public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id) {
+        this(manager, id, new BlockList());
     }
 
     /**
