@@ -38,6 +38,7 @@ public interface AntiCheatHook {
      * execution of {@link #exempt(Player)} and should not be unexempted
      *
      * @param player the player to check
+     *
      * @return true if should unexempt, false otherwise
      */
     public default boolean shouldUnexempt(@NotNull Player player) {

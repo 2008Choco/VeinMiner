@@ -37,7 +37,9 @@ public final class UpdateChecker {
 
     public static final VersionScheme VERSION_SCHEME_DECIMAL = (first, second) -> {
         String[] firstSplit = splitVersionInfo(first), secondSplit = splitVersionInfo(second);
-        if (firstSplit == null || secondSplit == null) return null;
+        if (firstSplit == null || secondSplit == null) {
+            return null;
+        }
 
         for (int i = 0; i < Math.min(firstSplit.length, secondSplit.length); i++) {
             int currentValue = NumberUtils.toInt(firstSplit[i]), newestValue = NumberUtils.toInt(secondSplit[i]);
@@ -280,6 +282,7 @@ public final class UpdateChecker {
 
         private UpdateResult(@NotNull UpdateReason reason) {
             Preconditions.checkArgument(reason != UpdateReason.NEW_UPDATE, "Reasons that require updates must also provide the latest version String");
+
             this.reason = reason;
             this.newestVersion = plugin.getDescription().getVersion();
         }

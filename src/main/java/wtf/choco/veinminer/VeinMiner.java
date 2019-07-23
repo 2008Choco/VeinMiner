@@ -183,21 +183,21 @@ public class VeinMiner extends JavaPlugin {
 
     public void saveCategoriesConfig() {
         try {
-            categoriesConfig.save(categoriesFile);
+            this.categoriesConfig.save(categoriesFile);
         } catch (IOException ex) {
             getLogger().severe("Could not save config to " + categoriesFile);
         }
     }
 
     public void reloadCategoriesConfig() {
-        categoriesConfig = YamlConfiguration.loadConfiguration(categoriesFile);
+        this.categoriesConfig = YamlConfiguration.loadConfiguration(categoriesFile);
 
         InputStream defConfigStream = getResource("categories.yml");
         if (defConfigStream == null) {
             return;
         }
 
-        categoriesConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
+        this.categoriesConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
     }
 
     /**
@@ -222,8 +222,7 @@ public class VeinMiner extends JavaPlugin {
             }
         }
 
-        this.anticheatHooks.add(hook);
-        return true;
+        return anticheatHooks.add(hook);
     }
 
     /**
@@ -269,7 +268,9 @@ public class VeinMiner extends JavaPlugin {
     }
 
     private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
-        if (!manager.isPluginEnabled(pluginName)) return;
+        if (!manager.isPluginEnabled(pluginName)) {
+            return;
+        }
 
         AntiCheatHook hook = hookSupplier.get();
         if (!registerAntiCheatHook(hook)) {

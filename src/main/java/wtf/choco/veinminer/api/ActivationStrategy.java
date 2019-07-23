@@ -54,8 +54,12 @@ public enum ActivationStrategy {
      */
     @Nullable
     public static ActivationStrategy getByName(@NotNull String name) {
-        for (ActivationStrategy activation : values())
-            if (activation.name().equalsIgnoreCase(name)) return activation;
+        for (ActivationStrategy activation : values()) {
+            if (activation.name().equalsIgnoreCase(name)) {
+                return activation;
+            }
+        }
+
         return null;
     }
 

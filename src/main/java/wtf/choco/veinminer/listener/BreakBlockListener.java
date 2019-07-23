@@ -51,10 +51,14 @@ public final class BreakBlockListener implements Listener {
 
     @EventHandler
     private void onBlockBreak(BlockBreakEvent event) {
-        if (event.getClass() != BlockBreakEvent.class) return; // For plugins such as McMMO, who fire custom events
+        if (event.getClass() != BlockBreakEvent.class) {// For plugins such as McMMO, who fire custom events
+            return;
+        }
 
         Block origin = event.getBlock();
-        if (blocks.contains(origin)) return;
+        if (blocks.contains(origin)) {
+            return;
+        }
 
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
@@ -62,7 +66,9 @@ public final class BreakBlockListener implements Listener {
         Pair<ToolCategory, ToolTemplate> categoryTemplatePair = ToolCategory.getWithTemplate(item);
         ToolCategory category = categoryTemplatePair.getLeft();
         ToolTemplate toolTemplate = categoryTemplatePair.getRight();
-        if (category == null || (category != ToolCategory.HAND && toolTemplate == null)) return;
+        if (category == null || (category != ToolCategory.HAND && toolTemplate == null)) {
+            return;
+        }
 
         // Invalid player state check
         ActivationStrategy activation = Enums.getIfPresent(ActivationStrategy.class, plugin.getConfig().getString("ActivationStrategy", "SNEAK")).or(ActivationStrategy.SNEAK);
@@ -76,12 +82,16 @@ public final class BreakBlockListener implements Listener {
         }
 
         BlockData originBlockData = origin.getBlockData();
-        if (!manager.isVeinMineable(originBlockData, category)) return;
+        if (!manager.isVeinMineable(originBlockData, category)) {
+            return;
+        }
 
         // TIME TO VEINMINE
         this.blocks.add(origin);
         VeinBlock originVeinBlock = manager.getVeinBlockFromBlockList(originBlockData, category);
-        if (originVeinBlock == null) return;
+        if (originVeinBlock == null) {
+            return;
+        }
 
         VeinMiningPattern pattern = playerData.getPattern();
         pattern.allocateBlocks(blocks, originVeinBlock, origin, category, toolTemplate, algorithmConfig, manager.getAliasFor(origin));
@@ -104,10 +114,14 @@ public final class BreakBlockListener implements Listener {
         boolean hasDurability = (maxDurability > 0);
         for (Block block : blocks) {
             if (hasDurability && category != ToolCategory.HAND) {
-                if (ItemValidator.isEmpty(item)) break;
+                if (ItemValidator.isEmpty(item)) {
+                    break;
+                }
 
                 ItemMeta meta = item.getItemMeta();
-                if (meta == null || ((Damageable) meta).getDamage() >= maxDurability) break;
+                if (meta == null || ((Damageable) meta).getDamage() >= maxDurability) {
+                    break;
+                }
             }
 
             Material currentType = block.getType();

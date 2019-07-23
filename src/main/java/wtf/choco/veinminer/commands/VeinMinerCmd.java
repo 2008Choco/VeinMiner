@@ -193,7 +193,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 VeinBlock block = VeinBlock.fromString(args[3].toLowerCase());
                 if (block == null) {
                     sender.sendMessage(VeinMiner.CHAT_PREFIX + Chat.translate("%rUnknown block type (was it an item?) and/or block states. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW));
-                     return true;
+                    return true;
                 }
 
                 List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getId());
@@ -481,8 +481,12 @@ public final class VeinMinerCmd implements TabExecutor {
     }
 
     private boolean canVeinMine(Player player) {
-        for (ToolCategory category : ToolCategory.getAll())
-            if (player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase())) return true;
+        for (ToolCategory category : ToolCategory.getAll()) {
+            if (player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase())) {
+                return true;
+            }
+        }
+
         return false;
     }
 

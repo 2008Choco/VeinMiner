@@ -113,10 +113,10 @@ public final class VMPlayerData {
     /**
      * Set VeinMiner's enabled state for this player (all categories).
      *
-     * @param enabled whether or not to enable VeinMiner
+     * @param enable whether or not to enable VeinMiner
      */
-    public void setVeinMinerEnabled(boolean enabled) {
-        if (enabled) {
+    public void setVeinMinerEnabled(boolean enable) {
+        if (enable) {
             this.enableVeinMiner();
         } else {
             this.disableVeinMiner();
@@ -126,11 +126,11 @@ public final class VMPlayerData {
     /**
      * Set VeinMiner's enabled state for this player for a specific category.
      *
-     * @param enabled whether or not to enable VeinMiner
+     * @param enable whether or not to enable VeinMiner
      * @param category the category to enable (or disable)
      */
-    public void setVeinMinerEnabled(boolean enabled, @NotNull ToolCategory category) {
-        if (enabled) {
+    public void setVeinMinerEnabled(boolean enable, @NotNull ToolCategory category) {
+        if (enable) {
             this.enableVeinMiner(category);
         } else {
             this.disableVeinMiner(category);

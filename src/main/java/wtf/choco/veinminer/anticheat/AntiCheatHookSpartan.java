@@ -25,7 +25,9 @@ public final class AntiCheatHookSpartan implements AntiCheatHook {
 
     @Override
     public void exempt(@NotNull Player player) {
-        if (API.isBypassing(player, HackType.FastBreak)) return;
+        if (API.isBypassing(player, HackType.FastBreak)) {
+            return;
+        }
 
         API.stopCheck(player, HackType.FastBreak);
         this.exempted.add(player.getUniqueId());

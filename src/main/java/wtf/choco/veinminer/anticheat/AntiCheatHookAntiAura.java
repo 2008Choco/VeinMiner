@@ -35,7 +35,9 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
 
     @Override
     public void exempt(@NotNull Player player) {
-        if (AntiAuraAPI.API.isExemptedFromFastBreak(player)) return;
+        if (AntiAuraAPI.API.isExemptedFromFastBreak(player)) {
+            return;
+        }
 
         AntiAuraAPI.API.toggleExemptFromFastBreak(player);
         this.exempted.add(player.getUniqueId());

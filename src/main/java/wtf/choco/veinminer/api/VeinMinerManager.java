@@ -193,7 +193,9 @@ public class VeinMinerManager {
      */
     public void loadVeinableBlocks() {
         ConfigurationSection blocklistSection = plugin.getConfig().getConfigurationSection("BlockList");
-        if (blocklistSection == null) return;
+        if (blocklistSection == null) {
+            return;
+        }
 
         for (String tool : blocklistSection.getKeys(false)) {
             ToolCategory category = ToolCategory.get(tool);
@@ -230,7 +232,9 @@ public class VeinMinerManager {
         for (String key : categoriesConfig.getKeys(false)) {
             ToolCategory category = new ToolCategory(this, key);
             ConfigurationSection root = categoriesConfig.getConfigurationSection(key);
-            if (root == null) continue;
+            if (root == null) {
+                continue;
+            }
 
             // Per-category configuration
             AlgorithmConfig algorithmConfig = category.getConfig();
@@ -261,7 +265,9 @@ public class VeinMinerManager {
             // Tool configuration
             for (Object tool : itemsList) {
                 ToolTemplate template = null;
-                if (tool == null) continue;
+                if (tool == null) {
+                    continue;
+                }
 
                 if (tool instanceof String) {
                     Material type = Material.matchMaterial((String) tool);
@@ -271,7 +277,7 @@ public class VeinMinerManager {
                     }
 
                     template = new ToolTemplateMaterial(category, type);
-                } else if (tool instanceof Map<?, ?>) {
+                } else if (tool instanceof Map) {
                     Map<String, Object> templateRoot = (Map<String, Object>) tool;
 
                     // Material value
@@ -283,7 +289,9 @@ public class VeinMinerManager {
 
                     ItemStack item = new ItemStack(material);
                     ItemMeta meta = item.getItemMeta();
-                    if (meta == null) continue; // Stupid nullability annotations :(
+                    if (meta == null) { // Stupid nullability annotations :(
+                        continue;
+                    }
 
                     // Additional meta
                     Object name = templateRoot.get("Name");
@@ -298,7 +306,9 @@ public class VeinMinerManager {
                     } else if (lore instanceof List) {
                         List<String> loreList = ((List<Object>) lore).stream().filter(o -> o instanceof String)
                             .map(s -> ChatColor.translateAlternateColorCodes('&', (String) s)).collect(Collectors.toList());
-                        if (loreList.isEmpty()) continue;
+                        if (loreList.isEmpty()) {
+                            continue;
+                        }
 
                         meta.setLore(loreList);
                     }

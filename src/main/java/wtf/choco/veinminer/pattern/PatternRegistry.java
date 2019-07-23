@@ -61,6 +61,7 @@ public class PatternRegistry {
      * Get a pattern associated with the given key in the form of a String.
      *
      * @param key the key of the pattern to retrieve
+     *
      * @return the pattern. null if no pattern matches the given key
      */
     @Nullable

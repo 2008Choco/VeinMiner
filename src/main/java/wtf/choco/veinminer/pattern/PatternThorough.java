@@ -48,13 +48,13 @@ public final class PatternThorough implements VeinMiningPattern {
         while (blocks.size() < maxVeinSize) {
             Iterator<Block> trackedBlocks = blocks.iterator();
             while (trackedBlocks.hasNext() && blocks.size() + blockBuffer.size() <= maxVeinSize) {
-                Block b = trackedBlocks.next();
+                Block current = trackedBlocks.next();
                 for (VBlockFace face : facesToMine) {
                     if (blocks.size() + blockBuffer.size() >= maxVeinSize) {
                         break;
                     }
 
-                    Block nextBlock = face.getRelative(b);
+                    Block nextBlock = face.getRelative(current);
                     if (blocks.contains(nextBlock) || !PatternUtils.isOfType(type, alias, nextBlock)) {
                         continue;
                     }
