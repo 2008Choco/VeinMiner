@@ -39,6 +39,7 @@ import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.PatternThorough;
 import wtf.choco.veinminer.tool.ToolCategory;
+import wtf.choco.veinminer.utils.Chat;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
@@ -63,6 +64,7 @@ public class VeinMiner extends JavaPlugin {
     public void onEnable() {
         instance = this;
         this.manager = new VeinMinerManager(this);
+        Chat.PREFIXED.setPrefix(CHAT_PREFIX);
 
         // Configuration handling
         this.saveDefaultConfig();

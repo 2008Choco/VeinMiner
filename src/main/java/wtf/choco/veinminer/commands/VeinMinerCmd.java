@@ -1,7 +1,5 @@
 package wtf.choco.veinminer.commands;
 
-import static wtf.choco.veinminer.VeinMiner.CHAT_PREFIX;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,14 +45,14 @@ public final class VeinMinerCmd implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter. %y/veinminer <reload|version|blocklist|toggle|pattern>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+            Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter. %y/veinminer <reload|version|blocklist|toggle|pattern>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
             return true;
         }
 
         // Reload subcommand
         if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("veinminer.reload")) {
-                sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                 return true;
             }
 
@@ -66,19 +64,19 @@ public final class VeinMinerCmd implements TabExecutor {
             manager.loadVeinableBlocks();
             manager.loadMaterialAliases();
 
-            sender.sendMessage(CHAT_PREFIX + ChatColor.GREEN + "VeinMiner configuration successfully reloaded");
+            Chat.PREFIXED.translateSend(sender, "%gVeinMiner configuration successfully reloaded", ChatColor.GREEN);
         }
 
         // Version subcommand
         else if (args[0].equalsIgnoreCase("version")) {
-            sender.sendMessage(Chat.translate("%g%b%s--------------------------------------------", ChatColor.GOLD, ChatColor.BOLD, ChatColor.STRIKETHROUGH));
+            Chat.MESSAGE.translateSend(sender, "%g%b%s--------------------------------------------", ChatColor.GOLD, ChatColor.BOLD, ChatColor.STRIKETHROUGH);
             sender.sendMessage("");
             sender.sendMessage(Chat.translate("%a%bVersion: %g", ChatColor.DARK_AQUA, ChatColor.GOLD, ChatColor.GRAY) + plugin.getDescription().getVersion() + getUpdateSuffix());
             sender.sendMessage(Chat.translate("%a%bDeveloper: %gChoco %y(https://choco.wtf)", ChatColor.DARK_AQUA, ChatColor.GOLD, ChatColor.GRAY, ChatColor.YELLOW));
             sender.sendMessage(Chat.translate("%a%bPlugin Page: %ghttps://www.spigotmc.org/resources/veinminer.12038", ChatColor.DARK_AQUA, ChatColor.GOLD, ChatColor.GRAY));
             sender.sendMessage(Chat.translate("%a%bReport bugs to: %ghttps://github.com/2008Choco/VeinMiner/issues", ChatColor.DARK_AQUA, ChatColor.GOLD, ChatColor.GRAY));
             sender.sendMessage("");
-            sender.sendMessage(Chat.translate("%g%b%s--------------------------------------------", ChatColor.GOLD, ChatColor.BOLD, ChatColor.STRIKETHROUGH));
+            Chat.MESSAGE.translateSend(sender, "%g%b%s--------------------------------------------", ChatColor.GOLD, ChatColor.BOLD, ChatColor.STRIKETHROUGH);
         }
 
         // Toggle subcommand
@@ -90,12 +88,12 @@ public final class VeinMinerCmd implements TabExecutor {
 
             Player player = (Player) sender;
             if (!canVeinMine(player)) {
-                player.sendMessage(CHAT_PREFIX + ChatColor.RED + "You may not toggle a feature to which you do not have access");
+                Chat.PREFIXED.translateSend(player, "%rYou may not toggle a feature to which you do not have access", ChatColor.RED);
                 return true;
             }
 
             if (!player.hasPermission("veinminer.toggle")) {
-                player.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                Chat.PREFIXED.translateSend(player, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                 return true;
             }
 
@@ -104,12 +102,12 @@ public final class VeinMinerCmd implements TabExecutor {
             if (args.length >= 2) {
                 ToolCategory category = ToolCategory.get(args[1]);
                 if (category == null) {
-                    player.sendMessage(CHAT_PREFIX + "Invalid tool category: " + ChatColor.YELLOW + args[1]);
+                    Chat.PREFIXED.translateSend(player, "Invalid tool category: %y" + args[1], ChatColor.YELLOW);
                     return true;
                 }
 
                 playerData.setVeinMinerEnabled(!playerData.isVeinMinerEnabled(), category);
-                player.sendMessage(CHAT_PREFIX + "VeinMiner successfully toggled "
+                player.sendMessage(VeinMiner.CHAT_PREFIX + "VeinMiner successfully toggled "
                     + (playerData.isVeinMinerDisabled(category) ? ChatColor.RED + "off" : ChatColor.GREEN + "on")
                     + ChatColor.GRAY + " for tool " + ChatColor.YELLOW + category.getId().toLowerCase());
             }
@@ -117,7 +115,7 @@ public final class VeinMinerCmd implements TabExecutor {
             // Toggle all tools
             else {
                 playerData.setVeinMinerEnabled(!playerData.isVeinMinerEnabled());
-                player.sendMessage(CHAT_PREFIX + "VeinMiner successfully toggled "
+                player.sendMessage(VeinMiner.CHAT_PREFIX + "VeinMiner successfully toggled "
                     + (playerData.isVeinMinerEnabled() ? ChatColor.GREEN + "on" : ChatColor.RED + "off")
                     + ChatColor.GRAY + " for " + ChatColor.YELLOW + "all tools");
             }
@@ -126,37 +124,37 @@ public final class VeinMinerCmd implements TabExecutor {
         // Blocklist subcommand
         else if (args[0].equalsIgnoreCase("blocklist")) {
             if (args.length < 2) {
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " blocklist <tool> <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " blocklist <tool> <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                 return true;
             }
 
             ToolCategory category = ToolCategory.get(args[1]);
 
             if (category == null) {
-                sender.sendMessage(CHAT_PREFIX + "Invalid tool category: " + ChatColor.YELLOW + args[1]);
+                Chat.PREFIXED.translateSend(sender, "Invalid tool category: %y" + args[1], ChatColor.YELLOW);
                 return true;
             }
 
             if (args.length < 3) {
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " blocklist " + args[1] + " <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " blocklist " + args[1] + " <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                 return true;
             }
 
             // /veinminer blocklist <tool> add
             if (args[2].equalsIgnoreCase("add")) {
                 if (!sender.hasPermission("veinminer.blocklist.add")) {
-                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
 
                 if (args.length < 4) {
-                    sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " blocklist " + args[1] + " add <block>[[data]]", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                    Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " blocklist " + args[1] + " add <block>[[data]]", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                     return true;
                 }
 
                 VeinBlock block = VeinBlock.fromString(args[3].toLowerCase());
                 if (block == null) {
-                    sender.sendMessage(VeinMiner.CHAT_PREFIX + Chat.translate("%rUnknown block type (was it an item?) and/or block states. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW));
+                    Chat.PREFIXED.translateSend(sender, "%rUnknown block type (was it an item?) and/or block states. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW);
                     return true;
                 }
 
@@ -164,7 +162,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 BlockList blocklist = category.getBlocklist();
 
                 if (blocklist.contains(block)) {
-                    sender.sendMessage(CHAT_PREFIX + Chat.translate("A block with the ID %y" + args[3] + " %gis already on the %y" + args[1].toLowerCase() + " %gblocklist", ChatColor.YELLOW, ChatColor.GRAY));
+                    Chat.PREFIXED.translateSend(sender, "A block with the ID %y" + args[3] + " %gis already on the %y" + args[1].toLowerCase() + " %gblocklist", ChatColor.YELLOW, ChatColor.GRAY);
                     return true;
                 }
 
@@ -175,24 +173,24 @@ public final class VeinMinerCmd implements TabExecutor {
                 this.plugin.saveConfig();
                 this.plugin.reloadConfig();
 
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("Block ID %y" + block.asDataString() + " %gsuccessfully added to the blocklist", ChatColor.YELLOW, ChatColor.GRAY));
+                Chat.PREFIXED.translateSend(sender, "Block ID %y" + block.asDataString() + " %gsuccessfully added to the blocklist", ChatColor.YELLOW, ChatColor.GRAY);
             }
 
             // /veinminer blocklist <category> remove
             else if (args[2].equalsIgnoreCase("remove")) {
                 if (!sender.hasPermission("veinminer.blocklist.remove")) {
-                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
 
                 if (args.length < 4) {
-                    sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter %y/" + label + " blocklist " + args[1] + " remove <block>[[data]]", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                    Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter %y/" + label + " blocklist " + args[1] + " remove <block>[[data]]", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                     return true;
                 }
 
                 VeinBlock block = VeinBlock.fromString(args[3].toLowerCase());
                 if (block == null) {
-                    sender.sendMessage(VeinMiner.CHAT_PREFIX + Chat.translate("%rUnknown block type (was it an item?) and/or block states. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW));
+                    Chat.PREFIXED.translateSend(sender, "%rUnknown block type (was it an item?) and/or block states. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW);
                     return true;
                 }
 
@@ -200,7 +198,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 BlockList blocklist = category.getBlocklist();
 
                 if (!blocklist.contains(block)) {
-                    sender.sendMessage(CHAT_PREFIX + Chat.translate("No block with the ID %y" + args[3] + " %gwas found on the %y" + args[1].toLowerCase() + " %gblocklist", ChatColor.YELLOW, ChatColor.GRAY));
+                    Chat.PREFIXED.translateSend(sender, "No block with the ID %y" + args[3] + " %gwas found on the %y" + args[1].toLowerCase() + " %gblocklist", ChatColor.YELLOW, ChatColor.GRAY);
                     return true;
                 }
 
@@ -210,13 +208,13 @@ public final class VeinMinerCmd implements TabExecutor {
                 this.plugin.saveConfig();
                 this.plugin.reloadConfig();
 
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("Block ID %y" + block.asDataString() + " %gsuccessfully removed from the blocklist", ChatColor.YELLOW, ChatColor.GRAY));
+                Chat.PREFIXED.translateSend(sender, "Block ID %y" + block.asDataString() + " %gsuccessfully removed from the blocklist", ChatColor.YELLOW, ChatColor.GRAY);
             }
 
             // /veinminer blocklist <tool> list
             else if (args[2].equalsIgnoreCase("list")) {
                 if (!sender.hasPermission("veinminer.blocklist.list." + category.getId().toLowerCase())) {
-                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
 
@@ -229,55 +227,55 @@ public final class VeinMinerCmd implements TabExecutor {
                     blocklistIterable = category.getBlocklist();
                 }
 
-                sender.sendMessage(Chat.translate("%y%bVeinMiner Blocklist (Category = " + category.getId() + ")", ChatColor.YELLOW, ChatColor.BOLD));
+                Chat.MESSAGE.translateSend(sender, "%y%bVeinMiner Blocklist (Category = " + category.getId() + ")", ChatColor.YELLOW, ChatColor.BOLD);
                 blocklistIterable.forEach(block -> sender.sendMessage(ChatColor.YELLOW + "  - " + block.asDataString()));
             }
 
             // Unknown parameter
             else {
-                sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Unknown parameter " + ChatColor.AQUA + args[2] + ChatColor.GRAY + ". " + ChatColor.YELLOW + "/" + label + " blocklist " + args[1] + " <add|remove|list>");
+                Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gUnknown parameter %a" + args[2] + "%g. %y/" + label + " blocklist " + args[1] + " <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.AQUA, ChatColor.YELLOW);
                 return true;
             }
         }
 
         else if (args[0].equalsIgnoreCase("toollist")) {
             if (args.length < 2) {
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist <tool> <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist <tool> <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                 return true;
             }
 
             ToolCategory category = ToolCategory.get(args[1]);
 
             if (category == null) {
-                sender.sendMessage(CHAT_PREFIX + "Invalid tool category: " + ChatColor.YELLOW + args[1]);
+                Chat.PREFIXED.translateSend(sender, "Invalid tool category: %y" + args[1], ChatColor.YELLOW);
                 return true;
             }
 
             if (args.length < 3) {
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                 return true;
             }
 
             // /veinminer toollist <tool> add
             if (args[2].equalsIgnoreCase("add")) {
                 if (!sender.hasPermission("veinminer.toollist.add")) {
-                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
 
                 if (args.length < 4) {
-                    sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " add <item>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                    Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " add <item>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                     return true;
                 }
 
                 Material tool = Material.matchMaterial(args[3]);
                 if (tool == null) {
-                    sender.sendMessage(VeinMiner.CHAT_PREFIX + Chat.translate("%rUnknown item. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW));
+                    Chat.PREFIXED.translateSend(sender, "%rUnknown item. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW);
                     return true;
                 }
 
                 if (category.containsTool(tool)) {
-                    sender.sendMessage(CHAT_PREFIX + Chat.translate("An item with the ID %y" + args[3] + " %gis already on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY));
+                    Chat.PREFIXED.translateSend(sender, "An item with the ID %y" + args[3] + " %gis already on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY);
                     return true;
                 }
 
@@ -293,29 +291,29 @@ public final class VeinMinerCmd implements TabExecutor {
                 this.plugin.saveCategoriesConfig();
                 this.plugin.reloadCategoriesConfig();
 
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("Item ID %y" + tool.getKey() + " %gsuccessfully added to the tool list", ChatColor.YELLOW, ChatColor.GRAY));
+                Chat.PREFIXED.translateSend(sender, "Item ID %y" + tool.getKey() + " %gsuccessfully added to the tool list", ChatColor.YELLOW, ChatColor.GRAY);
             }
 
             // /veinminer toollist <tool> remove
             else if (args[2].equalsIgnoreCase("remove")) {
                 if (!sender.hasPermission("veinminer.toollist.remove")) {
-                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
 
                 if (args.length < 4) {
-                    sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " remove <item>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW));
+                    Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " remove <item>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                     return true;
                 }
 
                 Material tool = Material.matchMaterial(args[3]);
                 if (tool == null) {
-                    sender.sendMessage(VeinMiner.CHAT_PREFIX + Chat.translate("%rUnknown item. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW));
+                    Chat.PREFIXED.translateSend(sender, "%rUnknown item. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW);
                     return true;
                 }
 
                 if (!category.containsTool(tool)) {
-                    sender.sendMessage(CHAT_PREFIX + Chat.translate("An item with the ID %y" + args[3] + " %gis not on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY));
+                    Chat.PREFIXED.translateSend(sender, "An item with the ID %y" + args[3] + " %gis not on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY);
                     return true;
                 }
 
@@ -331,13 +329,13 @@ public final class VeinMinerCmd implements TabExecutor {
                 this.plugin.saveCategoriesConfig();
                 this.plugin.reloadCategoriesConfig();
 
-                sender.sendMessage(CHAT_PREFIX + Chat.translate("Item ID %y" + tool.getKey() + " %gsuccessfully removed from the tool list", ChatColor.YELLOW, ChatColor.GRAY));
+                Chat.PREFIXED.translateSend(sender, "Item ID %y" + tool.getKey() + " %gsuccessfully removed from the tool list", ChatColor.YELLOW, ChatColor.GRAY);
             }
 
             // /veinminer toollist <tool> list
             else if (args[2].equalsIgnoreCase("list")) {
                 if (!sender.hasPermission("veinminer.toollist." + category.getId().toLowerCase())) {
-                    sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                    Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
 
@@ -350,7 +348,7 @@ public final class VeinMinerCmd implements TabExecutor {
                     toolListIterable = category.getTools();
 //                }
 
-                sender.sendMessage(Chat.translate("%y%bVeinMiner Blocklist (Category = " + category.getId() + ")", ChatColor.YELLOW, ChatColor.BOLD));
+                Chat.PREFIXED.translateSend(sender, "%y%bVeinMiner Blocklist (Category = " + category.getId() + ")", ChatColor.YELLOW, ChatColor.BOLD);
                 toolListIterable.forEach(tool -> sender.sendMessage(ChatColor.YELLOW + "  - " + tool));
             }
         }
@@ -362,12 +360,12 @@ public final class VeinMinerCmd implements TabExecutor {
             }
 
             if (!sender.hasPermission("veinminer.pattern")) {
-                sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "You have insufficient permissions to execute this command");
+                Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                 return true;
             }
 
             if (args.length < 2) {
-                sender.sendMessage(CHAT_PREFIX + ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/" + label + " pattern <pattern_id>");
+                Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter. %y/" + label + " pattern <pattern_id>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                 return true;
             }
 
@@ -377,13 +375,13 @@ public final class VeinMinerCmd implements TabExecutor {
             if (!patternNamespace.contains(":")) {
                 patternNamespace = plugin.getName().toLowerCase() + ":" + patternNamespace;
             } else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
-                player.sendMessage(CHAT_PREFIX + "Invalid ID. Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id" + ChatColor.GRAY + " (i.e. " + ChatColor.YELLOW + "veinminer:expansive" + ChatColor.GRAY + ")");
+                Chat.PREFIXED.translateSend(player, "Invalid ID. Pattern IDs should be formatted as %ynamespace:id %g(i.e. %yveinminer:expansive%g)", ChatColor.YELLOW, ChatColor.GRAY);
                 return true;
             }
 
             VeinMiningPattern pattern = plugin.getPatternRegistry().getPattern(patternNamespace);
             if (pattern == null) {
-                player.sendMessage(CHAT_PREFIX + "A pattern with the ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + " could not be found");
+                Chat.PREFIXED.translateSend(player, "A pattern with the ID %y" + patternNamespace + "%g could not be found", ChatColor.YELLOW, ChatColor.GRAY);
                 return true;
             }
 
@@ -392,12 +390,12 @@ public final class VeinMinerCmd implements TabExecutor {
             Bukkit.getPluginManager().callEvent(pspe);
 
             playerData.setPattern(pattern);
-            player.sendMessage(CHAT_PREFIX + "Pattern successfully changed to " + ChatColor.YELLOW + patternNamespace);
+            Chat.PREFIXED.translateSend(player, "Pattern successfully changed to %y" + patternNamespace, ChatColor.YELLOW);
         }
 
         // Unknown command usage
         else {
-            sender.sendMessage(CHAT_PREFIX + Chat.translate("%rInvalid command syntax! %gUnknown parameter, %a" + args[0] + "%g. %y/" + label + " <version|reload|blocklist|toollist|toggle|pattern>", ChatColor.RED, ChatColor.GRAY, ChatColor.AQUA, ChatColor.YELLOW));
+            Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gUnknown parameter, %a" + args[0] + "%g. %y/" + label + " <version|reload|blocklist|toollist|toggle|pattern>", ChatColor.RED, ChatColor.GRAY, ChatColor.AQUA, ChatColor.YELLOW);
             return true;
         }
 

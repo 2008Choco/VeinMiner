@@ -3,16 +3,98 @@ package wtf.choco.veinminer.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
+
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 /**
- * Miscellaneous chat utilities
+ * Miscellaneous chat utilities.
  *
  * @author Parker Hawke - Choco
  */
 public final class Chat {
 
-    private Chat() { }
+    public static final Chat PREFIXED = new Chat(true), MESSAGE = new Chat(false);
+
+    private static final char DEFAULT_PREFIX_CHAR = '%';
+
+    private String prefix = "";
+    private final boolean prefixable;
+
+    private Chat(boolean prefixable) {
+        this.prefixable = prefixable;
+    }
+
+    /**
+     * Translate a message (according to {@link #translate(char, String, ChatColor...)})
+     * and send it to a collection of players.
+     *
+     * @param players the players to whom the message should be sent
+     * @param prefix the prefix identifier for colour translation keys
+     * @param text the text to translate
+     * @param colours the colours. Must have at least x amount of colours where x is the
+     * amount of unique keys. If less, an UnsupportedOperationException will be thrown.
+     */
+    public void translateSend(Iterable<CommandSender> players, char prefix, String text, ChatColor... colours) {
+        if (players == null) {
+            return;
+        }
+
+        String translatedText = translate(prefix, this.prefix + text, colours);
+        players.forEach(p -> p.sendMessage(translatedText));
+    }
+
+    /**
+     * Translate a message (according to {@link #translate(String, ChatColor...)})
+     * and send it to a collection of players.
+     *
+     * @param players the players to whom the message should be sent
+     * @param text the text to translate
+     * @param colours the colours. Must have at least x amount of colours where x is the
+     * amount of unique keys. If less, an UnsupportedOperationException will be thrown.
+     */
+    public void translateSend(Iterable<CommandSender> players, String text, ChatColor... colours) {
+        translateSend(players, DEFAULT_PREFIX_CHAR, text, colours);
+    }
+
+    /**
+     * Translate a message (according to {@link #translate(char, String, ChatColor...)})
+     * and send it to the specified player.
+     *
+     * @param player the player to whom the message should be sent
+     * @param prefix the prefix identifier for colour translation keys
+     * @param text the text to translate
+     * @param colours the colours. Must have at least x amount of colours where x is the
+     * amount of unique keys. If less, an UnsupportedOperationException will be thrown.
+     */
+    public void translateSend(CommandSender player, char prefix, String text, ChatColor... colours) {
+        Preconditions.checkArgument(player != null, "Cannot send to null player");
+        player.sendMessage(translate(prefix, this.prefix + text, colours));
+    }
+
+    /**
+     * Translate a message (according to {@link #translate(String, ChatColor...)})
+     * and send it to the specified player.
+     *
+     * @param player the player to whom the message should be sent
+     * @param text the text to translate
+     * @param colours the colours. Must have at least x amount of colours where x is the
+     * amount of unique keys. If less, an UnsupportedOperationException will be thrown.
+     */
+    public void translateSend(CommandSender player, String text, ChatColor... colours) {
+        translateSend(player, DEFAULT_PREFIX_CHAR, text, colours);
+    }
+
+    /**
+     * Set the prefix for this chat instance.
+     *
+     * @param prefix the chat prefix
+     */
+    public void setPrefix(String prefix) {
+        Preconditions.checkState(prefixable, "This chat instance cannot be prefixed");
+        this.prefix = prefix;
+    }
 
     /**
      * Format a String and translate any keyed colour codes prefixed with the given char.
@@ -40,6 +122,10 @@ public final class Chat {
      * @return the translated string
      */
     public static String translate(char prefix, String text, ChatColor... colours) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
         Map<Character, ChatColor> colourKey = new HashMap<>(colours.length);
         StringBuilder translated = new StringBuilder(text.length());
 
@@ -100,7 +186,7 @@ public final class Chat {
      * @return the translated string
      */
     public static String translate(String text, ChatColor... colours) {
-        return translate('%', text, colours);
+        return translate(DEFAULT_PREFIX_CHAR, text, colours);
     }
 
 }
