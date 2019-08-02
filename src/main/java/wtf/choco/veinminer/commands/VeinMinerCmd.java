@@ -31,6 +31,7 @@ import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.tool.ToolTemplate;
 import wtf.choco.veinminer.tool.ToolTemplateMaterial;
 import wtf.choco.veinminer.utils.Chat;
+import wtf.choco.veinminer.utils.ConfigWrapper;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
 
@@ -279,7 +280,8 @@ public final class VeinMinerCmd implements TabExecutor {
                     return true;
                 }
 
-                FileConfiguration categoriesConfig = plugin.getCategoriesConfig();
+                ConfigWrapper categoriesConfigWrapper = plugin.getCategoriesConfig();
+                FileConfiguration categoriesConfig = categoriesConfigWrapper.asRawConfig();
                 @SuppressWarnings("unchecked")
                 List<Object> configToolList = (List<Object>) categoriesConfig.getList(category.getId() + ".Items", new ArrayList<>());
                 if (configToolList == null) return true;
@@ -288,8 +290,8 @@ public final class VeinMinerCmd implements TabExecutor {
 
                 category.addTool(new ToolTemplateMaterial(category, tool));
                 categoriesConfig.set(category.getId() + ".Items", configToolList);
-                this.plugin.saveCategoriesConfig();
-                this.plugin.reloadCategoriesConfig();
+                categoriesConfigWrapper.save();
+                categoriesConfigWrapper.reload();
 
                 Chat.PREFIXED.translateSend(sender, "Item ID %y" + tool.getKey() + " %gsuccessfully added to the tool list", ChatColor.YELLOW, ChatColor.GRAY);
             }
@@ -317,7 +319,8 @@ public final class VeinMinerCmd implements TabExecutor {
                     return true;
                 }
 
-                FileConfiguration categoriesConfig = plugin.getCategoriesConfig();
+                ConfigWrapper categoriesConfigWrapper = plugin.getCategoriesConfig();
+                FileConfiguration categoriesConfig = categoriesConfigWrapper.asRawConfig();
                 @SuppressWarnings("unchecked")
                 List<Object> configToolList = (List<Object>) categoriesConfig.getList(category.getId() + ".Items", new ArrayList<>());
                 if (configToolList == null) return true;
@@ -326,8 +329,8 @@ public final class VeinMinerCmd implements TabExecutor {
 
                 category.removeTool(tool);
                 categoriesConfig.set(category.getId() + ".Items", configToolList);
-                this.plugin.saveCategoriesConfig();
-                this.plugin.reloadCategoriesConfig();
+                categoriesConfigWrapper.save();
+                categoriesConfigWrapper.reload();
 
                 Chat.PREFIXED.translateSend(sender, "Item ID %y" + tool.getKey() + " %gsuccessfully removed from the tool list", ChatColor.YELLOW, ChatColor.GRAY);
             }

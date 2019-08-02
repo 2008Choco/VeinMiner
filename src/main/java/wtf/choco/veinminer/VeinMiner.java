@@ -1,16 +1,11 @@
 package wtf.choco.veinminer;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 
 import org.bstats.bukkit.Metrics;
@@ -18,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,6 +34,7 @@ import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.PatternThorough;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.Chat;
+import wtf.choco.veinminer.utils.ConfigWrapper;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
@@ -57,8 +52,7 @@ public class VeinMiner extends JavaPlugin {
     private VeinMinerManager manager;
     private PatternRegistry patternRegistry;
 
-    private File categoriesFile;
-    private FileConfiguration categoriesConfig;
+    private ConfigWrapper categoriesConfig;
 
     @Override
     public void onEnable() {
@@ -68,12 +62,7 @@ public class VeinMiner extends JavaPlugin {
 
         // Configuration handling
         this.saveDefaultConfig();
-
-        this.categoriesFile = new File(getDataFolder(), "categories.yml");
-        if (!categoriesFile.exists()) { // Doing this only to remove the unnecessary warning from Bukkit when saving an existing file -,-
-            this.saveResource("categories.yml", false);
-        }
-        this.categoriesConfig = YamlConfiguration.loadConfiguration(categoriesFile);
+        this.categoriesConfig = new ConfigWrapper(this, getDataFolder(), "categories.yml");
 
         // Pattern registration
         this.patternRegistry = new PatternRegistry();
@@ -179,27 +168,8 @@ public class VeinMiner extends JavaPlugin {
      * @return the categories config
      */
     @NotNull
-    public FileConfiguration getCategoriesConfig() {
+    public ConfigWrapper getCategoriesConfig() {
         return categoriesConfig;
-    }
-
-    public void saveCategoriesConfig() {
-        try {
-            this.categoriesConfig.save(categoriesFile);
-        } catch (IOException ex) {
-            getLogger().severe("Could not save config to " + categoriesFile);
-        }
-    }
-
-    public void reloadCategoriesConfig() {
-        this.categoriesConfig = YamlConfiguration.loadConfiguration(categoriesFile);
-
-        InputStream defConfigStream = getResource("categories.yml");
-        if (defConfigStream == null) {
-            return;
-        }
-
-        this.categoriesConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
     }
 
     /**
