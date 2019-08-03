@@ -6,6 +6,7 @@ import java.util.Set;
 import com.google.common.base.Enums;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,9 +28,11 @@ import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
 import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
+import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.tool.ToolTemplate;
+import wtf.choco.veinminer.utils.Chat;
 import wtf.choco.veinminer.utils.ItemValidator;
 import wtf.choco.veinminer.utils.NonNullHashSet;
 import wtf.choco.veinminer.utils.Pair;
@@ -84,6 +87,17 @@ public final class BreakBlockListener implements Listener {
         BlockData originBlockData = origin.getBlockData();
         if (!manager.isVeinMineable(originBlockData, category)) {
             return;
+        }
+
+        // Economy check
+        EconomyModifier economy = plugin.getEconomyModifier();
+        if (economy.shouldCharge(player, algorithmConfig)) {
+            if (!economy.hasSufficientBalance(player, algorithmConfig)) {
+                Chat.PREFIXED.translateSend(player, "You have insufficient funds to vein mine (Required: %y" + algorithmConfig.getCost() + "%g)", ChatColor.YELLOW, ChatColor.GRAY);
+                return;
+            }
+
+            economy.charge(player, algorithmConfig);
         }
 
         // TIME TO VEINMINE

@@ -3,7 +3,7 @@ main: wtf.choco.veinminer.VeinMiner
 version: ${project.version}
 description: ${project.description}
 author: 2008Choco
-softdepend: [NoCheatPlus, AAC, AntiAura, Spartan]
+softdepend: [NoCheatPlus, AAC, AntiAura, Spartan, Vault]
 api-version: 1.13
 
 commands:
@@ -26,6 +26,9 @@ permissions:
   veinminer.pattern:
     description: Allow the use of the '/veinminer pattern' subcommand
     default: true
+  veinminer.free:
+    description: Grants a bypass to the VeinMiner cost (only used if a Vault-supported Economy is installed and the cost is greater than 0)
+    default: false
 
   veinminer.blocklist.*:
     description: Allow the use of the '/veinminer blocklist' subcommand

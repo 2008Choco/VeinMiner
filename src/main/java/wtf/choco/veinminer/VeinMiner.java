@@ -28,6 +28,9 @@ import wtf.choco.veinminer.commands.VeinMinerCmd;
 import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
+import wtf.choco.veinminer.economy.EconomyModifier;
+import wtf.choco.veinminer.economy.EmptyEconomyModifier;
+import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
@@ -51,6 +54,7 @@ public class VeinMiner extends JavaPlugin {
 
     private VeinMinerManager manager;
     private PatternRegistry patternRegistry;
+    private EconomyModifier economyModifier;
 
     private ConfigWrapper categoriesConfig;
 
@@ -85,6 +89,17 @@ public class VeinMiner extends JavaPlugin {
         // Register commands
         this.getLogger().info("Registering commands");
         new VeinMinerCmd(this).assignTo(getCommand("veinminer"));
+
+        if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+            this.getLogger().info("Vault found. Attempting to enable economy support...");
+            this.economyModifier = new VaultBasedEconomyModifier("veinminer.free");
+            this.getLogger().info(((VaultBasedEconomyModifier) economyModifier).hasEconomyPlugin()
+                    ? "Economy found! Hooked successfully."
+                    : "Cancelled. No economy plugin found.");
+        } else {
+            this.getLogger().info("Vault not found. Economy support suspended");
+            this.economyModifier = EmptyEconomyModifier.get();
+        }
 
         // Metrics
         if (getConfig().getBoolean("MetricsEnabled", true)) {
@@ -173,6 +188,16 @@ public class VeinMiner extends JavaPlugin {
     }
 
     /**
+     * Get the economy abstraction layer for a Vault economy.
+     *
+     * @return economy abstraction
+     */
+    @NotNull
+    public EconomyModifier getEconomyModifier() {
+        return economyModifier;
+    }
+
+    /**
      * Register an anticheat hook to VeinMiner. Hooks should be registered for all anticheat plugins
      * as to support VeinMining and not false-flag players with fast-break.
      *
@@ -226,6 +251,9 @@ public class VeinMiner extends JavaPlugin {
         }
         if (config.contains("MaxVeinSize")) {
             algorithmConfig.maxVeinSize(Math.max(config.getInt("MaxVeinSize"), 1));
+        }
+        if (config.contains("Cost")) {
+            algorithmConfig.cost(Math.max(config.getDouble("Cost"), 0.0));
         }
         if (config.contains("DisabledWorlds")) {
             for (String worldName : config.getStringList("DisabledWorlds")) {

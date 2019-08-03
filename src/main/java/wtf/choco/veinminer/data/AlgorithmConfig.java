@@ -21,9 +21,11 @@ public final class AlgorithmConfig implements Cloneable {
 
     private static final boolean DEFAULT_REPAIR_FRIENDLY_VEINMINER = false, DEFAULT_INCLUDE_EDGES = true;
     private static final int DEFAULT_MAX_VEIN_SIZE = 64;
+    private static final double DEFAULT_COST = 0.0;
 
     private Boolean repairFriendlyVeinMiner, includeEdges;
     private Integer maxVeinSize;
+    private Double cost;
     private final Set<UUID> disabledWorlds = new HashSet<>();
 
     private AlgorithmConfig parent;
@@ -123,6 +125,31 @@ public final class AlgorithmConfig implements Cloneable {
      */
     public int getMaxVeinSize() {
         return (maxVeinSize != null) ? maxVeinSize.intValue() : (parent != null ? parent.getMaxVeinSize() : DEFAULT_MAX_VEIN_SIZE);
+    }
+
+    /**
+     * Set the amount of money required to vein mine. Note, this feature requires Vault
+     * and an economy plugin, else it is ignored.
+     *
+     * @param cost the cost
+     *
+     * @return this instance. Allows for chained method calls
+     */
+    @NotNull
+    public AlgorithmConfig cost(double cost) {
+        Preconditions.checkArgument(cost >= 0.0, "Cost must be positive or 0");
+
+        this.cost = cost;
+        return this;
+    }
+
+    /**
+     * Get the cost.
+     *
+     * @return the cost
+     */
+    public double getCost() {
+        return (cost != null) ? cost.doubleValue() : (parent != null ? parent.getCost() : DEFAULT_COST);
     }
 
     /**

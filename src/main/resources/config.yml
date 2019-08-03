@@ -16,6 +16,7 @@ ActivationMode: SNEAK
 RepairFriendlyVeinminer: false
 IncludeEdges: true
 MaxVeinSize: 64
+Cost: 0.0
 DisabledWorlds:
 - WorldName
 

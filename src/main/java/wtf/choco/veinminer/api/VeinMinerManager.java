@@ -227,7 +227,7 @@ public class VeinMinerManager {
      */
     @SuppressWarnings("unchecked")
     public void loadToolCategories() {
-        FileConfiguration categoriesConfig = plugin.getCategoriesConfig();
+        FileConfiguration categoriesConfig = plugin.getCategoriesConfig().asRawConfig();
 
         for (String key : categoriesConfig.getKeys(false)) {
             ToolCategory category = new ToolCategory(this, key);
@@ -246,6 +246,9 @@ public class VeinMinerManager {
             }
             if (root.contains("MaxVeinSize")) {
                 algorithmConfig.maxVeinSize(Math.max(root.getInt("MaxVeinSize"), 1));
+            }
+            if (root.contains("Cost")) {
+                algorithmConfig.cost(Math.max(root.getDouble("Cost"), 0.0));
             }
             if (root.contains("DisabledWorlds")) {
                 for (String worldName : root.getStringList("DisabledWorlds")) {
@@ -322,6 +325,7 @@ public class VeinMinerManager {
                     Object repairFriendlyVeinMiner = templateRoot.get("RepairFriendlyVeinMiner");
                     Object includeEdges = templateRoot.get("IncludeEdges");
                     Object maxVeinSize = templateRoot.get("MaxVeinSize");
+                    Object cost = templateRoot.get("Cost");
                     Object disabledWorlds = templateRoot.get("DisabledWorlds");
 
                     if (repairFriendlyVeinMiner instanceof Boolean) {
@@ -332,6 +336,9 @@ public class VeinMinerManager {
                     }
                     if (maxVeinSize instanceof Integer) {
                         config.maxVeinSize(Math.max((int) maxVeinSize, 1));
+                    }
+                    if (cost instanceof Number) {
+                        config.cost(Math.max((double) cost, 0.0));
                     }
                     if (disabledWorlds instanceof List) {
                         ((List<Object>) disabledWorlds).stream().filter(o -> o instanceof String).map(s -> UUID.fromString((String) s))
