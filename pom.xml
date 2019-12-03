@@ -14,7 +14,7 @@
   <repositories>
     <repository>
       <id>bStats Repository</id>
-      <url>https://repo.codemc.org/repository/maven-public</url>
+      <url>https://repo.codemc.org/repository/maven-public/</url>
     </repository>
     <repository>
       <id>Spigot Repository</id>
