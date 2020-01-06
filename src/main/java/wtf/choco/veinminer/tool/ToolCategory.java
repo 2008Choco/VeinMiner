@@ -56,8 +56,6 @@ public class ToolCategory {
         this.id = id;
         this.tools = new ArrayList<>();
         this.blocklist = blocklist;
-
-        CATEGORIES.putIfAbsent(id.toLowerCase(), this);
     }
 
     /**
@@ -268,6 +266,15 @@ public class ToolCategory {
         }
 
         return null;
+    }
+
+    /**
+     * Register a tool category.
+     *
+     * @param category the category to register
+     */
+    public static void register(@NotNull ToolCategory category) {
+        CATEGORIES.put(category.id.toLowerCase(), category);
     }
 
     /**

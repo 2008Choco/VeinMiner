@@ -66,7 +66,7 @@ public class VeinMiner extends JavaPlugin {
 
         // Configuration handling
         this.saveDefaultConfig();
-        this.categoriesConfig = new ConfigWrapper(this, getDataFolder(), "categories.yml");
+        this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
 
         // Pattern registration
         this.patternRegistry = new PatternRegistry();

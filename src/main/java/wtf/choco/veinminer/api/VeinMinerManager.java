@@ -231,6 +231,8 @@ public class VeinMinerManager {
 
         for (String key : categoriesConfig.getKeys(false)) {
             ToolCategory category = new ToolCategory(this, key);
+            ToolCategory.register(category);
+
             ConfigurationSection root = categoriesConfig.getConfigurationSection(key);
             if (root == null) {
                 continue;

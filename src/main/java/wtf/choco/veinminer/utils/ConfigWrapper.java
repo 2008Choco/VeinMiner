@@ -32,7 +32,7 @@ public final class ConfigWrapper {
 
         this.plugin = plugin;
         this.rawPath = path;
-        this.file = new File(path);
+        this.file = new File(plugin.getDataFolder(), path);
         if (!file.exists()) { // Doing this only to remove the unnecessary warning from Bukkit when saving an existing file -,-
             plugin.saveResource(path, false);
         }
