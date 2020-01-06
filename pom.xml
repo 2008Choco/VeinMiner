@@ -22,7 +22,7 @@
     </repository>
     <repository>
       <id>Vault Repository</id>
-      <url>https://jitpack.io</url>
+      <url>http://nexus.hc.to/content/repositories/pub_releases</url>
     </repository>
   </repositories>
 
@@ -67,7 +67,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.github.MilkBowl</groupId>
+      <groupId>net.milkbowl.vault</groupId>
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>
       <scope>provided</scope>
@@ -75,7 +75,7 @@
     <dependency>
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
-      <version>17.0.0</version>
+      <version>18.0.0</version>
       <scope>provided</scope>
     </dependency>
 
@@ -83,13 +83,13 @@
     <dependency>
       <groupId>me.joehot200</groupId>
       <artifactId>AntiAura</artifactId>
-      <version>11.56</version>
+      <version>11.71</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>me.konsolas</groupId>
       <artifactId>AAC</artifactId>
-      <version>3.6.4</version>
+      <version>4.3.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -101,7 +101,7 @@
     <dependency>
       <groupId>me.vagdedes</groupId>
       <artifactId>SpartanAPI</artifactId>
-      <version>b223</version>
+      <version>b316</version>
       <scope>provided</scope>
     </dependency>
 
@@ -109,7 +109,7 @@
     <dependency>
       <groupId>org.bstats</groupId>
       <artifactId>bstats-bukkit</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
