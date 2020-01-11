@@ -228,6 +228,11 @@ public final class VeinMinerCmd implements TabExecutor {
                     blocklistIterable = category.getBlocklist();
                 }
 
+                if (Iterables.isEmpty(blocklistIterable)) {
+                    Chat.MESSAGE.translateSend(sender, "%yThe " + category.getId() + " category is empty.", ChatColor.YELLOW);
+                    return true;
+                }
+
                 Chat.MESSAGE.translateSend(sender, "%y%bVeinMiner Blocklist (Category = " + category.getId() + ")", ChatColor.YELLOW, ChatColor.BOLD);
                 blocklistIterable.forEach(block -> sender.sendMessage(ChatColor.YELLOW + "  - " + block.asDataString()));
             }
