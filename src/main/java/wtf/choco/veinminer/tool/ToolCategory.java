@@ -33,6 +33,9 @@ public class ToolCategory {
     private static final Pattern VALID_ID = Pattern.compile("[A-Za-z0-9]+", Pattern.CASE_INSENSITIVE);
 
     public static final ToolCategory HAND = new ToolCategory(VeinMiner.getPlugin().getVeinMinerManager(), "Hand");
+    static {
+        ToolCategory.register(HAND);
+    }
 
     private final String id;
     private final AlgorithmConfig config;
@@ -40,7 +43,7 @@ public class ToolCategory {
     private final BlockList blocklist;
 
     /**
-     * Construct and register a new tool category with an empty block and tool list.
+     * Construct a new tool category with an empty block and tool list.
      *
      * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
@@ -59,7 +62,7 @@ public class ToolCategory {
     }
 
     /**
-     * Construct and register a new tool category.
+     * Construct a new tool category.
      *
      * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
@@ -77,7 +80,7 @@ public class ToolCategory {
     }
 
     /**
-     * Construct and register a new tool category with an empty block list.
+     * Construct a new tool category with an empty block list.
      *
      * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
@@ -89,7 +92,7 @@ public class ToolCategory {
     }
 
     /**
-     * Construct and register a new tool category with an empty block list.
+     * Construct a new tool category with an empty block list.
      *
      * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.

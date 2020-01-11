@@ -252,6 +252,11 @@ public final class VeinMinerCmd implements TabExecutor {
                 return true;
             }
 
+            if (category == ToolCategory.HAND) {
+                Chat.PREFIXED.translateSend(sender, "%rThe hand category cannot be modified", ChatColor.RED);
+                return true;
+            }
+
             if (args.length < 3) {
                 Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " toollist " + args[1] + " <add|remove|list>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
                 return true;
