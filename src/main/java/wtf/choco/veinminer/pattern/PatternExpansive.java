@@ -55,7 +55,7 @@ public final class PatternExpansive implements VeinMiningPattern {
                         continue;
                     }
 
-                    if (blocks.size() + buffer.size() > maxVeinSize) {
+                    if (blocks.size() + buffer.size() >= maxVeinSize) {
                         break recentSearch;
                     }
 
