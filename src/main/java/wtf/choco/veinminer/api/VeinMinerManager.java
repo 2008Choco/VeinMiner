@@ -362,19 +362,23 @@ public class VeinMinerManager {
         if (categories.size() >= 1) {
             PluginManager pluginManager = Bukkit.getPluginManager();
             Permission veinminePermissionParent = getOrRegisterPermission(pluginManager, "veinminer.veinmine.*");
-            Permission listPermissionParent = getOrRegisterPermission(pluginManager, "veinminer.blocklist.list.*");
+            Permission blocklistPermissionParent = getOrRegisterPermission(pluginManager, "veinminer.blocklist.list.*");
+            Permission toollistPermissionParent = getOrRegisterPermission(pluginManager, "veinminer.toollist.list.*");
 
             for (ToolCategory category : categories) {
                 String id = category.getId().toLowerCase();
                 Permission veinminePermission = new Permission("veinminer.veinmine." + id, "Allows players to vein mine using the " + category.getId() + " category", PermissionDefault.OP);
-                Permission listPermission = new Permission("veinminer.blocklist.list." + id, "Allows players to list blocks in the " + category.getId() + " category", PermissionDefault.OP);
+                Permission blocklistPermission = new Permission("veinminer.blocklist.list." + id, "Allows players to list blocks in the " + category.getId() + " category", PermissionDefault.OP);
+                Permission toollistPermission = new Permission("veinminer.toollist.list." + id, "Allows players to list tools in the " + category.getId() + " category", PermissionDefault.OP);
 
                 veinminePermissionParent.getChildren().put(veinminePermission.getName(), true);
-                listPermissionParent.getChildren().put(listPermission.getName(), true);
+                blocklistPermissionParent.getChildren().put(blocklistPermission.getName(), true);
+                toollistPermissionParent.getChildren().put(toollistPermission.getName(), true);
             }
 
             veinminePermissionParent.recalculatePermissibles();
-            listPermissionParent.recalculatePermissibles();
+            blocklistPermissionParent.recalculatePermissibles();
+            toollistPermissionParent.recalculatePermissibles();
         }
     }
 

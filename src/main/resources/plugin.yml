@@ -49,3 +49,7 @@ permissions:
   veinminer.blocklist.list.*:
     description: Allow the use of the '/veinminer blocklist list' subcommand
     default: op
+    
+  veinminer.toollist.list.*:
+    description: Allow the use of the '/veinminer toollist list' subcommand
+    default: op
