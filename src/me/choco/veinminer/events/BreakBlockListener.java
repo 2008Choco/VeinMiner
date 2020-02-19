@@ -121,12 +121,14 @@ public class BreakBlockListener implements Listener {
 			short priorDurability = itemUsed.getDurability();
 			if (priorDurability >= maxDurability) break;
 			
-			nmsAbstract.breakBlock(player, b);
-			short newDurability = itemUsed.getDurability();
-			
-			// Unbreaking enchantment precaution
-			if (!usesDurability && priorDurability < newDurability)
-				itemUsed.setDurability((short) (newDurability - 1));
+			if (b != block) {
+			    nmsAbstract.breakBlock(player, b);
+			    short newDurability = itemUsed.getDurability();
+	            
+			    // Unbreaking enchantment precaution
+			    if (!usesDurability && priorDurability < newDurability)
+			        itemUsed.setDurability((short) (newDurability - 1));
+			}
 		}
 		
 		this.blocks.clear();
