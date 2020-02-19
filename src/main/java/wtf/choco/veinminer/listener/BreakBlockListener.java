@@ -139,7 +139,7 @@ public final class BreakBlockListener implements Listener {
             }
 
             Material currentType = block.getType();
-            if (ReflectionUtil.breakBlock(player, block)) {
+            if (block == origin || ReflectionUtil.breakBlock(player, block)) {
                 this.statTracker.accumulateVeinMinedMaterial(currentType);
             }
         }
