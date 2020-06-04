@@ -460,8 +460,9 @@ public final class VeinMinerCommand implements TabExecutor {
                 }
             }
         }
+
         else {
-            return null;
+            return Collections.emptyList();
         }
 
         return StringUtil.copyPartialMatches(args[args.length - 1], values, new ArrayList<>());
