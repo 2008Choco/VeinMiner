@@ -25,7 +25,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.api.VeinMinerManager;
-import wtf.choco.veinminer.commands.VeinMinerCmd;
+import wtf.choco.veinminer.commands.VeinMinerCommand;
 import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
@@ -92,7 +92,7 @@ public class VeinMiner extends JavaPlugin {
 
         // Register commands
         this.getLogger().info("Registering commands");
-        new VeinMinerCmd(this).assignTo(getCommand("veinminer"));
+        new VeinMinerCommand(this).assignTo(getCommand("veinminer"));
 
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.getLogger().info("Vault found. Attempting to enable economy support...");

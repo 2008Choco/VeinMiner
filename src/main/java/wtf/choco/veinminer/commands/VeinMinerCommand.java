@@ -34,11 +34,11 @@ import wtf.choco.veinminer.utils.ConfigWrapper;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
 
-public final class VeinMinerCmd implements TabExecutor {
+public final class VeinMinerCommand implements TabExecutor {
 
     private final VeinMiner plugin;
 
-    public VeinMinerCmd(VeinMiner plugin) {
+    public VeinMinerCommand(VeinMiner plugin) {
         this.plugin = plugin;
     }
 
