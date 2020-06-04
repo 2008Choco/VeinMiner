@@ -58,13 +58,14 @@ public class VeinMiner extends JavaPlugin {
     private PatternRegistry patternRegistry;
     private EconomyModifier economyModifier;
 
-    private VeinMiningPattern veinMiningPattern = PatternExpansive.get();
+    private VeinMiningPattern veinMiningPattern;
 
     private ConfigWrapper categoriesConfig;
 
     @Override
     public void onEnable() {
         instance = this;
+        this.veinMiningPattern = PatternExpansive.get();
         this.manager = new VeinMinerManager(this);
         Chat.PREFIXED.setPrefix(CHAT_PREFIX);
 
