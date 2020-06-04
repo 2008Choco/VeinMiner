@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +36,9 @@ import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
 
 public final class VeinMinerCommand implements TabExecutor {
+
+    private static final List<String> BLOCK_KEYS = Arrays.stream(Material.values()).filter(Material::isBlock).map(m -> m.getKey().toString()).collect(Collectors.toList());
+    private static final List<String> ITEM_KEYS = Arrays.stream(Material.values()).filter(Material::isItem).map(m -> m.getKey().toString()).collect(Collectors.toList());
 
     private final VeinMiner plugin;
 
@@ -458,6 +462,25 @@ public final class VeinMinerCommand implements TabExecutor {
                 if (sender.hasPermission("veinminer." + listType + ".list.*")) {
                     values.add("list");
                 }
+            }
+        }
+
+        else if (args.length == 4 && (args[2].equalsIgnoreCase("add") || args[2].equalsIgnoreCase("remove"))) {
+            if (args[0].equalsIgnoreCase("blocklist")) {
+                String blockArg = args[3];
+                if (!"minecraft:".startsWith(blockArg)) {
+                    blockArg = (blockArg.startsWith(":") ? "minecraft" : "minecraft:") + blockArg;
+                }
+
+                return StringUtil.copyPartialMatches(blockArg, BLOCK_KEYS, new ArrayList<>());
+            }
+            else if (args[0].equalsIgnoreCase("toollist")) {
+                String itemArg = args[3];
+                if (!"minecraft:".startsWith(itemArg)) {
+                    itemArg = (itemArg.startsWith(":") ? "minecraft" : "minecraft:") + itemArg;
+                }
+
+                return StringUtil.copyPartialMatches(itemArg, ITEM_KEYS, new ArrayList<>());
             }
         }
 
