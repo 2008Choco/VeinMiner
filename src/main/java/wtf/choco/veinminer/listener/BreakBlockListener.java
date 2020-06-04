@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
@@ -107,7 +108,7 @@ public final class BreakBlockListener implements Listener {
             return;
         }
 
-        VeinMiningPattern pattern = playerData.getPattern();
+        VeinMiningPattern pattern = plugin.getVeinMiningPattern();
         pattern.allocateBlocks(blocks, originVeinBlock, origin, category, toolTemplate, algorithmConfig, manager.getAliasFor(origin));
         this.blocks.removeIf(Block::isEmpty);
 

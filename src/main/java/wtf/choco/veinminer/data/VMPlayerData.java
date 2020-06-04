@@ -11,11 +11,10 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.veinminer.pattern.PatternExpansive;
-import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
@@ -27,7 +26,6 @@ public final class VMPlayerData {
 
     private static final Map<UUID, VMPlayerData> CACHE = new HashMap<>();
 
-    private VeinMiningPattern pattern = PatternExpansive.get();
     private final Set<ToolCategory> disabledCategories = new HashSet<>();
 
     private final UUID player;
@@ -55,25 +53,6 @@ public final class VMPlayerData {
     @Nullable
     public Player getPlayerOnline() {
         return Bukkit.getPlayer(player);
-    }
-
-    /**
-     * Get the pattern set for this player.
-     *
-     * @return the player's vein mining pattern
-     */
-    @NotNull
-    public VeinMiningPattern getPattern() {
-        return pattern;
-    }
-
-    /**
-     * Set the pattern to be used for this player.
-     *
-     * @param pattern the pattern to set or null if default
-     */
-    public void setPattern(@Nullable VeinMiningPattern pattern) {
-        this.pattern = (pattern != null) ? pattern : PatternExpansive.get();
     }
 
     /**

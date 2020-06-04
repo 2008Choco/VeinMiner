@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
@@ -35,6 +36,7 @@ import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.PatternThorough;
+import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.Chat;
 import wtf.choco.veinminer.utils.ConfigWrapper;
@@ -55,6 +57,8 @@ public class VeinMiner extends JavaPlugin {
     private VeinMinerManager manager;
     private PatternRegistry patternRegistry;
     private EconomyModifier economyModifier;
+
+    private VeinMiningPattern veinMiningPattern = PatternExpansive.get();
 
     private ConfigWrapper categoriesConfig;
 
@@ -195,6 +199,26 @@ public class VeinMiner extends JavaPlugin {
     @NotNull
     public EconomyModifier getEconomyModifier() {
         return economyModifier;
+    }
+
+    /**
+     * Set the vein mining pattern to use.
+     *
+     * @param pattern the pattern to set
+     */
+    public void setVeinMiningPattern(@NotNull VeinMiningPattern pattern) {
+        Preconditions.checkArgument(pattern != null, "null patterns are not supported");
+        this.veinMiningPattern = pattern;
+    }
+
+    /**
+     * Get the vein mining pattern to use.
+     *
+     * @return the pattern
+     */
+    @NotNull
+    public VeinMiningPattern getVeinMiningPattern() {
+        return veinMiningPattern;
     }
 
     /**

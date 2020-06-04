@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Iterables;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -18,11 +17,11 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VeinMinerManager;
-import wtf.choco.veinminer.api.event.PlayerSwitchPatternEvent;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
@@ -398,11 +397,7 @@ public final class VeinMinerCmd implements TabExecutor {
                 return true;
             }
 
-            VMPlayerData playerData = VMPlayerData.get(player);
-            PlayerSwitchPatternEvent pspe = new PlayerSwitchPatternEvent(player, playerData.getPattern(), pattern);
-            Bukkit.getPluginManager().callEvent(pspe);
-
-            playerData.setPattern(pattern);
+            this.plugin.setVeinMiningPattern(pattern);
             Chat.PREFIXED.translateSend(player, "Pattern successfully changed to %y" + patternNamespace, ChatColor.YELLOW);
         }
 
