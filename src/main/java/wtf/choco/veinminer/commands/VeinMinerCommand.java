@@ -451,6 +451,10 @@ public final class VeinMinerCommand implements TabExecutor {
                 for (ToolCategory category : ToolCategory.getAll()) {
                     values.add(category.getId().toLowerCase());
                 }
+
+                if (args[0].equalsIgnoreCase("toollist")) {
+                    values.remove("hand"); // Cannot modify the hand's tool list
+                }
             }
 
             else if (args[0].equalsIgnoreCase("pattern")) {
