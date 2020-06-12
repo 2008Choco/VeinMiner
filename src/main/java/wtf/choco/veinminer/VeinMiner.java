@@ -93,7 +93,7 @@ public class VeinMiner extends JavaPlugin {
 
         // Register commands
         this.getLogger().info("Registering commands");
-        new VeinMinerCommand(this).assignTo(getCommand("veinminer"));
+        VeinMinerCommand.assignTo(this, "veinminer");
 
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.getLogger().info("Vault found. Attempting to enable economy support...");

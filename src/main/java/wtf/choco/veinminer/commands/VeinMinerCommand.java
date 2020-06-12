@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Iterables;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -18,8 +19,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
-
-import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VeinMinerManager;
@@ -529,11 +528,16 @@ public final class VeinMinerCommand implements TabExecutor {
         return StringUtil.copyPartialMatches(args[args.length - 1], values, new ArrayList<>());
     }
 
-    public void assignTo(@Nullable PluginCommand command) {
-        if (command == null) return;
+    public static void assignTo(VeinMiner plugin, String commandString) {
+        Validate.notEmpty(commandString);
+        PluginCommand command = plugin.getCommand(commandString);
+        if (command == null) {
+            return;
+        }
 
-        command.setExecutor(this);
-        command.setTabCompleter(this);
+        VeinMinerCommand tabExecutor = new VeinMinerCommand(plugin);
+        command.setExecutor(tabExecutor);
+        command.setTabCompleter(tabExecutor);
     }
 
     private boolean hasBlocklistPerms(CommandSender sender) {
