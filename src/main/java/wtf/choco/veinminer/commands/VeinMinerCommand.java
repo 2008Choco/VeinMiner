@@ -28,7 +28,6 @@ import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
-import wtf.choco.veinminer.tool.ToolTemplate;
 import wtf.choco.veinminer.tool.ToolTemplateMaterial;
 import wtf.choco.veinminer.utils.Chat;
 import wtf.choco.veinminer.utils.ConfigWrapper;
@@ -156,28 +155,32 @@ public final class VeinMinerCommand implements TabExecutor {
                     return true;
                 }
 
-                VeinBlock block = VeinBlock.fromString(args[3].toLowerCase());
-                if (block == null) {
-                    Chat.PREFIXED.translateSend(sender, "%rUnknown block type (was it an item?) and/or block states. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW);
-                    return true;
-                }
-
-                List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getId());
                 BlockList blocklist = category.getBlocklist();
+                List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getId());
 
-                if (blocklist.contains(block)) {
-                    Chat.PREFIXED.translateSend(sender, "A block with the ID %y" + args[3] + " %gis already on the %y" + args[1].toLowerCase() + " %gblocklist", ChatColor.YELLOW, ChatColor.GRAY);
-                    return true;
+                for (int i = 3; i < args.length; i++) {
+                    String blockArg = args[i].toLowerCase();
+                    VeinBlock block = VeinBlock.fromString(blockArg);
+                    if (block == null) {
+                        Chat.PREFIXED.translateSend(sender, "%rUnknown block type (was it an item?) and/or block states. Given %y" + blockArg, ChatColor.RED, ChatColor.YELLOW);
+                        continue;
+                    }
+
+                    if (blocklist.contains(block)) {
+                        Chat.PREFIXED.translateSend(sender, "A block with the ID %y" + blockArg + " %gis already on the %y" + args[1].toLowerCase() + " %gblocklist", ChatColor.YELLOW, ChatColor.GRAY);
+                        continue;
+                    }
+
+                    blocklist.add(block);
+                    configBlocklist.add(block.asDataString());
+                    this.plugin.getConfig().set("BlockList." + category.getId(), configBlocklist);
+
+                    Chat.PREFIXED.translateSend(sender, "Block ID %y" + block.asDataString() + " %gsuccessfully added to the blocklist", ChatColor.YELLOW, ChatColor.GRAY);
                 }
 
-                blocklist.add(block);
 
-                configBlocklist.add(block.asDataString());
-                this.plugin.getConfig().set("BlockList." + category.getId(), configBlocklist);
                 this.plugin.saveConfig();
                 this.plugin.reloadConfig();
-
-                Chat.PREFIXED.translateSend(sender, "Block ID %y" + block.asDataString() + " %gsuccessfully added to the blocklist", ChatColor.YELLOW, ChatColor.GRAY);
             }
 
             // /veinminer blocklist <category> remove
@@ -192,27 +195,31 @@ public final class VeinMinerCommand implements TabExecutor {
                     return true;
                 }
 
-                VeinBlock block = VeinBlock.fromString(args[3].toLowerCase());
-                if (block == null) {
-                    Chat.PREFIXED.translateSend(sender, "%rUnknown block type (was it an item?) and/or block states. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW);
-                    return true;
-                }
-
-                List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getId());
                 BlockList blocklist = category.getBlocklist();
+                List<String> configBlocklist = plugin.getConfig().getStringList("BlockList." + category.getId());
 
-                if (!blocklist.contains(block)) {
-                    Chat.PREFIXED.translateSend(sender, "No block with the ID %y" + args[3] + " %gwas found on the %y" + args[1].toLowerCase() + " %gblocklist", ChatColor.YELLOW, ChatColor.GRAY);
-                    return true;
+                for (int i = 3; i < args.length; i++) {
+                    String blockArg = args[i].toLowerCase();
+                    VeinBlock block = VeinBlock.fromString(blockArg);
+                    if (block == null) {
+                        Chat.PREFIXED.translateSend(sender, "%rUnknown block type (was it an item?) and/or block states. Given %y" + blockArg, ChatColor.RED, ChatColor.YELLOW);
+                        continue;
+                    }
+
+                    if (!blocklist.contains(block)) {
+                        Chat.PREFIXED.translateSend(sender, "No block with the ID %y" + blockArg + " %gwas found on the %y" + args[1].toLowerCase() + " %gblocklist", ChatColor.YELLOW, ChatColor.GRAY);
+                        continue;
+                    }
+
+                    blocklist.remove(block);
+                    configBlocklist.remove(block.asDataString());
+                    this.plugin.getConfig().set("BlockList." + category.getId(), configBlocklist);
+
+                    Chat.PREFIXED.translateSend(sender, "Block ID %y" + block.asDataString() + " %gsuccessfully removed from the blocklist", ChatColor.YELLOW, ChatColor.GRAY);
                 }
 
-                blocklist.remove(block);
-                configBlocklist.remove(block.asDataString());
-                this.plugin.getConfig().set("BlockList." + category.getId(), configBlocklist);
                 this.plugin.saveConfig();
                 this.plugin.reloadConfig();
-
-                Chat.PREFIXED.translateSend(sender, "Block ID %y" + block.asDataString() + " %gsuccessfully removed from the blocklist", ChatColor.YELLOW, ChatColor.GRAY);
             }
 
             // /veinminer blocklist <tool> list
@@ -282,31 +289,37 @@ public final class VeinMinerCommand implements TabExecutor {
                     return true;
                 }
 
-                Material tool = Material.matchMaterial(args[3]);
-                if (tool == null) {
-                    Chat.PREFIXED.translateSend(sender, "%rUnknown item. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW);
-                    return true;
-                }
-
-                if (category.containsTool(tool)) {
-                    Chat.PREFIXED.translateSend(sender, "An item with the ID %y" + args[3] + " %gis already on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY);
-                    return true;
-                }
-
                 ConfigWrapper categoriesConfigWrapper = plugin.getCategoriesConfig();
                 FileConfiguration categoriesConfig = categoriesConfigWrapper.asRawConfig();
                 @SuppressWarnings("unchecked")
                 List<Object> configToolList = (List<Object>) categoriesConfig.getList(category.getId() + ".Items", new ArrayList<>());
-                if (configToolList == null) return true;
+                if (configToolList == null) {
+                    Chat.PREFIXED.translateSend(sender, "%rSomething went wrong... is the categories.yml formatted properly?", ChatColor.RED);
+                    return true;
+                }
 
-                configToolList.add(tool.getKey().toString());
+                for (int i = 3; i < args.length; i++) {
+                    String toolArg = args[i].toLowerCase();
+                    Material tool = Material.matchMaterial(toolArg);
+                    if (tool == null) {
+                        Chat.PREFIXED.translateSend(sender, "%rUnknown item. Given %y" + toolArg, ChatColor.RED, ChatColor.YELLOW);
+                        continue;
+                    }
 
-                category.addTool(new ToolTemplateMaterial(category, tool));
-                categoriesConfig.set(category.getId() + ".Items", configToolList);
+                    if (category.containsTool(tool)) {
+                        Chat.PREFIXED.translateSend(sender, "An item with the ID %y" + toolArg + " %gis already on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY);
+                        continue;
+                    }
+
+                    configToolList.add(tool.getKey().toString());
+                    category.addTool(new ToolTemplateMaterial(category, tool));
+                    categoriesConfig.set(category.getId() + ".Items", configToolList);
+
+                    Chat.PREFIXED.translateSend(sender, "Item ID %y" + tool.getKey() + " %gsuccessfully added to the tool list", ChatColor.YELLOW, ChatColor.GRAY);
+                }
+
                 categoriesConfigWrapper.save();
                 categoriesConfigWrapper.reload();
-
-                Chat.PREFIXED.translateSend(sender, "Item ID %y" + tool.getKey() + " %gsuccessfully added to the tool list", ChatColor.YELLOW, ChatColor.GRAY);
             }
 
             // /veinminer toollist <tool> remove
@@ -321,31 +334,37 @@ public final class VeinMinerCommand implements TabExecutor {
                     return true;
                 }
 
-                Material tool = Material.matchMaterial(args[3]);
-                if (tool == null) {
-                    Chat.PREFIXED.translateSend(sender, "%rUnknown item. Given %y" + args[3].toLowerCase(), ChatColor.RED, ChatColor.YELLOW);
-                    return true;
-                }
-
-                if (!category.containsTool(tool)) {
-                    Chat.PREFIXED.translateSend(sender, "An item with the ID %y" + args[3] + " %gis not on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY);
-                    return true;
-                }
-
                 ConfigWrapper categoriesConfigWrapper = plugin.getCategoriesConfig();
                 FileConfiguration categoriesConfig = categoriesConfigWrapper.asRawConfig();
                 @SuppressWarnings("unchecked")
                 List<Object> configToolList = (List<Object>) categoriesConfig.getList(category.getId() + ".Items", new ArrayList<>());
-                if (configToolList == null) return true;
+                if (configToolList == null) {
+                    Chat.PREFIXED.translateSend(sender, "%rSomething went wrong... is the categories.yml formatted properly?", ChatColor.RED);
+                    return true;
+                }
 
-                configToolList.remove(tool.getKey().toString());
+                for (int i = 3; i < args.length; i++) {
+                    String toolArg = args[i].toLowerCase();
+                    Material tool = Material.matchMaterial(toolArg);
+                    if (tool == null) {
+                        Chat.PREFIXED.translateSend(sender, "%rUnknown item. Given %y" + toolArg, ChatColor.RED, ChatColor.YELLOW);
+                        continue;
+                    }
 
-                category.removeTool(tool);
-                categoriesConfig.set(category.getId() + ".Items", configToolList);
+                    if (!category.containsTool(tool)) {
+                        Chat.PREFIXED.translateSend(sender, "An item with the ID %y" + toolArg + " %gis not on the %y" + args[1].toLowerCase() + " %gtool list", ChatColor.YELLOW, ChatColor.GRAY);
+                        continue;
+                    }
+
+                    configToolList.remove(tool.getKey().toString());
+                    category.removeTool(tool);
+                    categoriesConfig.set(category.getId() + ".Items", configToolList);
+
+                    Chat.PREFIXED.translateSend(sender, "Item ID %y" + tool.getKey() + " %gsuccessfully removed from the tool list", ChatColor.YELLOW, ChatColor.GRAY);
+                }
+
                 categoriesConfigWrapper.save();
                 categoriesConfigWrapper.reload();
-
-                Chat.PREFIXED.translateSend(sender, "Item ID %y" + tool.getKey() + " %gsuccessfully removed from the tool list", ChatColor.YELLOW, ChatColor.GRAY);
             }
 
             // /veinminer toollist <tool> list
@@ -355,17 +374,8 @@ public final class VeinMinerCommand implements TabExecutor {
                     return true;
                 }
 
-                Iterable<ToolTemplate> toolListIterable;
-//                if (plugin.getConfig().getBoolean("SortBlocklistAlphabetically", true)) {
-//                    toolListIterable = new ArrayList<>();
-//                    Iterables.addAll((List<ToolTemplate>) toolListIterable, category.getTools());
-//                    Collections.sort((List<ToolTemplate>) toolListIterable);
-//                } else {
-                    toolListIterable = category.getTools();
-//                }
-
                 Chat.PREFIXED.translateSend(sender, "%y%bVeinMiner Blocklist (Category = " + category.getId() + ")", ChatColor.YELLOW, ChatColor.BOLD);
-                toolListIterable.forEach(tool -> sender.sendMessage(ChatColor.YELLOW + "  - " + tool));
+                category.getTools().forEach(tool -> sender.sendMessage(ChatColor.YELLOW + "  - " + tool));
             }
         }
 
@@ -465,23 +475,47 @@ public final class VeinMinerCommand implements TabExecutor {
             }
         }
 
-        else if (args.length == 4 && (args[2].equalsIgnoreCase("add") || args[2].equalsIgnoreCase("remove"))) {
-            if (args[0].equalsIgnoreCase("blocklist")) {
-                String blockArg = args[3];
-                if (!"minecraft:".startsWith(blockArg)) {
-                    blockArg = (blockArg.startsWith(":") ? "minecraft" : "minecraft:") + blockArg;
-                }
+        else if (args.length >= 4) {
+            List<String> suggestions = Collections.emptyList();
 
-                return StringUtil.copyPartialMatches(blockArg, BLOCK_KEYS, new ArrayList<>());
+            // Prefix arguments with "minecraft:" if necessary
+            String materialArg = args[args.length - 1];
+            if (!materialArg.startsWith("minecraft:")) {
+                materialArg = (materialArg.startsWith(":") ? "minecraft" : "minecraft:") + materialArg;
             }
-            else if (args[0].equalsIgnoreCase("toollist")) {
-                String itemArg = args[3];
-                if (!"minecraft:".startsWith(itemArg)) {
-                    itemArg = (itemArg.startsWith(":") ? "minecraft" : "minecraft:") + itemArg;
-                }
 
-                return StringUtil.copyPartialMatches(itemArg, ITEM_KEYS, new ArrayList<>());
+            // Impossible suggestions (defaults to previous arguments)
+            List<String> impossibleSuggestions = new ArrayList<>();
+            for (int i = 3; i < args.length - 1; i++) {
+                impossibleSuggestions.add(args[i]);
+                impossibleSuggestions.add("minecraft:" + args[i]);
             }
+
+            if (args[2].equalsIgnoreCase("add")) {
+                if (args[0].equalsIgnoreCase("blocklist")) {
+                    suggestions = StringUtil.copyPartialMatches(materialArg, BLOCK_KEYS, new ArrayList<>());
+                    ToolCategory.get(args[1]).getBlocklist().forEach(b -> impossibleSuggestions.add(b.getType().getKey().toString()));
+                }
+                else if (args[0].equalsIgnoreCase("toollist")) {
+                    suggestions = StringUtil.copyPartialMatches(materialArg, ITEM_KEYS, new ArrayList<>());
+                }
+            }
+
+            else if (args[2].equalsIgnoreCase("remove")) {
+                if (args[0].equalsIgnoreCase("blocklist")) {
+                    BlockList blocklist = ToolCategory.get(args[1]).getBlocklist();
+                    List<String> blocklistSuggestions = new ArrayList<>(blocklist.size());
+                    blocklist.forEach(v -> blocklistSuggestions.add(v.asDataString()));
+
+                    suggestions = StringUtil.copyPartialMatches(materialArg, blocklistSuggestions, new ArrayList<>());
+                }
+                else if (args[0].equalsIgnoreCase("toollist")) {
+                    suggestions = StringUtil.copyPartialMatches(materialArg, ITEM_KEYS, new ArrayList<>());
+                }
+            }
+
+            suggestions.removeAll(impossibleSuggestions);
+            return suggestions;
         }
 
         else {
