@@ -30,6 +30,7 @@ BlockList:
     - 'minecraft:diamond_ore'
     - 'minecraft:emerald_ore'
     - 'minecraft:nether_quartz_ore'
+    - 'minecraft:nether_gold_ore'
   Axe:
     - 'minecraft:acacia_log'
     - 'minecraft:birch_log'
@@ -48,6 +49,8 @@ BlockList:
     - 'minecraft:carved_pumpkin'
     - 'minecraft:red_mushroom_block'
     - 'minecraft:brown_mushroom_block'
+    - 'minecraft:crimson_stem'
+    - 'minecraft:warped_stem'
   Shovel:
     - 'minecraft:sand'
     - 'minecraft:gravel'
