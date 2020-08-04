@@ -34,6 +34,7 @@ import wtf.choco.veinminer.utils.Chat;
 import wtf.choco.veinminer.utils.ConfigWrapper;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
+import wtf.choco.veinminer.utils.VMConstants;
 
 public final class VeinMinerCommand implements TabExecutor {
 
@@ -55,7 +56,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
         // Reload subcommand
         if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.hasPermission("veinminer.reload")) {
+            if (!sender.hasPermission(VMConstants.PERMISSION_RELOAD)) {
                 Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                 return true;
             }
@@ -96,7 +97,7 @@ public final class VeinMinerCommand implements TabExecutor {
                 return true;
             }
 
-            if (!player.hasPermission("veinminer.toggle")) {
+            if (!player.hasPermission(VMConstants.PERMISSION_TOGGLE)) {
                 Chat.PREFIXED.translateSend(player, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                 return true;
             }
@@ -138,7 +139,7 @@ public final class VeinMinerCommand implements TabExecutor {
                 return true;
             }
 
-            if (!player.hasPermission("veinminer.mode")) {
+            if (!player.hasPermission(VMConstants.PERMISSION_MODE)) {
                 Chat.PREFIXED.translateSend(player, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                 return true;
             }
@@ -179,7 +180,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
             // /veinminer blocklist <tool> add
             if (args[2].equalsIgnoreCase("add")) {
-                if (!sender.hasPermission("veinminer.blocklist.add")) {
+                if (!sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_ADD)) {
                     Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
@@ -219,7 +220,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
             // /veinminer blocklist <category> remove
             else if (args[2].equalsIgnoreCase("remove")) {
-                if (!sender.hasPermission("veinminer.blocklist.remove")) {
+                if (!sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_REMOVE)) {
                     Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
@@ -258,7 +259,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
             // /veinminer blocklist <tool> list
             else if (args[2].equalsIgnoreCase("list")) {
-                if (!sender.hasPermission("veinminer.blocklist.list." + category.getId().toLowerCase())) {
+                if (!sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_LIST + "." + category.getId().toLowerCase())) {
                     Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
@@ -313,7 +314,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
             // /veinminer toollist <tool> add
             if (args[2].equalsIgnoreCase("add")) {
-                if (!sender.hasPermission("veinminer.toollist.add")) {
+                if (!sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_ADD)) {
                     Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
@@ -358,7 +359,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
             // /veinminer toollist <tool> remove
             else if (args[2].equalsIgnoreCase("remove")) {
-                if (!sender.hasPermission("veinminer.toollist.remove")) {
+                if (!sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_REMOVE)) {
                     Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
@@ -403,7 +404,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
             // /veinminer toollist <tool> list
             else if (args[2].equalsIgnoreCase("list")) {
-                if (!sender.hasPermission("veinminer.toollist.list." + category.getId().toLowerCase())) {
+                if (!sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_LIST + "." + category.getId().toLowerCase())) {
                     Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
@@ -419,7 +420,7 @@ public final class VeinMinerCommand implements TabExecutor {
                 return true;
             }
 
-            if (!sender.hasPermission("veinminer.pattern")) {
+            if (!sender.hasPermission(VMConstants.PERMISSION_PATTERN)) {
                 Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                 return true;
             }
@@ -463,13 +464,13 @@ public final class VeinMinerCommand implements TabExecutor {
         List<String> values = new ArrayList<>();
         if (args.length == 1) {
             values.add("version");
-            if (sender.hasPermission("veinminer.reload")) {
+            if (sender.hasPermission(VMConstants.PERMISSION_RELOAD)) {
                 values.add("reload");
             }
-            if (sender.hasPermission("veinminer.toggle")) {
+            if (sender.hasPermission(VMConstants.PERMISSION_RELOAD)) {
                 values.add("toggle");
             }
-            if (sender.hasPermission("veinminer.mode")) {
+            if (sender.hasPermission(VMConstants.PERMISSION_MODE)) {
                 values.add("mode");
             }
             if (hasBlocklistPerms(sender)) {
@@ -478,7 +479,7 @@ public final class VeinMinerCommand implements TabExecutor {
             if (hasToolListPerms(sender)) {
                 values.add("toollist");
             }
-            if (sender.hasPermission("veinminer.pattern")) {
+            if (sender.hasPermission(VMConstants.PERMISSION_PATTERN)) {
                 values.add("pattern");
             }
         }
@@ -510,13 +511,13 @@ public final class VeinMinerCommand implements TabExecutor {
         else if (args.length == 3) {
             String listType = args[0].toLowerCase();
             if (listType.equals("blocklist") || listType.equals("toollist")) {
-                if (sender.hasPermission("veinminer." + listType + ".add")) {
+                if (sender.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_LIST_ADD, listType))) {
                     values.add("add");
                 }
-                if (sender.hasPermission("veinminer." + listType + ".remove")) {
+                if (sender.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_LIST_REMOVE, listType))) {
                     values.add("remove");
                 }
-                if (sender.hasPermission("veinminer." + listType + ".list.*")) {
+                if (sender.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_LIST_LIST, listType) + ".*")) {
                     values.add("list");
                 }
             }
@@ -585,20 +586,20 @@ public final class VeinMinerCommand implements TabExecutor {
     }
 
     private boolean hasBlocklistPerms(CommandSender sender) {
-        return sender.hasPermission("veinminer.blocklist.add")
-            || sender.hasPermission("veinminer.blocklist.remove")
-            || sender.hasPermission("veinminer.blocklist.list.*");
+        return sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_ADD)
+            || sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_REMOVE)
+            || sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_LIST + ".*");
     }
 
     private boolean hasToolListPerms(CommandSender sender) {
-        return sender.hasPermission("veinminer.toollist.add")
-            || sender.hasPermission("veinminer.toollist.remove")
-            || sender.hasPermission("veinminer.toollist.list.*");
+        return sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_ADD)
+            || sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_REMOVE)
+            || sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_LIST + ".*");
     }
 
     private boolean canVeinMine(Player player) {
         for (ToolCategory category : ToolCategory.getAll()) {
-            if (player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase())) {
+            if (player.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE, category.getId().toLowerCase()))) {
                 return true;
             }
         }

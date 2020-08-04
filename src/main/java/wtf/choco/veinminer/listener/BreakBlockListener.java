@@ -36,6 +36,7 @@ import wtf.choco.veinminer.utils.ItemValidator;
 import wtf.choco.veinminer.utils.NonNullHashSet;
 import wtf.choco.veinminer.utils.Pair;
 import wtf.choco.veinminer.utils.ReflectionUtil;
+import wtf.choco.veinminer.utils.VMConstants;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
 
 public final class BreakBlockListener implements Listener {
@@ -78,7 +79,7 @@ public final class BreakBlockListener implements Listener {
         AlgorithmConfig algorithmConfig = (toolTemplate != null) ? toolTemplate.getConfig() : category.getConfig();
         if (!activation.isValid(player) || algorithmConfig.isDisabledWorld(origin.getWorld())
                 || player.getGameMode() != GameMode.SURVIVAL
-                || !player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase())
+                || !player.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE, category.getId().toLowerCase()))
                 || playerData.isVeinMinerDisabled(category) || !ItemValidator.isValid(item, category)) {
             return;
         }
@@ -130,7 +131,7 @@ public final class BreakBlockListener implements Listener {
 
         for (Block block : blocks) {
             // Apply hunger
-            if (hungerModifier != 0.0 && !player.hasPermission("veinminer.free.hunger")) {
+            if (hungerModifier != 0.0 && !player.hasPermission(VMConstants.PERMISSION_FREE_HUNGER)) {
                 this.applyHungerDebuff(player, hungerModifier);
 
                 if (player.getFoodLevel() <= minimumFoodLevel) {

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import wtf.choco.veinminer.data.AlgorithmConfig;
+import wtf.choco.veinminer.utils.VMConstants;
 
 /**
  * An implementation of {@link EconomyModifier} to make use of a Vault-supported
@@ -33,7 +34,7 @@ public class VaultBasedEconomyModifier implements EconomyModifier {
     @Override
     public boolean shouldCharge(Player player, AlgorithmConfig config) {
         Preconditions.checkArgument(config != null, "Must provide algorithm config");
-        return economy != null && player != null && config.getCost() > 0.0 && !player.hasPermission("veinminer.free.economy");
+        return economy != null && player != null && config.getCost() > 0.0 && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
     }
 
     @Override
