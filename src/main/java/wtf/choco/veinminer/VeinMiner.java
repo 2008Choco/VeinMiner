@@ -97,7 +97,7 @@ public class VeinMiner extends JavaPlugin {
 
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.getLogger().info("Vault found. Attempting to enable economy support...");
-            this.economyModifier = new VaultBasedEconomyModifier("veinminer.free");
+            this.economyModifier = new VaultBasedEconomyModifier();
             this.getLogger().info(((VaultBasedEconomyModifier) economyModifier).hasEconomyPlugin()
                     ? "Economy found! Hooked successfully."
                     : "Cancelled. No economy plugin found.");

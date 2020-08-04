@@ -29,9 +29,18 @@ permissions:
   veinminer.pattern:
     description: Allow the use of the '/veinminer pattern' subcommand
     default: op
-  veinminer.free:
-    description: Grants a bypass to the VeinMiner cost (only used if a Vault-supported Economy is installed and the cost is greater than 0)
+  veinminer.free.*:
+    description: Grants a bypass to all VeinMiner debuffs and costs
     default: false
+    children:
+      veinminer.free.economy: true
+      veinminer.free.hunger: true
+
+  veinminer.free.economy:
+    description: Grants a bypass to the VeinMiner cost. Only used if a Vault-supported economy is installed and the cost is greater than 0
+
+  veinminer.free.hunger:
+    description: Grants a bypass to the VeinMiner hunger debuff. Only used if hunger modifier is greater than 0
 
   veinminer.blocklist.*:
     description: Allow the use of the '/veinminer blocklist' subcommand

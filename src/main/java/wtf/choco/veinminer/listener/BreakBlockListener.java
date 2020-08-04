@@ -130,7 +130,7 @@ public final class BreakBlockListener implements Listener {
 
         for (Block block : blocks) {
             // Apply hunger
-            if (hungerModifier != 0.0) {
+            if (hungerModifier != 0.0 && !player.hasPermission("veinminer.free.hunger")) {
                 this.applyHungerDebuff(player, hungerModifier);
 
                 if (player.getFoodLevel() <= minimumFoodLevel) {
