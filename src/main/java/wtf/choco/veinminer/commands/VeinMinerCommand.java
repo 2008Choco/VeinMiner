@@ -403,7 +403,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
             // /veinminer toollist <tool> list
             else if (args[2].equalsIgnoreCase("list")) {
-                if (!sender.hasPermission("veinminer.toollist." + category.getId().toLowerCase())) {
+                if (!sender.hasPermission("veinminer.toollist.list." + category.getId().toLowerCase())) {
                     Chat.PREFIXED.translateSend(sender, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
                     return true;
                 }
