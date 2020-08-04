@@ -36,6 +36,7 @@ BlockList:
     - 'minecraft:emerald_ore'
     - 'minecraft:nether_quartz_ore'
     - 'minecraft:nether_gold_ore'
+    - 'minecraft:ancient_debris'
   Axe:
     - 'minecraft:acacia_log'
     - 'minecraft:birch_log'
