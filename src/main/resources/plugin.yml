@@ -23,6 +23,9 @@ permissions:
   veinminer.toggle:
     description: Allow the use of the '/veinminer toggle' subcommand
     default: true
+  veinminer.mode:
+    description: Allow the use of the '/veinminer mode' subcommand
+    default: true
   veinminer.pattern:
     description: Allow the use of the '/veinminer pattern' subcommand
     default: op

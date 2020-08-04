@@ -3,8 +3,6 @@ package wtf.choco.veinminer.listener;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Enums;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -75,9 +73,9 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Invalid player state check
-        ActivationStrategy activation = Enums.getIfPresent(ActivationStrategy.class, plugin.getConfig().getString("ActivationStrategy", "SNEAK")).or(ActivationStrategy.SNEAK);
-        AlgorithmConfig algorithmConfig = (toolTemplate != null) ? toolTemplate.getConfig() : category.getConfig();
         VMPlayerData playerData = VMPlayerData.get(player);
+        ActivationStrategy activation = playerData.getActivationStrategy();
+        AlgorithmConfig algorithmConfig = (toolTemplate != null) ? toolTemplate.getConfig() : category.getConfig();
         if (!activation.isValid(player) || algorithmConfig.isDisabledWorld(origin.getWorld())
                 || player.getGameMode() != GameMode.SURVIVAL
                 || !player.hasPermission("veinminer.veinmine." + category.getId().toLowerCase())

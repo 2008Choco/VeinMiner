@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.tool.ToolCategory;
 
 /**
@@ -26,6 +27,7 @@ public final class VMPlayerData {
 
     private static final Map<UUID, VMPlayerData> CACHE = new HashMap<>();
 
+    private ActivationStrategy activationStrategy = ActivationStrategy.SNEAK;
     private final Set<ToolCategory> disabledCategories = new HashSet<>();
 
     private final UUID player;
@@ -164,6 +166,25 @@ public final class VMPlayerData {
      */
     public boolean isVeinMinerPartiallyDisabled() {
         return !disabledCategories.isEmpty();
+    }
+
+    /**
+     * Set the activation strategy to use for this player.
+     *
+     * @param activationStrategy the activation strategy
+     */
+    public void setActivationStrategy(ActivationStrategy activationStrategy) {
+        Preconditions.checkArgument(activationStrategy != null, "activationStrategy must not be null");
+        this.activationStrategy = activationStrategy;
+    }
+
+    /**
+     * Get the activation strategy to use for this player.
+     *
+     * @return the activation strategy
+     */
+    public ActivationStrategy getActivationStrategy() {
+        return activationStrategy;
     }
 
     /**

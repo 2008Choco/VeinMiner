@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Enums;
 import com.google.common.collect.Iterables;
 
 import org.apache.commons.lang.Validate;
@@ -21,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.VMPlayerData;
@@ -121,6 +123,39 @@ public final class VeinMinerCommand implements TabExecutor {
                     + (playerData.isVeinMinerEnabled() ? ChatColor.GREEN + "on" : ChatColor.RED + "off")
                     + ChatColor.GRAY + " for " + ChatColor.YELLOW + "all tools");
             }
+        }
+
+        // Mode subcommand
+        else if (args[0].equalsIgnoreCase("mode")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("VeinMiner cannot change mode from the console...");
+                return true;
+            }
+
+            Player player = (Player) sender;
+            if (!canVeinMine(player)) {
+                Chat.PREFIXED.translateSend(player, "%rYou may not toggle a feature to which you do not have access", ChatColor.RED);
+                return true;
+            }
+
+            if (!player.hasPermission("veinminer.mode")) {
+                Chat.PREFIXED.translateSend(player, "%rYou have insufficient permissions to execute this command", ChatColor.RED);
+                return true;
+            }
+
+            if (args.length < 2) {
+                Chat.PREFIXED.translateSend(sender, "%rInvalid command syntax! %gMissing parameter(s) %y/" + label + " mode <sneak|stand|always>", ChatColor.RED, ChatColor.GRAY, ChatColor.YELLOW);
+                return true;
+            }
+
+            ActivationStrategy strategy = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase()).orNull();
+            if (strategy == null) {
+                Chat.PREFIXED.translateSend(sender, "Invalid activation strategy: %y" + args[1], ChatColor.YELLOW);
+                return true;
+            }
+
+            VMPlayerData.get(player).setActivationStrategy(strategy);
+            Chat.PREFIXED.translateSend(player, "%gActivation mode successfully changed to %y" + strategy.name().toLowerCase().replace("_", " "), ChatColor.GREEN, ChatColor.YELLOW);
         }
 
         // Blocklist subcommand
@@ -434,6 +469,9 @@ public final class VeinMinerCommand implements TabExecutor {
             if (sender.hasPermission("veinminer.toggle")) {
                 values.add("toggle");
             }
+            if (sender.hasPermission("veinminer.mode")) {
+                values.add("mode");
+            }
             if (hasBlocklistPerms(sender)) {
                 values.add("blocklist");
             }
@@ -453,6 +491,12 @@ public final class VeinMinerCommand implements TabExecutor {
 
                 if (args[0].equalsIgnoreCase("toollist")) {
                     values.remove("hand"); // Cannot modify the hand's tool list
+                }
+            }
+
+            else if (args[0].equalsIgnoreCase("mode")) {
+                for (ActivationStrategy activationStrategy : ActivationStrategy.values()) {
+                    values.add(activationStrategy.name().toLowerCase());
                 }
             }
 
