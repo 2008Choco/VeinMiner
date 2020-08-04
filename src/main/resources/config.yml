@@ -20,6 +20,11 @@ Cost: 0.0
 DisabledWorlds:
 - WorldName
 
+Hunger:
+  HungerModifier: 4.0
+  MinimumFoodLevel: 1
+  HungryMessage: "&7You are too hungry to vein mine!"
+
 BlockList:
   Pickaxe:
     - 'minecraft:coal_ore'

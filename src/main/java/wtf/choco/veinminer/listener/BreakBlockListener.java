@@ -126,9 +126,26 @@ public final class BreakBlockListener implements Listener {
 
         // Actually destroying the allocated blocks
         int maxDurability = item.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
-        boolean hasDurability = (maxDurability > 0);
+        float hungerModifier = ((float) Math.max((plugin.getConfig().getDouble("Hunger.HungerModifier")), 0.0D)) * 0.025F;
+        int minimumFoodLevel = Math.max(plugin.getConfig().getInt("Hunger.MinimumFoodLevel"), 0);
+        String hungryMessage = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Hunger.HungryMessage", ""));
+
         for (Block block : blocks) {
-            if (hasDurability && category != ToolCategory.HAND) {
+            // Apply hunger
+            if (hungerModifier != 0.0) {
+                this.applyHungerDebuff(player, hungerModifier);
+
+                if (player.getFoodLevel() <= minimumFoodLevel) {
+                    if (!hungryMessage.isEmpty()) {
+                        player.sendMessage(hungryMessage);
+                    }
+
+                    break;
+                }
+            }
+
+            // Check for tool damage
+            if (maxDurability > 0 && category != ToolCategory.HAND) {
                 if (ItemValidator.isEmpty(item)) {
                     break;
                 }
@@ -139,6 +156,7 @@ public final class BreakBlockListener implements Listener {
                 }
             }
 
+            // Break the block
             Material currentType = block.getType();
             if (block == origin || ReflectionUtil.breakBlock(player, block)) {
                 this.statTracker.accumulateVeinMinedMaterial(currentType);
@@ -151,6 +169,25 @@ public final class BreakBlockListener implements Listener {
 
         // Unexempt from anticheats
         hooks.stream().filter(h -> h.shouldUnexempt(player)).forEach(h -> h.unexempt(player));
+    }
+
+    // Modified version of https://github.com/portablejim/VeinMiner/blob/1.9/src/main/java/portablejim/veinminer/core/MinerInstance.java#L231-L254
+    private void applyHungerDebuff(Player player, float hungerModifier) {
+        int foodLevel = player.getFoodLevel();
+        float saturation = player.getSaturation();
+        float exhaustion = player.getExhaustion();
+
+        exhaustion = (exhaustion + hungerModifier) % 4;
+        saturation -= (int) ((exhaustion + hungerModifier) / 4);
+
+        if (saturation < 0) {
+            foodLevel += saturation;
+            saturation = 0;
+        }
+
+        player.setFoodLevel(foodLevel);
+        player.setSaturation(saturation);
+        player.setExhaustion(exhaustion);
     }
 
 }
