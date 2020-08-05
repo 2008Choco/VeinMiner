@@ -25,7 +25,7 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.data.BlockList;
-import wtf.choco.veinminer.data.VMPlayerData;
+import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
@@ -102,7 +102,7 @@ public final class VeinMinerCommand implements TabExecutor {
                 return true;
             }
 
-            VMPlayerData playerData = VMPlayerData.get(player);
+            PlayerPreferences playerData = PlayerPreferences.get(player);
             // Toggle a specific tool
             if (args.length >= 2) {
                 ToolCategory category = ToolCategory.get(args[1]);
@@ -155,7 +155,7 @@ public final class VeinMinerCommand implements TabExecutor {
                 return true;
             }
 
-            VMPlayerData.get(player).setActivationStrategy(strategy);
+            PlayerPreferences.get(player).setActivationStrategy(strategy);
             Chat.PREFIXED.translateSend(player, "%gActivation mode successfully changed to %y" + strategy.name().toLowerCase().replace("_", " "), ChatColor.GREEN, ChatColor.YELLOW);
         }
 

@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.data.VMPlayerData;
+import wtf.choco.veinminer.data.PlayerPreferences;
 
 public final class PlayerDataListener implements Listener {
 
@@ -21,7 +21,7 @@ public final class PlayerDataListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        VMPlayerData playerData = VMPlayerData.get(player);
+        PlayerPreferences playerData = PlayerPreferences.get(player);
 
         // If the directory is only just created, there's no player data to read from anyways
         if (plugin.getPlayerDataDirectory().mkdirs()) {
@@ -34,7 +34,7 @@ public final class PlayerDataListener implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        VMPlayerData playerData = VMPlayerData.get(player);
+        PlayerPreferences playerData = PlayerPreferences.get(player);
 
         if (!playerData.isDirty()) {
             return;

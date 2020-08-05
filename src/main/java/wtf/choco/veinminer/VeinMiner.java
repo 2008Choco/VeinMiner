@@ -26,7 +26,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCommand;
-import wtf.choco.veinminer.data.VMPlayerData;
+import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.economy.EmptyEconomyModifier;
@@ -128,7 +128,7 @@ public class VeinMiner extends JavaPlugin {
         this.manager.loadMaterialAliases();
 
         // Special case for reloads and crashes
-        Bukkit.getOnlinePlayers().forEach(player -> VMPlayerData.get(player).readFromFile(playerDataDirectory));
+        Bukkit.getOnlinePlayers().forEach(player -> PlayerPreferences.get(player).readFromFile(playerDataDirectory));
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
@@ -158,13 +158,13 @@ public class VeinMiner extends JavaPlugin {
         this.manager.clearLocalisedData();
         this.patternRegistry.clearPatterns();
         this.anticheatHooks.clear();
-        VMPlayerData.clearCache();
+        PlayerPreferences.clearCache();
         VeinBlock.clearCache();
         ToolCategory.clearCategories();
 
         // Special case for reloads and crashes
         Bukkit.getOnlinePlayers().forEach(player -> {
-            VMPlayerData playerData = VMPlayerData.get(player);
+            PlayerPreferences playerData = PlayerPreferences.get(player);
             if (!playerData.isDirty()) {
                 return;
             }

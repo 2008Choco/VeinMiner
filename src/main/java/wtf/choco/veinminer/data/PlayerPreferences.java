@@ -33,9 +33,9 @@ import wtf.choco.veinminer.tool.ToolCategory;
  *
  * @author Parker Hawke - 2008Choco
  */
-public final class VMPlayerData {
+public final class PlayerPreferences {
 
-    private static final Map<UUID, VMPlayerData> CACHE = new HashMap<>();
+    private static final Map<UUID, PlayerPreferences> CACHE = new HashMap<>();
 
     private ActivationStrategy activationStrategy = ActivationStrategy.SNEAK;
     private final Set<ToolCategory> disabledCategories = new HashSet<>();
@@ -43,7 +43,7 @@ public final class VMPlayerData {
 
     private final UUID player;
 
-    private VMPlayerData(@NotNull UUID player) {
+    private PlayerPreferences(@NotNull UUID player) {
         this.player = player;
     }
 
@@ -275,7 +275,7 @@ public final class VMPlayerData {
     }
 
     /**
-     * Write this VMPlayerData object to its file in the specified directory.
+     * Write this object to its file in the specified directory.
      *
      * @param directory the directory in which the file resides
      *
@@ -294,7 +294,7 @@ public final class VMPlayerData {
     }
 
     /**
-     * Read this VMPlayerData object from its file in the specified directory.
+     * Read this object from its file in the specified directory.
      *
      * @param directory the directory in which the file resides
      *
@@ -318,15 +318,15 @@ public final class VMPlayerData {
     }
 
     /**
-     * Get the {@link VMPlayerData} instance for the specified player.
+     * Get the {@link PlayerPreferences} instance for the specified player.
      *
      * @param player the player whose data to retrieve
      *
      * @return the player data
      */
-    public static VMPlayerData get(@NotNull OfflinePlayer player) {
+    public static PlayerPreferences get(@NotNull OfflinePlayer player) {
         Preconditions.checkArgument(player != null, "Cannot get data for null player");
-        return CACHE.computeIfAbsent(player.getUniqueId(), VMPlayerData::new);
+        return CACHE.computeIfAbsent(player.getUniqueId(), PlayerPreferences::new);
     }
 
     /**

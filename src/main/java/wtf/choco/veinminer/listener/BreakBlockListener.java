@@ -25,7 +25,7 @@ import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
 import wtf.choco.veinminer.data.AlgorithmConfig;
-import wtf.choco.veinminer.data.VMPlayerData;
+import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
@@ -74,7 +74,7 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Invalid player state check
-        VMPlayerData playerData = VMPlayerData.get(player);
+        PlayerPreferences playerData = PlayerPreferences.get(player);
         ActivationStrategy activation = playerData.getActivationStrategy();
         AlgorithmConfig algorithmConfig = (toolTemplate != null) ? toolTemplate.getConfig() : category.getConfig();
         if (!activation.isValid(player) || algorithmConfig.isDisabledWorld(origin.getWorld())
