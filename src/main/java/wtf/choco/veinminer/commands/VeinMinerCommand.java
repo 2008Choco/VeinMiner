@@ -473,7 +473,7 @@ public final class VeinMinerCommand implements TabExecutor {
             if (sender.hasPermission(VMConstants.PERMISSION_RELOAD)) {
                 values.add("reload");
             }
-            if (sender.hasPermission(VMConstants.PERMISSION_RELOAD)) {
+            if (sender.hasPermission(VMConstants.PERMISSION_TOGGLE)) {
                 values.add("toggle");
             }
             if (sender.hasPermission(VMConstants.PERMISSION_MODE)) {
