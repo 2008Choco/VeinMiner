@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,7 +37,6 @@ import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.PatternThorough;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
-import wtf.choco.veinminer.utils.Chat;
 import wtf.choco.veinminer.utils.ConfigWrapper;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
@@ -49,7 +47,6 @@ public class VeinMiner extends JavaPlugin {
 
     public static final Gson GSON = new Gson();
 
-    public static final String CHAT_PREFIX = ChatColor.BLUE.toString() + ChatColor.BOLD + "VeinMiner | " + ChatColor.GRAY;
     public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
 
     private static VeinMiner instance;
@@ -70,7 +67,6 @@ public class VeinMiner extends JavaPlugin {
         instance = this;
         this.veinMiningPattern = PatternExpansive.get();
         this.manager = new VeinMinerManager(this);
-        Chat.PREFIXED.setPrefix(CHAT_PREFIX);
 
         // Configuration handling
         this.saveDefaultConfig();

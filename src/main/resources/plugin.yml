@@ -3,6 +3,7 @@ main: wtf.choco.veinminer.VeinMiner
 version: ${project.version}
 description: ${project.description}
 author: 2008Choco
+website: https://www.spigotmc.org/resources/12038/
 softdepend: [NoCheatPlus, AAC, AntiAura, Spartan, Vault]
 api-version: 1.13
 

@@ -31,7 +31,6 @@ import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.tool.ToolTemplate;
-import wtf.choco.veinminer.utils.Chat;
 import wtf.choco.veinminer.utils.ItemValidator;
 import wtf.choco.veinminer.utils.NonNullHashSet;
 import wtf.choco.veinminer.utils.Pair;
@@ -93,7 +92,7 @@ public final class BreakBlockListener implements Listener {
         EconomyModifier economy = plugin.getEconomyModifier();
         if (economy.shouldCharge(player, algorithmConfig)) {
             if (!economy.hasSufficientBalance(player, algorithmConfig)) {
-                Chat.PREFIXED.translateSend(player, "You have insufficient funds to vein mine (Required: %y" + algorithmConfig.getCost() + "%g)", ChatColor.YELLOW, ChatColor.GRAY);
+                player.sendMessage(ChatColor.GRAY + "You have insufficient funds to vein mine (Required: " + ChatColor.YELLOW + algorithmConfig.getCost() + ChatColor.GRAY + ")");
                 return;
             }
 
