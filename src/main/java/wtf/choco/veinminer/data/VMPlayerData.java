@@ -1,5 +1,11 @@
 package wtf.choco.veinminer.data;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,6 +15,7 @@ import java.util.UUID;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -17,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.tool.ToolCategory;
 
@@ -264,6 +272,49 @@ public final class VMPlayerData {
         }
 
         this.dirty = false;
+    }
+
+    /**
+     * Write this VMPlayerData object to its file in the specified directory.
+     *
+     * @param directory the directory in which the file resides
+     *
+     * @see VeinMiner#getPlayerDataDirectory()
+     */
+    public void writeToFile(File directory) {
+        Preconditions.checkArgument(directory != null && directory.isDirectory(), "directory must be a directory");
+
+        File file = new File(directory, player + ".json");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            VeinMiner.GSON.toJson(write(new JsonObject()), writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Read this VMPlayerData object from its file in the specified directory.
+     *
+     * @param directory the directory in which the file resides
+     *
+     * @see VeinMiner#getPlayerDataDirectory()
+     */
+    public void readFromFile(File directory) {
+        File file = new File(directory, player + ".json");
+        if (!file.exists()) {
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            JsonObject root = VeinMiner.GSON.fromJson(reader, JsonObject.class);
+            this.read(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JsonSyntaxException e) {
+            VeinMiner.getPlugin().getLogger().warning("Could not read player data for user " + getPlayer().getName() + " (" + player + "). Invalid file format. Deleting...");
+            file.delete();
+        }
     }
 
     /**

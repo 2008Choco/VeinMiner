@@ -28,7 +28,7 @@ public final class PlayerDataListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> plugin.writePlayerDataToFile(playerData));
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> playerData.readFromFile(plugin.getPlayerDataDirectory()));
     }
 
     @EventHandler
@@ -40,7 +40,7 @@ public final class PlayerDataListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> plugin.writePlayerDataToFile(playerData));
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> playerData.writeToFile(plugin.getPlayerDataDirectory()));
     }
 
 }
