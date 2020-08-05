@@ -7,12 +7,13 @@ import java.util.function.Function;
 
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+
 import org.jetbrains.annotations.NotNull;
 
 final class BlockCache<T> {
 
-    protected static final BlockCache<Material> MATERIAL = new BlockCache<>(new EnumMap<>(Material.class));
-    protected static final BlockCache<BlockData> BLOCK_DATA = new BlockCache<>(new HashMap<>());
+    static final BlockCache<Material> MATERIAL = new BlockCache<>(new EnumMap<>(Material.class));
+    static final BlockCache<BlockData> BLOCK_DATA = new BlockCache<>(new HashMap<>());
 
     private final Map<T, VeinBlock> cached;
 
@@ -20,11 +21,11 @@ final class BlockCache<T> {
         this.cached = backingMap;
     }
 
-    protected VeinBlock getOrCache(@NotNull T type, @NotNull Function<T, VeinBlock> defaultSupplier) {
+    VeinBlock getOrCache(@NotNull T type, @NotNull Function<T, VeinBlock> defaultSupplier) {
         return cached.computeIfAbsent(type, defaultSupplier);
     }
 
-    protected static void clear() {
+    static void clear() {
         MATERIAL.cached.clear();
         BLOCK_DATA.cached.clear();
     }
