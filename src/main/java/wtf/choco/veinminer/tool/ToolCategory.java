@@ -12,11 +12,11 @@ import com.google.common.collect.ImmutableList;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.utils.ItemValidator;
@@ -32,46 +32,47 @@ public class ToolCategory {
     private static final Map<String, ToolCategory> CATEGORIES = new HashMap<>();
     private static final Pattern VALID_ID = Pattern.compile("[A-Za-z0-9]+", Pattern.CASE_INSENSITIVE);
 
-    public static final ToolCategory HAND = new ToolCategory(VeinMiner.getPlugin().getVeinMinerManager(), "Hand");
+    public static final ToolCategory HAND = new ToolCategory("Hand", VeinMiner.getPlugin().getVeinMinerManager().getConfig()); // Hand uses the default config
     static {
         ToolCategory.register(HAND);
     }
 
     private final String id;
-    private final AlgorithmConfig config;
     private final List<ToolTemplate> tools;
     private final BlockList blocklist;
+    private final AlgorithmConfig config;
 
     /**
      * Construct a new tool category with an empty block and tool list.
      *
-     * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
      * Must match [A-Za-z0-9]
      * @param blocklist the category block list
+     * @param configuration the algorithm configuration for this category
      */
-    public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id, @NotNull BlockList blocklist) {
-        Preconditions.checkArgument(manager != null, "Vein miner manager must not be null");
+    public ToolCategory(@NotNull String id, @NotNull BlockList blocklist, @NotNull AlgorithmConfig configuration) {
         Preconditions.checkArgument(id != null && VALID_ID.matcher(id).matches(), "Invalid category ID. Must be non-null and alphanumeric with no spaces");
         Preconditions.checkArgument(blocklist != null, "Blocklist must not be null");
+        Preconditions.checkArgument(configuration != null, "configuration must not be null");
 
-        this.config = new AlgorithmConfig(manager.getConfig());
         this.id = id;
         this.tools = new ArrayList<>();
         this.blocklist = blocklist;
+        this.config = new AlgorithmConfig();
     }
 
     /**
      * Construct a new tool category.
      *
-     * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
      * Must match [A-Za-z0-9]
      * @param blocklist the category block list
      * @param tools the tools that apply to this category
+     * @param configuration the algorithm configuration for this category
      */
-    public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id, @NotNull BlockList blocklist, @NotNull ToolTemplate... tools) {
-        this(manager, id, blocklist);
+    public ToolCategory(@NotNull String id, @NotNull BlockList blocklist, @NotNull AlgorithmConfig configuration, @NotNull ToolTemplate... tools) {
+        this(id, blocklist, configuration);
+
         Preconditions.checkArgument(tools != null, "Tools must not be null");
 
         for (ToolTemplate template : tools) {
@@ -82,24 +83,24 @@ public class ToolCategory {
     /**
      * Construct a new tool category with an empty block list.
      *
-     * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
      * Must match [A-Za-z0-9]
      * @param tools the tools that apply to this category
+     * @param configuration the algorithm configuration for this category
      */
-    public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id, @NotNull ToolTemplate... tools) {
-        this(manager, id, new BlockList(), tools);
+    public ToolCategory(@NotNull String id, @NotNull AlgorithmConfig configuration, @NotNull ToolTemplate... tools) {
+        this(id, new BlockList(), configuration, tools);
     }
 
     /**
      * Construct a new tool category with an empty block list.
      *
-     * @param manager the vein miner manager instance
      * @param id the unique id of the tool category. Recommended to be a single-worded, PascalCase id.
      * Must match [A-Za-z0-9]
+     * @param configuration the algorithm configuration for this category
      */
-    public ToolCategory(@NotNull VeinMinerManager manager, @NotNull String id) {
-        this(manager, id, new BlockList());
+    public ToolCategory(@NotNull String id, @NotNull AlgorithmConfig configuration) {
+        this(id, new BlockList(), configuration);
     }
 
     /**

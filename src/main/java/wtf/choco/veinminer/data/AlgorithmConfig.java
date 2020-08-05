@@ -1,58 +1,94 @@
 package wtf.choco.veinminer.data;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.base.Preconditions;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents various configurable options for the vein miner algorithm. These options may be
- * applied globally, per-category and per-template.
+ * Represents various configurable options for the vein miner algorithm.
  *
  * @author Parker Hawke - Choco
  */
-public final class AlgorithmConfig implements Cloneable {
+public class AlgorithmConfig implements Cloneable {
 
-    private static final boolean DEFAULT_REPAIR_FRIENDLY_VEINMINER = false, DEFAULT_INCLUDE_EDGES = true;
-    private static final int DEFAULT_MAX_VEIN_SIZE = 64;
-    private static final double DEFAULT_COST = 0.0;
-
-    private Boolean repairFriendlyVeinMiner, includeEdges;
-    private Integer maxVeinSize;
-    private Double cost;
-    private final Set<UUID> disabledWorlds = new HashSet<>();
-
-    private AlgorithmConfig parent;
+    private boolean repairFriendly = false;
+    private boolean includeEdges = true;
+    private int maxVeinSize = 64;
+    private double cost = 0.0D;
+    private Set<UUID> disabledWorlds = new HashSet<>();
 
     /**
-     * Construct an algorithm config based on the values of an existing config. This is equivalent
-     * to calling {@link #clone()}.
+     * Construct an AlgorithmConfig using values supplied from the given configuration section and
+     * using the provided AlgorithmConfig as a default fallback if values are not present in the
+     * configuration section.
      *
-     * @param parent the parent algorithm config. null if this is the root configuration
+     * @param section the section from which to read values
+     * @param defaultValues the config from which to pull default values
      */
-    public AlgorithmConfig(@Nullable AlgorithmConfig parent) {
-        this.parent = parent;
-    }
+    public AlgorithmConfig(@NotNull ConfigurationSection section, @Nullable AlgorithmConfig defaultValues) {
+        Preconditions.checkArgument(section != null, "section cannot be null");
 
-    public AlgorithmConfig() {
-        this(null);
+        this.repairFriendly = section.getBoolean("RepairFriendlyVeinminer", (defaultValues != null) ? defaultValues.repairFriendly : repairFriendly);
+        this.includeEdges = section.getBoolean("IncludeEdges", (defaultValues != null) ? defaultValues.includeEdges : includeEdges);
+        this.maxVeinSize = section.getInt("MaxVeinSize", (defaultValues != null) ? defaultValues.maxVeinSize : maxVeinSize);
+        this.cost = section.getDouble("Cost", (defaultValues != null) ? defaultValues.cost : cost);
+
+        if (section.contains("DisabledWorlds")) {
+            section.getStringList("DisabledWorlds").forEach(worldName -> {
+                World world = Bukkit.getWorld(worldName);
+                if (world == null) {
+                    return;
+                }
+
+                this.disabledWorlds.add(world.getUID());
+            });
+        } else {
+            this.disabledWorlds = (defaultValues != null) ? new HashSet<>(defaultValues.disabledWorlds) : disabledWorlds;
+        }
     }
 
     /**
-     * Set the parent algorithm config from which to retrieve values if not defined within this
-     * scope.
+     * Construct an AlgorithmConfig using values supplied from the given configuration section.
      *
-     * @param parent the config parent. null if none
+     * @param section the section from which to read values
      */
-    public void setParent(@Nullable AlgorithmConfig parent) {
-        this.parent = parent;
+    public AlgorithmConfig(@NotNull ConfigurationSection section) {
+        this(section, null);
     }
+
+    /**
+     * Construct an AlgorithmConfig using values supplied from the given algorithm config.
+     *
+     * @param config the configuration from which to read values
+     *
+     * @see #clone()
+     */
+    public AlgorithmConfig(@NotNull AlgorithmConfig config) {
+        Preconditions.checkArgument(config != null, "config cannot be null");
+
+        this.repairFriendly = config.repairFriendly;
+        this.includeEdges = config.includeEdges;
+        this.maxVeinSize = config.maxVeinSize;
+        this.cost = config.cost;
+        this.disabledWorlds = new HashSet<>(config.disabledWorlds);
+    }
+
+    /**
+     * Construct an AlgorithmConfig with hard-coded default values.
+     */
+    public AlgorithmConfig() { }
 
     /**
      * Set whether or not vein miner should be repair-friendly. If true, vein miner will
@@ -66,7 +102,7 @@ public final class AlgorithmConfig implements Cloneable {
      */
     @NotNull
     public AlgorithmConfig repairFriendly(boolean friendly) {
-        this.repairFriendlyVeinMiner = friendly;
+        this.repairFriendly = friendly;
         return this;
     }
 
@@ -77,7 +113,7 @@ public final class AlgorithmConfig implements Cloneable {
      * @return true if repair-friendly, false otherwise
      */
     public boolean isRepairFriendly() {
-        return (repairFriendlyVeinMiner != null) ? repairFriendlyVeinMiner.booleanValue() : (parent != null ? parent.isRepairFriendly() : DEFAULT_REPAIR_FRIENDLY_VEINMINER);
+        return repairFriendly;
     }
 
     /**
@@ -100,7 +136,7 @@ public final class AlgorithmConfig implements Cloneable {
      * @return true if includes edges, false otherwise
      */
     public boolean includesEdges() {
-        return (includeEdges != null) ? includeEdges.booleanValue() : (parent != null ? parent.includesEdges() : DEFAULT_INCLUDE_EDGES);
+        return includeEdges;
     }
 
     /**
@@ -124,7 +160,7 @@ public final class AlgorithmConfig implements Cloneable {
      * @return the maximum vein size
      */
     public int getMaxVeinSize() {
-        return (maxVeinSize != null) ? maxVeinSize.intValue() : (parent != null ? parent.getMaxVeinSize() : DEFAULT_MAX_VEIN_SIZE);
+        return maxVeinSize;
     }
 
     /**
@@ -144,12 +180,12 @@ public final class AlgorithmConfig implements Cloneable {
     }
 
     /**
-     * Get the cost.
+     * Get the economic cost.
      *
      * @return the cost
      */
     public double getCost() {
-        return (cost != null) ? cost.doubleValue() : (parent != null ? parent.getCost() : DEFAULT_COST);
+        return cost;
     }
 
     /**
@@ -190,63 +226,74 @@ public final class AlgorithmConfig implements Cloneable {
      * @return true if disabled, false otherwise
      */
     public boolean isDisabledWorld(@NotNull World world) {
-        return world != null && (disabledWorlds.contains(world.getUID()) || (parent != null && parent.isDisabledWorld(world)));
+        return world != null && (disabledWorlds.contains(world.getUID()));
     }
 
     /**
-     * Copy all values from the provided configuration to this configuration. Any undefined values will
-     * be overwritten from the provided configuration, as well as any undefined values from it will be
-     * written to this instance. This method is the equivalent of calling {@link #clone()}, only no new
-     * instance is created. This object acts as the modified instance.
+     * Read configured values from a raw Map<String, Object>. This is not a recommended
+     * means of reading data and exists solely for internal use.
      *
-     * @param config the config from which to copy
+     * @param raw the raw data from which to read configured values
      *
-     * @return this instance. Allows for chained method calls
+     * @deprecated not set for removal but AVOID AT ALL COSTS. Constructors and builder
+     * methods should be the preferred approach to reading configured values.
      */
-    @NotNull
-    public AlgorithmConfig copyValues(@NotNull AlgorithmConfig config) {
-        this.repairFriendlyVeinMiner = config.repairFriendlyVeinMiner;
-        this.includeEdges = config.includeEdges;
-        this.maxVeinSize = config.maxVeinSize;
-        this.disabledWorlds.clear();
-        this.disabledWorlds.addAll(config.disabledWorlds);
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public void readUnsafe(Map<String, Object> raw) {
+        Object repairFriendlyVeinMiner = raw.get("RepairFriendlyVeinminer");
+        Object includeEdges = raw.get("IncludeEdges");
+        Object maxVeinSize = raw.get("MaxVeinSize");
+        Object cost = raw.get("Cost");
+        Object disabledWorlds = raw.get("DisabledWorlds");
 
-        return this;
-    }
+        if (repairFriendlyVeinMiner instanceof Boolean) {
+            this.repairFriendly((boolean) repairFriendlyVeinMiner);
+        }
+        if (includeEdges instanceof Boolean) {
+            this.repairFriendly((boolean) includeEdges);
+        }
+        if (maxVeinSize instanceof Integer) {
+            this.maxVeinSize(Math.max((int) maxVeinSize, 1));
+        }
+        if (cost instanceof Number) {
+            this.cost(Math.max((double) cost, 0.0));
+        }
+        if (disabledWorlds instanceof List) {
+            ((List<Object>) disabledWorlds).stream().filter(o -> o instanceof String).map(s -> UUID.fromString((String) s))
+                .distinct().map(Bukkit::getWorld).forEach(w -> {
+                    if (w == null) {
+                        return;
+                    }
 
-    /**
-     * Assign all configured values to hard-coded defaults provided by VeinMiner.
-     *
-     * @return the default VeinMiner config
-     */
-    @NotNull
-    public AlgorithmConfig defaultValues() {
-        this.repairFriendlyVeinMiner = DEFAULT_REPAIR_FRIENDLY_VEINMINER;
-        this.includeEdges = DEFAULT_INCLUDE_EDGES;
-        this.maxVeinSize = DEFAULT_MAX_VEIN_SIZE;
-        this.disabledWorlds.clear();
-
-        return this;
+                    this.disabledWorld(w);
+                });
+        }
     }
 
     @Override
     public AlgorithmConfig clone() {
-        return new AlgorithmConfig(parent).copyValues(this);
+        return new AlgorithmConfig(this);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(repairFriendlyVeinMiner, includeEdges, maxVeinSize, disabledWorlds);
+        return Objects.hash(repairFriendly, includeEdges, maxVeinSize, cost, disabledWorlds);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (!(obj instanceof AlgorithmConfig)) return false;
+    public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }
 
-        AlgorithmConfig other = (AlgorithmConfig) obj;
-        return repairFriendlyVeinMiner == other.repairFriendlyVeinMiner && includeEdges == other.includeEdges
-            && maxVeinSize == other.maxVeinSize && Objects.equals(disabledWorlds, other.disabledWorlds);
+        if (!(object instanceof AlgorithmConfig)) {
+            return false;
+        }
+
+        AlgorithmConfig other = (AlgorithmConfig) object;
+        return repairFriendly == other.repairFriendly && includeEdges == other.includeEdges
+            && maxVeinSize == other.maxVeinSize && cost == other.cost && Objects.equals(disabledWorlds, other.disabledWorlds);
     }
 
 }

@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,10 +37,11 @@ public class ToolTemplateItemStack implements ToolTemplate {
      *
      * @param category the category to which this template belongs
      * @param type the type for which to check
+     * @param configuration the algorithm configuration for this template
      * @param name the name for which to check (null if none)
      * @param lore the lore for which to check (null if none)
      */
-    public ToolTemplateItemStack(@NotNull ToolCategory category, @NotNull Material type, @Nullable String name, @Nullable List<String> lore) {
+    public ToolTemplateItemStack(@NotNull ToolCategory category, @NotNull AlgorithmConfig configuration, @NotNull Material type, @Nullable String name, @Nullable List<String> lore) {
         Preconditions.checkArgument(category != null, "Cannot provide a null category");
         Preconditions.checkArgument(!ItemValidator.isEmpty(type), "The specified type must be an item. Blocks, technical blocks or air are not permitted");
 
@@ -47,7 +49,7 @@ public class ToolTemplateItemStack implements ToolTemplate {
         this.type = type;
         this.name = (!StringUtils.isWhitespace(name)) ? name : null;
         this.lore = (lore != null && !lore.isEmpty()) ? new ArrayList<>(lore) : null;
-        this.config = new AlgorithmConfig(category.getConfig());
+        this.config = configuration;
     }
 
     /**
@@ -55,8 +57,9 @@ public class ToolTemplateItemStack implements ToolTemplate {
      *
      * @param category the category to which this template belongs
      * @param item the item from which to create a template
+     * @param configuration the algorithm configuration for this template
      */
-    public ToolTemplateItemStack(@NotNull ToolCategory category, @NotNull ItemStack item) {
+    public ToolTemplateItemStack(@NotNull ToolCategory category, @NotNull AlgorithmConfig configuration, @NotNull ItemStack item) {
         Preconditions.checkArgument(category != null, "Cannot provide a null category");
         Preconditions.checkArgument(item != null, "Item must not be null");
 
@@ -66,7 +69,29 @@ public class ToolTemplateItemStack implements ToolTemplate {
         ItemMeta meta = item.getItemMeta();
         this.name = (meta != null && meta.hasDisplayName()) ? meta.getDisplayName() : null;
         this.lore = (meta != null && meta.hasLore()) ? new ArrayList<>(meta.getLore()) : null;
-        this.config = new AlgorithmConfig(category.getConfig());
+        this.config = configuration;
+    }
+
+    /**
+     * Construct a new ToolTemplate with a specific type, name and lore.
+     *
+     * @param category the category to which this template belongs
+     * @param type the type for which to check
+     * @param name the name for which to check (null if none)
+     * @param lore the lore for which to check (null if none)
+     */
+    public ToolTemplateItemStack(@NotNull ToolCategory category, @NotNull Material type, @Nullable String name, @Nullable List<String> lore) {
+        this(category, category.getConfig().clone(), type, name, lore);
+    }
+
+    /**
+     * Construct a new ToolTemplate based upon an existing ItemStack
+     *
+     * @param category the category to which this template belongs
+     * @param item the item from which to create a template
+     */
+    public ToolTemplateItemStack(@NotNull ToolCategory category, @NotNull ItemStack item) {
+        this(category, category.getConfig().clone(), item.getType(), item.hasItemMeta() ? item.getItemMeta().getDisplayName() : null, item.hasItemMeta() ? item.getItemMeta().getLore() : null);
     }
 
     /**

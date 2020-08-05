@@ -2,9 +2,6 @@ package wtf.choco.veinminer.utils;
 
 public final class VMConstants {
 
-    // Dynamic configuration paths
-    public static final String CONFIG_DYNAMIC_BLOCKLIST = "Blocklist.%s";
-
     // Permission nodes
     public static final String PERMISSION_RELOAD = "veinminer.reload";
     public static final String PERMISSION_TOGGLE = "veinminer.toggle";

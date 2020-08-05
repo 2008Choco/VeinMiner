@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.data.AlgorithmConfig;
@@ -26,14 +27,26 @@ public final class ToolTemplateMaterial implements ToolTemplate, Comparable<Tool
      *
      * @param category the category to which this template belongs
      * @param material the material for which to check
+     * @param configuration the algorithm configuration for this template
      */
-    public ToolTemplateMaterial(@NotNull ToolCategory category, @NotNull Material material) {
+    public ToolTemplateMaterial(@NotNull ToolCategory category, @NotNull Material material, @NotNull AlgorithmConfig configuration) {
         Preconditions.checkArgument(category != null, "Cannot provide a null category");
         Preconditions.checkArgument(material != null, "Material must not be null");
+        Preconditions.checkArgument(configuration != null, "configuration must not be null");
 
         this.category = category;
         this.material = material;
-        this.config = new AlgorithmConfig(category.getConfig());
+        this.config = configuration;
+    }
+
+    /**
+     * Construct a new ToolTemplate with a specific type.
+     *
+     * @param category the category to which this template belongs
+     * @param material the material for which to check
+     */
+    public ToolTemplateMaterial(@NotNull ToolCategory category, @NotNull Material material) {
+        this(category, material, category.getConfig().clone());
     }
 
     /**

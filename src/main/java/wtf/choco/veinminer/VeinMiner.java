@@ -11,8 +11,6 @@ import com.google.common.base.Preconditions;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,7 +24,6 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCommand;
-import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.VMPlayerData;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.economy.EconomyModifier;
@@ -255,41 +252,6 @@ public class VeinMiner extends JavaPlugin {
     @NotNull
     public List<AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
-    }
-
-    /**
-     * Create an {@link AlgorithmConfig} based on the current root settings defined in the
-     * config.yml. These settings are considered "default".
-     *
-     * @return the default algorithm config
-     */
-    @NotNull
-    public AlgorithmConfig createDefaultAlgorithmConfig() {
-        FileConfiguration config = getConfig();
-
-        AlgorithmConfig algorithmConfig = new AlgorithmConfig().defaultValues();
-        if (config.contains("RepairFriendlyVeinMiner")) {
-            algorithmConfig.repairFriendly(config.getBoolean("RepairFriendlyVeinMiner"));
-        }
-        if (config.contains("IncludeEdges")) {
-            algorithmConfig.includeEdges(config.getBoolean("IncludeEdges"));
-        }
-        if (config.contains("MaxVeinSize")) {
-            algorithmConfig.maxVeinSize(Math.max(config.getInt("MaxVeinSize"), 1));
-        }
-        if (config.contains("Cost")) {
-            algorithmConfig.cost(Math.max(config.getDouble("Cost"), 0.0));
-        }
-        if (config.contains("DisabledWorlds")) {
-            for (String worldName : config.getStringList("DisabledWorlds")) {
-                World world = Bukkit.getWorld(worldName);
-                if (world == null) continue;
-
-                algorithmConfig.disabledWorld(world);
-            }
-        }
-
-        return algorithmConfig;
     }
 
     private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {

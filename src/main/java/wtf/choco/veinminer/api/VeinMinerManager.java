@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -14,7 +13,6 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +49,7 @@ public class VeinMinerManager {
 
     public VeinMinerManager(@NotNull VeinMiner plugin) {
         this.plugin = plugin;
-        this.config = plugin.createDefaultAlgorithmConfig();
+        this.config = new AlgorithmConfig(plugin.getConfig());
     }
 
     /**
@@ -225,43 +224,20 @@ public class VeinMinerManager {
     /**
      * Load all tool categories from the configuration file to memory.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
     public void loadToolCategories() {
         FileConfiguration categoriesConfig = plugin.getCategoriesConfig().asRawConfig();
 
         for (String key : categoriesConfig.getKeys(false)) {
-            ToolCategory category = new ToolCategory(this, key);
+            ToolCategory category = new ToolCategory(key, new AlgorithmConfig(categoriesConfig.getConfigurationSection(key)));
             ToolCategory.register(category);
 
-            ConfigurationSection root = categoriesConfig.getConfigurationSection(key);
-            if (root == null) {
+            ConfigurationSection categoryRoot = categoriesConfig.getConfigurationSection(key);
+            if (categoryRoot == null) {
                 continue;
             }
 
-            // Per-category configuration
-            AlgorithmConfig algorithmConfig = category.getConfig();
-            if (root.contains("RepairFriendlyVeinMiner")) {
-                algorithmConfig.repairFriendly(root.getBoolean("RepairFriendlyVeinMiner"));
-            }
-            if (root.contains("IncludeEdges")) {
-                algorithmConfig.includeEdges(root.getBoolean("IncludeEdges"));
-            }
-            if (root.contains("MaxVeinSize")) {
-                algorithmConfig.maxVeinSize(Math.max(root.getInt("MaxVeinSize"), 1));
-            }
-            if (root.contains("Cost")) {
-                algorithmConfig.cost(Math.max(root.getDouble("Cost"), 0.0));
-            }
-            if (root.contains("DisabledWorlds")) {
-                for (String worldName : root.getStringList("DisabledWorlds")) {
-                    World world = Bukkit.getWorld(worldName);
-                    if (world == null) continue;
-
-                    algorithmConfig.disabledWorld(world);
-                }
-            }
-
-            List<?> itemsList = root.getList("Items");
+            List<?> itemsList = categoryRoot.getList("Items");
             if (itemsList == null) {
                 this.plugin.getLogger().severe("No item list provided for category with ID " + category.getId());
                 continue;
@@ -275,7 +251,7 @@ public class VeinMinerManager {
                 }
 
                 if (tool instanceof String) {
-                    Material type = Material.matchMaterial((String) tool);
+                    Material type = Material.matchMaterial(tool.toString());
                     if (type == null) {
                         this.plugin.getLogger().warning("Unknown material of type \"" + tool + "\" provided, ignoring...");
                         continue;
@@ -294,7 +270,7 @@ public class VeinMinerManager {
 
                     ItemStack item = new ItemStack(material);
                     ItemMeta meta = item.getItemMeta();
-                    if (meta == null) { // Stupid nullability annotations :(
+                    if (meta == null) { // Ignores air
                         continue;
                     }
 
@@ -319,36 +295,9 @@ public class VeinMinerManager {
                     }
 
                     item.setItemMeta(meta);
+                    AlgorithmConfig templateAlgorithmConfig = category.getConfig().clone();
+                    templateAlgorithmConfig.readUnsafe(templateRoot); // If I can get rid of this, do it
                     template = new ToolTemplateItemStack(category, item);
-
-                    // Template configuration
-                    AlgorithmConfig config = template.getConfig();
-
-                    Object repairFriendlyVeinMiner = templateRoot.get("RepairFriendlyVeinMiner");
-                    Object includeEdges = templateRoot.get("IncludeEdges");
-                    Object maxVeinSize = templateRoot.get("MaxVeinSize");
-                    Object cost = templateRoot.get("Cost");
-                    Object disabledWorlds = templateRoot.get("DisabledWorlds");
-
-                    if (repairFriendlyVeinMiner instanceof Boolean) {
-                        config.repairFriendly((boolean) repairFriendlyVeinMiner);
-                    }
-                    if (includeEdges instanceof Boolean) {
-                        config.repairFriendly((boolean) includeEdges);
-                    }
-                    if (maxVeinSize instanceof Integer) {
-                        config.maxVeinSize(Math.max((int) maxVeinSize, 1));
-                    }
-                    if (cost instanceof Number) {
-                        config.cost(Math.max((double) cost, 0.0));
-                    }
-                    if (disabledWorlds instanceof List) {
-                        ((List<Object>) disabledWorlds).stream().filter(o -> o instanceof String).map(s -> UUID.fromString((String) s))
-                            .distinct().map(Bukkit::getWorld).forEach(w -> {
-                                if (w == null) return;
-                                config.disabledWorld(w);
-                            });
-                    }
                 }
 
                 if (template != null) {
