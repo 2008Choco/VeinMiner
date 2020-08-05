@@ -10,7 +10,7 @@ api-version: 1.13
 commands:
   veinminer:
     description: The main command for VeinMiner
-    usage: /<command> <version|reload|blocklist|toollist|toggle|pattern>
+    usage: /<command> <version|reload|blocklist|toollist|toggle|pattern|mode>
     aliases: [vm]
 
 permissions:

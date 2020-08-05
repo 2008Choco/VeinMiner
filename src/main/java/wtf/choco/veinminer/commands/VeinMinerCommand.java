@@ -51,7 +51,7 @@ public final class VeinMinerCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/" + label + " <reload|version|blocklist|toggle|pattern|mode>");
+            sender.sendMessage(ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/" + label + " <version|reload|blocklist|toollist|toggle|pattern|mode>");
             return true;
         }
 
@@ -458,7 +458,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
         // Unknown command usage
         else {
-            sender.sendMessage(ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Unknown parameter, " + ChatColor.AQUA + args[0] + ChatColor.GRAY + ". " + ChatColor.YELLOW + "/" + label + " <reload|version|blocklist|toggle|pattern|mode>");
+            sender.sendMessage(ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Unknown parameter, " + ChatColor.AQUA + args[0] + ChatColor.GRAY + ". " + ChatColor.YELLOW + "/" + label + " <version|reload|blocklist|toollist|toggle|pattern|mode>");
             return true;
         }
 
