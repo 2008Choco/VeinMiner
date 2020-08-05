@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -29,11 +31,21 @@ public final class VMPlayerData {
 
     private ActivationStrategy activationStrategy = ActivationStrategy.SNEAK;
     private final Set<ToolCategory> disabledCategories = new HashSet<>();
+    private boolean dirty = false;
 
     private final UUID player;
 
     private VMPlayerData(@NotNull UUID player) {
         this.player = player;
+    }
+
+    /**
+     * Get the UUID of the player to which this data belongs.
+     *
+     * @return the owning player uuid
+     */
+    public UUID getPlayerUUID() {
+        return player;
     }
 
     /**
@@ -61,6 +73,7 @@ public final class VMPlayerData {
      * Enable VeinMiner for this player (all categories).
      */
     public void enableVeinMiner() {
+        this.dirty = !disabledCategories.isEmpty();
         this.disabledCategories.clear();
     }
 
@@ -71,14 +84,14 @@ public final class VMPlayerData {
      */
     public void enableVeinMiner(@NotNull ToolCategory category) {
         Preconditions.checkArgument(category != null, "Cannot enable null category");
-        this.disabledCategories.remove(category);
+        this.dirty = disabledCategories.remove(category);
     }
 
     /**
      * Disable VeinMiner for this player (all categories).
      */
     public void disableVeinMiner() {
-        this.disabledCategories.addAll(ToolCategory.getAll());
+        this.dirty = disabledCategories.addAll(ToolCategory.getAll());
     }
 
     /**
@@ -88,7 +101,7 @@ public final class VMPlayerData {
      */
     public void disableVeinMiner(@NotNull ToolCategory category) {
         Preconditions.checkArgument(category != null, "Cannot disable null category");
-        this.disabledCategories.add(category);
+        this.dirty = disabledCategories.add(category);
     }
 
     /**
@@ -175,6 +188,7 @@ public final class VMPlayerData {
      */
     public void setActivationStrategy(ActivationStrategy activationStrategy) {
         Preconditions.checkArgument(activationStrategy != null, "activationStrategy must not be null");
+        this.dirty = (this.activationStrategy != activationStrategy);
         this.activationStrategy = activationStrategy;
     }
 
@@ -185,6 +199,71 @@ public final class VMPlayerData {
      */
     public ActivationStrategy getActivationStrategy() {
         return activationStrategy;
+    }
+
+    /**
+     * Set whether or not this player data should be written.
+     *
+     * @param dirty true if dirty, false otherwise
+     */
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    /**
+     * Check whether or not this player data has been modified since last write.
+     *
+     * @return true if modified, false otherwise
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    /**
+     * Write this object's data into the provided JsonObject.
+     *
+     * @param root the object in which to write the data
+     *
+     * @return the modified instance of the provided object
+     */
+    public JsonObject write(JsonObject root) {
+        root.addProperty("activation_strategy", activationStrategy.name());
+
+        JsonArray disabledCategoriesArray = new JsonArray();
+        this.disabledCategories.forEach(category -> disabledCategoriesArray.add(category.getId()));
+        root.add("disabled_categories", disabledCategoriesArray);
+
+        return root;
+    }
+
+    /**
+     * Read data from the provided JsonObject into this object.
+     *
+     * @param root the object from which to read data
+     */
+    public void read(JsonObject root) {
+        if (root.has("activation_strategy")) {
+            this.activationStrategy = ActivationStrategy.getByName(root.get("activation_strategy").getAsString());
+            if (activationStrategy == null) {
+                this.activationStrategy = ActivationStrategy.SNEAK;
+            }
+        }
+
+        if (root.has("disabled_categories")) {
+            this.disabledCategories.clear();
+
+            JsonArray disabledCategoriesArray = root.getAsJsonArray("disabled_categories");
+            disabledCategoriesArray.forEach(element -> {
+                ToolCategory category = ToolCategory.get(element.getAsString());
+                if (category == null) {
+                    return;
+                }
+
+                this.disabledCategories.add(category);
+            });
+        }
+
+        this.dirty = false;
     }
 
     /**

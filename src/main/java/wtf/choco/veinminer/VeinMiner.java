@@ -1,5 +1,11 @@
 package wtf.choco.veinminer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +13,9 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -30,6 +39,7 @@ import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.economy.EmptyEconomyModifier;
 import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
 import wtf.choco.veinminer.listener.BreakBlockListener;
+import wtf.choco.veinminer.listener.PlayerDataListener;
 import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.PatternThorough;
@@ -43,6 +53,8 @@ import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
 import wtf.choco.veinminer.utils.metrics.StatTracker;
 
 public class VeinMiner extends JavaPlugin {
+
+    public static final Gson GSON = new Gson();
 
     public static final String CHAT_PREFIX = ChatColor.BLUE.toString() + ChatColor.BOLD + "VeinMiner | " + ChatColor.GRAY;
     public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
@@ -58,6 +70,7 @@ public class VeinMiner extends JavaPlugin {
     private VeinMiningPattern veinMiningPattern;
 
     private ConfigWrapper categoriesConfig;
+    private File playerDataDirectory;
 
     @Override
     public void onEnable() {
@@ -69,6 +82,7 @@ public class VeinMiner extends JavaPlugin {
         // Configuration handling
         this.saveDefaultConfig();
         this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
+        this.playerDataDirectory = new File(getDataFolder(), "playerdata");
 
         // Pattern registration
         this.patternRegistry = new PatternRegistry();
@@ -87,6 +101,7 @@ public class VeinMiner extends JavaPlugin {
         // Register events
         this.getLogger().info("Registering events");
         manager.registerEvents(new BreakBlockListener(this), this);
+        manager.registerEvents(new PlayerDataListener(this), this);
 
         // Register commands
         this.getLogger().info("Registering commands");
@@ -119,6 +134,9 @@ public class VeinMiner extends JavaPlugin {
         this.manager.loadVeinableBlocks();
         this.manager.loadMaterialAliases();
 
+        // Special case for reloads and crashes
+        Bukkit.getOnlinePlayers().forEach(player -> readPlayerDataFromFile(VMPlayerData.get(player)));
+
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
         if (getConfig().getBoolean("PerformUpdateChecks")) {
@@ -150,6 +168,16 @@ public class VeinMiner extends JavaPlugin {
         VMPlayerData.clearCache();
         VeinBlock.clearCache();
         ToolCategory.clearCategories();
+
+        // Special case for reloads and crashes
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            VMPlayerData playerData = VMPlayerData.get(player);
+            if (!playerData.isDirty()) {
+                return;
+            }
+
+            this.writePlayerDataToFile(playerData);
+        });
     }
 
     /**
@@ -187,6 +215,15 @@ public class VeinMiner extends JavaPlugin {
     @NotNull
     public ConfigWrapper getCategoriesConfig() {
         return categoriesConfig;
+    }
+
+    /**
+     * Get VeinMiner's playerdata directory.
+     *
+     * @return the playerdata directory
+     */
+    public File getPlayerDataDirectory() {
+        return playerDataDirectory;
     }
 
     /**
@@ -252,6 +289,43 @@ public class VeinMiner extends JavaPlugin {
     @NotNull
     public List<AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
+    }
+
+    /**
+     * Write a {@link VMPlayerData} object to its file in the playerdata directory.
+     *
+     * @param playerData the player data to write
+     */
+    public void writePlayerDataToFile(VMPlayerData playerData) {
+        File file = new File(playerDataDirectory, playerData.getPlayerUUID() + ".json");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            GSON.toJson(playerData.write(new JsonObject()), writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Read a {@link VMPlayerData} object from its file in the playerdata directory.
+     *
+     * @param playerData the player data to read
+     */
+    public void readPlayerDataFromFile(VMPlayerData playerData) {
+        File file = new File(playerDataDirectory, playerData.getPlayerUUID() + ".json");
+        if (!file.exists()) {
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            JsonObject root = GSON.fromJson(reader, JsonObject.class);
+            playerData.read(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JsonSyntaxException e) {
+            this.getLogger().warning("Could not read player data for user " + playerData.getPlayer().getName() + " (" + playerData.getPlayerUUID() + "). Invalid file format. Deleting...");
+            file.delete();
+        }
     }
 
     private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
