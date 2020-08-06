@@ -251,7 +251,7 @@ public class AlgorithmConfig implements Cloneable {
             this.repairFriendly((boolean) repairFriendlyVeinMiner);
         }
         if (includeEdges instanceof Boolean) {
-            this.repairFriendly((boolean) includeEdges);
+            this.includeEdges((boolean) includeEdges);
         }
         if (maxVeinSize instanceof Integer) {
             this.maxVeinSize(Math.max((int) maxVeinSize, 1));
