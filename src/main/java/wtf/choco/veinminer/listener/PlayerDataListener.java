@@ -19,7 +19,7 @@ public final class PlayerDataListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         PlayerPreferences playerData = PlayerPreferences.get(player);
 
@@ -32,7 +32,7 @@ public final class PlayerDataListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event) {
+    private void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         PlayerPreferences playerData = PlayerPreferences.get(player);
 
