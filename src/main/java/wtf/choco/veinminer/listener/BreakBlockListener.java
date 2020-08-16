@@ -111,7 +111,7 @@ public final class BreakBlockListener implements Listener {
         this.blocks.removeIf(Block::isEmpty);
 
         // Fire a new PlayerVeinMineEvent
-        PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, originVeinBlock, category, blocks, pattern);
+        PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, originVeinBlock, item, category, blocks, pattern);
         Bukkit.getPluginManager().callEvent(vmEvent);
         if (vmEvent.isCancelled()) {
             this.blocks.clear();

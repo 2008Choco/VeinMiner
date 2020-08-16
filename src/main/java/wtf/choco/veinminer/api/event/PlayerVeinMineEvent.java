@@ -7,7 +7,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.inventory.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
@@ -22,14 +25,16 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     private boolean cancelled = false;
 
     private final VeinBlock type;
+    private final ItemStack item;
     private final ToolCategory category;
     private final Set<Block> blocks;
     private final VeinMiningPattern pattern;
 
-    public PlayerVeinMineEvent(@NotNull Player who, @NotNull VeinBlock type, @NotNull ToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
+    public PlayerVeinMineEvent(@NotNull Player who, @NotNull VeinBlock type, @Nullable ItemStack item, @NotNull ToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
         super(who);
 
         this.type = type;
+        this.item = item;
         this.category = category;
         this.blocks = blocks;
         this.pattern = pattern;
@@ -54,6 +59,17 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     @NotNull
     public VeinBlock getAffectedBlock() {
         return type;
+    }
+
+    /**
+     * Get the item used to vein mine (if any). Any changes made to the ItemStack returned by
+     * this method will not be reflected in the player's inventory.
+     *
+     * @return the item used to vein mine. null if none
+     */
+    @Nullable
+    public ItemStack getItem() {
+        return item.clone();
     }
 
     /**
