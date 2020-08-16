@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,7 +125,7 @@ public interface VeinBlock extends Comparable<VeinBlock> {
 
     @Override
     public default int compareTo(VeinBlock other) {
-        return getType().getKey().getKey().compareTo(other.getType().getKey().getKey());
+        return asDataString().compareTo(other.asDataString());
     }
 
     /**
