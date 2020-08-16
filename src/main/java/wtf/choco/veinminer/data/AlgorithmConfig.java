@@ -240,7 +240,9 @@ public class AlgorithmConfig implements Cloneable {
      */
     @Deprecated
     @SuppressWarnings("unchecked")
-    public void readUnsafe(Map<String, Object> raw) {
+    public void readUnsafe(@NotNull Map<String, Object> raw) {
+        Preconditions.checkArgument(raw != null, "cannot pass null raw data map");
+
         Object repairFriendlyVeinMiner = raw.get("RepairFriendlyVeinminer");
         Object includeEdges = raw.get("IncludeEdges");
         Object maxVeinSize = raw.get("MaxVeinSize");

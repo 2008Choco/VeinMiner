@@ -182,7 +182,7 @@ public class ToolCategory {
      *
      * @return true if contained, false otherwise
      */
-    public boolean containsTool(ItemStack item) {
+    public boolean containsTool(@NotNull ItemStack item) {
         return tools.stream().anyMatch(t -> (t instanceof ToolTemplateItemStack) && t.matches(item));
     }
 
@@ -193,7 +193,7 @@ public class ToolCategory {
      *
      * @return true if contained, false otherwise
      */
-    public boolean containsTool(Material material) {
+    public boolean containsTool(@NotNull Material material) {
         ItemStack item = new ItemStack(material);
         return tools.stream().anyMatch(t -> (t instanceof ToolTemplateMaterial) && t.matches(item));
     }

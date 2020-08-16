@@ -17,8 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.api.ActivationStrategy;
@@ -46,7 +44,7 @@ public final class BreakBlockListener implements Listener {
     private final VeinMiner plugin;
     private final VeinMinerManager manager;
 
-    public BreakBlockListener(@NotNull VeinMiner plugin) {
+    public BreakBlockListener(VeinMiner plugin) {
         this.plugin = plugin;
         this.manager = plugin.getVeinMinerManager();
     }

@@ -124,8 +124,8 @@ public interface VeinBlock extends Comparable<VeinBlock> {
     public String asDataString();
 
     @Override
-    public default int compareTo(VeinBlock other) {
-        return asDataString().compareTo(other.asDataString());
+    public default int compareTo(@Nullable VeinBlock other) {
+        return (other != null) ? asDataString().compareTo(other.asDataString()) : 1;
     }
 
     /**

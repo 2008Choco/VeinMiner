@@ -183,6 +183,7 @@ public class VeinMinerManager {
      *
      * @return global algorithm config
      */
+    @NotNull
     public AlgorithmConfig getConfig() {
         return config;
     }
@@ -420,7 +421,9 @@ public class VeinMinerManager {
     }
 
     @Nullable
-    private Material getMaterialKey(Map<String, Object> map) {
+    private Material getMaterialKey(@NotNull Map<String, Object> map) {
+        Preconditions.checkArgument(map != null, "map must not be null");
+
         Object possibleMapping = map.get("Material");
         if (possibleMapping instanceof String) {
             return Material.matchMaterial((String) possibleMapping);
@@ -437,6 +440,9 @@ public class VeinMinerManager {
 
     @NotNull
     private Permission getOrRegisterPermission(@NotNull PluginManager manager, @NotNull String permissionName) {
+        Preconditions.checkArgument(manager != null, "manager must not be null");
+        Preconditions.checkArgument(permissionName != null, "permissionName must not be null");
+
         Permission permission = manager.getPermission(permissionName);
         if (permission == null) {
             permission = new Permission(permissionName, PermissionDefault.OP);

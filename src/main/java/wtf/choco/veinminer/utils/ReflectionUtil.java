@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
 import org.jetbrains.annotations.NotNull;
 
 public final class ReflectionUtil {
@@ -47,7 +48,9 @@ public final class ReflectionUtil {
     }
 
     public static void init(@NotNull String version) {
-        if (nmsPlayer != null) return;
+        if (nmsPlayer != null) {
+            return;
+        }
 
         ReflectionUtil.version = version.concat(".");
 

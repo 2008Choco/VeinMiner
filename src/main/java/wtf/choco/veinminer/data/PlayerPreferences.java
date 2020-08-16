@@ -52,6 +52,7 @@ public final class PlayerPreferences {
      *
      * @return the owning player uuid
      */
+    @NotNull
     public UUID getPlayerUUID() {
         return player;
     }
@@ -194,8 +195,9 @@ public final class PlayerPreferences {
      *
      * @param activationStrategy the activation strategy
      */
-    public void setActivationStrategy(ActivationStrategy activationStrategy) {
+    public void setActivationStrategy(@NotNull ActivationStrategy activationStrategy) {
         Preconditions.checkArgument(activationStrategy != null, "activationStrategy must not be null");
+
         this.dirty = (this.activationStrategy != activationStrategy);
         this.activationStrategy = activationStrategy;
     }
@@ -205,6 +207,7 @@ public final class PlayerPreferences {
      *
      * @return the activation strategy
      */
+    @NotNull
     public ActivationStrategy getActivationStrategy() {
         return activationStrategy;
     }
@@ -234,7 +237,10 @@ public final class PlayerPreferences {
      *
      * @return the modified instance of the provided object
      */
-    public JsonObject write(JsonObject root) {
+    @NotNull
+    public JsonObject write(@NotNull JsonObject root) {
+        Preconditions.checkArgument(root != null, "root must not be null");
+
         root.addProperty("activation_strategy", activationStrategy.name());
 
         JsonArray disabledCategoriesArray = new JsonArray();
@@ -249,7 +255,9 @@ public final class PlayerPreferences {
      *
      * @param root the object from which to read data
      */
-    public void read(JsonObject root) {
+    public void read(@NotNull JsonObject root) {
+        Preconditions.checkArgument(root != null, "root must not be null");
+
         if (root.has("activation_strategy")) {
             this.activationStrategy = ActivationStrategy.getByName(root.get("activation_strategy").getAsString());
             if (activationStrategy == null) {
@@ -281,7 +289,7 @@ public final class PlayerPreferences {
      *
      * @see VeinMiner#getPlayerDataDirectory()
      */
-    public void writeToFile(File directory) {
+    public void writeToFile(@NotNull File directory) {
         Preconditions.checkArgument(directory != null && directory.isDirectory(), "directory must be a directory");
 
         File file = new File(directory, player + ".json");
@@ -300,7 +308,9 @@ public final class PlayerPreferences {
      *
      * @see VeinMiner#getPlayerDataDirectory()
      */
-    public void readFromFile(File directory) {
+    public void readFromFile(@NotNull File directory) {
+        Preconditions.checkArgument(directory != null && directory.isDirectory(), "directory must be a directory");
+
         File file = new File(directory, player + ".json");
         if (!file.exists()) {
             return;
@@ -324,6 +334,7 @@ public final class PlayerPreferences {
      *
      * @return the player data
      */
+    @NotNull
     public static PlayerPreferences get(@NotNull OfflinePlayer player) {
         Preconditions.checkArgument(player != null, "Cannot get data for null player");
         return CACHE.computeIfAbsent(player.getUniqueId(), PlayerPreferences::new);

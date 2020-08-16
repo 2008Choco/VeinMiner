@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.utils;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -12,9 +13,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Pair<L, R> {
 
-    @Nullable
     private final L left;
-    @Nullable
     private final R right;
 
     /**
@@ -65,6 +64,7 @@ public class Pair<L, R> {
      *
      * @return an empty pair
      */
+    @NotNull
     public static <L, R> Pair<L, R> empty() {
         return new Pair<>(null, null);
     }

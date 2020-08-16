@@ -174,6 +174,7 @@ public class VeinMiner extends JavaPlugin {
      *
      * @return an instance of the VeinMiner class
      */
+    @NotNull
     public static VeinMiner getPlugin() {
         return instance;
     }
@@ -183,6 +184,7 @@ public class VeinMiner extends JavaPlugin {
      *
      * @return an instance of the VeinMiner manager
      */
+    @NotNull
     public VeinMinerManager getVeinMinerManager() {
         return manager;
     }
@@ -192,6 +194,7 @@ public class VeinMiner extends JavaPlugin {
      *
      * @return an instance of the pattern registry
      */
+    @NotNull
     public PatternRegistry getPatternRegistry() {
         return patternRegistry;
     }
@@ -211,6 +214,7 @@ public class VeinMiner extends JavaPlugin {
      *
      * @return the playerdata directory
      */
+    @NotNull
     public File getPlayerDataDirectory() {
         return playerDataDirectory;
     }
