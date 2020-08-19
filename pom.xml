@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>wtf.choco</groupId>
   <artifactId>VeinMiner</artifactId>
-  <version>1.16.0</version>
+  <version>1.16.1</version>
   <name>VeinMiner</name>
   <description>Aims to recreate the Forge mod, VeinMiner, in an efficient, flexible and feature-filled way</description>
 
