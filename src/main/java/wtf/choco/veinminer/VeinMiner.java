@@ -111,7 +111,7 @@ public class VeinMiner extends JavaPlugin {
         if (getConfig().getBoolean("MetricsEnabled", true)) {
             this.getLogger().info("Enabling Plugin Metrics");
 
-            Metrics metrics = new Metrics(this);
+            Metrics metrics = new Metrics(this, 1938); // https://bstats.org/what-is-my-plugin-id
             metrics.addCustomChart(new Metrics.AdvancedPie("blocks_veinmined", StatTracker.get()::getVeinMinedCountAsData));
 
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
