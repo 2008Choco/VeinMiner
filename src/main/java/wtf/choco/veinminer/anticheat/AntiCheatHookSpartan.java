@@ -4,15 +4,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import me.vagdedes.spartan.api.API;
-import me.vagdedes.spartan.system.Enums.HackType;
+import me.vagdedes.spartan.api.PlayerViolationEvent;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 /**
  * The default Spartan hook implementation
  */
-public final class AntiCheatHookSpartan implements AntiCheatHook {
+public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
 
     private final Set<UUID> exempted = new HashSet<>();
 
@@ -23,25 +25,26 @@ public final class AntiCheatHookSpartan implements AntiCheatHook {
 
     @Override
     public void exempt(Player player) {
-        if (API.isBypassing(player, HackType.FastBreak)) {
-            return;
-        }
-
-        if (exempted.add(player.getUniqueId())) {
-            API.stopCheck(player, HackType.FastBreak);
-        }
+        this.exempted.add(player.getUniqueId());
     }
 
     @Override
     public void unexempt(Player player) {
-        if (exempted.remove(player.getUniqueId())) {
-            API.startCheck(player, HackType.FastBreak);
-        }
+        this.exempted.remove(player.getUniqueId());
     }
 
     @Override
     public boolean shouldUnexempt(Player player) {
         return exempted.contains(player.getUniqueId());
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    private void onMatrixViolation(PlayerViolationEvent event) {
+        if (!exempted.contains(event.getPlayer().getUniqueId())) {
+            return;
+        }
+
+        event.setCancelled(true);
     }
 
 }

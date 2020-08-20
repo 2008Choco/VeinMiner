@@ -34,7 +34,7 @@ public final class AntiCheatHookAAC implements AntiCheatHook, Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onAACViolation(PlayerViolationEvent event) {
+    private void onAACViolation(PlayerViolationEvent event) {
         if (!exemptedUsers.contains(event.getPlayer().getUniqueId())) {
             return;
         }
