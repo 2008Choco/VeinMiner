@@ -16,7 +16,7 @@ import org.bukkit.event.Listener;
  */
 public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
 
-    private final Set<UUID> exempted = new HashSet<>();
+    private final Set<UUID> exempt = new HashSet<>();
 
     @Override
     public String getPluginName() {
@@ -25,22 +25,22 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
 
     @Override
     public void exempt(Player player) {
-        this.exempted.add(player.getUniqueId());
+        this.exempt.add(player.getUniqueId());
     }
 
     @Override
     public void unexempt(Player player) {
-        this.exempted.remove(player.getUniqueId());
+        this.exempt.remove(player.getUniqueId());
     }
 
     @Override
     public boolean shouldUnexempt(Player player) {
-        return exempted.contains(player.getUniqueId());
+        return exempt.contains(player.getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onMatrixViolation(PlayerViolationEvent event) {
-        if (!exempted.contains(event.getPlayer().getUniqueId())) {
+        if (!exempt.contains(event.getPlayer().getUniqueId())) {
             return;
         }
 

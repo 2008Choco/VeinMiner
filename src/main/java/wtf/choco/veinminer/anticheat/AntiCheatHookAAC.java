@@ -16,7 +16,7 @@ import org.bukkit.event.Listener;
  */
 public final class AntiCheatHookAAC implements AntiCheatHook, Listener {
 
-    private final Set<UUID> exemptedUsers = new HashSet<>();
+    private final Set<UUID> exempt = new HashSet<>();
 
     @Override
     public String getPluginName() {
@@ -25,17 +25,17 @@ public final class AntiCheatHookAAC implements AntiCheatHook, Listener {
 
     @Override
     public void exempt(Player player) {
-        this.exemptedUsers.add(player.getUniqueId());
+        this.exempt.add(player.getUniqueId());
     }
 
     @Override
     public void unexempt(Player player) {
-        this.exemptedUsers.remove(player.getUniqueId());
+        this.exempt.remove(player.getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onAACViolation(PlayerViolationEvent event) {
-        if (!exemptedUsers.contains(event.getPlayer().getUniqueId())) {
+        if (!exempt.contains(event.getPlayer().getUniqueId())) {
             return;
         }
 

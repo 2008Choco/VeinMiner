@@ -14,7 +14,7 @@ import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
  */
 public final class AntiCheatHookNCP implements AntiCheatHook {
 
-    private final Set<UUID> exempted = new HashSet<>();
+    private final Set<UUID> exempt = new HashSet<>();
 
     @Override
     public String getPluginName() {
@@ -27,21 +27,21 @@ public final class AntiCheatHookNCP implements AntiCheatHook {
             return;
         }
 
-        if (exempted.add(player.getUniqueId())) {
+        if (exempt.add(player.getUniqueId())) {
             NCPExemptionManager.exemptPermanently(player, CheckType.BLOCKBREAK);
         }
     }
 
     @Override
     public void unexempt(Player player) {
-        if (exempted.remove(player.getUniqueId())) {
+        if (exempt.remove(player.getUniqueId())) {
             NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
         }
     }
 
     @Override
     public boolean shouldUnexempt(Player player) {
-        return exempted.contains(player.getUniqueId());
+        return exempt.contains(player.getUniqueId());
     }
 
 }

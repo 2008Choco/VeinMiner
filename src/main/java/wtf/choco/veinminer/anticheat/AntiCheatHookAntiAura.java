@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
  */
 public final class AntiCheatHookAntiAura implements AntiCheatHook {
 
-    private final Set<UUID> exempted = new HashSet<>();
+    private final Set<UUID> exempt = new HashSet<>();
 
     @Override
     public String getPluginName() {
@@ -24,21 +24,21 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
             return;
         }
 
-        if (exempted.add(player.getUniqueId())) {
+        if (exempt.add(player.getUniqueId())) {
             AntiAuraAPI.API.toggleExemptFromFastBreak(player);
         }
     }
 
     @Override
     public void unexempt(Player player) {
-        if (exempted.remove(player.getUniqueId())) {
+        if (exempt.remove(player.getUniqueId())) {
             AntiAuraAPI.API.toggleExemptFromFastBreak(player);
         }
     }
 
     @Override
     public boolean shouldUnexempt(Player player) {
-        return exempted.contains(player.getUniqueId());
+        return exempt.contains(player.getUniqueId());
     }
 
 }
