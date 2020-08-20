@@ -4,7 +4,7 @@ version: ${project.version}
 description: ${project.description}
 author: 2008Choco
 website: https://www.spigotmc.org/resources/12038/
-softdepend: [NoCheatPlus, AAC, AntiAura, Spartan, Vault]
+softdepend: [AAC, AntiAura, Matrix, NoCheatPlus, Spartan, Vault]
 api-version: 1.13
 
 commands:
