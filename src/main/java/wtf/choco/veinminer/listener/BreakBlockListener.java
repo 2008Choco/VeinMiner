@@ -26,6 +26,7 @@ import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.economy.EconomyModifier;
+import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.tool.ToolTemplate;
@@ -34,7 +35,6 @@ import wtf.choco.veinminer.utils.NonNullHashSet;
 import wtf.choco.veinminer.utils.Pair;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.VMConstants;
-import wtf.choco.veinminer.utils.metrics.StatTracker;
 
 public final class BreakBlockListener implements Listener {
 

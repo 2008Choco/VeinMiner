@@ -32,6 +32,7 @@ import wtf.choco.veinminer.economy.EmptyEconomyModifier;
 import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
+import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.PatternThorough;
@@ -41,7 +42,6 @@ import wtf.choco.veinminer.utils.ConfigWrapper;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
-import wtf.choco.veinminer.utils.metrics.StatTracker;
 
 public class VeinMiner extends JavaPlugin {
 

@@ -56,7 +56,7 @@
           <relocations>
             <relocation>
               <pattern>org.bstats</pattern>
-              <shadedPattern>wtf.choco.veinminer.utils.metrics</shadedPattern>
+              <shadedPattern>wtf.choco.veinminer.metrics</shadedPattern>
             </relocation>
           </relocations>
         </configuration>

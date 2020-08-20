@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.utils.metrics;
+package wtf.choco.veinminer.metrics;
 
 import java.util.EnumMap;
 import java.util.HashMap;
