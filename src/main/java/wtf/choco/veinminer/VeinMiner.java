@@ -43,7 +43,7 @@ import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
 
-public class VeinMiner extends JavaPlugin {
+public final class VeinMiner extends JavaPlugin {
 
     public static final Gson GSON = new Gson();
 
