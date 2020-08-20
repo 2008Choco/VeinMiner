@@ -156,9 +156,6 @@ public final class VeinMiner extends JavaPlugin {
         this.manager.clearLocalisedData();
         this.patternRegistry.clearPatterns();
         this.anticheatHooks.clear();
-        PlayerPreferences.clearCache();
-        VeinBlock.clearCache();
-        ToolCategory.clearCategories();
 
         // Special case for reloads and crashes
         Bukkit.getOnlinePlayers().forEach(player -> {
@@ -169,6 +166,10 @@ public final class VeinMiner extends JavaPlugin {
 
             playerData.writeToFile(playerDataDirectory);
         });
+
+        PlayerPreferences.clearCache();
+        VeinBlock.clearCache();
+        ToolCategory.clearCategories();
     }
 
     /**
