@@ -13,16 +13,29 @@
 
   <repositories>
     <repository>
+      <id>Spigot Repository</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+
+    <repository>
       <id>bStats Repository</id>
       <url>https://repo.codemc.org/repository/maven-public/</url>
     </repository>
     <repository>
-      <id>Spigot Repository</id>
-      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
       <id>Vault Repository</id>
-      <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+      <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
+    </repository>
+
+    <!-- NoCheatPlus -->
+    <repository>
+      <id>md_5-releases</id>
+      <url>https://repo.md-5.net/content/repositories/snapshots/</url>
+    </repository>
+
+    <!-- AAC -->
+    <repository>
+      <id>janmm14-public</id>
+      <url>https://repo.janmm14.de/repository/public/</url>
     </repository>
   </repositories>
 
@@ -38,7 +51,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.4</version>
         <configuration>
           <relocations>
             <relocation>
@@ -67,41 +80,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>net.milkbowl.vault</groupId>
-      <artifactId>VaultAPI</artifactId>
-      <version>1.7</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
       <version>18.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Locally installed dependencies, because AntiCheat authors are selfish -->
-    <dependency>
-      <groupId>me.joehot200</groupId>
-      <artifactId>AntiAura</artifactId>
-      <version>11.71</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>me.konsolas</groupId>
-      <artifactId>AAC</artifactId>
-      <version>4.3.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>fr.neatmonster</groupId>
-      <artifactId>NoCheatPlus</artifactId>
-      <version>3.16.0-b1134</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>me.vagdedes</groupId>
-      <artifactId>SpartanAPI</artifactId>
-      <version>b316</version>
       <scope>provided</scope>
     </dependency>
 
@@ -111,6 +92,41 @@
       <artifactId>bstats-bukkit</artifactId>
       <version>1.7</version>
       <scope>compile</scope>
+    </dependency>
+
+    <!-- Vault -->
+    <dependency>
+      <groupId>net.milkbowl.vault</groupId>
+      <artifactId>VaultAPI</artifactId>
+      <version>1.7</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Anticheats -->
+    <dependency>
+      <groupId>fr.neatmonster</groupId>
+      <artifactId>nocheatplus</artifactId>
+      <version>3.16.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.janmm14</groupId>
+      <artifactId>aac-api</artifactId>
+      <version>4.2.0</version>
+    </dependency>
+
+    <!-- Anticheats (must be locally installed - no available Maven repositories) -->
+    <dependency> <!-- No separate API artifact. Must have purchased AntiAura -->
+      <groupId>me.joehot200</groupId>
+      <artifactId>AntiAura</artifactId>
+      <version>11.71</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency> <!-- Direct download available at https://vagdedes.com/spartan/api/SpartanAPI.jar -->
+      <groupId>me.vagdedes</groupId>
+      <artifactId>SpartanAPI</artifactId>
+      <version>360.3</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
