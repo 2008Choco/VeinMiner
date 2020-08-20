@@ -63,9 +63,14 @@ public final class VeinMinerCommand implements TabExecutor {
             }
 
             this.plugin.reloadConfig();
-            ToolCategory.clearCategories();
+            this.plugin.getCategoriesConfig().reload();
 
+            // Clear data from memory
+            ToolCategory.clearCategories();
             VeinMinerManager manager = plugin.getVeinMinerManager();
+            manager.clearLocalisedData();
+
+            // Load data into memory
             manager.loadToolCategories();
             manager.loadVeinableBlocks();
             manager.loadMaterialAliases();
