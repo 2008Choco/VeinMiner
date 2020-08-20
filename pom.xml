@@ -25,6 +25,10 @@
       <id>Vault Repository</id>
       <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
     </repository>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
 
     <!-- NoCheatPlus -->
     <repository>
@@ -113,6 +117,13 @@
       <groupId>de.janmm14</groupId>
       <artifactId>aac-api</artifactId>
       <version>4.2.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jiangdashao</groupId>
+      <artifactId>matrix-api-repo</artifactId>
+      <version>317d4635fd</version> <!-- GitHub commit hash - https://github.com/jiangdashao/matrix-api-repo -->
+      <scope>provided</scope>
     </dependency>
 
     <!-- Anticheats (must be locally installed - no available Maven repositories) -->

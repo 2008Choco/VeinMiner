@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
+import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.api.VeinMinerManager;
@@ -82,9 +83,10 @@ public final class VeinMiner extends JavaPlugin {
 
         // Enable anticheat hooks if required
         PluginManager manager = Bukkit.getPluginManager();
-        this.registerAntiCheatHookIfEnabled(manager, "NoCheatPlus", AntiCheatHookNCP::new);
-        this.registerAntiCheatHookIfEnabled(manager, "AntiAura", AntiCheatHookAntiAura::new);
         this.registerAntiCheatHookIfEnabled(manager, "AAC", AntiCheatHookAAC::new);
+        this.registerAntiCheatHookIfEnabled(manager, "AntiAura", AntiCheatHookAntiAura::new);
+        this.registerAntiCheatHookIfEnabled(manager, "Matrix", AntiCheatHookMatrix::new);
+        this.registerAntiCheatHookIfEnabled(manager, "NoCheatPlus", AntiCheatHookNCP::new);
         this.registerAntiCheatHookIfEnabled(manager, "Spartan", AntiCheatHookSpartan::new);
 
         // Register events
