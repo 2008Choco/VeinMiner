@@ -230,10 +230,10 @@ public class VeinMinerManager {
         FileConfiguration categoriesConfig = plugin.getCategoriesConfig().asRawConfig();
 
         for (String key : categoriesConfig.getKeys(false)) {
-            ToolCategory category = new ToolCategory(key, new AlgorithmConfig(categoriesConfig.getConfigurationSection(key)));
+            ConfigurationSection categoryRoot = categoriesConfig.getConfigurationSection(key);
+            ToolCategory category = new ToolCategory(key, new AlgorithmConfig(categoryRoot, config));
             ToolCategory.register(category);
 
-            ConfigurationSection categoryRoot = categoriesConfig.getConfigurationSection(key);
             if (categoryRoot == null) {
                 continue;
             }

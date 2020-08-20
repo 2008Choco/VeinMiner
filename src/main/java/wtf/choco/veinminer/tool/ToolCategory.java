@@ -58,7 +58,7 @@ public class ToolCategory {
         this.id = id;
         this.tools = new ArrayList<>();
         this.blocklist = blocklist;
-        this.config = new AlgorithmConfig();
+        this.config = configuration;
     }
 
     /**
