@@ -59,7 +59,7 @@
         <configuration>
           <relocations>
             <relocation>
-              <pattern>org.bstats</pattern>
+              <pattern>org.bstats.bukkit</pattern>
               <shadedPattern>wtf.choco.veinminer.metrics</shadedPattern>
             </relocation>
           </relocations>
