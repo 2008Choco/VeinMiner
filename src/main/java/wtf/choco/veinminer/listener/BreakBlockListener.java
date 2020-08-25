@@ -26,6 +26,7 @@ import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.economy.EconomyModifier;
+import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
@@ -83,6 +84,12 @@ public final class BreakBlockListener implements Listener {
 
         BlockData originBlockData = origin.getBlockData();
         if (!manager.isVeinMineable(originBlockData, category)) {
+            return;
+        }
+
+        // WorldGuard check
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard") && !WorldGuardIntegration.queryFlagVeinMiner(origin, player)) {
+            player.sendMessage(ChatColor.GRAY + "You are not allowed to vein mine in this area.");
             return;
         }
 

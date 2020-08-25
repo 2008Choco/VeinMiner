@@ -31,6 +31,7 @@ import wtf.choco.veinminer.data.block.VeinBlock;
 import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.economy.EmptyEconomyModifier;
 import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
+import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
 import wtf.choco.veinminer.metrics.StatTracker;
@@ -62,6 +63,14 @@ public final class VeinMiner extends JavaPlugin {
 
     private ConfigWrapper categoriesConfig;
     private File playerDataDirectory;
+
+    @Override
+    public void onLoad() {
+        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
+            this.getLogger().info("Found WorldGuard. Registering custom region flag.");
+            WorldGuardIntegration.init(this);
+        }
+    }
 
     @Override
     public void onEnable() {
