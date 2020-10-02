@@ -24,6 +24,7 @@ public final class VMConstants {
     public static final String PERMISSION_DYNAMIC_LIST_REMOVE = "veinminer.%s.list";
     public static final String PERMISSION_DYNAMIC_LIST_LIST = "veinminer.%s.list";
     public static final String PERMISSION_DYNAMIC_VEINMINE = "veinminer.veinmine.%s";
+    public static final String PERMISSION_DYNAMIC_VEINMINE_BLOCK = "veinminer.veinmine.%s.%s";
 
     private VMConstants() { }
 
