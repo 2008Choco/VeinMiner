@@ -86,6 +86,10 @@ public final class BreakBlockListener implements Listener {
         if (!manager.isVeinMineable(originBlockData, category)) {
             return;
         }
+        
+        if (!player.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE_BLOCK, category.getId().toLowerCase(), "*")) && !player.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE_BLOCK, category.getId().toLowerCase(), origin.getType().getKey().getKey()))) {
+        	return;
+        }
 
         // WorldGuard check
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard") && !WorldGuardIntegration.queryFlagVeinMiner(origin, player)) {
