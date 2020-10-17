@@ -82,6 +82,7 @@ public final class VeinMiner extends JavaPlugin {
         this.saveDefaultConfig();
         this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
         this.playerDataDirectory = new File(getDataFolder(), "playerdata");
+        this.playerDataDirectory.mkdirs();
 
         // Pattern registration
         this.patternRegistry = new PatternRegistry();
