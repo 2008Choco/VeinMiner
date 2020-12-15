@@ -81,14 +81,14 @@ public final class VeinMinerCommand implements TabExecutor {
         // Version subcommand
         else if (args[0].equalsIgnoreCase("version")) {
             PluginDescriptionFile description = plugin.getDescription();
-            String headerFooter = ChatColor.GOLD.toString() + ChatColor.BOLD + ChatColor.STRIKETHROUGH + StringUtils.repeat("-", 44) + StringUtils.repeat("-", 44);
+            String headerFooter = ChatColor.GOLD.toString() + ChatColor.BOLD + ChatColor.STRIKETHROUGH + StringUtils.repeat("-", 44);
 
             sender.sendMessage(headerFooter);
             sender.sendMessage("");
-            sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.GOLD + "Version: " + ChatColor.GRAY + description.getVersion() + getUpdateSuffix());
-            sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.GOLD + "Developer: " + ChatColor.GRAY + description.getAuthors().get(0));
-            sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.GOLD + "Plugin page: " + ChatColor.GRAY + description.getWebsite());
-            sender.sendMessage(ChatColor.DARK_AQUA.toString() + ChatColor.GOLD + "Report bugs to: " + ChatColor.GRAY + "https://github.com/2008Choco/VeinMiner/issues/");
+            sender.sendMessage(ChatColor.GOLD + "Version: " + ChatColor.WHITE + description.getVersion() + getUpdateSuffix());
+            sender.sendMessage(ChatColor.GOLD + "Developer: " + ChatColor.WHITE + description.getAuthors().get(0));
+            sender.sendMessage(ChatColor.GOLD + "Plugin page: " + ChatColor.WHITE + description.getWebsite());
+            sender.sendMessage(ChatColor.GOLD + "Report bugs to: " + ChatColor.WHITE + "https://github.com/2008Choco/VeinMiner/issues");
             sender.sendMessage("");
             sender.sendMessage(headerFooter);
         }
@@ -218,7 +218,7 @@ public final class VeinMinerCommand implements TabExecutor {
                     configBlocklist.add(block.asDataString());
                     this.plugin.getConfig().set("BlockList." + category.getId(), configBlocklist);
 
-                    sender.sendMessage(ChatColor.GRAY + "Block ID " + ChatColor.YELLOW + block.asDataString() + ChatColor.GRAY + " successfully added to the blocklist.");
+                    sender.sendMessage(ChatColor.GRAY + "Block ID " + formatBlockData(block.asDataString()) + ChatColor.GRAY + " successfully added to the blocklist.");
                 }
 
                 this.plugin.saveConfig();
@@ -257,7 +257,7 @@ public final class VeinMinerCommand implements TabExecutor {
                     configBlocklist.remove(block.asDataString());
                     this.plugin.getConfig().set("BlockList." + category.getId(), configBlocklist);
 
-                    sender.sendMessage(ChatColor.GRAY + "Block ID " + ChatColor.YELLOW + block.asDataString() + ChatColor.GRAY + " successfully removed from the blocklist.");
+                    sender.sendMessage(ChatColor.GRAY + "Block ID " + formatBlockData(block.asDataString()) + ChatColor.GRAY + " successfully removed from the blocklist.");
                 }
 
                 this.plugin.saveConfig();
@@ -285,8 +285,10 @@ public final class VeinMinerCommand implements TabExecutor {
                     return true;
                 }
 
-                sender.sendMessage(ChatColor.YELLOW.toString() + ChatColor.BOLD + "VeinMiner Block List (Category = " + category.getId() + "):");
-                blocklistIterable.forEach(block -> sender.sendMessage(ChatColor.YELLOW + "  - " + block.asDataString()));
+                sender.sendMessage("");
+                sender.sendMessage(ChatColor.GREEN + "Block list " + ChatColor.GRAY + "for category " + ChatColor.GREEN + category.getId().toLowerCase().replace("_", " ") + ChatColor.GRAY + ":");
+                blocklistIterable.forEach(block -> sender.sendMessage(ChatColor.WHITE + " - " + formatBlockData(block.asDataString())));
+                sender.sendMessage("");
             }
 
             // Unknown parameter
@@ -420,8 +422,10 @@ public final class VeinMinerCommand implements TabExecutor {
                     return true;
                 }
 
-                sender.sendMessage(ChatColor.YELLOW.toString() + ChatColor.BOLD + "VeinMiner Tool List (Category = " + category.getId() + "):");
-                category.getTools().forEach(tool -> sender.sendMessage(ChatColor.YELLOW + "  - " + tool));
+                sender.sendMessage("");
+                sender.sendMessage(ChatColor.GREEN + "Tool list " + ChatColor.GRAY + "for category " + ChatColor.GREEN + category.getId().toLowerCase().replace("_", " ") + ChatColor.GRAY + ":");
+                category.getTools().forEach(tool -> sender.sendMessage(ChatColor.WHITE + " - " + ChatColor.YELLOW + tool));
+                sender.sendMessage("");
             }
         }
 
@@ -594,6 +598,36 @@ public final class VeinMinerCommand implements TabExecutor {
         VeinMinerCommand tabExecutor = new VeinMinerCommand(plugin);
         command.setExecutor(tabExecutor);
         command.setTabCompleter(tabExecutor);
+    }
+
+    private String formatBlockData(String blockData) {
+        StringBuilder newBlockData = new StringBuilder(ChatColor.YELLOW.toString()).append(blockData);
+
+        int blockDataBracketIndex = newBlockData.indexOf("[");
+        if (blockDataBracketIndex == -1) {
+            return newBlockData.toString();
+        }
+
+        // Colourize the states
+        String blockStateString = newBlockData.substring(blockDataBracketIndex + 1, newBlockData.length() - 1);
+        newBlockData.delete(blockDataBracketIndex, newBlockData.length());
+
+        StringBuilder newBlockStateString = new StringBuilder(ChatColor.WHITE.toString()).append('[');
+
+        String[] blockStates = blockStateString.split(",");
+        for (int i = 0; i < blockStates.length; i++) {
+            String state = blockStates[i];
+            String[] stateValues = state.split("=");
+            newBlockStateString.append(ChatColor.AQUA).append(stateValues[0]).append(ChatColor.WHITE).append('=').append(ChatColor.GOLD).append(stateValues[1]);
+
+            if (i < blockStates.length - 1) {
+                newBlockStateString.append(ChatColor.WHITE).append(',');
+            }
+        }
+
+        // Inject the block states into colourized block data
+        newBlockStateString.append(ChatColor.WHITE).append("]");
+        return newBlockData.append(newBlockStateString.toString()).append(ChatColor.RESET).toString();
     }
 
     private boolean hasBlocklistPerms(CommandSender sender) {
