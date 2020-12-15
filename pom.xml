@@ -128,7 +128,7 @@
     <dependency>
       <groupId>de.janmm14</groupId>
       <artifactId>aac-api</artifactId>
-      <version>4.2.0</version>
+      <version>5.0.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
