@@ -192,6 +192,7 @@ public class VeinMinerManager {
      * Load all veinable blocks from the configuration file to memory.
      */
     public void loadVeinableBlocks() {
+        this.plugin.reloadConfig();
         ConfigurationSection blocklistSection = plugin.getConfig().getConfigurationSection("BlockList");
         if (blocklistSection == null) {
             return;
