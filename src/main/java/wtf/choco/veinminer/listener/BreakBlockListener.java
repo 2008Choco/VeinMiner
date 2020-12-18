@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
@@ -39,7 +40,8 @@ import wtf.choco.veinminer.utils.VMConstants;
 
 public final class BreakBlockListener implements Listener {
 
-    private final Set<Block> blocks = new NonNullHashSet<>();
+    private static final String METADATA_KEY_TO_BE_VEINMINED = "veinminer:to_be_veinmined";
+
     private final StatTracker statTracker = StatTracker.get();
 
     private final VeinMiner plugin;
@@ -57,7 +59,7 @@ public final class BreakBlockListener implements Listener {
         }
 
         Block origin = event.getBlock();
-        if (blocks.contains(origin)) {
+        if (origin.hasMetadata(METADATA_KEY_TO_BE_VEINMINED)) {
             return;
         }
 
@@ -105,7 +107,9 @@ public final class BreakBlockListener implements Listener {
         }
 
         // TIME TO VEINMINE
-        this.blocks.add(origin);
+        Set<Block> blocks = new NonNullHashSet<>();
+
+        blocks.add(origin);
         VeinBlock originVeinBlock = manager.getVeinBlockFromBlockList(originBlockData, category);
         if (originVeinBlock == null) {
             return;
@@ -113,15 +117,20 @@ public final class BreakBlockListener implements Listener {
 
         VeinMiningPattern pattern = plugin.getVeinMiningPattern();
         pattern.allocateBlocks(blocks, originVeinBlock, origin, category, toolTemplate, algorithmConfig, manager.getAliasFor(origin));
-        this.blocks.removeIf(Block::isEmpty);
+        blocks.removeIf(Block::isEmpty);
+        if (blocks.isEmpty()) {
+            return;
+        }
 
         // Fire a new PlayerVeinMineEvent
         PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, originVeinBlock, item, category, blocks, pattern);
         Bukkit.getPluginManager().callEvent(vmEvent);
-        if (vmEvent.isCancelled()) {
-            this.blocks.clear();
+        if (vmEvent.isCancelled() || blocks.isEmpty()) {
             return;
         }
+
+        // Flag all blocks as being vein mined
+        blocks.forEach(block -> block.setMetadata(METADATA_KEY_TO_BE_VEINMINED, new FixedMetadataValue(plugin, true)));
 
         // Anticheat support
         List<AntiCheatHook> hooks = plugin.getAnticheatHooks();
@@ -166,7 +175,7 @@ public final class BreakBlockListener implements Listener {
             }
         }
 
-        this.blocks.clear();
+        blocks.forEach(block -> block.removeMetadata(METADATA_KEY_TO_BE_VEINMINED, plugin));
 
         // VEINMINER - DONE
 
