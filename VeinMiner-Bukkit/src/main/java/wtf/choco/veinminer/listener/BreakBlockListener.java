@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -78,7 +77,6 @@ public final class BreakBlockListener implements Listener {
         ActivationStrategy activation = playerData.getActivationStrategy();
         AlgorithmConfig algorithmConfig = (toolTemplate != null) ? toolTemplate.getConfig() : category.getConfig();
         if (!activation.isValid(player) || algorithmConfig.isDisabledWorld(origin.getWorld())
-                || player.getGameMode() != GameMode.SURVIVAL
                 || !player.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE, category.getId().toLowerCase()))
                 || playerData.isVeinMinerDisabled(category) || !ItemValidator.isValid(item, category)) {
             return;

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "veinminer4bukkit",
+  "version": "${project.parent.version}",
+
+  "name": "VeinMiner 4 Bukkit",
+  "description": "Integrates VeinMiner for Bukkit servers to allow for activation with custom keybinds.",
+  "authors": [
+    "Choco"
+  ],
+  "contact": {
+    "homepage": "https://spigotmc.org/resources/12038/",
+    "sources": "https://github.com/2008Choco/VeinMiner/"
+  },
+
+  "license": "GPLv3",
+  "icon": "assets/veinminer4bukkit/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "wtf.choco.veinminer.fabric.VeinMiner"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.x.x"
+  }
+}

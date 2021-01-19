@@ -1,8 +1,8 @@
 package wtf.choco.veinminer.api;
 
-import java.util.function.Predicate;
-
 import com.google.common.base.Predicates;
+
+import java.util.function.Predicate;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +12,12 @@ import org.jetbrains.annotations.Nullable;
  * Represents the different methods of activating VeinMiner.
  */
 public enum ActivationStrategy {
+
+    /**
+     * Activated by the client with the Fabric counterpart to allow players to use their
+     * own keybinds.
+     */
+    CLIENT(ClientActivation::isActivatedOnClient),
 
     /**
      * Activated when a Player is holding sneak.

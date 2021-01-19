@@ -1,5 +1,8 @@
 package wtf.choco.veinminer;
 
+import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,15 +10,11 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
@@ -24,6 +23,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
 import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
+import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCommand;
 import wtf.choco.veinminer.data.PlayerPreferences;
@@ -158,6 +158,10 @@ public final class VeinMiner extends JavaPlugin {
                 }
             });
         }
+
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, "veinminer:activation", (channel, player, data) -> {
+            ClientActivation.setActivatedOnClient(player, data[0] == 1);
+        });
     }
 
     @Override
