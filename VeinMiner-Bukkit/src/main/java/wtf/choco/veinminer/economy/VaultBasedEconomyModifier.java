@@ -7,6 +7,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.utils.VMConstants;
@@ -27,24 +28,24 @@ public class VaultBasedEconomyModifier implements EconomyModifier {
     public VaultBasedEconomyModifier() {
         Preconditions.checkArgument(Bukkit.getPluginManager().isPluginEnabled("Vault"), "Vault must be enabled in order to use a VaultBasedEconomyModifier");
 
-        RegisteredServiceProvider<Economy> serviceProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<@NotNull Economy> serviceProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
         this.economy = (serviceProvider != null) ? serviceProvider.getProvider() : null;
     }
 
     @Override
-    public boolean shouldCharge(Player player, AlgorithmConfig config) {
+    public boolean shouldCharge(@NotNull Player player, @NotNull AlgorithmConfig config) {
         Preconditions.checkArgument(config != null, "Must provide algorithm config");
         return economy != null && player != null && config.getCost() > 0.0 && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
     }
 
     @Override
-    public boolean hasSufficientBalance(Player player, AlgorithmConfig config) {
+    public boolean hasSufficientBalance(@NotNull Player player, @NotNull AlgorithmConfig config) {
         Preconditions.checkArgument(config != null, "Must provide algorithm config");
         return economy == null || (player != null && economy.has(player, config.getCost()));
     }
 
     @Override
-    public void charge(Player player, AlgorithmConfig config) {
+    public void charge(@NotNull Player player, @NotNull AlgorithmConfig config) {
         Preconditions.checkArgument(player != null, "Cannot charge null player");
         Preconditions.checkArgument(config != null, "Must provide algorithm config");
 

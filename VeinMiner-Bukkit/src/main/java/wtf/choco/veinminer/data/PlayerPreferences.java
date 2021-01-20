@@ -34,10 +34,10 @@ import wtf.choco.veinminer.tool.ToolCategory;
  */
 public final class PlayerPreferences {
 
-    private static final Map<UUID, PlayerPreferences> CACHE = new HashMap<>();
+    private static final Map<@NotNull UUID, @NotNull PlayerPreferences> CACHE = new HashMap<>();
 
     private ActivationStrategy activationStrategy = ActivationStrategy.SNEAK;
-    private final Set<ToolCategory> disabledCategories = new HashSet<>();
+    private final Set<@NotNull ToolCategory> disabledCategories = new HashSet<>();
     private boolean dirty = false;
 
     private final UUID player;
@@ -321,7 +321,11 @@ public final class PlayerPreferences {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JsonSyntaxException e) {
-            VeinMiner.getPlugin().getLogger().warning("Could not read player data for user " + getPlayer().getName() + " (" + player + "). Invalid file format. Deleting...");
+            OfflinePlayer player = getPlayer();
+            if (player != null) {
+                VeinMiner.getPlugin().getLogger().warning("Could not read player data for user " + player.getName() + " (" + getPlayerUUID() + "). Invalid file format. Deleting...");
+            }
+
             file.delete();
         }
     }

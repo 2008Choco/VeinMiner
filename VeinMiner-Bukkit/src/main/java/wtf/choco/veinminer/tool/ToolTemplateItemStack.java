@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -90,7 +91,7 @@ public class ToolTemplateItemStack implements ToolTemplate {
      * @param item the item from which to create a template
      */
     public ToolTemplateItemStack(@NotNull ToolCategory category, @NotNull ItemStack item) {
-        this(category, category.getConfig().clone(), item.getType(), item.hasItemMeta() ? item.getItemMeta().getDisplayName() : null, item.hasItemMeta() ? item.getItemMeta().getLore() : null);
+        this(category, category.getConfig().clone(), item.getType(), safeItemMeta(item, ItemMeta::getDisplayName), safeItemMeta(item, ItemMeta::getLore));
     }
 
     /**
@@ -140,11 +141,13 @@ public class ToolTemplateItemStack implements ToolTemplate {
         return lore == null || (meta != null && meta.hasLore() && lore.equals(meta.getLore()));
     }
 
+    @NotNull
     @Override
     public AlgorithmConfig getConfig() {
         return config;
     }
 
+    @NotNull
     @Override
     public ToolCategory getCategory() {
         return category;
@@ -195,6 +198,20 @@ public class ToolTemplateItemStack implements ToolTemplate {
         }
 
         return result.toString();
+    }
+
+    @Nullable
+    private static <T> T safeItemMeta(@NotNull ItemStack item, @NotNull Function<@NotNull ItemMeta, @Nullable T> fetcher) {
+        if (!item.hasItemMeta()) {
+            return null;
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return null;
+        }
+
+        return fetcher.apply(meta);
     }
 
 }

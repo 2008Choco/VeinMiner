@@ -28,7 +28,7 @@ import wtf.choco.veinminer.utils.Pair;
  */
 public class ToolCategory {
 
-    private static final Map<String, ToolCategory> CATEGORIES = new HashMap<>();
+    private static final Map<@NotNull String, @NotNull ToolCategory> CATEGORIES = new HashMap<>();
     private static final Pattern VALID_ID = Pattern.compile("[A-Za-z0-9]+", Pattern.CASE_INSENSITIVE);
 
     public static final ToolCategory HAND = new ToolCategory("Hand", VeinMiner.getPlugin().getVeinMinerManager().getConfig()); // Hand uses the default config
@@ -37,7 +37,7 @@ public class ToolCategory {
     }
 
     private final String id;
-    private final List<ToolTemplate> tools;
+    private final List<@NotNull ToolTemplate> tools;
     private final BlockList blocklist;
     private final AlgorithmConfig config;
 
@@ -204,7 +204,7 @@ public class ToolCategory {
      * @return the tool templates
      */
     @NotNull
-    public List<ToolTemplate> getTools() {
+    public List<@NotNull ToolTemplate> getTools() {
         return new ArrayList<>(tools);
     }
 
@@ -291,7 +291,7 @@ public class ToolCategory {
      * @return the tool category and matched template. null if none
      */
     @NotNull
-    public static Pair<ToolCategory, ToolTemplate> getWithTemplate(@Nullable ItemStack item) {
+    public static Pair<@NotNull ToolCategory, @NotNull ToolTemplate> getWithTemplate(@Nullable ItemStack item) {
         if (ItemValidator.isEmpty(item)) {
             return new Pair<>(ToolCategory.HAND, null);
         }
@@ -322,7 +322,7 @@ public class ToolCategory {
      * @return all tool categories
      */
     @NotNull
-    public static Collection<ToolCategory> getAll() {
+    public static Collection<@NotNull ToolCategory> getAll() {
         return ImmutableList.copyOf(CATEGORIES.values());
     }
 

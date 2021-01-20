@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class PatternRegistry {
 
-    private final Map<NamespacedKey, VeinMiningPattern> patterns = new HashMap<>();
+    private final Map<@NotNull NamespacedKey, @NotNull VeinMiningPattern> patterns = new HashMap<>();
 
     /**
      * Register a new VeinMiningPattern implementation.
@@ -66,7 +66,7 @@ public class PatternRegistry {
      */
     @Nullable
     public VeinMiningPattern getPattern(@NotNull String key) {
-        for (Entry<NamespacedKey, VeinMiningPattern> entry : patterns.entrySet()) {
+        for (Entry<@NotNull NamespacedKey, @NotNull VeinMiningPattern> entry : patterns.entrySet()) {
             if (entry.getKey().toString().equals(key)) {
                 return entry.getValue();
             }
@@ -86,7 +86,7 @@ public class PatternRegistry {
      */
     @NotNull
     public VeinMiningPattern getPatternOrDefault(@NotNull String key, @NotNull VeinMiningPattern defaultPattern) {
-        for (Entry<NamespacedKey, VeinMiningPattern> entry : patterns.entrySet()) {
+        for (Entry<@NotNull NamespacedKey, @NotNull VeinMiningPattern> entry : patterns.entrySet()) {
             if (entry.getKey().toString().equals(key)) {
                 return entry.getValue();
             }
@@ -119,7 +119,7 @@ public class PatternRegistry {
      * @return all registered patterns
      */
     @NotNull
-    public Set<VeinMiningPattern> getPatterns() {
+    public Set<@NotNull VeinMiningPattern> getPatterns() {
         return ImmutableSet.copyOf(patterns.values());
     }
 

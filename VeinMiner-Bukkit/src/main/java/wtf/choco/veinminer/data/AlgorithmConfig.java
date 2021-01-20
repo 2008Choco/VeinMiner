@@ -26,7 +26,7 @@ public class AlgorithmConfig implements Cloneable {
     private boolean includeEdges = true;
     private int maxVeinSize = 64;
     private double cost = 0.0D;
-    private Set<UUID> disabledWorlds = new HashSet<>();
+    private Set<@NotNull UUID> disabledWorlds = new HashSet<>();
 
     /**
      * Construct an AlgorithmConfig using values supplied from the given configuration section and

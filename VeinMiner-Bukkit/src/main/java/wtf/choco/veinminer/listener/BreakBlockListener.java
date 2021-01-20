@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
@@ -46,7 +47,7 @@ public final class BreakBlockListener implements Listener {
     private final VeinMiner plugin;
     private final VeinMinerManager manager;
 
-    public BreakBlockListener(VeinMiner plugin) {
+    public BreakBlockListener(@NotNull VeinMiner plugin) {
         this.plugin = plugin;
         this.manager = plugin.getVeinMinerManager();
     }
@@ -65,7 +66,7 @@ public final class BreakBlockListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        Pair<ToolCategory, ToolTemplate> categoryTemplatePair = ToolCategory.getWithTemplate(item);
+        Pair<@NotNull ToolCategory, @NotNull ToolTemplate> categoryTemplatePair = ToolCategory.getWithTemplate(item);
         ToolCategory category = categoryTemplatePair.getLeft();
         ToolTemplate toolTemplate = categoryTemplatePair.getRight();
         if (category == null || (category != ToolCategory.HAND && toolTemplate == null)) {
@@ -138,7 +139,13 @@ public final class BreakBlockListener implements Listener {
         int maxDurability = item.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
         float hungerModifier = ((float) Math.max((plugin.getConfig().getDouble("Hunger.HungerModifier")), 0.0D)) * 0.025F;
         int minimumFoodLevel = Math.max(plugin.getConfig().getInt("Hunger.MinimumFoodLevel"), 0);
-        String hungryMessage = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Hunger.HungryMessage", ""));
+
+        String hungryMessage = plugin.getConfig().getString("Hunger.HungryMessage", "");
+        if (hungryMessage == null) {
+            hungryMessage = "";
+        }
+
+        hungryMessage = ChatColor.translateAlternateColorCodes('&', hungryMessage);
 
         for (Block block : blocks) {
             // Apply hunger

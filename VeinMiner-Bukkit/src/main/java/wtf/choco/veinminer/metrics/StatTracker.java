@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a statistic tracker for the bStats {@link Metrics} class. Any temporary data to do
@@ -17,7 +18,7 @@ public final class StatTracker {
 
     private static StatTracker instance;
 
-    private final Map<Material, Integer> minedBlocks = new EnumMap<>(Material.class);
+    private final Map<@NotNull Material, @NotNull Integer> minedBlocks = new EnumMap<>(Material.class);
 
     private StatTracker() { }
 
@@ -26,7 +27,7 @@ public final class StatTracker {
      *
      * @param material the material to accumulate
      */
-    public void accumulateVeinMinedMaterial(Material material) {
+    public void accumulateVeinMinedMaterial(@NotNull Material material) {
         this.minedBlocks.merge(material, 1, Integer::sum);
     }
 
@@ -37,7 +38,7 @@ public final class StatTracker {
      *
      * @return the readable bStats data
      */
-    public Map<String, Integer> getVeinMinedCountAsData() {
+    public Map<@NotNull String, @NotNull Integer> getVeinMinedCountAsData() {
         Map<String, Integer> data = new HashMap<>();
 
         this.minedBlocks.forEach((k, v) -> data.put(k.getKey().toString(), v));
@@ -51,6 +52,7 @@ public final class StatTracker {
      *
      * @return the stat tracker instance
      */
+    @NotNull
     public static StatTracker get() {
         return (instance == null) ? instance = new StatTracker() : instance;
     }

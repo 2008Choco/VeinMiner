@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.data.AlgorithmConfig;
 
@@ -58,15 +59,17 @@ public final class ToolTemplateMaterial implements ToolTemplate, Comparable<Tool
     }
 
     @Override
-    public boolean matches(ItemStack item) {
+    public boolean matches(@Nullable ItemStack item) {
         return item != null && item.getType() == material;
     }
 
+    @NotNull
     @Override
     public AlgorithmConfig getConfig() {
         return config;
     }
 
+    @NotNull
     @Override
     public ToolCategory getCategory() {
         return category;

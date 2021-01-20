@@ -18,6 +18,7 @@ class VeinBlockMaterial implements VeinBlock {
         this.data = type.createBlockData("[]");
     }
 
+    @NotNull
     @Override
     public Material getType() {
         return type;
@@ -28,26 +29,28 @@ class VeinBlockMaterial implements VeinBlock {
         return false;
     }
 
+    @NotNull
     @Override
     public BlockData getBlockData() {
         return data.clone();
     }
 
     @Override
-    public boolean encapsulates(Block block) {
+    public boolean encapsulates(@NotNull Block block) {
         return block != null && block.getType() == type;
     }
 
     @Override
-    public boolean encapsulates(BlockData data) {
+    public boolean encapsulates(@NotNull BlockData data) {
         return data != null && data.getMaterial() == type;
     }
 
     @Override
-    public boolean encapsulates(Material material) {
+    public boolean encapsulates(@NotNull Material material) {
         return material == type;
     }
 
+    @NotNull
     @Override
     public String asDataString() {
         return type.getKey().toString();

@@ -56,7 +56,7 @@ public final class VeinMiner extends JavaPlugin {
 
     public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
 
-    private static final int VEINMINER_PROTOCOL_VERSION = 2;
+    private static final int VEINMINER_PROTOCOL_VERSION = 1;
 
     private static VeinMiner instance;
 
@@ -71,7 +71,7 @@ public final class VeinMiner extends JavaPlugin {
     private ConfigWrapper categoriesConfig;
     private File playerDataDirectory;
 
-    private final PluginMessageProtocol<VeinMiner> pluginMessageProtocol = new PluginMessageProtocol<>(this, "veinminer:activation", VEINMINER_PROTOCOL_VERSION,
+    private final PluginMessageProtocol<@NotNull VeinMiner> pluginMessageProtocol = new PluginMessageProtocol<>(this, "veinminer:activation", VEINMINER_PROTOCOL_VERSION,
         serverRegistry -> serverRegistry
             .registerMessage(PluginMessageInHandshake.class, PluginMessageInHandshake::new) // 0x00
             .registerMessage(PluginMessageInToggleVeinMiner.class, PluginMessageInToggleVeinMiner::new), // 0x01
@@ -233,7 +233,7 @@ public final class VeinMiner extends JavaPlugin {
      * @return the plugin message protocol
      */
     @NotNull
-    public PluginMessageProtocol<VeinMiner> getPluginMessageProtocol() {
+    public PluginMessageProtocol<@NotNull VeinMiner> getPluginMessageProtocol() {
         return pluginMessageProtocol;
     }
 

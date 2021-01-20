@@ -26,10 +26,10 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     private final VeinBlock type;
     private final ItemStack item;
     private final ToolCategory category;
-    private final Set<Block> blocks;
+    private final Set<@NotNull Block> blocks;
     private final VeinMiningPattern pattern;
 
-    public PlayerVeinMineEvent(@NotNull Player who, @NotNull VeinBlock type, @Nullable ItemStack item, @NotNull ToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
+    public PlayerVeinMineEvent(@NotNull Player who, @NotNull VeinBlock type, @Nullable ItemStack item, @NotNull ToolCategory category, @NotNull Set<@NotNull Block> blocks, @NotNull VeinMiningPattern pattern) {
         super(who);
 
         this.type = type;
@@ -46,7 +46,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
      * @return the blocks to be affected by this event
      */
     @NotNull
-    public Set<Block> getBlocks() {
+    public Set<@NotNull Block> getBlocks() {
         return blocks;
     }
 
@@ -101,11 +101,13 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
         this.cancelled = cancel;
     }
 
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
     }
 
+    @NotNull
     public static HandlerList getHandlerList() {
         return handlers;
     }

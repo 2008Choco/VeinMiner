@@ -41,7 +41,7 @@ import wtf.choco.veinminer.tool.ToolTemplateMaterial;
 public class VeinMinerManager {
 
     private final BlockList globalBlocklist = new BlockList();
-    private final List<MaterialAlias> aliases = new ArrayList<>();
+    private final List<@NotNull MaterialAlias> aliases = new ArrayList<>();
     private final AlgorithmConfig config;
 
     private final VeinMiner plugin;
@@ -76,7 +76,7 @@ public class VeinMinerManager {
      */
     @NotNull
     public BlockList getAllVeinMineableBlocks() {
-        Collection<ToolCategory> categories = ToolCategory.getAll();
+        Collection<@NotNull ToolCategory> categories = ToolCategory.getAll();
         BlockList[] lists = new BlockList[categories.size() + 1];
 
         int index = 0;
@@ -225,18 +225,18 @@ public class VeinMinerManager {
     /**
      * Load all tool categories from the configuration file to memory.
      */
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings({ "unchecked", "deprecation", "null" })
     public void loadToolCategories() {
         FileConfiguration categoriesConfig = plugin.getCategoriesConfig().asRawConfig();
 
         for (String key : categoriesConfig.getKeys(false)) {
             ConfigurationSection categoryRoot = categoriesConfig.getConfigurationSection(key);
-            ToolCategory category = new ToolCategory(key, new AlgorithmConfig(categoryRoot, config));
-            ToolCategory.register(category);
-
             if (categoryRoot == null) {
                 continue;
             }
+
+            ToolCategory category = new ToolCategory(key, new AlgorithmConfig(categoryRoot, config));
+            ToolCategory.register(category);
 
             List<?> itemsList = categoryRoot.getList("Items");
             if (itemsList == null) {
@@ -360,7 +360,13 @@ public class VeinMinerManager {
      */
     @Nullable
     public MaterialAlias getAliasFor(@NotNull BlockData data) {
-        return aliases.stream().filter(a -> a.isAliased(data)).findFirst().orElse(null);
+        for (MaterialAlias alias : aliases) {
+            if (alias.isAliased(data)) {
+                return alias;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -372,7 +378,13 @@ public class VeinMinerManager {
      */
     @Nullable
     public MaterialAlias getAliasFor(@NotNull Material material) {
-        return aliases.stream().filter(a -> a.isAliased(material)).findFirst().orElse(null);
+        for (MaterialAlias alias : aliases) {
+            if (alias.isAliased(material)) {
+                return alias;
+            }
+        }
+
+        return null;
     }
 
     /**

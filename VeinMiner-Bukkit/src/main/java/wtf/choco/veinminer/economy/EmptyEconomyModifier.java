@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.economy;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.data.AlgorithmConfig;
 
@@ -17,23 +18,24 @@ public final class EmptyEconomyModifier implements EconomyModifier {
     private EmptyEconomyModifier() { }
 
     @Override
-    public boolean shouldCharge(Player player, AlgorithmConfig config) {
+    public boolean shouldCharge(@NotNull Player player, @NotNull AlgorithmConfig config) {
         return false;
     }
 
     @Override
-    public boolean hasSufficientBalance(Player player, AlgorithmConfig config) {
+    public boolean hasSufficientBalance(@NotNull Player player, @NotNull AlgorithmConfig config) {
         return true;
     }
 
     @Override
-    public void charge(Player player, AlgorithmConfig config) { }
+    public void charge(@NotNull Player player, @NotNull AlgorithmConfig config) { }
 
     /**
      * Get an instance of the empty economy modifier.
      *
      * @return this instance
      */
+    @NotNull
     public static EconomyModifier get() {
         return (instance != null) ? instance : (instance = new EmptyEconomyModifier());
     }

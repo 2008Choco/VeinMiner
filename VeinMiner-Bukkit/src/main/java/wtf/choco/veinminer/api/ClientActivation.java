@@ -5,13 +5,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A utility class for client-sided integration.
  */
 public final class ClientActivation {
 
-    private static final Set<UUID> CLIENT_ACTIVATED = new HashSet<>();
+    private static final Set<@NotNull UUID> CLIENT_ACTIVATED = new HashSet<>();
 
     private ClientActivation() { }
 
@@ -22,7 +23,7 @@ public final class ClientActivation {
      *
      * @return true if activated, false otherwise
      */
-    public static boolean isActivatedOnClient(Player player) {
+    public static boolean isActivatedOnClient(@NotNull Player player) {
         return CLIENT_ACTIVATED.contains(player.getUniqueId());
     }
 
@@ -34,7 +35,7 @@ public final class ClientActivation {
      * @param player the player to set
      * @param activated the new activation state
      */
-    public static void setActivatedOnClient(Player player, boolean activated) {
+    public static void setActivatedOnClient(@NotNull Player player, boolean activated) {
         if (activated) {
             CLIENT_ACTIVATED.add(player.getUniqueId());
         } else {

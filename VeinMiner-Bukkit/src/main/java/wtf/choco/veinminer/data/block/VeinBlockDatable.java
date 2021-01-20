@@ -17,6 +17,7 @@ class VeinBlockDatable implements VeinBlock {
         this.data = data.clone();
     }
 
+    @NotNull
     @Override
     public Material getType() {
         return data.getMaterial();
@@ -27,26 +28,28 @@ class VeinBlockDatable implements VeinBlock {
         return true;
     }
 
+    @NotNull
     @Override
     public BlockData getBlockData() {
         return data.clone();
     }
 
     @Override
-    public boolean encapsulates(Block block) {
+    public boolean encapsulates(@NotNull Block block) {
         return block != null && block.getBlockData().matches(data);
     }
 
     @Override
-    public boolean encapsulates(BlockData data) {
+    public boolean encapsulates(@NotNull BlockData data) {
         return data != null && data.matches(this.data);
     }
 
     @Override
-    public boolean encapsulates(Material material) {
+    public boolean encapsulates(@NotNull Material material) {
         return false;
     }
 
+    @NotNull
     @Override
     public String asDataString() {
         return data.getAsString(true);

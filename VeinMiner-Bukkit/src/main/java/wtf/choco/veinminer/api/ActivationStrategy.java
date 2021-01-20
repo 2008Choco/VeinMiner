@@ -34,7 +34,7 @@ public enum ActivationStrategy {
      */
     ALWAYS(Predicates.alwaysTrue());
 
-    private final Predicate<Player> condition;
+    private final Predicate<@NotNull Player> condition;
 
     private ActivationStrategy(@NotNull Predicate<Player> condition) {
         this.condition = condition;

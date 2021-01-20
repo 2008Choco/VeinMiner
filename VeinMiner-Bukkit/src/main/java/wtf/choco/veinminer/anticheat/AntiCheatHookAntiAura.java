@@ -5,21 +5,23 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The default AntiAura hook implementation
  */
 public final class AntiCheatHookAntiAura implements AntiCheatHook {
 
-    private final Set<UUID> exempt = new HashSet<>();
+    private final Set<@NotNull UUID> exempt = new HashSet<>();
 
+    @NotNull
     @Override
     public String getPluginName() {
         return "AntiAura";
     }
 
     @Override
-    public void exempt(Player player) {
+    public void exempt(@NotNull Player player) {
         if (AntiAuraAPI.API.isExemptedFromFastBreak(player)) {
             return;
         }
@@ -30,14 +32,14 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
     }
 
     @Override
-    public void unexempt(Player player) {
+    public void unexempt(@NotNull Player player) {
         if (exempt.remove(player.getUniqueId())) {
             AntiAuraAPI.API.toggleExemptFromFastBreak(player);
         }
     }
 
     @Override
-    public boolean shouldUnexempt(Player player) {
+    public boolean shouldUnexempt(@NotNull Player player) {
         return exempt.contains(player.getUniqueId());
     }
 

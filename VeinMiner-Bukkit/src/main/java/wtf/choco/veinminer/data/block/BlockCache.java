@@ -9,12 +9,12 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 
-final class BlockCache<T> {
+final class BlockCache<@NotNull T> {
 
-    static final BlockCache<Material> MATERIAL = new BlockCache<>(new EnumMap<>(Material.class));
-    static final BlockCache<BlockData> BLOCK_DATA = new BlockCache<>(new HashMap<>());
+    static final BlockCache<@NotNull Material> MATERIAL = new BlockCache<>(new EnumMap<>(Material.class));
+    static final BlockCache<@NotNull BlockData> BLOCK_DATA = new BlockCache<>(new HashMap<>());
 
-    private final Map<T, VeinBlock> cached;
+    private final Map<@NotNull T, @NotNull VeinBlock> cached;
 
     private BlockCache(@NotNull Map<T, VeinBlock> backingMap) {
         this.cached = backingMap;

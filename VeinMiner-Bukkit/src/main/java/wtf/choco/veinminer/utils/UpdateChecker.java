@@ -77,7 +77,7 @@ public final class UpdateChecker {
      * @return a future update result
      */
     @NotNull
-    public CompletableFuture<UpdateResult> requestUpdateCheck() {
+    public CompletableFuture<@NotNull UpdateResult> requestUpdateCheck() {
         return CompletableFuture.supplyAsync(() -> {
             int responseCode = -1;
 

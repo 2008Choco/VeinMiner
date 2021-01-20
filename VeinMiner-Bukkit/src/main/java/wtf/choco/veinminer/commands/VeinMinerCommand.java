@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.commands;
 
 import com.google.common.base.Enums;
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.ActivationStrategy;
@@ -44,12 +46,12 @@ public final class VeinMinerCommand implements TabExecutor {
 
     private final VeinMiner plugin;
 
-    public VeinMinerCommand(VeinMiner plugin) {
+    public VeinMinerCommand(@NotNull VeinMiner plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter. " + ChatColor.YELLOW + "/" + label + " <version|reload|blocklist|toollist|toggle|pattern|mode>");
             return true;
@@ -158,12 +160,13 @@ public final class VeinMinerCommand implements TabExecutor {
                 return true;
             }
 
-            ActivationStrategy strategy = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase()).orNull();
-            if (strategy == null) {
+            Optional<@NotNull ActivationStrategy> strategyOptional = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase());
+            if (!strategyOptional.isPresent()) {
                 player.sendMessage(ChatColor.GRAY + "Invalid activation strategy: " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + ".");
                 return true;
             }
 
+            ActivationStrategy strategy = strategyOptional.get();
             PlayerPreferences.get(player).setActivationStrategy(strategy);
             player.sendMessage(ChatColor.GREEN + "Activation mode successfully changed to " + ChatColor.YELLOW + strategy.name().toLowerCase().replace("_", " ") + ChatColor.GREEN + ".");
         }
@@ -475,8 +478,9 @@ public final class VeinMinerCommand implements TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String commandLabel, String[] args) {
         List<String> values = new ArrayList<>();
+
         if (args.length == 1) {
             values.add("version");
             if (sender.hasPermission(VMConstants.PERMISSION_RELOAD)) {
@@ -557,7 +561,11 @@ public final class VeinMinerCommand implements TabExecutor {
             if (args[2].equalsIgnoreCase("add")) {
                 if (args[0].equalsIgnoreCase("blocklist")) {
                     suggestions = StringUtil.copyPartialMatches(materialArg, BLOCK_KEYS, new ArrayList<>());
-                    ToolCategory.get(args[1]).getBlocklist().forEach(b -> impossibleSuggestions.add(b.getType().getKey().toString()));
+
+                    ToolCategory category = ToolCategory.get(args[1]);
+                    if (category != null) {
+                        category.getBlocklist().forEach(b -> impossibleSuggestions.add(b.getType().getKey().toString()));
+                    }
                 }
                 else if (args[0].equalsIgnoreCase("toollist")) {
                     suggestions = StringUtil.copyPartialMatches(materialArg, ITEM_KEYS, new ArrayList<>());
@@ -566,11 +574,14 @@ public final class VeinMinerCommand implements TabExecutor {
 
             else if (args[2].equalsIgnoreCase("remove")) {
                 if (args[0].equalsIgnoreCase("blocklist")) {
-                    BlockList blocklist = ToolCategory.get(args[1]).getBlocklist();
-                    List<String> blocklistSuggestions = new ArrayList<>(blocklist.size());
-                    blocklist.forEach(v -> blocklistSuggestions.add(v.asDataString()));
+                    ToolCategory category = ToolCategory.get(args[1]);
+                    if (category != null) {
+                        BlockList blocklist = category.getBlocklist();
+                        List<String> blocklistSuggestions = new ArrayList<>(blocklist.size());
+                        blocklist.forEach(v -> blocklistSuggestions.add(v.asDataString()));
 
-                    suggestions = StringUtil.copyPartialMatches(materialArg, blocklistSuggestions, new ArrayList<>());
+                        suggestions = StringUtil.copyPartialMatches(materialArg, blocklistSuggestions, new ArrayList<>());
+                    }
                 }
                 else if (args[0].equalsIgnoreCase("toollist")) {
                     suggestions = StringUtil.copyPartialMatches(materialArg, ITEM_KEYS, new ArrayList<>());
@@ -588,7 +599,7 @@ public final class VeinMinerCommand implements TabExecutor {
         return StringUtil.copyPartialMatches(args[args.length - 1], values, new ArrayList<>());
     }
 
-    public static void assignTo(VeinMiner plugin, String commandString) {
+    public static void assignTo(@NotNull VeinMiner plugin, @NotNull String commandString) {
         Validate.notEmpty(commandString);
         PluginCommand command = plugin.getCommand(commandString);
         if (command == null) {

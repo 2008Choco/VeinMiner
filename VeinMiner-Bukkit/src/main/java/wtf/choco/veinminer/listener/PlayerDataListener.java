@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.data.PlayerPreferences;
@@ -14,7 +15,7 @@ public final class PlayerDataListener implements Listener {
 
     private final VeinMiner plugin;
 
-    public PlayerDataListener(VeinMiner plugin) {
+    public PlayerDataListener(@NotNull VeinMiner plugin) {
         this.plugin = plugin;
     }
 

@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.VBlockFace;
@@ -41,7 +43,7 @@ public final class PatternThorough implements VeinMiningPattern {
     }
 
     @Override
-    public void allocateBlocks(Set<Block> blocks, VeinBlock type, Block origin, ToolCategory category, ToolTemplate toolTemplate, AlgorithmConfig algorithmConfig, MaterialAlias alias) {
+    public void allocateBlocks(@NotNull Set<Block> blocks, @NotNull VeinBlock type, @NotNull Block origin, @NotNull ToolCategory category, @Nullable ToolTemplate template, @NotNull AlgorithmConfig algorithmConfig, @Nullable MaterialAlias alias) {
         int maxVeinSize = algorithmConfig.getMaxVeinSize();
         VBlockFace[] facesToMine = PatternUtils.getFacesToMine(algorithmConfig);
 
@@ -72,6 +74,7 @@ public final class PatternThorough implements VeinMiningPattern {
         }
     }
 
+    @NotNull
     @Override
     public NamespacedKey getKey() {
         return key;

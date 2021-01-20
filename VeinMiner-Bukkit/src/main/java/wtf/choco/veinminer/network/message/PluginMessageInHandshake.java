@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.network.message;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.network.PluginMessage;
@@ -13,22 +14,22 @@ import wtf.choco.veinminer.network.PluginMessageByteBuffer;
  * </ol>
  * Sent when the client joins the server.
  */
-public class PluginMessageInHandshake implements PluginMessage<VeinMiner> {
+public class PluginMessageInHandshake implements PluginMessage<@NotNull VeinMiner> {
 
     private int protocolVersion;
 
     @Override
-    public void read(PluginMessageByteBuffer buffer) {
+    public void read(@NotNull PluginMessageByteBuffer buffer) {
         this.protocolVersion = buffer.readVarInt();
     }
 
     @Override
-    public void write(PluginMessageByteBuffer buffer) {
+    public void write(@NotNull PluginMessageByteBuffer buffer) {
         buffer.writeVarInt(protocolVersion);
     }
 
     @Override
-    public void handle(VeinMiner plugin, Player player) {
+    public void handle(@NotNull VeinMiner plugin, @NotNull Player player) {
         int serverProtocolVersion = plugin.getPluginMessageProtocol().getVersion();
         if (serverProtocolVersion == protocolVersion) {
             return;

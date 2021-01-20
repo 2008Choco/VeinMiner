@@ -14,6 +14,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 
@@ -25,16 +26,16 @@ public final class WorldGuardIntegration {
 
     private WorldGuardIntegration() { }
 
-    public static void init(VeinMiner plugin) {
+    public static void init(@NotNull VeinMiner plugin) {
         registerFlag(plugin, WorldGuard.getInstance().getFlagRegistry(), FLAG_VEINMINER);
         initialized = true;
     }
 
-    public static boolean queryFlagVeinMiner(Block block, Player player) {
+    public static boolean queryFlagVeinMiner(@NotNull Block block, @NotNull Player player) {
         return initialized && testFlag(block, player, FLAG_VEINMINER);
     }
 
-    private static boolean testFlag(Block block, Player player, StateFlag flag) {
+    private static boolean testFlag(@NotNull Block block, @NotNull Player player, @NotNull StateFlag flag) {
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
 
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -44,7 +45,7 @@ public final class WorldGuardIntegration {
         return regionSet.testState(localPlayer, flag);
     }
 
-    private static void registerFlag(JavaPlugin plugin, FlagRegistry flagRegistry, StateFlag flag) {
+    private static void registerFlag(@NotNull JavaPlugin plugin, @NotNull FlagRegistry flagRegistry, @NotNull StateFlag flag) {
         try {
             flagRegistry.register(flag);
         } catch (FlagConflictException e) {

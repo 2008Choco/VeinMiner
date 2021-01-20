@@ -15,6 +15,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.Messenger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a protocol definition by which plugin messages ("custom packets") may be registered
@@ -40,13 +42,13 @@ import org.bukkit.plugin.messaging.Messenger;
  * @see PluginMessage
  * @see PluginMessageByteBuffer
  */
-public class PluginMessageProtocol<T extends Plugin> {
+public class PluginMessageProtocol<@NotNull T extends Plugin> {
 
     private final T plugin;
     private final String channel;
     private final int version;
 
-    private final Map<MessageDirection, PluginMessageRegistry> registries = new EnumMap<>(MessageDirection.class);
+    private final Map<@NotNull MessageDirection, @NotNull PluginMessageRegistry> registries = new EnumMap<>(MessageDirection.class);
 
     /**
      * Construct a new {@link PluginMessageProtocol}.
@@ -57,7 +59,12 @@ public class PluginMessageProtocol<T extends Plugin> {
      * @param serverboundMessageSupplier the supplier to which serverbound messages should be registered
      * @param clientboundMessageSupplier the supplier to which clientbound messages should be registered
      */
-    public PluginMessageProtocol(T plugin, String channel, int version, Consumer<PluginMessageRegistry> serverboundMessageSupplier, Consumer<PluginMessageRegistry> clientboundMessageSupplier) {
+    public PluginMessageProtocol(@NotNull T plugin, @NotNull String channel, int version, @NotNull Consumer<PluginMessageRegistry> serverboundMessageSupplier, @NotNull Consumer<PluginMessageRegistry> clientboundMessageSupplier) {
+        Preconditions.checkArgument(plugin != null, "plugin must not be null");
+        Preconditions.checkArgument(channel != null, "channel must not be null");
+        Preconditions.checkArgument(serverboundMessageSupplier != null, "serverboundMessageSupplier must not be null");
+        Preconditions.checkArgument(clientboundMessageSupplier != null, "clientboundMessageSupplier must not be null");
+
         this.plugin = plugin;
         this.channel = channel;
         this.version = version;
@@ -71,6 +78,7 @@ public class PluginMessageProtocol<T extends Plugin> {
      *
      * @return the plugin
      */
+    @NotNull
     public T getPlugin() {
         return plugin;
     }
@@ -80,6 +88,7 @@ public class PluginMessageProtocol<T extends Plugin> {
      *
      * @return the channel
      */
+    @NotNull
     public String getChannel() {
         return channel;
     }
@@ -99,7 +108,7 @@ public class PluginMessageProtocol<T extends Plugin> {
      * @param player the player to which the message should be sent
      * @param message the message to send
      */
-    public void sendMessage(Player player, PluginMessage<T> message) {
+    public void sendMessage(@NotNull Player player, @NotNull PluginMessage<T> message) {
         Preconditions.checkArgument(player != null, "player must not be null");
         Preconditions.checkArgument(message != null, "message must not be null");
 
@@ -123,7 +132,7 @@ public class PluginMessageProtocol<T extends Plugin> {
      *
      * @return the message id
      */
-    public int getPluginMessageId(MessageDirection direction, PluginMessage<T> message) {
+    public int getPluginMessageId(@NotNull MessageDirection direction, @NotNull PluginMessage<T> message) {
         return getPluginMessageId(direction, message.getClass());
     }
 
@@ -135,7 +144,10 @@ public class PluginMessageProtocol<T extends Plugin> {
      *
      * @return the message id
      */
-    public int getPluginMessageId(MessageDirection direction, Class<?> messageClass) {
+    public int getPluginMessageId(@NotNull MessageDirection direction, @NotNull Class<?> messageClass) {
+        Preconditions.checkArgument(direction != null, "direction must not be null");
+        Preconditions.checkArgument(messageClass != null, "messageClass must not be null");
+
         return registries.get(direction).messageIds.get(messageClass);
     }
 
@@ -147,11 +159,15 @@ public class PluginMessageProtocol<T extends Plugin> {
      *
      * @return the created plugin message
      */
-    public PluginMessage<T> createPluginMessage(MessageDirection direction, int messageId) {
+    public PluginMessage<T> createPluginMessage(@NotNull MessageDirection direction, int messageId) {
+        Preconditions.checkArgument(direction != null, "direction must not be null");
+
         return registries.get(direction).createPluginMessage(messageId);
     }
 
-    private void constructAndRegisterRegistry(MessageDirection direction, Consumer<PluginMessageRegistry> messageSupplier) {
+    private void constructAndRegisterRegistry(@NotNull MessageDirection direction, @Nullable Consumer<@NotNull PluginMessageRegistry> messageSupplier) {
+        Preconditions.checkArgument(direction != null, "direction must not be null");
+
         if (messageSupplier == null) {
             return;
         }
@@ -201,7 +217,11 @@ public class PluginMessageProtocol<T extends Plugin> {
          *
          * @return this instance. Allows for chained message calls
          */
-        public <M extends PluginMessage<T>> PluginMessageRegistry registerMessage(Class<M> messageClass, Supplier<M> messageConstructor) {
+        @NotNull
+        public <M extends PluginMessage<T>> PluginMessageRegistry registerMessage(@NotNull Class<M> messageClass, @NotNull Supplier<M> messageConstructor) {
+            Preconditions.checkArgument(messageClass != null, "messageClass must not be null");
+            Preconditions.checkArgument(messageConstructor != null, "messageConstructor must not be null");
+
             int messageId = messageIds.size();
 
             Integer existingMessageId = messageIds.put(messageClass, messageId);
@@ -213,6 +233,7 @@ public class PluginMessageProtocol<T extends Plugin> {
             return this;
         }
 
+        @NotNull
         private PluginMessage<T> createPluginMessage(int messageId) {
             Preconditions.checkArgument(messageId >= 0 && messageId < messageConstructors.size(), "Unregistered plugin message id %d", messageId);
 

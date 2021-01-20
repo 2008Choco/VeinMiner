@@ -1,6 +1,10 @@
 package wtf.choco.veinminer.network;
 
+import com.google.common.base.Preconditions;
+
 import java.nio.ByteBuffer;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A utility class to wrap a {@link ByteBuffer} (or byte array) allowing for reading
@@ -16,7 +20,9 @@ public class PluginMessageByteBuffer {
      *
      * @param buffer the buffer to wrap
      */
-    public PluginMessageByteBuffer(ByteBuffer buffer) {
+    public PluginMessageByteBuffer(@NotNull ByteBuffer buffer) {
+        Preconditions.checkArgument(buffer != null, "buffer must not be null");
+
         this.buffer = buffer;
     }
 
@@ -44,6 +50,7 @@ public class PluginMessageByteBuffer {
      *
      * @return this instance. Allows for chained method calls
      */
+    @NotNull
     public PluginMessageByteBuffer writeVarInt(int value) {
         while ((value & -128) != 0) {
             this.writeByte(value & 127 | 128);
@@ -86,6 +93,7 @@ public class PluginMessageByteBuffer {
      *
      * @return this instance. Allows for chained method calls
      */
+    @NotNull
     public PluginMessageByteBuffer writeBoolean(boolean value) {
         this.buffer.put(value ? (byte) 1 : 0);
         return this;
@@ -107,6 +115,7 @@ public class PluginMessageByteBuffer {
      *
      * @return this instance. Allows for chained method calls
      */
+    @NotNull
     public PluginMessageByteBuffer writeBytes(byte[] bytes) {
         this.buffer.put(bytes);
         return this;
@@ -119,6 +128,7 @@ public class PluginMessageByteBuffer {
      *
      * @return this instance. Allows for chained method calls
      */
+    @NotNull
     public PluginMessageByteBuffer writeBytesAndLength(byte[] bytes) {
         this.writeBytes(bytes, bytes.length);
         return this;
@@ -132,6 +142,7 @@ public class PluginMessageByteBuffer {
      *
      * @return this instance. Allows for chained method calls
      */
+    @NotNull
     public PluginMessageByteBuffer writeBytes(byte[] bytes, int length) {
         this.writeVarInt(length);
         this.writeBytes(bytes);
@@ -184,6 +195,7 @@ public class PluginMessageByteBuffer {
      *
      * @return this instance. Allows for chained method calls
      */
+    @NotNull
     public PluginMessageByteBuffer writeByte(int value) {
         this.buffer.put((byte) value);
         return this;

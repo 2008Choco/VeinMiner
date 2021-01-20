@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
@@ -14,15 +15,16 @@ import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
  */
 public final class AntiCheatHookNCP implements AntiCheatHook {
 
-    private final Set<UUID> exempt = new HashSet<>();
+    private final Set<@NotNull UUID> exempt = new HashSet<>();
 
+    @NotNull
     @Override
     public String getPluginName() {
         return "NCP";
     }
 
     @Override
-    public void exempt(Player player) {
+    public void exempt(@NotNull Player player) {
         if (!NCPExemptionManager.isExempted(player, CheckType.BLOCKBREAK)) {
             return;
         }
@@ -33,14 +35,14 @@ public final class AntiCheatHookNCP implements AntiCheatHook {
     }
 
     @Override
-    public void unexempt(Player player) {
+    public void unexempt(@NotNull Player player) {
         if (exempt.remove(player.getUniqueId())) {
             NCPExemptionManager.unexempt(player, CheckType.BLOCKBREAK);
         }
     }
 
     @Override
-    public boolean shouldUnexempt(Player player) {
+    public boolean shouldUnexempt(@NotNull Player player) {
         return exempt.contains(player.getUniqueId());
     }
 

@@ -1,7 +1,5 @@
 package wtf.choco.veinminer.anticheat;
 
-import java.util.Objects;
-
 import me.konsolas.aac.api.AACAPI;
 import me.konsolas.aac.api.AACExemption;
 
@@ -14,9 +12,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class AntiCheatHookAAC implements AntiCheatHook {
 
+    private final AACAPI api;
     private final AACExemption exemption = new AACExemption("The player is using VeinMiner");
-    private final AACAPI api = Objects.requireNonNull(Bukkit.getServicesManager().load(AACAPI.class));
 
+    public AntiCheatHookAAC() {
+        this.api = Bukkit.getServicesManager().load(AACAPI.class);
+
+        if (api == null) {
+            throw new IllegalStateException("Tried to initialize " + getClass().getName() + " but couldn't find AACAPI");
+        }
+    }
+
+    @NotNull
     @Override
     public String getPluginName() {
         return "AAC5";
