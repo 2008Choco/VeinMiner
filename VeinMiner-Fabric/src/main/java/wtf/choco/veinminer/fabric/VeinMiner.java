@@ -8,13 +8,10 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import org.lwjgl.glfw.GLFW;
 
 public class VeinMiner implements ClientModInitializer {
-
-    private static final Identifier VEINMINER_CHANNEL_IDENTIFIER = new Identifier("veinminer", "activation");
 
     private boolean veinminerActivated = false;
 
@@ -33,8 +30,9 @@ public class VeinMiner implements ClientModInitializer {
 
             if (last ^ veinminerActivated) {
                 PacketByteBuf buffer = PacketByteBufs.create();
+                buffer.writeVarInt(VeinMinerBukkitProtocol.TOGGLE_VEINMINER);
                 buffer.writeBoolean(veinminerActivated);
-                ClientPlayNetworking.send(VEINMINER_CHANNEL_IDENTIFIER, buffer);
+                ClientPlayNetworking.send(VeinMinerBukkitProtocol.CHANNEL_IDENTIFIER, buffer);
             }
         });
     }

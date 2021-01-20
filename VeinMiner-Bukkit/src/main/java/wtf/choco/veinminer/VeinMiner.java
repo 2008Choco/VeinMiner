@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,7 +24,6 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
 import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
-import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCommand;
 import wtf.choco.veinminer.data.PlayerPreferences;
@@ -35,6 +35,8 @@ import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
 import wtf.choco.veinminer.metrics.StatTracker;
+import wtf.choco.veinminer.network.PluginMessageProtocol;
+import wtf.choco.veinminer.network.message.PluginMessageInToggleVeinMiner;
 import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.PatternThorough;
@@ -63,6 +65,13 @@ public final class VeinMiner extends JavaPlugin {
 
     private ConfigWrapper categoriesConfig;
     private File playerDataDirectory;
+
+    private final PluginMessageProtocol<VeinMiner> pluginMessageProtocol = new PluginMessageProtocol<>(this, "veinminer:activation",
+        serverRegistry -> serverRegistry
+            .registerMessage(PluginMessageInToggleVeinMiner.class, PluginMessageInToggleVeinMiner::new),
+
+        clientRegistry -> {} // No client-bound messages... yet?
+    );
 
     @Override
     public void onLoad() {
@@ -158,10 +167,6 @@ public final class VeinMiner extends JavaPlugin {
                 }
             });
         }
-
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, "veinminer:activation", (channel, player, data) -> {
-            ClientActivation.setActivatedOnClient(player, data[0] == 1);
-        });
     }
 
     @Override
@@ -214,6 +219,11 @@ public final class VeinMiner extends JavaPlugin {
     @NotNull
     public PatternRegistry getPatternRegistry() {
         return patternRegistry;
+    }
+
+    @NotNull
+    public PluginMessageProtocol<VeinMiner> getPluginMessageProtocol() {
+        return pluginMessageProtocol;
     }
 
     /**
@@ -299,6 +309,10 @@ public final class VeinMiner extends JavaPlugin {
     @NotNull
     public List<AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
+    }
+
+    public static NamespacedKey key(String key) {
+        return new NamespacedKey(instance, key);
     }
 
     private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
