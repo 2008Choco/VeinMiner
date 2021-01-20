@@ -1,16 +1,14 @@
-plugins {
-    id 'java'
-    id 'eclipse'
-    id 'fabric-loom' version '0.5-SNAPSHOT'
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven.fabricmc.net/' }
+    }
+    dependencies {
+        classpath "fabric-loom:fabric-loom.gradle.plugin:0.6-SNAPSHOT" //0.6-SNAPSHOT version
+    }
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-group = 'wtf.choco'
-version = "${project.version}"
-description = 'VeinMiner Fabric'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+apply plugin: 'fabric-loom'
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -18,10 +16,6 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
 }
 
 java {
