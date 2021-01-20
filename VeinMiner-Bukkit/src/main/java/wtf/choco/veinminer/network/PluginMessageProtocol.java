@@ -20,12 +20,14 @@ public class PluginMessageProtocol<T extends Plugin> {
 
     private final T plugin;
     private final String channel;
+    private final int version;
 
     private final Map<MessageDirection, PluginMessageRegistry> registries = new EnumMap<>(MessageDirection.class);
 
-    public PluginMessageProtocol(T plugin, String channel, Consumer<PluginMessageRegistry> serverboundMessageSupplier, Consumer<PluginMessageRegistry> clientboundMessageSupplier) {
+    public PluginMessageProtocol(T plugin, String channel, int version, Consumer<PluginMessageRegistry> serverboundMessageSupplier, Consumer<PluginMessageRegistry> clientboundMessageSupplier) {
         this.plugin = plugin;
         this.channel = channel;
+        this.version = version;
 
         this.constructAndRegisterRegistry(MessageDirection.SERVERBOUND, serverboundMessageSupplier);
         this.constructAndRegisterRegistry(MessageDirection.CLIENTBOUND, clientboundMessageSupplier);
@@ -37,6 +39,10 @@ public class PluginMessageProtocol<T extends Plugin> {
 
     public String getChannel() {
         return channel;
+    }
+
+    public int getVersion() {
+        return version;
     }
 
     public void sendMessage(Player player, PluginMessage<T> message) {

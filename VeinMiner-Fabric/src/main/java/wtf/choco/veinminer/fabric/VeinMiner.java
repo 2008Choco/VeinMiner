@@ -3,6 +3,7 @@ package wtf.choco.veinminer.fabric;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.options.KeyBinding;
@@ -30,10 +31,21 @@ public class VeinMiner implements ClientModInitializer {
 
             if (last ^ veinminerActivated) {
                 PacketByteBuf buffer = PacketByteBufs.create();
-                buffer.writeVarInt(VeinMinerBukkitProtocol.TOGGLE_VEINMINER);
+                buffer.writeVarInt(VeinMinerBukkitProtocol.OUT_TOGGLE_VEINMINER);
                 buffer.writeBoolean(veinminerActivated);
                 ClientPlayNetworking.send(VeinMinerBukkitProtocol.CHANNEL_IDENTIFIER, buffer);
             }
+        });
+
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            PacketByteBuf buffer = PacketByteBufs.create();
+            buffer.writeVarInt(VeinMinerBukkitProtocol.OUT_HANDSHAKE);
+            buffer.writeVarInt(VeinMinerBukkitProtocol.VEINMINER_PROTOCOL_VERSION);
+            ClientPlayNetworking.send(VeinMinerBukkitProtocol.CHANNEL_IDENTIFIER, buffer);
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(VeinMinerBukkitProtocol.CHANNEL_IDENTIFIER, (client, handler, buf, responseSender) -> {
+            // For when messages are sent to the client... not yet though.
         });
     }
 

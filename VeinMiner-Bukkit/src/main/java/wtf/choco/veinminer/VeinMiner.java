@@ -36,6 +36,7 @@ import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
 import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.network.PluginMessageProtocol;
+import wtf.choco.veinminer.network.message.PluginMessageInHandshake;
 import wtf.choco.veinminer.network.message.PluginMessageInToggleVeinMiner;
 import wtf.choco.veinminer.pattern.PatternExpansive;
 import wtf.choco.veinminer.pattern.PatternRegistry;
@@ -53,6 +54,8 @@ public final class VeinMiner extends JavaPlugin {
 
     public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
 
+    private static final int VEINMINER_PROTOCOL_VERSION = 2;
+
     private static VeinMiner instance;
 
     private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
@@ -66,9 +69,10 @@ public final class VeinMiner extends JavaPlugin {
     private ConfigWrapper categoriesConfig;
     private File playerDataDirectory;
 
-    private final PluginMessageProtocol<VeinMiner> pluginMessageProtocol = new PluginMessageProtocol<>(this, "veinminer:activation",
+    private final PluginMessageProtocol<VeinMiner> pluginMessageProtocol = new PluginMessageProtocol<>(this, "veinminer:activation", VEINMINER_PROTOCOL_VERSION,
         serverRegistry -> serverRegistry
-            .registerMessage(PluginMessageInToggleVeinMiner.class, PluginMessageInToggleVeinMiner::new),
+            .registerMessage(PluginMessageInHandshake.class, PluginMessageInHandshake::new) // 0x00
+            .registerMessage(PluginMessageInToggleVeinMiner.class, PluginMessageInToggleVeinMiner::new), // 0x01
 
         clientRegistry -> { } // No client-bound messages... yet?
     );
