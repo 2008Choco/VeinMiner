@@ -36,7 +36,7 @@ public final class PlayerPreferences {
 
     private static final Map<@NotNull UUID, @NotNull PlayerPreferences> CACHE = new HashMap<>();
 
-    private ActivationStrategy activationStrategy = ActivationStrategy.SNEAK;
+    private ActivationStrategy activationStrategy = ActivationStrategy.getDefaultActivationStrategy();
     private final Set<@NotNull ToolCategory> disabledCategories = new HashSet<>();
     private boolean dirty = false;
 

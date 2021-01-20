@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.veinminer.VeinMiner;
+
 /**
  * Represents the different methods of activating VeinMiner.
  */
@@ -67,6 +69,24 @@ public enum ActivationStrategy {
         }
 
         return null;
+    }
+
+    /**
+     * Get the default {@link ActivationStrategy} as specific in the config.
+     *
+     * @return the default activation strategy
+     */
+    @NotNull
+    public static ActivationStrategy getDefaultActivationStrategy() {
+        VeinMiner plugin = VeinMiner.getPlugin();
+
+        String strategyName = plugin.getConfig().getString("DefaultActivationStrategy");
+        if (strategyName == null) {
+            return SNEAK;
+        }
+
+        ActivationStrategy strategy = getByName(strategyName);
+        return strategy != null ? strategy : SNEAK;
     }
 
 }
