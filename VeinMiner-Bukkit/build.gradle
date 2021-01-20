@@ -1,28 +1,6 @@
 plugins {
-    id 'java'
-    id 'eclipse'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
-
-repositories {
-    mavenLocal()
-
-    maven { url = uri('https://repo.maven.apache.org/maven2/') }
-    maven { url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/') }
-    maven { url = uri('https://repo.codemc.org/repository/maven-public/') }
-
-    maven { url = uri('http://nexus.hc.to/content/repositories/pub_releases/') }
-    maven { url = uri('https://maven.enginehub.org/repo/') }
-
-    maven { url = uri('https://jitpack.io') }
-    maven { url = uri('https://repo.md-5.net/content/repositories/snapshots/') }
-    maven { url = uri('https://repo.janmm14.de/repository/public/') }
-}
-
-group = 'wtf.choco'
-version = '1.16.3.2'
-description = 'VeinMiner-Bukkit'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     implementation 'org.bstats:bstats-bukkit:1.7'
@@ -44,5 +22,5 @@ dependencies {
 }
 
 shadowJar {
-   relocate 'org.bstats.bukkit', 'wtf.choco.veinminer.metrics'
+    relocate 'org.bstats.bukkit', 'wtf.choco.veinminer.metrics'
 }
