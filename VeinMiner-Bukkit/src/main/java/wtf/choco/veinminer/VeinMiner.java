@@ -70,7 +70,7 @@ public final class VeinMiner extends JavaPlugin {
         serverRegistry -> serverRegistry
             .registerMessage(PluginMessageInToggleVeinMiner.class, PluginMessageInToggleVeinMiner::new),
 
-        clientRegistry -> {} // No client-bound messages... yet?
+        clientRegistry -> { } // No client-bound messages... yet?
     );
 
     @Override

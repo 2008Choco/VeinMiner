@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.data;
 
+import com.google.common.base.Preconditions;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -7,12 +9,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import com.google.common.base.Preconditions;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -230,8 +229,8 @@ public class AlgorithmConfig implements Cloneable {
     }
 
     /**
-     * Read configured values from a raw Map<String, Object>. This is not a recommended
-     * means of reading data and exists solely for internal use.
+     * Read configured values from a raw {@literal Map<String, Object>}. This is not a
+     * recommended means of reading data and exists solely for internal use.
      *
      * @param raw the raw data from which to read configured values
      *

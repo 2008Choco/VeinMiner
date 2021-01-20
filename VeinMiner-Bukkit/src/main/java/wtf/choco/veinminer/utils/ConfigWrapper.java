@@ -1,12 +1,12 @@
 package wtf.choco.veinminer.utils;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.configuration.file.FileConfiguration;

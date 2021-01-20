@@ -53,7 +53,7 @@ public final class BreakBlockListener implements Listener {
 
     @EventHandler
     private void onBlockBreak(BlockBreakEvent event) {
-        if (event.getClass() != BlockBreakEvent.class) {// For plugins such as McMMO, who fire custom events
+        if (event.getClass() != BlockBreakEvent.class) { // For plugins such as McMMO, who fire custom events
             return;
         }
 

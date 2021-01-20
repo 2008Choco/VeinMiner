@@ -1,14 +1,13 @@
 package wtf.choco.veinminer.utils;
 
+import com.google.common.base.Preconditions;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.google.common.base.Preconditions;
-
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
 import org.jetbrains.annotations.NotNull;
 
 public final class ReflectionUtil {

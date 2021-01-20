@@ -4,7 +4,6 @@ import java.util.Set;
 
 import org.bukkit.Keyed;
 import org.bukkit.block.Block;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

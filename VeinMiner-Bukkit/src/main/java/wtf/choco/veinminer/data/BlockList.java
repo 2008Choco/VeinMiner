@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

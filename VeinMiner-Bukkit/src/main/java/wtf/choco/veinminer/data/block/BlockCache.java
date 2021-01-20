@@ -7,7 +7,6 @@ import java.util.function.Function;
 
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-
 import org.jetbrains.annotations.NotNull;
 
 final class BlockCache<T> {

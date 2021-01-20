@@ -7,7 +7,6 @@ import me.konsolas.aac.api.AACExemption;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

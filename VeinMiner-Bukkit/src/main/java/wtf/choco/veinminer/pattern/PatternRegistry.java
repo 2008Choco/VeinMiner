@@ -1,12 +1,12 @@
 package wtf.choco.veinminer.pattern;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;

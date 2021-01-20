@@ -59,8 +59,13 @@ class VeinBlockDatable implements VeinBlock {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (!(obj instanceof VeinBlockDatable)) return false;
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof VeinBlockDatable)) {
+            return false;
+        }
 
         VeinBlockDatable other = (VeinBlockDatable) obj;
         return Objects.equal(data, other.data);

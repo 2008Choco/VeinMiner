@@ -1,13 +1,13 @@
 package wtf.choco.veinminer.commands;
 
+import com.google.common.base.Enums;
+import com.google.common.collect.Iterables;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.google.common.base.Enums;
-import com.google.common.collect.Iterables;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;

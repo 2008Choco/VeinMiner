@@ -1,11 +1,11 @@
 package wtf.choco.veinminer.data;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import com.google.common.base.Preconditions;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -158,8 +158,13 @@ public class MaterialAlias implements Iterable<VeinBlock>, Cloneable {
 
     @Override
     public boolean equals(Object object) {
-        if (object == this) return true;
-        if (!(object instanceof MaterialAlias)) return false;
+        if (object == this) {
+            return true;
+        }
+
+        if (!(object instanceof MaterialAlias)) {
+            return false;
+        }
 
         MaterialAlias alias = (MaterialAlias) object;
         return blocks.equals(alias.blocks);

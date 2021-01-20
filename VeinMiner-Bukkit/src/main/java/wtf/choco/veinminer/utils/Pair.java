@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a pair of two (potentially null) objects.
  *
+ * @author Parker Hawke - Choco
+ *
  * @param <L> the type of object on the left
  * @param <R> the type of object on the right
- *
- * @author Parker Hawke - Choco
  */
 public class Pair<L, R> {
 

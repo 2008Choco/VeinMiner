@@ -1,12 +1,11 @@
 package wtf.choco.veinminer.tool;
 
-import java.util.Objects;
-
 import com.google.common.base.Preconditions;
+
+import java.util.Objects;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.data.AlgorithmConfig;
@@ -85,8 +84,13 @@ public final class ToolTemplateMaterial implements ToolTemplate, Comparable<Tool
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (!(obj instanceof ToolTemplateMaterial)) return false;
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof ToolTemplateMaterial)) {
+            return false;
+        }
 
         ToolTemplateMaterial other = (ToolTemplateMaterial) obj;
         return category == other.category && material == other.material;

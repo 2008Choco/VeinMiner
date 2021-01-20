@@ -94,7 +94,7 @@ public class PluginMessageProtocol<T extends Plugin> {
         }
     }
 
-    public class PluginMessageRegistry {
+    public final class PluginMessageRegistry {
 
         private final Map<Class<? extends PluginMessage<T>>, Integer> messageIds = new IdentityHashMap<>();
         private final List<Supplier<? extends PluginMessage<T>>> messageConstructors = new ArrayList<>();

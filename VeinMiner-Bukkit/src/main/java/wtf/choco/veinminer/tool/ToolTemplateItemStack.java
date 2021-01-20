@@ -1,18 +1,17 @@
 package wtf.choco.veinminer.tool;
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import com.google.common.base.Preconditions;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -158,8 +157,13 @@ public class ToolTemplateItemStack implements ToolTemplate {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (!(obj instanceof ToolTemplateItemStack)) return false;
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof ToolTemplateItemStack)) {
+            return false;
+        }
 
         ToolTemplateItemStack other = (ToolTemplateItemStack) obj;
         return type == other.type && Objects.equals(name, other.name) && Objects.equals(lore, other.lore);

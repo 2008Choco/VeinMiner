@@ -4,7 +4,7 @@ version: 1.16.3.2
 description: Temp
 author: 2008Choco
 website: https://www.spigotmc.org/resources/12038/
-softdepend: [AAC5, AntiAura, Matrix, NoCheatPlus, Spartan, Vault, WorldGuard]
+softdepend: [ AAC5, AntiAura, Matrix, NoCheatPlus, Spartan, Vault, WorldGuard ]
 api-version: 1.13
 
 commands:
@@ -62,7 +62,7 @@ permissions:
   veinminer.blocklist.list.*:
     description: Allow the use of the '/veinminer blocklist list' subcommand
     default: op
-    
+
   veinminer.toollist.list.*:
     description: Allow the use of the '/veinminer toollist list' subcommand
     default: op
