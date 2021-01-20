@@ -6,6 +6,13 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 
+/**
+ * A serverbound {@link PluginMessage} including the following data:
+ * <ol>
+ *   <li><strong>varint</strong>: protocol version
+ * </ol>
+ * Sent when the client joins the server.
+ */
 public class PluginMessageInHandshake implements PluginMessage<VeinMiner> {
 
     private int protocolVersion;

@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,6 +47,9 @@ import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
 
+/**
+ * The VeinMiner {@link JavaPlugin} class.
+ */
 public final class VeinMiner extends JavaPlugin {
 
     public static final Gson GSON = new Gson();
@@ -225,6 +227,11 @@ public final class VeinMiner extends JavaPlugin {
         return patternRegistry;
     }
 
+    /**
+     * Get the plugin message protocol for VeinMiner.
+     *
+     * @return the plugin message protocol
+     */
     @NotNull
     public PluginMessageProtocol<VeinMiner> getPluginMessageProtocol() {
         return pluginMessageProtocol;
@@ -313,10 +320,6 @@ public final class VeinMiner extends JavaPlugin {
     @NotNull
     public List<AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
-    }
-
-    public static NamespacedKey key(String key) {
-        return new NamespacedKey(instance, key);
     }
 
     private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {

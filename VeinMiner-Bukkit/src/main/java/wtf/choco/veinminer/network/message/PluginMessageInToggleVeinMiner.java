@@ -7,6 +7,13 @@ import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 
+/**
+ * A serverbound {@link PluginMessage} including the following data:
+ * <ol>
+ *   <li><strong>boolean</strong>: whether or not vein miner is active
+ * </ol>
+ * Sent when the client presses or releases the vein miner activating keybind.
+ */
 public class PluginMessageInToggleVeinMiner implements PluginMessage<VeinMiner> {
 
     private boolean activated;
