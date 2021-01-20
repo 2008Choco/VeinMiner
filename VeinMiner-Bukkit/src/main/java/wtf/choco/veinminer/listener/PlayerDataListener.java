@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.data.PlayerPreferences;
 
 public final class PlayerDataListener implements Listener {
@@ -35,8 +36,9 @@ public final class PlayerDataListener implements Listener {
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        PlayerPreferences playerData = PlayerPreferences.get(player);
+        ClientActivation.setUsingClientMod(player, false);
 
+        PlayerPreferences playerData = PlayerPreferences.get(player);
         if (!playerData.isDirty()) {
             return;
         }

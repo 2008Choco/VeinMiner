@@ -23,6 +23,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
 import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
+import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.commands.VeinMinerCommand;
 import wtf.choco.veinminer.data.PlayerPreferences;
@@ -140,6 +141,7 @@ public final class VeinMiner extends JavaPlugin {
 
             Metrics metrics = new Metrics(this, 1938); // https://bstats.org/what-is-my-plugin-id
             metrics.addCustomChart(new Metrics.AdvancedPie("blocks_veinmined", StatTracker.get()::getVeinMinedCountAsData));
+            metrics.addCustomChart(new Metrics.SingleLineChart("using_client_mod", ClientActivation::getPlayersUsingClientMod));
 
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
         }

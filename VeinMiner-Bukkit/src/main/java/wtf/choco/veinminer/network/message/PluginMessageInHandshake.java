@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 
@@ -32,6 +33,7 @@ public class PluginMessageInHandshake implements PluginMessage<@NotNull VeinMine
     public void handle(@NotNull VeinMiner plugin, @NotNull Player player) {
         int serverProtocolVersion = plugin.getPluginMessageProtocol().getVersion();
         if (serverProtocolVersion == protocolVersion) {
+            ClientActivation.setUsingClientMod(player, true);
             return;
         }
 

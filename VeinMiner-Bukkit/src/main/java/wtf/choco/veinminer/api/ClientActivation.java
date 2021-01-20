@@ -12,9 +12,47 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ClientActivation {
 
+    private static final Set<@NotNull UUID> USING_CLIENT_MOD = new HashSet<>();
     private static final Set<@NotNull UUID> CLIENT_ACTIVATED = new HashSet<>();
 
     private ClientActivation() { }
+
+    /**
+     * Check whether or not the given player is using the client-sided vein miner
+     * mod.
+     *
+     * @param player the player to check
+     *
+     * @return true if using the mod, false otherwise
+     */
+    public static boolean isUsingClientMod(@NotNull Player player) {
+        return USING_CLIENT_MOD.contains(player.getUniqueId());
+    }
+
+    /**
+     * set whether or not the given player is using the client-sided vein miner mod.
+     * This method is meant to be called internally and should not be called by
+     * plugins.
+     *
+     * @param player the player to set
+     * @param using the new use state
+     */
+    public static void setUsingClientMod(@NotNull Player player, boolean using) {
+        if (using) {
+            USING_CLIENT_MOD.add(player.getUniqueId());
+        } else {
+            USING_CLIENT_MOD.remove(player.getUniqueId());
+        }
+    }
+
+    /**
+     * Get the amount of players using the client mod.
+     *
+     * @return the players
+     */
+    public static int getPlayersUsingClientMod() {
+        return USING_CLIENT_MOD.size();
+    }
 
     /**
      * Check whether or not the player has pressed the vein miner activation key.
