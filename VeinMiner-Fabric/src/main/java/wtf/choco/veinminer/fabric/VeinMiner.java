@@ -58,7 +58,7 @@ public class VeinMiner implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((stack, delta) -> {
-            if (!veinminerActivated) {
+            if (!veinminerActivated || !MinecraftClient.isHudEnabled()) {
                 return;
             }
 
