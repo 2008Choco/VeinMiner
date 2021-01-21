@@ -31,6 +31,10 @@ public class PluginMessageInToggleVeinMiner implements PluginMessage<@NotNull Ve
 
     @Override
     public void handle(@NotNull VeinMiner plugin, @NotNull Player player) {
+        if (!plugin.getConfig().getBoolean("Client.AllowClientActivation", true)) {
+            return;
+        }
+
         ClientActivation.setActivatedOnClient(player, activated);
     }
 

@@ -1,5 +1,9 @@
 package wtf.choco.veinminer.network.message;
 
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +38,13 @@ public class PluginMessageInHandshake implements PluginMessage<@NotNull VeinMine
         int serverProtocolVersion = plugin.getPluginMessageProtocol().getVersion();
         if (serverProtocolVersion == protocolVersion) {
             ClientActivation.setUsingClientMod(player, true);
+
+            FileConfiguration config = plugin.getConfig();
+            if (!config.getBoolean("Client.AllowClientActivation", true)) {
+                List<String> disallowedMessage = config.getStringList("Client.DisallowedMessage");
+                disallowedMessage.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', line)));
+            }
+
             return;
         }
 

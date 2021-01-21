@@ -1,16 +1,22 @@
 package wtf.choco.veinminer.listener;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.data.PlayerPreferences;
+import wtf.choco.veinminer.utils.MathUtil;
 
 public final class PlayerDataListener implements Listener {
 
@@ -30,7 +36,40 @@ public final class PlayerDataListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> playerData.readFromFile(plugin.getPlayerDataDirectory()));
+        BukkitScheduler scheduler = Bukkit.getScheduler();
+        scheduler.runTaskAsynchronously(plugin, () -> {
+            playerData.readFromFile(plugin.getPlayerDataDirectory());
+
+            // Notify the player of the client mod (if they're not using it)
+            FileConfiguration config = plugin.getConfig();
+            if (!config.getBoolean("Client.AllowClientActivation", true)) {
+                return;
+            }
+
+            scheduler.runTaskLater(plugin, () -> {
+                if (ClientActivation.isUsingClientMod(player)) {
+                    return;
+                }
+
+                List<String> reminderMessages = config.getStringList("Client.SuggestionMessage");
+                if (reminderMessages.isEmpty()) {
+                    return;
+                }
+
+                long reminderPeriod = MathUtil.parseSeconds(config.getString("Client.SuggestClientModPeriod", "1d"), -1) * 1000;
+                if (reminderPeriod < 0) {
+                    return;
+                }
+
+                long lastNotified = playerData.getLastNotifiedOfClientMod();
+                long now = System.currentTimeMillis();
+
+                if (now - lastNotified >= reminderPeriod) {
+                    reminderMessages.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', line)));
+                    playerData.setLastNotifiedOfClientMod(now);
+                }
+            }, 20L);
+        });
     }
 
     @EventHandler

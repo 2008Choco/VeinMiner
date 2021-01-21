@@ -22,6 +22,17 @@ Hunger:
   MinimumFoodLevel: 1
   HungryMessage: "&7You are too hungry to vein mine!"
 
+Client:
+  AllowClientActivation: true
+  DisallowedMessage:
+  - "&lHey! &7We have disabled the client-side VeinMiner4Bukkit mod and it cannot be used on this server."
+  - "&7We apologize for the inconvenience."
+  SuggestClientModPeriod: "1d"
+  SuggestionMessage:
+  - "&lHey! &7This server runs &fVeinMiner&7, therefore we recommend the use of the &fVeinMiner4Bukkit &fFabric mod."
+  - "&7The mod is optional but allows you to use custom keybinds to activate vein miner!"
+  - "&7You may download it here: &fhttps://spigotmc.org/resources/12038/"
+
 BlockList:
   Pickaxe:
     - 'minecraft:coal_ore'

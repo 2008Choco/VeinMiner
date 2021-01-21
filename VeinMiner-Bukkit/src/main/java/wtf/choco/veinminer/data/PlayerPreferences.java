@@ -36,8 +36,10 @@ public final class PlayerPreferences {
 
     private static final Map<@NotNull UUID, @NotNull PlayerPreferences> CACHE = new HashMap<>();
 
+    private long lastNotifiedOfClientMod;
     private ActivationStrategy activationStrategy = ActivationStrategy.getDefaultActivationStrategy();
     private final Set<@NotNull ToolCategory> disabledCategories = new HashSet<>();
+
     private boolean dirty = false;
 
     private final UUID player;
@@ -75,6 +77,25 @@ public final class PlayerPreferences {
     @Nullable
     public Player getPlayerOnline() {
         return Bukkit.getPlayer(player);
+    }
+
+    /**
+     * Set the timestamp in milliseconds when this player was last notified of the client mod.
+     *
+     * @param time the time to set
+     */
+    public void setLastNotifiedOfClientMod(long time) {
+        this.dirty = true;
+        this.lastNotifiedOfClientMod = time;
+    }
+
+    /**
+     * Get the timestamp in milliseconds when this player was last notified of the client mod.
+     *
+     * @return the timestamp
+     */
+    public long getLastNotifiedOfClientMod() {
+        return lastNotifiedOfClientMod;
     }
 
     /**
@@ -240,6 +261,7 @@ public final class PlayerPreferences {
     public JsonObject write(@NotNull JsonObject root) {
         Preconditions.checkArgument(root != null, "root must not be null");
 
+        root.addProperty("last_notified_of_client_mod", lastNotifiedOfClientMod);
         root.addProperty("activation_strategy", activationStrategy.name());
 
         JsonArray disabledCategoriesArray = new JsonArray();
@@ -257,10 +279,12 @@ public final class PlayerPreferences {
     public void read(@NotNull JsonObject root) {
         Preconditions.checkArgument(root != null, "root must not be null");
 
+        this.lastNotifiedOfClientMod = root.has("last_notified_of_client_mod") ? root.get("last_notified_of_client_mod").getAsLong() : 0L;
+
         if (root.has("activation_strategy")) {
             this.activationStrategy = ActivationStrategy.getByName(root.get("activation_strategy").getAsString());
             if (activationStrategy == null) {
-                this.activationStrategy = ActivationStrategy.SNEAK;
+                this.activationStrategy = ActivationStrategy.getDefaultActivationStrategy();
             }
         }
 
