@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> the plugin to which this message belongs
  */
-public interface PluginMessage<@NotNull T extends Plugin> {
+public interface PluginMessage<T extends Plugin> {
 
     /**
      * Read from the provided byte buffer to this plugin message's fields.

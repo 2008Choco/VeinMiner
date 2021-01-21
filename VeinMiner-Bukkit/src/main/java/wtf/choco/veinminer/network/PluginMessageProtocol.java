@@ -59,7 +59,7 @@ public class PluginMessageProtocol<@NotNull T extends Plugin> {
      * @param serverboundMessageSupplier the supplier to which serverbound messages should be registered
      * @param clientboundMessageSupplier the supplier to which clientbound messages should be registered
      */
-    public PluginMessageProtocol(@NotNull T plugin, @NotNull String channel, int version, @NotNull Consumer<PluginMessageRegistry> serverboundMessageSupplier, @NotNull Consumer<PluginMessageRegistry> clientboundMessageSupplier) {
+    public PluginMessageProtocol(@NotNull T plugin, @NotNull String channel, int version, @NotNull Consumer<@NotNull PluginMessageRegistry> serverboundMessageSupplier, @NotNull Consumer<@NotNull PluginMessageRegistry> clientboundMessageSupplier) {
         Preconditions.checkArgument(plugin != null, "plugin must not be null");
         Preconditions.checkArgument(channel != null, "channel must not be null");
         Preconditions.checkArgument(serverboundMessageSupplier != null, "serverboundMessageSupplier must not be null");
@@ -202,8 +202,8 @@ public class PluginMessageProtocol<@NotNull T extends Plugin> {
      */
     public final class PluginMessageRegistry {
 
-        private final Map<Class<? extends PluginMessage<T>>, Integer> messageIds = new IdentityHashMap<>();
-        private final List<Supplier<? extends PluginMessage<T>>> messageConstructors = new ArrayList<>();
+        private final Map<@NotNull Class<? extends PluginMessage<T>>, Integer> messageIds = new IdentityHashMap<>();
+        private final List<@NotNull Supplier<@NotNull ? extends PluginMessage<T>>> messageConstructors = new ArrayList<>();
 
         private PluginMessageRegistry() { }
 
@@ -218,7 +218,7 @@ public class PluginMessageProtocol<@NotNull T extends Plugin> {
          * @return this instance. Allows for chained message calls
          */
         @NotNull
-        public <M extends PluginMessage<T>> PluginMessageRegistry registerMessage(@NotNull Class<M> messageClass, @NotNull Supplier<M> messageConstructor) {
+        public <M extends PluginMessage<T>> PluginMessageRegistry registerMessage(@NotNull Class<M> messageClass, @NotNull Supplier<@NotNull M> messageConstructor) {
             Preconditions.checkArgument(messageClass != null, "messageClass must not be null");
             Preconditions.checkArgument(messageConstructor != null, "messageConstructor must not be null");
 
