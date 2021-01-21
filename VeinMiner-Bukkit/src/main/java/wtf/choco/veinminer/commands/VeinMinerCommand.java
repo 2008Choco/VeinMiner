@@ -11,13 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -597,18 +595,6 @@ public final class VeinMinerCommand implements TabExecutor {
         }
 
         return StringUtil.copyPartialMatches(args[args.length - 1], values, new ArrayList<>());
-    }
-
-    public static void assignTo(@NotNull VeinMiner plugin, @NotNull String commandString) {
-        Validate.notEmpty(commandString);
-        PluginCommand command = plugin.getCommand(commandString);
-        if (command == null) {
-            return;
-        }
-
-        VeinMinerCommand tabExecutor = new VeinMinerCommand(plugin);
-        command.setExecutor(tabExecutor);
-        command.setTabCompleter(tabExecutor);
     }
 
     private String formatBlockData(String blockData) {

@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -123,7 +126,7 @@ public final class VeinMiner extends JavaPlugin {
 
         // Register commands
         this.getLogger().info("Registering commands");
-        VeinMinerCommand.assignTo(this, "veinminer");
+        this.registerCommandSafely("veinminer", new VeinMinerCommand(this));
 
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.getLogger().info("Vault found. Attempting to enable economy support...");
@@ -341,6 +344,19 @@ public final class VeinMiner extends JavaPlugin {
         }
 
         this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + hook.getPluginName() + "\"");
+    }
+
+    private void registerCommandSafely(@NotNull String commandString, @NotNull CommandExecutor executor) {
+        PluginCommand command = getCommand(commandString);
+        if (command == null) {
+            return;
+        }
+
+        command.setExecutor(executor);
+
+        if (executor instanceof TabCompleter) {
+            command.setTabCompleter((TabCompleter) executor);
+        }
     }
 
 }
