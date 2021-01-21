@@ -117,7 +117,7 @@ public final class VeinMiner extends JavaPlugin {
         this.registerAntiCheatHookIfEnabled(manager, "AntiAura", AntiCheatHookAntiAura::new);
         this.registerAntiCheatHookIfEnabled(manager, "Matrix", AntiCheatHookMatrix::new);
         this.registerAntiCheatHookIfEnabled(manager, "NoCheatPlus", AntiCheatHookNCP::new);
-        this.registerAntiCheatHookIfEnabled(manager, "Spartan", AntiCheatHookSpartan::new);
+        this.registerAntiCheatHookIfEnabled(manager, "Spartan", () -> new AntiCheatHookSpartan(this));
 
         // Register events
         this.getLogger().info("Registering events");
