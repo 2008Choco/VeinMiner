@@ -29,8 +29,8 @@ dependencies {
     compileOnly 'de.janmm14:aac-api:5.0.0'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
     // -- install only --
-    compileOnly 'me.joehot200:AntiAura:11.71'
-    compileOnly 'me.vagdedes:SpartanAPI:360.3'
+    // compileOnly 'me.joehot200:AntiAura:11.71' reflectively accessed now
+    // compileOnly 'me.vagdedes:SpartanAPI:360.3' reflectively accessed now
 }
 
 shadowJar {

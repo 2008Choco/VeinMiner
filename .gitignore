@@ -1,20 +1,19 @@
-# Created by https://www.toptal.com/developers/gitignore/api/java,eclipse,netbeans,intellij,gradle
+
+# Created by https://www.toptal.com/developers/gitignore/api/intellij+all,java,eclipse,netbeans,gradle,git
+# Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,java,eclipse,netbeans,gradle,git
 
 ### Eclipse ###
 .metadata
-**/bin/
-**/tmp/
+bin/
+tmp/
 *.tmp
 *.bak
 *.swp
 *~.nib
 local.properties
-**/.settings/
+.settings/
 .loadpath
 .recommenders
-.project
-.classpath
-.checkstyle
 
 # External tool builders
 .externalToolBuilders/
@@ -69,7 +68,22 @@ local.properties
 # Spring Boot Tooling
 .sts4-cache/
 
-### Intellij ###
+### Git ###
+# Created by git for backups. To disable backups in Git:
+# $ git config --global mergetool.keepBackup false
+*.orig
+
+# Created by git when using merge tools for conflicts
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+
+### Intellij+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
@@ -95,9 +109,6 @@ local.properties
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
-
-# Gradle Eclipse
-**/gradle/wrapper/
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
@@ -145,35 +156,21 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-### Intellij Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+### Intellij+all Patch ###
+# Ignores the whole .idea folder and all .iml files
+# See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
 
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
+.idea/
+
+# Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
+
+*.iml
+modules.xml
+.idea/misc.xml
+*.ipr
 
 # Sonarlint plugin
-# https://plugins.jetbrains.com/plugin/7973-sonarlint
-.idea/**/sonarlint/
-
-# SonarQube Plugin
-# https://plugins.jetbrains.com/plugin/7238-sonarqube-community-plugin
-.idea/**/sonarIssues.xml
-
-# Markdown Navigator plugin
-# https://plugins.jetbrains.com/plugin/7896-markdown-navigator-enhanced
-.idea/**/markdown-navigator.xml
-.idea/**/markdown-navigator-enh.xml
-.idea/**/markdown-navigator/
-
-# Cache file creation bug
-# See https://youtrack.jetbrains.com/issue/JBR-2257
-.idea/$CACHE_FILE$
-
-# CodeStream plugin
-# https://plugins.jetbrains.com/plugin/12206-codestream
-.idea/codestream.xml
+.idea/sonarlint
 
 ### Java ###
 # Compiled class file
@@ -230,3 +227,6 @@ gradle-app.setting
 
 # Gradle Fabric
 **/run/
+
+# End of https://www.toptal.com/developers/gitignore/api/intellij+all,java,eclipse,netbeans,gradle,git
+/.idea/
