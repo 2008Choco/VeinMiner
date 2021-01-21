@@ -11,6 +11,7 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
+import wtf.choco.veinminer.utils.VMConstants;
 
 /**
  * A serverbound {@link PluginMessage} including the following data:
@@ -40,8 +41,8 @@ public class PluginMessageInHandshake implements PluginMessage<@NotNull VeinMine
             ClientActivation.setUsingClientMod(player, true);
 
             FileConfiguration config = plugin.getConfig();
-            if (!config.getBoolean("Client.AllowClientActivation", true)) {
-                List<String> disallowedMessage = config.getStringList("Client.DisallowedMessage");
+            if (!config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+                List<String> disallowedMessage = config.getStringList(VMConstants.CONFIG_CLIENT_DISALLOWED_MESSAGE);
                 disallowedMessage.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', line)));
             }
 

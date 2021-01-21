@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.utils.VMConstants;
 
 /**
  * Represents the different methods of activating VeinMiner.
@@ -80,7 +81,7 @@ public enum ActivationStrategy {
     public static ActivationStrategy getDefaultActivationStrategy() {
         VeinMiner plugin = VeinMiner.getPlugin();
 
-        String strategyName = plugin.getConfig().getString("DefaultActivationStrategy");
+        String strategyName = plugin.getConfig().getString(VMConstants.CONFIG_DEFAULT_ACTIVATION_STRATEGY);
         if (strategyName == null) {
             return SNEAK;
         }

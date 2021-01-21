@@ -47,6 +47,7 @@ import wtf.choco.veinminer.utils.ConfigWrapper;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
+import wtf.choco.veinminer.utils.VMConstants;
 
 /**
  * The VeinMiner {@link JavaPlugin} class.
@@ -136,7 +137,7 @@ public final class VeinMiner extends JavaPlugin {
         }
 
         // Metrics
-        if (getConfig().getBoolean("MetricsEnabled", true)) {
+        if (getConfig().getBoolean(VMConstants.CONFIG_METRICS_ENABLED, true)) {
             this.getLogger().info("Enabling Plugin Metrics");
 
             Metrics metrics = new Metrics(this, 1938); // https://bstats.org/what-is-my-plugin-id
@@ -157,7 +158,7 @@ public final class VeinMiner extends JavaPlugin {
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
-        if (getConfig().getBoolean("PerformUpdateChecks")) {
+        if (getConfig().getBoolean(VMConstants.CONFIG_PERFORM_UPDATE_CHECKS, true)) {
             this.getLogger().info("Performing an update check!");
             updateChecker.requestUpdateCheck().whenComplete((result, exception) -> {
                 if (result.requiresUpdate()) {

@@ -34,6 +34,7 @@ import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.tool.ToolTemplate;
 import wtf.choco.veinminer.tool.ToolTemplateItemStack;
 import wtf.choco.veinminer.tool.ToolTemplateMaterial;
+import wtf.choco.veinminer.utils.VMConstants;
 
 /**
  * The central management for VeinMiner to handle everything regarding VeinMiner and its features.
@@ -407,7 +408,7 @@ public class VeinMinerManager {
     public void loadMaterialAliases() {
         this.aliases.clear();
 
-        for (String aliasList : plugin.getConfig().getStringList("Aliases")) {
+        for (String aliasList : plugin.getConfig().getStringList(VMConstants.CONFIG_ALIASES)) {
             MaterialAlias alias = new MaterialAlias();
 
             for (String aliasState : aliasList.split("\\s*,\\s*")) {

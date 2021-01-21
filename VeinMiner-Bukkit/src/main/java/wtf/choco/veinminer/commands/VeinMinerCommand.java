@@ -275,7 +275,7 @@ public final class VeinMinerCommand implements TabExecutor {
                 }
 
                 Iterable<VeinBlock> blocklistIterable;
-                if (plugin.getConfig().getBoolean("SortBlocklistAlphabetically", true)) {
+                if (plugin.getConfig().getBoolean(VMConstants.CONFIG_SORT_BLOCKLIST_ALPHABETICALLY, true)) {
                     blocklistIterable = new ArrayList<>();
                     Iterables.addAll((List<VeinBlock>) blocklistIterable, category.getBlocklist());
                     Collections.sort((List<VeinBlock>) blocklistIterable);
@@ -664,7 +664,7 @@ public final class VeinMinerCommand implements TabExecutor {
     }
 
     private String getUpdateSuffix() {
-        if (!plugin.getConfig().getBoolean("PerformUpdateChecks")) {
+        if (!plugin.getConfig().getBoolean(VMConstants.CONFIG_PERFORM_UPDATE_CHECKS, true)) {
             return "";
         }
 

@@ -17,6 +17,7 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.utils.MathUtil;
+import wtf.choco.veinminer.utils.VMConstants;
 
 public final class PlayerDataListener implements Listener {
 
@@ -42,7 +43,7 @@ public final class PlayerDataListener implements Listener {
 
             // Notify the player of the client mod (if they're not using it)
             FileConfiguration config = plugin.getConfig();
-            if (!config.getBoolean("Client.AllowClientActivation", true)) {
+            if (!config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
                 return;
             }
 
@@ -51,12 +52,12 @@ public final class PlayerDataListener implements Listener {
                     return;
                 }
 
-                List<String> reminderMessages = config.getStringList("Client.SuggestionMessage");
+                List<String> reminderMessages = config.getStringList(VMConstants.CONFIG_CLIENT_SUGGESTION_MESSAGE);
                 if (reminderMessages.isEmpty()) {
                     return;
                 }
 
-                long reminderPeriod = MathUtil.parseSeconds(config.getString("Client.SuggestClientModPeriod", "1d"), -1) * 1000;
+                long reminderPeriod = MathUtil.parseSeconds(config.getString(VMConstants.CONFIG_CLIENT_SUGGEST_CLIENT_MOD_PERIOD, "1d"), -1) * 1000;
                 if (reminderPeriod < 0) {
                     return;
                 }

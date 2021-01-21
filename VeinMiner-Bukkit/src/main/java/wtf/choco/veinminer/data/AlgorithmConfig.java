@@ -15,6 +15,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.veinminer.utils.VMConstants;
+
 /**
  * Represents various configurable options for the vein miner algorithm.
  *
@@ -39,23 +41,24 @@ public class AlgorithmConfig implements Cloneable {
     public AlgorithmConfig(@NotNull ConfigurationSection section, @Nullable AlgorithmConfig defaultValues) {
         Preconditions.checkArgument(section != null, "section cannot be null");
 
-        this.repairFriendly = section.getBoolean("RepairFriendlyVeinminer", (defaultValues != null) ? defaultValues.repairFriendly : repairFriendly);
-        this.includeEdges = section.getBoolean("IncludeEdges", (defaultValues != null) ? defaultValues.includeEdges : includeEdges);
-        this.maxVeinSize = section.getInt("MaxVeinSize", (defaultValues != null) ? defaultValues.maxVeinSize : maxVeinSize);
-        this.cost = section.getDouble("Cost", (defaultValues != null) ? defaultValues.cost : cost);
+        this.repairFriendly = section.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY_VEINMINER, (defaultValues != null) ? defaultValues.repairFriendly : repairFriendly);
+        this.includeEdges = section.getBoolean(VMConstants.CONFIG_INCLUDE_EDGES, (defaultValues != null) ? defaultValues.includeEdges : includeEdges);
+        this.maxVeinSize = section.getInt(VMConstants.CONFIG_MAX_VEIN_SIZE, (defaultValues != null) ? defaultValues.maxVeinSize : maxVeinSize);
+        this.cost = section.getDouble(VMConstants.CONFIG_COST, (defaultValues != null) ? defaultValues.cost : cost);
 
-        if (section.contains("DisabledWorlds")) {
-            section.getStringList("DisabledWorlds").forEach(worldName -> {
-                World world = Bukkit.getWorld(worldName);
-                if (world == null) {
-                    return;
-                }
-
-                this.disabledWorlds.add(world.getUID());
-            });
-        } else {
-            this.disabledWorlds = (defaultValues != null) ? new HashSet<>(defaultValues.disabledWorlds) : disabledWorlds;
+        List<String> disabledWorlds = section.getStringList(VMConstants.CONFIG_DISABLED_WORLDS);
+        if (disabledWorlds.isEmpty() && defaultValues != null) {
+            this.disabledWorlds = new HashSet<>(defaultValues.disabledWorlds);
         }
+
+        disabledWorlds.forEach(worldName -> {
+            World world = Bukkit.getWorld(worldName);
+            if (world == null) {
+                return;
+            }
+
+            this.disabledWorlds.add(world.getUID());
+        });
     }
 
     /**
@@ -242,11 +245,11 @@ public class AlgorithmConfig implements Cloneable {
     public void readUnsafe(@NotNull Map<String, Object> raw) {
         Preconditions.checkArgument(raw != null, "cannot pass null raw data map");
 
-        Object repairFriendlyVeinMiner = raw.get("RepairFriendlyVeinminer");
-        Object includeEdges = raw.get("IncludeEdges");
-        Object maxVeinSize = raw.get("MaxVeinSize");
-        Object cost = raw.get("Cost");
-        Object disabledWorlds = raw.get("DisabledWorlds");
+        Object repairFriendlyVeinMiner = raw.get(VMConstants.CONFIG_REPAIR_FRIENDLY_VEINMINER);
+        Object includeEdges = raw.get(VMConstants.CONFIG_INCLUDE_EDGES);
+        Object maxVeinSize = raw.get(VMConstants.CONFIG_MAX_VEIN_SIZE);
+        Object cost = raw.get(VMConstants.CONFIG_COST);
+        Object disabledWorlds = raw.get(VMConstants.CONFIG_DISABLED_WORLDS);
 
         if (repairFriendlyVeinMiner instanceof Boolean) {
             this.repairFriendly((boolean) repairFriendlyVeinMiner);

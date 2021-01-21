@@ -2,6 +2,31 @@ package wtf.choco.veinminer.utils;
 
 public final class VMConstants {
 
+    // Configuration options
+    public static final String CONFIG_METRICS_ENABLED = "MetricsEnabled";
+    public static final String CONFIG_PERFORM_UPDATE_CHECKS = "PerformUpdateChecks";
+
+    public static final String CONFIG_DEFAULT_ACTIVATION_STRATEGY = "DefaultActivationStrategy";
+    public static final String CONFIG_SORT_BLOCKLIST_ALPHABETICALLY = "SortBlocklistAlphabetically";
+    public static final String CONFIG_REPAIR_FRIENDLY_VEINMINER = "RepairFriendlyVeinminer";
+    public static final String CONFIG_INCLUDE_EDGES = "IncludeEdges";
+    public static final String CONFIG_MAX_VEIN_SIZE = "MaxVeinSize";
+    public static final String CONFIG_COST = "Cost";
+
+    public static final String CONFIG_DISABLED_WORLDS = "DisabledWorlds";
+
+    public static final String CONFIG_HUNGER_HUNGER_MODIFIER = "Hunger.HungerModifier";
+    public static final String CONFIG_HUNGER_MINIMUM_FOOD_LEVEL = "Hunger.MinimumFoodLevel";
+    public static final String CONFIG_HUNGER_HUNGRY_MESSAGE = "Hunger.HungryMessage";
+
+    public static final String CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION = "Client.AllowClientActivation";
+    public static final String CONFIG_CLIENT_DISALLOWED_MESSAGE = "Client.DisallowedMessage";
+    public static final String CONFIG_CLIENT_SUGGEST_CLIENT_MOD_PERIOD = "Client.SuggestClientModPeriod";
+    public static final String CONFIG_CLIENT_SUGGESTION_MESSAGE = "Client.SuggestionMessage";
+
+    public static final String CONFIG_ALIASES = "Aliases";
+
+
     // Permission nodes
     public static final String PERMISSION_RELOAD = "veinminer.reload";
     public static final String PERMISSION_TOGGLE = "veinminer.toggle";
@@ -24,6 +49,10 @@ public final class VMConstants {
     public static final String PERMISSION_DYNAMIC_LIST_REMOVE = "veinminer.%s.list";
     public static final String PERMISSION_DYNAMIC_LIST_LIST = "veinminer.%s.list";
     public static final String PERMISSION_DYNAMIC_VEINMINE = "veinminer.veinmine.%s";
+
+
+    // Metadata keys
+    public static final String METADATA_KEY_TO_BE_VEINMINED = "veinminer:to_be_veinmined";
 
     private VMConstants() { }
 

@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.math.NumberUtils;
 
+/**
+ * A collection of math-related utility methods.
+ */
 public final class MathUtil {
 
     private static final Pattern TIME_PATTERN = Pattern.compile("(\\d+)([wdhms])");

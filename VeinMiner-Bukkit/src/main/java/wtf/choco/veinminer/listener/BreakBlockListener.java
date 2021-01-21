@@ -40,8 +40,6 @@ import wtf.choco.veinminer.utils.VMConstants;
 
 public final class BreakBlockListener implements Listener {
 
-    private static final String METADATA_KEY_TO_BE_VEINMINED = "veinminer:to_be_veinmined";
-
     private final StatTracker statTracker = StatTracker.get();
 
     private final VeinMiner plugin;
@@ -59,7 +57,7 @@ public final class BreakBlockListener implements Listener {
         }
 
         Block origin = event.getBlock();
-        if (origin.hasMetadata(METADATA_KEY_TO_BE_VEINMINED)) {
+        if (origin.hasMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED)) {
             return;
         }
 
@@ -129,18 +127,18 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Flag all blocks as being vein mined
-        blocks.forEach(block -> block.setMetadata(METADATA_KEY_TO_BE_VEINMINED, new FixedMetadataValue(plugin, true)));
+        blocks.forEach(block -> block.setMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, new FixedMetadataValue(plugin, true)));
 
         // Anticheat support
         List<AntiCheatHook> hooks = plugin.getAnticheatHooks();
         hooks.forEach(h -> h.exempt(player));
 
         // Actually destroying the allocated blocks
-        int maxDurability = item.getType().getMaxDurability() - (plugin.getConfig().getBoolean("RepairFriendlyVeinMiner", false) ? 1 : 0);
-        float hungerModifier = ((float) Math.max((plugin.getConfig().getDouble("Hunger.HungerModifier")), 0.0D)) * 0.025F;
-        int minimumFoodLevel = Math.max(plugin.getConfig().getInt("Hunger.MinimumFoodLevel"), 0);
+        int maxDurability = item.getType().getMaxDurability() - (plugin.getConfig().getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY_VEINMINER, false) ? 1 : 0);
+        float hungerModifier = ((float) Math.max((plugin.getConfig().getDouble(VMConstants.CONFIG_HUNGER_HUNGER_MODIFIER)), 0.0D)) * 0.025F;
+        int minimumFoodLevel = Math.max(plugin.getConfig().getInt(VMConstants.CONFIG_HUNGER_MINIMUM_FOOD_LEVEL), 0);
 
-        String hungryMessage = plugin.getConfig().getString("Hunger.HungryMessage", "");
+        String hungryMessage = plugin.getConfig().getString(VMConstants.CONFIG_HUNGER_HUNGRY_MESSAGE, "");
         if (hungryMessage == null) {
             hungryMessage = "";
         }
@@ -180,7 +178,7 @@ public final class BreakBlockListener implements Listener {
             }
         }
 
-        blocks.forEach(block -> block.removeMetadata(METADATA_KEY_TO_BE_VEINMINED, plugin));
+        blocks.forEach(block -> block.removeMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, plugin));
 
         // VEINMINER - DONE
 
