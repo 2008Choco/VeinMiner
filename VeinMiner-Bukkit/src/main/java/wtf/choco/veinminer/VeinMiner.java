@@ -114,7 +114,7 @@ public final class VeinMiner extends JavaPlugin {
         // Enable anticheat hooks if required
         PluginManager manager = Bukkit.getPluginManager();
         this.registerAntiCheatHookIfEnabled(manager, "AAC5", AntiCheatHookAAC::new);
-        this.registerAntiCheatHookIfEnabled(manager, "AntiAura", AntiCheatHookAntiAura::new);
+        this.registerAntiCheatHookIfEnabled(manager, "AntiAura", () -> new AntiCheatHookAntiAura(this));
         this.registerAntiCheatHookIfEnabled(manager, "Matrix", AntiCheatHookMatrix::new);
         this.registerAntiCheatHookIfEnabled(manager, "NoCheatPlus", AntiCheatHookNCP::new);
         this.registerAntiCheatHookIfEnabled(manager, "Spartan", () -> new AntiCheatHookSpartan(this));

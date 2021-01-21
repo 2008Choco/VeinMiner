@@ -57,7 +57,7 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
                     }
 
                     //Check if player is exempt.
-                    if (!exempt.contains(player.getUniqueId())) {
+                    if (!this.exempt.contains(player.getUniqueId())) {
                         return;
                     }
 
@@ -69,9 +69,12 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
     }
 
     private void sendIncompatibleMessage(@NotNull VeinMiner veinMiner) {
-        veinMiner.getLogger().severe(
-                "The version of Spartan on this server is incompatible with Veinminer."
-                        + "Please information on the spigot resource discussion page."
+        veinMiner.getLogger().severe(() ->
+                String.format(
+                        "The version of %s on this server is incompatible with Veinminer."
+                                + "Please post information on the spigot resource discussion page.",
+                        this.getPluginName()
+                )
         );
     }
 
