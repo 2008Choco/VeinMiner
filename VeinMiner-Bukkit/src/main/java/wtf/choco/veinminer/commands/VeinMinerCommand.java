@@ -642,7 +642,7 @@ public final class VeinMinerCommand implements TabExecutor {
 
     private boolean canVeinMine(Player player) {
         for (ToolCategory category : ToolCategory.getAll()) {
-            if (player.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE, category.getId().toLowerCase()))) {
+            if (category.hasPermission(player)) {
                 return true;
             }
         }

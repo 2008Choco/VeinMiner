@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,7 @@ import wtf.choco.veinminer.data.AlgorithmConfig;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.utils.ItemValidator;
 import wtf.choco.veinminer.utils.Pair;
+import wtf.choco.veinminer.utils.VMConstants;
 
 /**
  * Represents a category of tools recognized by VeinMiner. Categories may possess
@@ -223,6 +225,18 @@ public class ToolCategory {
     @NotNull
     public BlockList getBlocklist() {
         return blocklist;
+    }
+
+    /**
+     * Check whether or not the given permissible has permission to vein miner using this
+     * tool category.
+     *
+     * @param permissible the permissible object to check
+     *
+     * @return true if permission is granted, false otherwise
+     */
+    public boolean hasPermission(Permissible permissible) {
+        return permissible.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE, id.toLowerCase()));
     }
 
     @Override
