@@ -37,6 +37,7 @@ import wtf.choco.veinminer.utils.NonNullHashSet;
 import wtf.choco.veinminer.utils.Pair;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.VMConstants;
+import wtf.choco.veinminer.utils.VMEventFactory;
 
 public final class BreakBlockListener implements Listener {
 
@@ -123,9 +124,8 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Fire a new PlayerVeinMineEvent
-        PlayerVeinMineEvent vmEvent = new PlayerVeinMineEvent(player, originVeinBlock, item, category, blocks, pattern);
-        Bukkit.getPluginManager().callEvent(vmEvent);
-        if (vmEvent.isCancelled() || blocks.isEmpty()) {
+        PlayerVeinMineEvent veinmineEvent = VMEventFactory.callPlayerVeinMineEvent(player, originVeinBlock, item, category, blocks, pattern);
+        if (veinmineEvent.isCancelled() || blocks.isEmpty()) {
             return;
         }
 

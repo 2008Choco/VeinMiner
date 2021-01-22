@@ -8,6 +8,7 @@ import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.utils.VMConstants;
+import wtf.choco.veinminer.utils.VMEventFactory;
 
 /**
  * A serverbound {@link PluginMessage} including the following data:
@@ -33,6 +34,10 @@ public class PluginMessageInToggleVeinMiner implements PluginMessage<@NotNull Ve
     @Override
     public void handle(@NotNull VeinMiner plugin, @NotNull Player player) {
         if (!plugin.getConfig().getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+            return;
+        }
+
+        if (!VMEventFactory.handlePlayerClientActivateVeinMinerEvent(player, activated)) {
             return;
         }
 

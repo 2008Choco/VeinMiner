@@ -29,8 +29,8 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     private final Set<@NotNull Block> blocks;
     private final VeinMiningPattern pattern;
 
-    public PlayerVeinMineEvent(@NotNull Player who, @NotNull VeinBlock type, @Nullable ItemStack item, @NotNull ToolCategory category, @NotNull Set<@NotNull Block> blocks, @NotNull VeinMiningPattern pattern) {
-        super(who);
+    public PlayerVeinMineEvent(@NotNull Player player, @NotNull VeinBlock type, @Nullable ItemStack item, @NotNull ToolCategory category, @NotNull Set<@NotNull Block> blocks, @NotNull VeinMiningPattern pattern) {
+        super(player);
 
         this.type = type;
         this.item = item;
