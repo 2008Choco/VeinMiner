@@ -13,6 +13,7 @@ public final class VMConstants {
     public static final String CONFIG_MAX_VEIN_SIZE = "MaxVeinSize";
     public static final String CONFIG_COST = "Cost";
 
+    public static final String CONFIG_DISABLED_GAME_MODES = "DisabledGameModes";
     public static final String CONFIG_DISABLED_WORLDS = "DisabledWorlds";
 
     public static final String CONFIG_HUNGER_HUNGER_MODIFIER = "Hunger.HungerModifier";

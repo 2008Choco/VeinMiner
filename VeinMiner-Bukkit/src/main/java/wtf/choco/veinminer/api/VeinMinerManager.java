@@ -1,17 +1,22 @@
 package wtf.choco.veinminer.api;
 
+import com.google.common.base.Enums;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -43,6 +48,8 @@ public class VeinMinerManager {
 
     private final BlockList globalBlocklist = new BlockList();
     private final List<@NotNull MaterialAlias> aliases = new ArrayList<>();
+    private final Set<@NotNull GameMode> disabledGameModes = EnumSet.noneOf(GameMode.class);
+
     private final AlgorithmConfig config;
 
     private final VeinMiner plugin;
@@ -192,7 +199,6 @@ public class VeinMinerManager {
      * Load all veinable blocks from the configuration file to memory.
      */
     public void loadVeinableBlocks() {
-        this.plugin.reloadConfig();
         ConfigurationSection blocklistSection = plugin.getConfig().getConfigurationSection("BlockList");
         if (blocklistSection == null) {
             return;
@@ -334,6 +340,51 @@ public class VeinMinerManager {
     }
 
     /**
+     * Load all disabled game modes from the configuration file to memory.
+     */
+    public void loadDisabledGameModes() {
+        this.disabledGameModes.clear();
+
+        this.plugin.getConfig().getStringList(VMConstants.CONFIG_DISABLED_GAME_MODES).forEach(gamemodeString -> {
+            Optional<@NotNull GameMode> gamemode = Enums.getIfPresent(GameMode.class, gamemodeString);
+            if (!gamemode.isPresent()) {
+                return;
+            }
+
+            this.disabledGameModes.add(gamemode.get());
+        });
+    }
+
+    /**
+     * Add a game mode to the disabled list.
+     *
+     * @param gamemode the game mode to add
+     */
+    public void addDisabledGameMode(GameMode gamemode) {
+        this.disabledGameModes.add(gamemode);
+    }
+
+    /**
+     * Remove a game mode from the disabled list.
+     *
+     * @param gamemode the game mode to remove
+     */
+    public void removeDisabledGameMode(GameMode gamemode) {
+        this.disabledGameModes.remove(gamemode);
+    }
+
+    /**
+     * Check whether or not the specific game mode is disabled.
+     *
+     * @param gamemode the game mode to check
+     *
+     * @return true if disabled, false otherwise
+     */
+    public boolean isDisabledGameMode(GameMode gamemode) {
+        return disabledGameModes.contains(gamemode);
+    }
+
+    /**
      * Register a new MaterialAlias.
      *
      * @param alias the alias to register
@@ -431,6 +482,7 @@ public class VeinMinerManager {
     public void clearLocalisedData() {
         this.globalBlocklist.clear();
         this.aliases.clear();
+        this.disabledGameModes.clear();
     }
 
     @Nullable

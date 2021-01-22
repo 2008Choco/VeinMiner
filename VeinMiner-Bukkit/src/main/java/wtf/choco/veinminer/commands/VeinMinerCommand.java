@@ -74,6 +74,7 @@ public final class VeinMinerCommand implements TabExecutor {
             manager.loadToolCategories();
             manager.loadVeinableBlocks();
             manager.loadMaterialAliases();
+            manager.loadDisabledGameModes();
 
             sender.sendMessage(ChatColor.GREEN + "VeinMiner configuration successfully reloaded.");
         }

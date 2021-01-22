@@ -75,9 +75,12 @@ public final class BreakBlockListener implements Listener {
         PlayerPreferences playerData = PlayerPreferences.get(player);
         ActivationStrategy activation = playerData.getActivationStrategy();
         AlgorithmConfig algorithmConfig = (toolTemplate != null) ? toolTemplate.getConfig() : category.getConfig();
-        if (!activation.isValid(player) || algorithmConfig.isDisabledWorld(origin.getWorld())
+        if (!activation.isValid(player)
+                || manager.isDisabledGameMode(player.getGameMode())
                 || !player.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE, category.getId().toLowerCase()))
-                || playerData.isVeinMinerDisabled(category) || !ItemValidator.isValid(item, category)) {
+                || playerData.isVeinMinerDisabled(category)
+                || algorithmConfig.isDisabledWorld(origin.getWorld())
+                || !ItemValidator.isValid(item, category)) {
             return;
         }
 
