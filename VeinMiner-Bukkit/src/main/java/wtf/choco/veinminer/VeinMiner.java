@@ -57,9 +57,14 @@ import wtf.choco.veinminer.utils.VMConstants;
  */
 public final class VeinMiner extends JavaPlugin {
 
-    public static final Gson GSON = new Gson();
+    public static final Gson GSON;
 
-    public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
+    public static final Pattern BLOCK_DATA_PATTERN;
+
+    static {
+      GSON = new Gson();
+      BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
+    }
 
     private static final int VEINMINER_PROTOCOL_VERSION = 1;
 
@@ -94,7 +99,7 @@ public final class VeinMiner extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
+        VeinMiner.instance = this;
         this.veinMiningPattern = PatternExpansive.get();
         this.manager = new VeinMinerManager(this);
 
