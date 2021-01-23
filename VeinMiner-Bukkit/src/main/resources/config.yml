@@ -34,7 +34,7 @@ Client:
   SuggestionMessage:
   - "&lHey! &7This server runs &fVeinMiner&7, therefore we recommend the use of the &fVeinMiner4Bukkit &7Fabric mod."
   - "&7This mod is optional but allows you to use custom keybinds to activate vein miner!"
-  - "&7Download at: &fhttps://spigotmc.org/resources/12038/"
+  - "&7Download at: &fhttps://www.curseforge.com/minecraft/mc-mods/veinminer4bukkit"
 
 BlockList:
   Pickaxe:
