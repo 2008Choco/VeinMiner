@@ -69,7 +69,7 @@ public final class PlayerDataListener implements Listener {
                     reminderMessages.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', line)));
                     playerData.setLastNotifiedOfClientMod(now);
                 }
-            }, 20L);
+            }, 50L);
         });
     }
 
