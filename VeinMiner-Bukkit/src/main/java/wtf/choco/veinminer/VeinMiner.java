@@ -57,14 +57,9 @@ import wtf.choco.veinminer.utils.VMConstants;
  */
 public final class VeinMiner extends JavaPlugin {
 
-    public static final Gson GSON;
+    public static final Gson GSON = new Gson();
 
-    public static final Pattern BLOCK_DATA_PATTERN;
-
-    static {
-      GSON = new Gson();
-      BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
-    }
+    public static final BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
 
     private static final int VEINMINER_PROTOCOL_VERSION = 1;
 
@@ -339,7 +334,7 @@ public final class VeinMiner extends JavaPlugin {
         }
 
         AntiCheatHook hook = hookSupplier.get();
-        if (!this.registerAntiCheatHook(hook)) {
+        if (!registerAntiCheatHook(hook)) {
             this.getLogger().info("Tried to register hook for plugin " + pluginName + " but one was already registered. Not overriding...");
             return;
         }
