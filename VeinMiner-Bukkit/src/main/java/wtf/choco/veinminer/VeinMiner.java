@@ -65,7 +65,7 @@ public final class VeinMiner extends JavaPlugin {
 
     private static VeinMiner instance;
 
-    private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
+    private final List<@NotNull AntiCheatHook> anticheatHooks = new ArrayList<>();
 
     private VeinMinerManager manager;
     private PatternRegistry patternRegistry;
@@ -94,7 +94,7 @@ public final class VeinMiner extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
+        VeinMiner.instance = this;
         this.veinMiningPattern = PatternExpansive.get();
         this.manager = new VeinMinerManager(this);
 
@@ -324,7 +324,7 @@ public final class VeinMiner extends JavaPlugin {
      * @return all anticheat hooks
      */
     @NotNull
-    public List<AntiCheatHook> getAnticheatHooks() {
+    public List<@NotNull AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
     }
 
