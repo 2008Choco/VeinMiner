@@ -3,6 +3,7 @@ package wtf.choco.veinminer.data;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -212,6 +213,15 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
     }
 
     /**
+     * Check whether or not this blocklist contains a wildcard.
+     *
+     * @return true if wildcarded, false otherwise
+     */
+    public boolean containsWildcard() {
+        return containsOnPredicate(VeinBlock::isWildcard);
+    }
+
+    /**
      * Get the VeinBlock from this {@link BlockList} that encapsulates the given {@link BlockData}.
      * If no VeinBlock in this list encapsulates the BlockData, (i.e. {@link #contains(BlockData)}
      * is false) null is returned.
@@ -276,7 +286,7 @@ public class BlockList implements Iterable<VeinBlock>, Serializable, Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        return blocks.equals(obj);
+        return obj == this || (obj instanceof BlockList && Objects.equals(blocks, ((BlockList) obj).blocks));
     }
 
 }

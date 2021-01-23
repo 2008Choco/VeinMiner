@@ -122,6 +122,15 @@ public interface VeinBlock extends Comparable<VeinBlock> {
     @NotNull
     public String asDataString();
 
+    /**
+     * Get whether or not this block is a wildcard.
+     *
+     * @return true if wildcard, false otherwise
+     */
+    public default boolean isWildcard() {
+        return false;
+    }
+
     @Override
     public default int compareTo(@Nullable VeinBlock other) {
         return (other != null) ? asDataString().compareTo(other.asDataString()) : 1;
@@ -163,6 +172,7 @@ public interface VeinBlock extends Comparable<VeinBlock> {
      * minecraft:chest
      * minecraft:chest[waterlogged=true]
      * minecraft:chest[facing=north,waterlogged=true]
+     * *
      * }</pre>
      *
      * @param value the value from which to get a VeinBlock instance.
@@ -171,6 +181,10 @@ public interface VeinBlock extends Comparable<VeinBlock> {
      */
     @Nullable
     public static VeinBlock fromString(@NotNull String value) {
+        if (value.equals("*")) {
+            return wildcard();
+        }
+
         Matcher matcher = VeinMiner.BLOCK_DATA_PATTERN.matcher(value);
         if (!matcher.find()) {
             return null;
@@ -186,6 +200,16 @@ public interface VeinBlock extends Comparable<VeinBlock> {
         }
 
         return (specificData) ? VeinBlock.get(data) : VeinBlock.get(data.getMaterial());
+    }
+
+    /**
+     * Get the wildcard {@link VeinBlock} instance.
+     *
+     * @return the wildcard instance
+     */
+    @NotNull
+    public static VeinBlock wildcard() {
+        return VeinBlockWildcard.INSTANCE;
     }
 
     /**

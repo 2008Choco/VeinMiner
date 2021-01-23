@@ -57,7 +57,7 @@ public final class PatternThorough implements VeinMiningPattern {
                     }
 
                     Block nextBlock = face.getRelative(current);
-                    if (blocks.contains(nextBlock) || !PatternUtils.isOfType(type, alias, nextBlock)) {
+                    if (blocks.contains(nextBlock) || !PatternUtils.isOfType(type, origin, alias, nextBlock)) {
                         continue;
                     }
 

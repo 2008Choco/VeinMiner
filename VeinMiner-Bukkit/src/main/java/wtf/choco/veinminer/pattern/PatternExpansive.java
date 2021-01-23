@@ -52,7 +52,7 @@ public final class PatternExpansive implements VeinMiningPattern {
             for (Block current : recent) {
                 for (VBlockFace face : facesToMine) {
                     Block relative = face.getRelative(current);
-                    if (blocks.contains(relative) || !PatternUtils.isOfType(type, alias, relative)) {
+                    if (blocks.contains(relative) || !PatternUtils.isOfType(type, origin, alias, relative)) {
                         continue;
                     }
 

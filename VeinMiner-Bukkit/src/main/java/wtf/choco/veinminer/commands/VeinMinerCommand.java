@@ -224,7 +224,6 @@ public final class VeinMinerCommand implements TabExecutor {
                 }
 
                 this.plugin.saveConfig();
-                this.plugin.reloadConfig();
             }
 
             // /veinminer blocklist <category> remove
@@ -263,7 +262,6 @@ public final class VeinMinerCommand implements TabExecutor {
                 }
 
                 this.plugin.saveConfig();
-                this.plugin.reloadConfig();
             }
 
             // /veinminer blocklist <category> list
@@ -562,8 +560,15 @@ public final class VeinMinerCommand implements TabExecutor {
                     suggestions = StringUtil.copyPartialMatches(materialArg, BLOCK_KEYS, new ArrayList<>());
 
                     ToolCategory category = ToolCategory.get(args[1]);
+
                     if (category != null) {
-                        category.getBlocklist().forEach(b -> impossibleSuggestions.add(b.getType().getKey().toString()));
+                        BlockList blocklist = category.getBlocklist();
+
+                        if (!blocklist.containsWildcard()) {
+                            suggestions.add("*");
+                        }
+
+                        blocklist.forEach(b -> impossibleSuggestions.add(b.getType().getKey().toString()));
                     }
                 }
                 else if (args[0].equalsIgnoreCase("toollist")) {

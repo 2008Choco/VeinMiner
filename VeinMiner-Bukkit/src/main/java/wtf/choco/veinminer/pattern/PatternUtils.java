@@ -29,11 +29,33 @@ public final class PatternUtils {
      * the provided alias (if present).
      *
      * @param type the type for which to check
+     * @param origin the origin type
      * @param alias the alias. null if no alias
      * @param block the block to validate
      *
      * @return true if the provided block is of that type or aliased, false otherwise
      */
+    public static boolean isOfType(@NotNull VeinBlock type, @NotNull Block origin, @Nullable MaterialAlias alias, @NotNull Block block) {
+        if (type.isWildcard()) {
+            return origin.getType() == block.getType();
+        }
+
+        return type.encapsulates(block) || (alias != null && alias.isAliased(block));
+    }
+
+    /**
+     * Check if a block is encapsulated by the VeinBlock type or considered aliased under
+     * the provided alias (if present).
+     *
+     * @param type the type for which to check
+     * @param alias the alias. null if no alias
+     * @param block the block to validate
+     *
+     * @return true if the provided block is of that type or aliased, false otherwise
+     *
+     * @deprecated see {@link #isOfType(VeinBlock, Block, MaterialAlias, Block)}
+     */
+    @Deprecated
     public static boolean isOfType(@NotNull VeinBlock type, @Nullable MaterialAlias alias, @NotNull Block block) {
         return type.encapsulates(block) || (alias != null && alias.isAliased(block));
     }
