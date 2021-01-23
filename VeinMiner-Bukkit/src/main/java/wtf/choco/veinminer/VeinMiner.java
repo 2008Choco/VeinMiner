@@ -329,7 +329,7 @@ public final class VeinMiner extends JavaPlugin {
      * @return all anticheat hooks
      */
     @NotNull
-    public List<AntiCheatHook> getAnticheatHooks() {
+    public List<@NotNull AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
     }
 
