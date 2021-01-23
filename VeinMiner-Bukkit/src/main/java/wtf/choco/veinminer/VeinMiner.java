@@ -70,7 +70,7 @@ public final class VeinMiner extends JavaPlugin {
 
     private static VeinMiner instance;
 
-    private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
+    private final List<@NotNull AntiCheatHook> anticheatHooks = new ArrayList<>();
 
     private VeinMinerManager manager;
     private PatternRegistry patternRegistry;
