@@ -339,7 +339,7 @@ public final class VeinMiner extends JavaPlugin {
         }
 
         AntiCheatHook hook = hookSupplier.get();
-        if (!registerAntiCheatHook(hook)) {
+        if (!this.registerAntiCheatHook(hook)) {
             this.getLogger().info("Tried to register hook for plugin " + pluginName + " but one was already registered. Not overriding...");
             return;
         }
