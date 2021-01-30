@@ -36,6 +36,7 @@ import wtf.choco.veinminer.economy.EmptyEconomyModifier;
 import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.listener.BreakBlockListener;
+import wtf.choco.veinminer.listener.ItemCollectionListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
 import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.network.PluginMessageProtocol;
@@ -122,6 +123,7 @@ public final class VeinMiner extends JavaPlugin {
         // Register events
         this.getLogger().info("Registering events");
         manager.registerEvents(new BreakBlockListener(this), this);
+        manager.registerEvents(new ItemCollectionListener(this), this);
         manager.registerEvents(new PlayerDataListener(this), this);
 
         // Register commands

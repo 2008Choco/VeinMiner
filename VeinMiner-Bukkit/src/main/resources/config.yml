@@ -9,6 +9,8 @@ PerformUpdateChecks: true
 
 DefaultActivationStrategy: SNEAK
 SortBlocklistAlphabetically: true
+CollectItemsAtSource: true
+
 RepairFriendlyVeinminer: false
 IncludeEdges: true
 MaxVeinSize: 64

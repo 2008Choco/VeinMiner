@@ -16,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.LazyMetadataValue;
+import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
@@ -130,7 +132,10 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Flag all blocks as being vein mined
-        blocks.forEach(block -> block.setMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, new FixedMetadataValue(plugin, true)));
+        blocks.forEach(block -> {
+            block.setMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, new FixedMetadataValue(plugin, true));
+            block.setMetadata(VMConstants.METADATA_KEY_VEINMINER_SOURCE, new LazyMetadataValue(plugin, CacheStrategy.CACHE_ETERNALLY, origin::getLocation));
+        });
 
         // Anticheat support
         List<@NotNull AntiCheatHook> hooks = plugin.getAnticheatHooks();
@@ -181,7 +186,10 @@ public final class BreakBlockListener implements Listener {
             }
         }
 
-        blocks.forEach(block -> block.removeMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, plugin));
+        blocks.forEach(block -> {
+            block.removeMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, plugin);
+            block.removeMetadata(VMConstants.METADATA_KEY_VEINMINER_SOURCE, plugin);
+        });
 
         // VEINMINER - DONE
 
