@@ -133,7 +133,7 @@ public final class BreakBlockListener implements Listener {
         blocks.forEach(block -> block.setMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, new FixedMetadataValue(plugin, true)));
 
         // Anticheat support
-        List<AntiCheatHook> hooks = plugin.getAnticheatHooks();
+        List<@NotNull AntiCheatHook> hooks = plugin.getAnticheatHooks();
         hooks.forEach(h -> h.exempt(player));
 
         // Actually destroying the allocated blocks

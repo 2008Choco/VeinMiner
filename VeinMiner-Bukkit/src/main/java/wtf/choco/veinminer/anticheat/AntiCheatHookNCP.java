@@ -25,7 +25,7 @@ public final class AntiCheatHookNCP implements AntiCheatHook {
 
     @Override
     public void exempt(@NotNull Player player) {
-        if (!NCPExemptionManager.isExempted(player, CheckType.BLOCKBREAK)) {
+        if (NCPExemptionManager.isExempted(player, CheckType.BLOCKBREAK)) {
             return;
         }
 
