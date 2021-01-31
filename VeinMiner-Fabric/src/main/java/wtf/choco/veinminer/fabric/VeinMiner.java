@@ -67,15 +67,10 @@ public class VeinMiner implements ClientModInitializer {
             int width = window.getScaledWidth(), height = window.getScaledHeight();
 
             RenderSystem.pushMatrix();
-            RenderSystem.disableLighting();
-            RenderSystem.disableDepthTest();
 
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             client.getTextureManager().bindTexture(TEXTURE_VEINMINER_ICON);
             DrawableHelper.drawTexture(stack, (width / 2) + 8, (height / 2) - 4, 0, 0, 8, 8, 8, 8);
 
-            RenderSystem.enableDepthTest();
-            RenderSystem.enableLighting();
             RenderSystem.popMatrix();
         });
     }
