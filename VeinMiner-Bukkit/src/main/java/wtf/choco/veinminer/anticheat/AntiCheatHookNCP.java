@@ -6,7 +6,10 @@ import com.google.common.collect.Multimap;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+
+import wtf.choco.veinminer.VeinMiner;
 
 import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
@@ -17,6 +20,11 @@ import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 public final class AntiCheatHookNCP implements AntiCheatHook {
 
     private final Multimap<@NotNull UUID, @NotNull CheckType> exempt = ArrayListMultimap.create();
+    private final VeinMiner plugin;
+
+    public AntiCheatHookNCP(VeinMiner plugin) {
+        this.plugin = plugin;
+    }
 
     @NotNull
     @Override
@@ -44,6 +52,8 @@ public final class AntiCheatHookNCP implements AntiCheatHook {
             this.exempt.put(playerUUID, check);
             NCPExemptionManager.exemptPermanently(player, check);
         }
+
+        player.setMetadata("nocheat.exempt", new FixedMetadataValue(plugin, true));
     }
 
     @Override
@@ -51,11 +61,12 @@ public final class AntiCheatHookNCP implements AntiCheatHook {
         UUID playerUUID = player.getUniqueId();
         this.exempt.get(playerUUID).forEach(check -> NCPExemptionManager.unexempt(player, check));
         this.exempt.removeAll(playerUUID);
+        player.removeMetadata("nocheat.exempt", plugin);
     }
 
     @Override
     public boolean shouldUnexempt(@NotNull Player player) {
-        return exempt.containsKey(player.getUniqueId());
+        return exempt.containsKey(player.getUniqueId()) || player.hasMetadata("nocheat.exempt");
     }
 
 }
