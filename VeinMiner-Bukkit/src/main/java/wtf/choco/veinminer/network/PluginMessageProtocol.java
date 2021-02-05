@@ -165,6 +165,21 @@ public class PluginMessageProtocol<@NotNull T extends Plugin> {
         return registries.get(direction).createPluginMessage(messageId);
     }
 
+    /**
+     * Check whether or not the given message id is registered and valid under the given
+     * message direction for this protocol.
+     *
+     * @param direction the message direction
+     * @param messageId the id of the message to check
+     *
+     * @return true if valid, false otherwise
+     */
+    public boolean isValidMessageId(@NotNull MessageDirection direction, int messageId) {
+        Preconditions.checkArgument(direction != null, "direction must not be null");
+
+        return messageId >= 0 && messageId < registries.get(direction).getRegisteredMessageAmount();
+    }
+
     private void constructAndRegisterRegistry(@NotNull MessageDirection direction, @Nullable Consumer<@NotNull PluginMessageRegistry> messageSupplier) {
         Preconditions.checkArgument(direction != null, "direction must not be null");
 
@@ -182,14 +197,24 @@ public class PluginMessageProtocol<@NotNull T extends Plugin> {
             messenger.registerIncomingPluginChannel(plugin, channel, (channelName, player, data) -> {
                 PluginMessageByteBuffer buffer = new PluginMessageByteBuffer(ByteBuffer.wrap(data));
 
-                int messageId = buffer.readVarInt();
-                PluginMessage<T> message = createPluginMessage(MessageDirection.SERVERBOUND, messageId);
-                if (message == null) {
-                    throw new IllegalStateException("Received invalid plugin message with id " + messageId + ". Don't know what to do here...");
-                }
+                try {
+                    int messageId = buffer.readVarInt();
+                    if (!isValidMessageId(MessageDirection.SERVERBOUND, messageId)) {
+                        player.kickPlayer("Received invalid packet with id " + messageId + " (" + channelName + "). Contact an administrator.");
+                        return;
+                    }
 
-                message.read(buffer);
-                message.handle(plugin, player);
+                    PluginMessage<T> message = createPluginMessage(MessageDirection.SERVERBOUND, messageId);
+                    if (message == null) {
+                        player.kickPlayer("Received unrecognized packet with id " + messageId + " (" + channelName + "). Contact an administrator.");
+                        return;
+                    }
+
+                    message.read(buffer);
+                    message.handle(plugin, player);
+                } catch (IllegalStateException e) {
+                    player.kickPlayer("Malformatted or invalid packet (" + channelName + "). Contact an administrator.");
+                }
             });
         }
         else if (direction.isClientbound()) {
@@ -231,6 +256,15 @@ public class PluginMessageProtocol<@NotNull T extends Plugin> {
 
             this.messageConstructors.add(messageConstructor);
             return this;
+        }
+
+        /**
+         * Get the amount of messages registered to this message registry.
+         *
+         * @return the amount of messages
+         */
+        public int getRegisteredMessageAmount() {
+            return messageConstructors.size();
         }
 
         @NotNull
