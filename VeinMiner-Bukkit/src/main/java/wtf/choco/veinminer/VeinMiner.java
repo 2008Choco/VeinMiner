@@ -96,11 +96,12 @@ public final class VeinMiner extends JavaPlugin {
     @Override
     public void onEnable() {
         VeinMiner.instance = this;
+        this.saveDefaultConfig();
+
         this.veinMiningPattern = PatternExpansive.get();
         this.manager = new VeinMinerManager(this);
 
         // Configuration handling
-        this.saveDefaultConfig();
         this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
         this.playerDataDirectory = new File(getDataFolder(), "playerdata");
         this.playerDataDirectory.mkdirs();
