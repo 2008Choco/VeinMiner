@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group 'wtf.choco' // Group for each version
-    version '1.17.2' // Global version applied to all projects
+    version '1.17.3' // Global version applied to all projects
 
     tasks.withType(JavaCompile) {
         options.encoding 'UTF-8'

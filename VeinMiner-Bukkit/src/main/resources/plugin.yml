@@ -1,6 +1,6 @@
 name: VeinMiner
 main: wtf.choco.veinminer.VeinMiner
-version: 1.17.2
+version: 1.17.3
 description: Aims to recreate the Forge mod, VeinMiner, in an efficient, flexible and feature-filled way
 author: 2008Choco
 website: https://www.spigotmc.org/resources/12038/
