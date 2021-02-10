@@ -10,6 +10,7 @@ PerformUpdateChecks: true
 DefaultActivationStrategy: SNEAK
 SortBlocklistAlphabetically: true
 CollectItemsAtSource: true
+NerfMcMMO: false
 
 RepairFriendlyVeinminer: false
 IncludeEdges: true

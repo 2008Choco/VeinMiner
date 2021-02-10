@@ -131,7 +131,8 @@ public final class BreakBlockListener implements Listener {
             return;
         }
 
-        // Flag all blocks as being vein mined
+        // Apply metadata to all blocks to be vein mined and all other relevant objects/entities
+        player.setMetadata(VMConstants.METADATA_KEY_VEINMINING, new FixedMetadataValue(plugin, true));
         blocks.forEach(block -> {
             block.setMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, new FixedMetadataValue(plugin, true));
             block.setMetadata(VMConstants.METADATA_KEY_VEINMINER_SOURCE, new LazyMetadataValue(plugin, CacheStrategy.CACHE_ETERNALLY, origin::getLocation));
@@ -186,6 +187,8 @@ public final class BreakBlockListener implements Listener {
             }
         }
 
+        // Remove applied metadata
+        player.removeMetadata(VMConstants.METADATA_KEY_VEINMINING, plugin);
         blocks.forEach(block -> {
             block.removeMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, plugin);
             block.removeMetadata(VMConstants.METADATA_KEY_VEINMINER_SOURCE, plugin);

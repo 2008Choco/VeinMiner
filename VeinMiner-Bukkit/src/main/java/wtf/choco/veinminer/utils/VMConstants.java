@@ -9,6 +9,7 @@ public final class VMConstants {
     public static final String CONFIG_DEFAULT_ACTIVATION_STRATEGY = "DefaultActivationStrategy";
     public static final String CONFIG_SORT_BLOCKLIST_ALPHABETICALLY = "SortBlocklistAlphabetically";
     public static final String CONFIG_COLLECT_ITEMS_AT_SOURCE = "CollectItemsAtSource";
+    public static final String CONFIG_NERF_MCMMO = "NerfMcMMO";
 
     public static final String CONFIG_REPAIR_FRIENDLY_VEINMINER = "RepairFriendlyVeinminer";
     public static final String CONFIG_INCLUDE_EDGES = "IncludeEdges";
@@ -57,6 +58,8 @@ public final class VMConstants {
     // Metadata keys
     public static final String METADATA_KEY_TO_BE_VEINMINED = "veinminer:to_be_veinmined";
     public static final String METADATA_KEY_VEINMINER_SOURCE = "veinminer:source";
+
+    public static final String METADATA_KEY_VEINMINING = "veinminer:veinmining";
 
     private VMConstants() { }
 
