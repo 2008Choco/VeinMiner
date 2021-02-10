@@ -3,8 +3,6 @@ plugins {
 }
 
 repositories {
-    mavenLocal();
-
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url 'https://repo.codemc.org/repository/maven-public/' }
 
@@ -25,14 +23,15 @@ dependencies {
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
 
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.3'
+    // GitHub master, version 2.1.175-SNAPSHOT
+    // https://github.com/mcMMO-Dev/mcMMO/commit/085c8dbf68b8503f84b92c8adbde94631707effe
+    compileOnly 'com.github.mcMMO-Dev:mcMMO:085c8db'
 
     // Anti-cheats
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
     compileOnly 'de.janmm14:aac-api:5.0.0'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
 
-    // Locally installed - McMMO (hopefully temporary install?)
-    compileOnly 'com.gmail.nossr50:mcMMO:2.1.174'
 }
 
 shadowJar {
