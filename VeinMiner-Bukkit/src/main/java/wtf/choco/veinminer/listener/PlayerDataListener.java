@@ -44,7 +44,7 @@ public final class PlayerDataListener implements Listener {
 
             // Notify the player of the client mod (if they're not using it)
             FileConfiguration config = plugin.getConfig();
-            if (!config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+            if (!config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true) || player.hasPermission(VMConstants.PERMISSION_CLIENT_REMINDED)) {
                 return;
             }
 

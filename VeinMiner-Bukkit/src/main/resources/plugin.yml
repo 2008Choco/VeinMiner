@@ -66,3 +66,7 @@ permissions:
   veinminer.toollist.list.*:
     description: Allow the use of the '/veinminer toollist list' subcommand
     default: op
+
+  veinminer.client.reminded:
+    description: Exempt players from the client reminder message on join
+    default: false

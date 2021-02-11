@@ -48,6 +48,8 @@ public final class VMConstants {
     public static final String PERMISSION_TOOLLIST_REMOVE = "veinminer.toollist.remove";
     public static final String PERMISSION_TOOLLIST_LIST = "veinminer.toollist.list";
 
+    public static final String PERMISSION_CLIENT_REMINDED = "veinminer.client.reminded";
+
     // Dynamic permission nodes
     public static final String PERMISSION_DYNAMIC_LIST_ADD = "veinminer.%s.list";
     public static final String PERMISSION_DYNAMIC_LIST_REMOVE = "veinminer.%s.list";
