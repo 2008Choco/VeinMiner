@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.api.ActivationStrategy;
+import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.api.VeinMinerManager;
 import wtf.choco.veinminer.data.BlockList;
 import wtf.choco.veinminer.data.PlayerPreferences;
@@ -155,7 +156,7 @@ public final class VeinMinerCommand implements TabExecutor {
             }
 
             if (args.length < 2) {
-                player.sendMessage(ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter(s). " + ChatColor.YELLOW + "/" + label + " " + args[0] + " <sneak|stand|always>");
+                player.sendMessage(ChatColor.RED + "Invalid command syntax! " + ChatColor.GRAY + "Missing parameter(s). " + ChatColor.YELLOW + "/" + label + " " + args[0] + " <sneak|stand|always|client>");
                 return true;
             }
 
@@ -166,6 +167,18 @@ public final class VeinMinerCommand implements TabExecutor {
             }
 
             ActivationStrategy strategy = strategyOptional.get();
+            if (strategy == ActivationStrategy.CLIENT && !ClientActivation.isUsingClientMod(player)) {
+                player.sendMessage(ChatColor.RED + "You do not have VeinMiner installed on your client!");
+
+                // Let them know where to install VeinMiner on the client (if it's allowed)
+                if (plugin.getConfig().getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+                    player.sendMessage("In order to use client activation, you must install a client-sided Fabric mod.");
+                    player.sendMessage("https://www.curseforge.com/minecraft/mc-mods/veinminer4bukkit");
+                }
+
+                return true;
+            }
+
             PlayerPreferences.get(player).setActivationStrategy(strategy);
             player.sendMessage(ChatColor.GREEN + "Activation mode successfully changed to " + ChatColor.YELLOW + strategy.name().toLowerCase().replace("_", " ") + ChatColor.GREEN + ".");
         }
