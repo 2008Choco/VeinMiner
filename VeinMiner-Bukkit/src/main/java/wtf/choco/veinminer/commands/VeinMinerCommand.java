@@ -526,6 +526,10 @@ public final class VeinMinerCommand implements TabExecutor {
 
             else if (args[0].equalsIgnoreCase("mode")) {
                 for (ActivationStrategy activationStrategy : ActivationStrategy.values()) {
+                    if (activationStrategy == ActivationStrategy.CLIENT && !plugin.getConfig().getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+                        continue;
+                    }
+
                     values.add(activationStrategy.name().toLowerCase());
                 }
             }
