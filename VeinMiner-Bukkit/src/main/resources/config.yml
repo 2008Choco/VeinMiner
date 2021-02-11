@@ -36,7 +36,6 @@ Client:
   SuggestionMessage:
   - "&7This server runs &fVeinMiner&7. An &ooptional &7Fabric mod may be installed to allow you to use custom keybinds."
   - "&7Download at: &fhttps://www.curseforge.com/minecraft/mc-mods/veinminer4bukkit"
-  - "&7Use &f/veinminer mode client &7to enable it."
 
 BlockList:
   Pickaxe:

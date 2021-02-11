@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.api.ClientActivation;
 import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.utils.MathUtil;
@@ -49,6 +50,11 @@ public final class PlayerDataListener implements Listener {
 
             scheduler.runTaskLater(plugin, () -> {
                 if (ClientActivation.isUsingClientMod(player)) {
+                    // Activate client mode if not already set
+                    if (playerData.getActivationStrategy() != ActivationStrategy.CLIENT) {
+                        playerData.setActivationStrategy(ActivationStrategy.CLIENT);
+                    }
+
                     return;
                 }
 
