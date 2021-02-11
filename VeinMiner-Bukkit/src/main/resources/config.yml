@@ -31,13 +31,12 @@ Hunger:
 Client:
   AllowClientActivation: true
   DisallowedMessage:
-  - "&lHey! &7We have disabled the client-side VeinMiner4Bukkit mod and it cannot be used on this server."
-  - "&7We apologize for the inconvenience."
+  - "&7&oThe VeinMiner client mod is disabled on this server."
   SuggestClientModPeriod: "1d"
   SuggestionMessage:
-  - "&lHey! &7This server runs &fVeinMiner&7, therefore we recommend the use of the &fVeinMiner4Bukkit &7Fabric mod."
-  - "&7This mod is optional but allows you to use custom keybinds to activate vein miner!"
+  - "&7This server runs &fVeinMiner&7. An &ooptional &7Fabric mod may be installed to allow you to use custom keybinds."
   - "&7Download at: &fhttps://www.curseforge.com/minecraft/mc-mods/veinminer4bukkit"
+  - "&7Use &f/veinminer mode client &7to enable it."
 
 BlockList:
   Pickaxe:
