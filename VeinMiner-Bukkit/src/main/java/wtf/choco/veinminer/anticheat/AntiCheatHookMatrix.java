@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import me.rerere.matrix.api.MatrixAPIProvider;
 import me.rerere.matrix.api.events.PlayerViolationEvent;
 
 import org.bukkit.entity.Player;
@@ -27,12 +28,24 @@ public final class AntiCheatHookMatrix implements AntiCheatHook, Listener {
 
     @Override
     public void exempt(@NotNull Player player) {
+        if (MatrixAPIProvider.getAPI().isBypass(player)) {
+            return;
+        }
+
         this.exempt.add(player.getUniqueId());
+        MatrixAPIProvider.getAPI().setBypass(player, true);
     }
 
     @Override
     public void unexempt(@NotNull Player player) {
-        this.exempt.remove(player.getUniqueId());
+        if (exempt.remove(player.getUniqueId())) {
+            MatrixAPIProvider.getAPI().setBypass(player, false);
+        }
+    }
+
+    @Override
+    public boolean shouldUnexempt(@NotNull Player player) {
+        return exempt.contains(player.getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
