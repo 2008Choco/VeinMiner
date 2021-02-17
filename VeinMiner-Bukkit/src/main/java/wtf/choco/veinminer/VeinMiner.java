@@ -15,6 +15,7 @@ import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -54,6 +55,7 @@ import wtf.choco.veinminer.pattern.PatternThorough;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.utils.ConfigWrapper;
+import wtf.choco.veinminer.utils.NamespacedKeyUtil;
 import wtf.choco.veinminer.utils.ReflectionUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateReason;
@@ -104,7 +106,6 @@ public final class VeinMiner extends JavaPlugin {
         VeinMiner.instance = this;
         this.saveDefaultConfig();
 
-        this.veinMiningPattern = PatternExpansive.get();
         this.manager = new VeinMinerManager(this);
 
         // Configuration handling
@@ -313,6 +314,24 @@ public final class VeinMiner extends JavaPlugin {
      */
     @NotNull
     public VeinMiningPattern getVeinMiningPattern() {
+        if (veinMiningPattern == null) {
+            String patternKeyString = getConfig().getString(VMConstants.CONFIG_VEIN_MINING_PATTERN);
+            NamespacedKey patternKey = patternKeyString != null ? NamespacedKeyUtil.fromString(patternKeyString, this) : PatternExpansive.get().getKey();
+
+            if (patternKey == null) {
+                this.getLogger().warning("Malformatted pattern key, " + patternKeyString + ". Expected \"foo:bar\" format.");
+                patternKey = PatternExpansive.get().getKey();
+            }
+
+            VeinMiningPattern pattern = patternRegistry.getPattern(patternKey);
+            if (pattern == null) {
+                this.getLogger().warning("Unrecognized pattern. Could not find pattern with id " + patternKey + ". Was it spelt correctly?");
+                pattern = PatternExpansive.get();
+            }
+
+            this.veinMiningPattern = pattern;
+        }
+
         return veinMiningPattern;
     }
 

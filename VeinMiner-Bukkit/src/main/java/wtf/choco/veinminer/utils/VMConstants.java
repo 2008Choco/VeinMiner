@@ -7,6 +7,7 @@ public final class VMConstants {
     public static final String CONFIG_PERFORM_UPDATE_CHECKS = "PerformUpdateChecks";
 
     public static final String CONFIG_DEFAULT_ACTIVATION_STRATEGY = "DefaultActivationStrategy";
+    public static final String CONFIG_VEIN_MINING_PATTERN = "VeinMiningPattern";
     public static final String CONFIG_SORT_BLOCKLIST_ALPHABETICALLY = "SortBlocklistAlphabetically";
     public static final String CONFIG_COLLECT_ITEMS_AT_SOURCE = "CollectItemsAtSource";
     public static final String CONFIG_NERF_MCMMO = "NerfMcMMO";

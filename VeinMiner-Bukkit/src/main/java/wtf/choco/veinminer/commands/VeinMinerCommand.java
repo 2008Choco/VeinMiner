@@ -467,6 +467,9 @@ public final class VeinMinerCommand implements TabExecutor {
             }
 
             this.plugin.setVeinMiningPattern(pattern);
+            this.plugin.getConfig().set(VMConstants.CONFIG_VEIN_MINING_PATTERN, pattern.getKey().toString());
+            this.plugin.saveConfig();
+
             sender.sendMessage(ChatColor.GREEN + "Patterns successfully set to " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + ".");
         }
 
