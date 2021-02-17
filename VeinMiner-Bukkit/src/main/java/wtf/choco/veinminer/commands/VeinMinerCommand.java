@@ -530,9 +530,12 @@ public final class VeinMinerCommand implements TabExecutor {
             }
 
             else if (args[0].equalsIgnoreCase("pattern")) {
-                values = plugin.getPatternRegistry().getPatterns().stream()
-                        .map(VeinMiningPattern::getKey).map(NamespacedKey::toString)
-                        .collect(Collectors.toList());
+                for (VeinMiningPattern pattern : plugin.getPatternRegistry().getPatterns()) {
+                    NamespacedKey key = pattern.getKey();
+                    if (key.toString().startsWith(args[0]) || key.getKey().startsWith(args[0])) {
+                        values.add(pattern.getKey().toString());
+                    }
+                }
             }
         }
 
