@@ -34,6 +34,7 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.ToolCategory;
 import wtf.choco.veinminer.tool.ToolTemplateMaterial;
 import wtf.choco.veinminer.utils.ConfigWrapper;
+import wtf.choco.veinminer.utils.NamespacedKeyUtil;
 import wtf.choco.veinminer.utils.UpdateChecker;
 import wtf.choco.veinminer.utils.UpdateChecker.UpdateResult;
 import wtf.choco.veinminer.utils.VMConstants;
@@ -443,11 +444,6 @@ public final class VeinMinerCommand implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("pattern")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("VeinMiner patterns cannot be changed from the console...");
-                return true;
-            }
-
             if (!sender.hasPermission(VMConstants.PERMISSION_PATTERN)) {
                 sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
                 return true;
@@ -458,24 +454,20 @@ public final class VeinMinerCommand implements TabExecutor {
                 return true;
             }
 
-            Player player = (Player) sender;
-            String patternNamespace = args[1].toLowerCase();
-
-            if (!patternNamespace.contains(":")) {
-                patternNamespace = plugin.getName().toLowerCase() + ":" + patternNamespace;
-            } else if (patternNamespace.startsWith(":") || patternNamespace.split(":").length > 2) {
-                player.sendMessage(ChatColor.RED + "Invalid pattern ID! " + ChatColor.GRAY + "Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id" + ChatColor.GRAY + "(i.e. " + ChatColor.YELLOW + "veinminer:expansive" + ChatColor.GRAY + ").");
+            NamespacedKey patternNamespace = NamespacedKeyUtil.fromString(args[1], plugin);
+            if (patternNamespace == null) {
+                sender.sendMessage(ChatColor.RED + "Invalid pattern ID! " + ChatColor.GRAY + "Pattern IDs should be formatted as " + ChatColor.YELLOW + "namespace:id" + ChatColor.GRAY + "(i.e. " + ChatColor.YELLOW + "veinminer:expansive" + ChatColor.GRAY + ").");
                 return true;
             }
 
             VeinMiningPattern pattern = plugin.getPatternRegistry().getPattern(patternNamespace);
             if (pattern == null) {
-                player.sendMessage(ChatColor.GRAY + "A pattern with the ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + " could not be found.");
+                sender.sendMessage(ChatColor.GRAY + "A pattern with the ID " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + " could not be found.");
                 return true;
             }
 
             this.plugin.setVeinMiningPattern(pattern);
-            player.sendMessage(ChatColor.GREEN + "Patterns successfully set to " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + ".");
+            sender.sendMessage(ChatColor.GREEN + "Patterns successfully set to " + ChatColor.YELLOW + patternNamespace + ChatColor.GRAY + ".");
         }
 
         // Unknown command usage
