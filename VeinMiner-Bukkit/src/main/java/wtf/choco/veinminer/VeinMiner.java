@@ -16,6 +16,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -128,12 +129,9 @@ public final class VeinMiner extends JavaPlugin {
         manager.registerEvents(new ItemCollectionListener(this), this);
         manager.registerEvents(new PlayerDataListener(this), this);
 
-        if (manager.isPluginEnabled("mcMMO")) {
-            // Prevent integration with mcMMO-Classic (for now)
-            // TODO: Support mcMMO-Classic? https://github.com/mcMMO-Dev/mcMMO-Classic/
-            if (manager.getPlugin("mcMMO").getDescription().getVersion().startsWith("1")) {
-                return;
-            }
+        // Integrate with McMMO, but don't integrate with mcMMO-Classic, version 1.x
+        Plugin mcMMOPlugin = manager.getPlugin("mcMMO");
+        if (manager.isPluginEnabled("mcMMO") && mcMMOPlugin != null && !mcMMOPlugin.getDescription().getVersion().startsWith("1")) {
             manager.registerEvents(new McMMOIntegration(this), this);
         }
 
