@@ -136,7 +136,7 @@ public final class VeinMiner extends JavaPlugin {
                 manager.registerEvents(new McMMOIntegration(this), this);
             }
             else if (getConfig().getBoolean(VMConstants.CONFIG_NERF_MCMMO, false)) {
-                this.getLogger().warning("NerfMcMMO is enabled but McMMO-Classic is installed.");
+                this.getLogger().warning(VMConstants.CONFIG_NERF_MCMMO + " is enabled but McMMO-Classic is installed.");
                 this.getLogger().warning("This version of McMMO is not supported and therefore this configuration option will not work!");
                 this.getLogger().warning("Consider updating your version of McMMO.");
             }
