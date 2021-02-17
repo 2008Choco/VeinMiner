@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
 
     compileOnly 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
     compileOnly 'org.jetbrains:annotations:18.0.0'

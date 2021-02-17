@@ -11,6 +11,9 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.DrilldownPie;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -163,9 +166,9 @@ public final class VeinMiner extends JavaPlugin {
             this.getLogger().info("Enabling Plugin Metrics");
 
             Metrics metrics = new Metrics(this, 1938); // https://bstats.org/what-is-my-plugin-id
-            metrics.addCustomChart(new Metrics.AdvancedPie("blocks_veinmined", StatTracker.get()::getVeinMinedCountAsData));
-            metrics.addCustomChart(new Metrics.SingleLineChart("using_client_mod", ClientActivation::getPlayersUsingClientMod));
-            metrics.addCustomChart(new Metrics.DrilldownPie("installed_anticheats", StatTracker.get()::getInstalledAntiCheatsAsData));
+            metrics.addCustomChart(new AdvancedPie("blocks_veinmined", StatTracker.get()::getVeinMinedCountAsData));
+            metrics.addCustomChart(new SingleLineChart("using_client_mod", ClientActivation::getPlayersUsingClientMod));
+            metrics.addCustomChart(new DrilldownPie("installed_anticheats", StatTracker.get()::getInstalledAntiCheatsAsData));
 
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
         }
