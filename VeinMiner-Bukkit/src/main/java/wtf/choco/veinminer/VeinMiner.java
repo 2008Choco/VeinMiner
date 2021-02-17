@@ -40,6 +40,7 @@ import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.ItemCollectionListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
+import wtf.choco.veinminer.metrics.AntiCheatInformation;
 import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.network.PluginMessageProtocol;
 import wtf.choco.veinminer.network.message.PluginMessageInHandshake;
@@ -164,6 +165,7 @@ public final class VeinMiner extends JavaPlugin {
             Metrics metrics = new Metrics(this, 1938); // https://bstats.org/what-is-my-plugin-id
             metrics.addCustomChart(new Metrics.AdvancedPie("blocks_veinmined", StatTracker.get()::getVeinMinedCountAsData));
             metrics.addCustomChart(new Metrics.SingleLineChart("using_client_mod", ClientActivation::getPlayersUsingClientMod));
+            metrics.addCustomChart(new Metrics.DrilldownPie("installed_anticheats", StatTracker.get()::getInstalledAntiCheatsAsData));
 
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
         }
@@ -359,6 +361,11 @@ public final class VeinMiner extends JavaPlugin {
 
         if (hook instanceof Listener) {
             manager.registerEvents((Listener) hook, this);
+        }
+
+        Plugin antiCheatPlugin = hook.getPlugin();
+        if (antiCheatPlugin != null) {
+            StatTracker.get().recognizeInstalledAntiCheat(new AntiCheatInformation(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
         }
 
         this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + hook.getPluginName() + "\"");

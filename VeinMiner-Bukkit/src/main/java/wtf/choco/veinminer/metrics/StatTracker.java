@@ -1,7 +1,9 @@
 package wtf.choco.veinminer.metrics;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bstats.bukkit.Metrics;
@@ -19,6 +21,7 @@ public final class StatTracker {
     private static StatTracker instance;
 
     private final Map<@NotNull Material, @NotNull Integer> minedBlocks = new EnumMap<>(Material.class);
+    private final List<@NotNull AntiCheatInformation> installedAntiCheats = new ArrayList<>(2);
 
     private StatTracker() { }
 
@@ -32,17 +35,45 @@ public final class StatTracker {
     }
 
     /**
-     * Get the data as a {@literal Map<String, Integer>} for bStats. Note that the invocation of
-     * this method will result in previous data being cleared and reset back to 0. This should ONLY
-     * be invoked by bStats data collectors as to not mess up existing data.
+     * Get the vein mined block data as a {@literal Map<String, Integer>} for bStats. Note that the
+     * invocation of this method will result in previous data being cleared and reset back to 0. This
+     * should ONLY be invoked by bStats data collectors as to not mess up existing data.
      *
      * @return the readable bStats data
      */
+    @NotNull
     public Map<@NotNull String, @NotNull Integer> getVeinMinedCountAsData() {
         Map<String, Integer> data = new HashMap<>();
 
-        this.minedBlocks.forEach((k, v) -> data.put(k.getKey().toString(), v));
+        this.minedBlocks.forEach((material, amount) -> data.put(material.getKey().toString(), amount));
         this.minedBlocks.clear();
+
+        return data;
+    }
+
+    /**
+     * Recognize an installed anti cheat.
+     *
+     * @param information the anti cheat information
+     */
+    public void recognizeInstalledAntiCheat(AntiCheatInformation information) {
+        this.installedAntiCheats.add(information);
+    }
+
+    /**
+     * Get the installed anti cheat data as a {@literal Map<String, Map<String, Integer>>} for bStats.
+     *
+     * @return the readable bStats data
+     */
+    @NotNull
+    public Map<@NotNull String, @NotNull Map<@NotNull String, @NotNull Integer>> getInstalledAntiCheatsAsData() {
+        Map<String, Map<String, Integer>> data = new HashMap<>();
+
+        this.installedAntiCheats.forEach(antiCheatInformation -> {
+            Map<String, Integer> versionData = new HashMap<>();
+            versionData.put(antiCheatInformation.getVersion(), 1); // There will only ever be 1 installed
+            data.put(antiCheatInformation.getName(), versionData);
+        });
 
         return data;
     }

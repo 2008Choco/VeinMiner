@@ -1,7 +1,10 @@
 package wtf.choco.veinminer.anticheat;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a hook for an anticheat plugin. Implementations of this hook should exempt and
@@ -54,6 +57,16 @@ public interface AntiCheatHook {
      */
     public default boolean isSupported() {
         return true;
+    }
+
+    /**
+     * Attempt to fetch the Plugin instance for this hook.
+     *
+     * @return the plugin. null if could not be found
+     */
+    @Nullable
+    public default Plugin getPlugin() {
+        return Bukkit.getPluginManager().getPlugin(getPluginName());
     }
 
 }
