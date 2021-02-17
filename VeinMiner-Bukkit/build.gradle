@@ -35,5 +35,5 @@ dependencies {
 }
 
 shadowJar {
-    relocate 'org.bstats.bukkit', 'wtf.choco.veinminer.metrics'
+    relocate 'org.bstats', 'wtf.choco.veinminer.metrics'
 }
