@@ -129,10 +129,17 @@ public final class VeinMiner extends JavaPlugin {
         manager.registerEvents(new ItemCollectionListener(this), this);
         manager.registerEvents(new PlayerDataListener(this), this);
 
-        // Integrate with McMMO, but don't integrate with mcMMO-Classic, version 1.x
         Plugin mcMMOPlugin = manager.getPlugin("mcMMO");
-        if (manager.isPluginEnabled("mcMMO") && mcMMOPlugin != null && !mcMMOPlugin.getDescription().getVersion().startsWith("1")) {
-            manager.registerEvents(new McMMOIntegration(this), this);
+        if (mcMMOPlugin != null && manager.isPluginEnabled("mcMMO")) {
+            // Integrate with McMMO, but don't integrate with mcMMO-Classic, version 1.x
+            if (!mcMMOPlugin.getDescription().getVersion().startsWith("1")) {
+                manager.registerEvents(new McMMOIntegration(this), this);
+            }
+            else if (getConfig().getBoolean(VMConstants.CONFIG_NERF_MCMMO, false)) {
+                this.getLogger().warning("NerfMcMMO is enabled but McMMO-Classic is installed.");
+                this.getLogger().warning("This version of McMMO is not supported and therefore this configuration option will not work!");
+                this.getLogger().warning("Consider updating your version of McMMO.");
+            }
         }
 
         // Register commands
