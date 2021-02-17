@@ -88,7 +88,7 @@ public final class VeinMiner extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             this.getLogger().info("Found WorldGuard. Registering custom region flag.");
             WorldGuardIntegration.init(this);
         }
@@ -128,7 +128,12 @@ public final class VeinMiner extends JavaPlugin {
         manager.registerEvents(new ItemCollectionListener(this), this);
         manager.registerEvents(new PlayerDataListener(this), this);
 
-        if (manager.getPlugin("mcMMO") != null) {
+        if (manager.isPluginEnabled("mcMMO")) {
+            // Prevent integration with mcMMO-Classic (for now)
+            // TODO: Support mcMMO-Classic? https://github.com/mcMMO-Dev/mcMMO-Classic/
+            if (manager.getPlugin("mcMMO").getDescription().getVersion().startsWith("1")) {
+                return;
+            }
             manager.registerEvents(new McMMOIntegration(this), this);
         }
 
