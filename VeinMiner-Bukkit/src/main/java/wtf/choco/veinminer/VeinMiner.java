@@ -89,7 +89,7 @@ public final class VeinMiner extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
             this.getLogger().info("Found WorldGuard. Registering custom region flag.");
             WorldGuardIntegration.init(this);
         }
