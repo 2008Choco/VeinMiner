@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.*
+
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
@@ -34,6 +36,13 @@ dependencies {
 
 }
 
+processResources {
+    filter ReplaceTokens, tokens: [
+        "project.version": version
+    ]
+}
+
 shadowJar {
     relocate 'org.bstats', 'wtf.choco.veinminer.metrics'
+    archiveFileName = "${baseName}-${version}.${extension}"
 }
