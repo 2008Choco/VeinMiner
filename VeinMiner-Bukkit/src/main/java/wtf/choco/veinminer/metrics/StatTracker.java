@@ -1,10 +1,10 @@
 package wtf.choco.veinminer.metrics;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Material;
@@ -21,7 +21,7 @@ public final class StatTracker {
     private static StatTracker instance;
 
     private final Map<@NotNull Material, @NotNull Integer> minedBlocks = new EnumMap<>(Material.class);
-    private final List<@NotNull AntiCheatInformation> installedAntiCheats = new ArrayList<>(2);
+    private final Set<@NotNull AntiCheatInformation> installedAntiCheats = new HashSet<>(2);
 
     private StatTracker() { }
 
