@@ -43,8 +43,6 @@ import wtf.choco.veinminer.utils.VMEventFactory;
 
 public final class BreakBlockListener implements Listener {
 
-    private final StatTracker statTracker = StatTracker.get();
-
     private final VeinMiner plugin;
     private final VeinMinerManager manager;
 
@@ -183,7 +181,7 @@ public final class BreakBlockListener implements Listener {
             // Break the block
             Material currentType = block.getType();
             if (block == origin || ReflectionUtil.breakBlock(player, block)) {
-                this.statTracker.accumulateVeinMinedMaterial(currentType);
+                StatTracker.accumulateVeinMinedMaterial(currentType);
             }
         }
 

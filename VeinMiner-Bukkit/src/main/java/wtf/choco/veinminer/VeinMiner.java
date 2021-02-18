@@ -167,9 +167,9 @@ public final class VeinMiner extends JavaPlugin {
             this.getLogger().info("Enabling Plugin Metrics");
 
             Metrics metrics = new Metrics(this, 1938); // https://bstats.org/what-is-my-plugin-id
-            metrics.addCustomChart(new AdvancedPie("blocks_veinmined", StatTracker.get()::getVeinMinedCountAsData));
+            metrics.addCustomChart(new AdvancedPie("blocks_veinmined", StatTracker::getVeinMinedCountAsData));
             metrics.addCustomChart(new SingleLineChart("using_client_mod", ClientActivation::getPlayersUsingClientMod));
-            metrics.addCustomChart(new DrilldownPie("installed_anticheats", StatTracker.get()::getInstalledAntiCheatsAsData));
+            metrics.addCustomChart(new DrilldownPie("installed_anticheats", StatTracker::getInstalledAntiCheatsAsData));
 
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
         }
@@ -387,7 +387,7 @@ public final class VeinMiner extends JavaPlugin {
 
         Plugin antiCheatPlugin = hook.getPlugin();
         if (antiCheatPlugin != null) {
-            StatTracker.get().recognizeInstalledAntiCheat(new AntiCheatInformation(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
+            StatTracker.recognizeInstalledAntiCheat(new AntiCheatInformation(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
         }
 
         this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + hook.getPluginName() + "\"");

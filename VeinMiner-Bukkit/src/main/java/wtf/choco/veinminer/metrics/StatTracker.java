@@ -18,10 +18,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class StatTracker {
 
-    private static StatTracker instance;
-
-    private final Map<@NotNull Material, @NotNull Integer> minedBlocks = new EnumMap<>(Material.class);
-    private final Set<@NotNull AntiCheatInformation> installedAntiCheats = new HashSet<>(2);
+    private static final Map<@NotNull Material, @NotNull Integer> MINED_BLOCKS = new EnumMap<>(Material.class);
+    private static final Set<@NotNull AntiCheatInformation> INSTALLED_ANTI_CHEATS = new HashSet<>(2);
 
     private StatTracker() { }
 
@@ -30,8 +28,8 @@ public final class StatTracker {
      *
      * @param material the material to accumulate
      */
-    public void accumulateVeinMinedMaterial(@NotNull Material material) {
-        this.minedBlocks.merge(material, 1, Integer::sum);
+    public static void accumulateVeinMinedMaterial(@NotNull Material material) {
+        MINED_BLOCKS.merge(material, 1, Integer::sum);
     }
 
     /**
@@ -42,11 +40,11 @@ public final class StatTracker {
      * @return the readable bStats data
      */
     @NotNull
-    public Map<@NotNull String, @NotNull Integer> getVeinMinedCountAsData() {
+    public static Map<@NotNull String, @NotNull Integer> getVeinMinedCountAsData() {
         Map<String, Integer> data = new HashMap<>();
 
-        this.minedBlocks.forEach((material, amount) -> data.put(material.getKey().toString(), amount));
-        this.minedBlocks.clear();
+        MINED_BLOCKS.forEach((material, amount) -> data.put(material.getKey().toString(), amount));
+        MINED_BLOCKS.clear();
 
         return data;
     }
@@ -56,8 +54,8 @@ public final class StatTracker {
      *
      * @param information the anti cheat information
      */
-    public void recognizeInstalledAntiCheat(AntiCheatInformation information) {
-        this.installedAntiCheats.add(information);
+    public static void recognizeInstalledAntiCheat(AntiCheatInformation information) {
+        INSTALLED_ANTI_CHEATS.add(information);
     }
 
     /**
@@ -66,26 +64,16 @@ public final class StatTracker {
      * @return the readable bStats data
      */
     @NotNull
-    public Map<@NotNull String, @NotNull Map<@NotNull String, @NotNull Integer>> getInstalledAntiCheatsAsData() {
+    public static Map<@NotNull String, @NotNull Map<@NotNull String, @NotNull Integer>> getInstalledAntiCheatsAsData() {
         Map<String, Map<String, Integer>> data = new HashMap<>();
 
-        this.installedAntiCheats.forEach(antiCheatInformation -> {
+        INSTALLED_ANTI_CHEATS.forEach(antiCheatInformation -> {
             Map<String, Integer> versionData = new HashMap<>();
             versionData.put(antiCheatInformation.getVersion(), 1); // There will only ever be 1 installed
             data.put(antiCheatInformation.getName(), versionData);
         });
 
         return data;
-    }
-
-    /**
-     * Get a singleton instance of the StatTracker.
-     *
-     * @return the stat tracker instance
-     */
-    @NotNull
-    public static StatTracker get() {
-        return (instance == null) ? instance = new StatTracker() : instance;
     }
 
 }
