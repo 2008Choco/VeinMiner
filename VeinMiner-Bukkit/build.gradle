@@ -33,7 +33,6 @@ dependencies {
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
     compileOnly 'de.janmm14:aac-api:5.0.0'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
-
 }
 
 processResources {
@@ -44,5 +43,7 @@ processResources {
 
 shadowJar {
     relocate 'org.bstats', 'wtf.choco.veinminer.metrics'
-    archiveFileName = "${baseName}-${version}.${extension}"
+    archiveFileName = "VeinMiner-Bukkit-${version}.jar"
 }
+
+tasks.build.dependsOn tasks.shadowJar

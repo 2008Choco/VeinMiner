@@ -13,7 +13,8 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'java-library' // Adds the java-library plugin to all subprojects
+    apply plugin: 'java-library' // Adds the java-library plugin to all subproject
+    apply plugin: 'checkstyle'
 
     repositories { // Repos applied to all sub projects
         mavenLocal()
@@ -24,5 +25,13 @@ subprojects {
     compileJava { // Sets target compatibility for all subprojects
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    checkstyleMain {
+        configFile = file("${rootDir}/checkstyle.xml")
+    }
+    
+    checkstyleTest {
+        configFile = file("${rootDir}/checkstyle.xml")
     }
 }
