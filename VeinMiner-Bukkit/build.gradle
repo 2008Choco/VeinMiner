@@ -35,6 +35,11 @@ dependencies {
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
 }
 
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 processResources {
     filter ReplaceTokens, tokens: [
         "project.version": version

@@ -22,11 +22,6 @@ subprojects {
         jcenter()
     }
 
-    compileJava { // Sets target compatibility for all subprojects
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
     checkstyleMain {
         configFile = file("${rootDir}/checkstyle.xml")
     }
