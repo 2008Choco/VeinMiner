@@ -375,6 +375,8 @@ public final class VeinMiner extends JavaPlugin {
             return;
         }
 
+        this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + pluginName + "\"");
+
         AntiCheatHook hook = hookSupplier.get();
         if (!registerAntiCheatHook(hook)) {
             this.getLogger().info("Tried to register hook for plugin " + pluginName + " but one was already registered. Not overriding...");
@@ -389,8 +391,6 @@ public final class VeinMiner extends JavaPlugin {
         if (antiCheatPlugin != null) {
             StatTracker.recognizeInstalledAntiCheat(new AntiCheatInformation(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
         }
-
-        this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + hook.getPluginName() + "\"");
     }
 
     private void registerCommandSafely(@NotNull String commandString, @NotNull CommandExecutor executor) {

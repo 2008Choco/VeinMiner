@@ -30,7 +30,7 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
         Class<? extends Event> eventClass = null;
 
         try {
-            eventClass = ClassUtils.getClass("me.vagdedes.spartan.api.PlayerViolationEvent");
+            eventClass = ClassUtils.getClass(plugin.getClass().getClassLoader(), "me.vagdedes.spartan.api.PlayerViolationEvent");
             this.methodGetPlayer = MethodUtils.getAccessibleMethod(eventClass, "getPlayer", new Class<?>[] {});
         } catch (ClassNotFoundException e) {
             this.sendIncompatibleMessage(plugin);
