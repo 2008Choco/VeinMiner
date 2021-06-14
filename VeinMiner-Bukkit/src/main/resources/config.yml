@@ -51,6 +51,7 @@ BlockList:
   - 'minecraft:deepslate_gold_ore'
   - 'minecraft:deepslate_iron_ore'
   - 'minecraft:deepslate_lapis_ore'
+  - 'minecraft:deepslate_redstone_ore'
   - 'minecraft:diamond_ore'
   - 'minecraft:emerald_ore'
   - 'minecraft:gold_ore'
@@ -86,7 +87,7 @@ BlockList:
   - 'minecraft:warped_hyphae'
   Shovel:
   - 'minecraft:gravel'
-  - 'minecraft:powdered_snow'
+  - 'minecraft:powder_snow'
   - 'minecraft:sand'
   - 'minecraft:snow'
   - 'minecraft:soul_sand'
