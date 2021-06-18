@@ -24,6 +24,10 @@ public final class AntiCheatHookMatrix implements AntiCheatHook, Listener {
             return;
         }
 
+        /*
+         * We're forced to use tempBypass() here because Matrix's API does not have a permanent bypass.
+         * The API against which this project depends DOES contain a setBypass() method, but it was removed in 6.0.0.
+         */
         MatrixAPIProvider.getAPI().tempBypass(player, HackType.BLOCK, 100L);
     }
 
