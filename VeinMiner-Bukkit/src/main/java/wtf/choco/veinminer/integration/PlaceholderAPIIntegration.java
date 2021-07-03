@@ -1,8 +1,10 @@
 package wtf.choco.veinminer.integration;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.tool.ToolCategory;
@@ -36,7 +38,6 @@ public class PlaceholderAPIIntegration extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String identifier) {
-
         if (player == null) {
             return "";
         }
