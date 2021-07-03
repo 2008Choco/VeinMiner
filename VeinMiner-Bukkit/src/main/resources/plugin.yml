@@ -4,7 +4,7 @@ version: '@project.version@'
 description: Aims to recreate the Forge mod, VeinMiner, in an efficient, flexible and feature-filled way
 author: 2008Choco
 website: https://www.spigotmc.org/resources/12038/
-softdepend: [ AAC5, AntiAura, Matrix, NoCheatPlus, Spartan, Vault, WorldGuard, mcMMO ]
+softdepend: [ AAC5, AntiAura, Matrix, NoCheatPlus, Spartan, Vault, WorldGuard, mcMMO, PlaceholderAPI ]
 api-version: 1.13
 
 commands:

@@ -40,6 +40,7 @@ import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.economy.EmptyEconomyModifier;
 import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
 import wtf.choco.veinminer.integration.McMMOIntegration;
+import wtf.choco.veinminer.integration.PlaceholderAPIIntegration;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.ItemCollectionListener;
@@ -145,6 +146,11 @@ public final class VeinMiner extends JavaPlugin {
                 this.getLogger().warning("This version of McMMO is not supported and therefore this configuration option will not work!");
                 this.getLogger().warning("Consider updating your version of McMMO.");
             }
+        }
+
+        Plugin placeholderAPIPlugin = manager.getPlugin("PlaceholderAPI");
+        if (placeholderAPIPlugin != null && manager.isPluginEnabled("PlaceholderAPI")) {
+            new PlaceholderAPIIntegration().register();
         }
 
         // Register commands
