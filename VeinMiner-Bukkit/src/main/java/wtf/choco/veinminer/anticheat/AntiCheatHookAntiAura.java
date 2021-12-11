@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.ClassUtils;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +16,7 @@ import wtf.choco.veinminer.VeinMiner;
  */
 public final class AntiCheatHookAntiAura implements AntiCheatHook {
 
-    private Object antiAuraApi;
+    private Class<?> antiAuraApiClass;
 
     private final Method methodIsExemptedFromFastBreak;
     private final Method methodToggleExemptFromFastBreak;
@@ -33,13 +31,16 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
         this.compatible = true;
 
         try {
-            this.antiAuraApi = FieldUtils.getField(ClassUtils.getClass("AntiAuraAPI"), "API").get(null);
+            this.antiAuraApiClass = Class.forName("AntiAuraAPI.API");
         } catch (ReflectiveOperationException e) {
             this.sendIncompatibleMessage();
+            this.methodIsExemptedFromFastBreak = null;
+            this.methodToggleExemptFromFastBreak = null;
+            return;
         }
 
-        this.methodIsExemptedFromFastBreak = MethodUtils.getAccessibleMethod(antiAuraApi.getClass(), "isExemptedFromFastBreak", Player.class);
-        this.methodToggleExemptFromFastBreak = MethodUtils.getAccessibleMethod(antiAuraApi.getClass(), "toggleExemptFromFastBreak", Player.class);
+        this.methodIsExemptedFromFastBreak = MethodUtils.getAccessibleMethod(antiAuraApiClass, "isExemptedFromFastBreak", Player.class);
+        this.methodToggleExemptFromFastBreak = MethodUtils.getAccessibleMethod(antiAuraApiClass, "toggleExemptFromFastBreak", Player.class);
 
         if (this.methodIsExemptedFromFastBreak == null || this.methodToggleExemptFromFastBreak == null) {
             this.sendIncompatibleMessage();
@@ -70,12 +71,12 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
     @Override
     public void exempt(@NotNull Player player) {
         try {
-            if (isIncompatible() || Boolean.TRUE.equals(methodIsExemptedFromFastBreak.invoke(antiAuraApi, player))) {
+            if (isIncompatible() || Boolean.TRUE.equals(methodIsExemptedFromFastBreak.invoke(antiAuraApiClass, player))) {
                 return;
             }
 
             if (exempt.add(player.getUniqueId())) {
-                this.methodToggleExemptFromFastBreak.invoke(antiAuraApi, player);
+                this.methodToggleExemptFromFastBreak.invoke(antiAuraApiClass, player);
             }
         } catch (ReflectiveOperationException e) {
             this.sendIncompatibleMessage();
@@ -90,7 +91,7 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
 
         if (exempt.remove(player.getUniqueId())) {
             try {
-                this.methodToggleExemptFromFastBreak.invoke(antiAuraApi, player);
+                this.methodToggleExemptFromFastBreak.invoke(antiAuraApiClass, player);
             } catch (ReflectiveOperationException e) {
                 this.sendIncompatibleMessage();
             }
