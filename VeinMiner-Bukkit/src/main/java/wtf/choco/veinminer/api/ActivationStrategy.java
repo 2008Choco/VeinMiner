@@ -17,6 +17,11 @@ import wtf.choco.veinminer.utils.VMConstants;
 public enum ActivationStrategy {
 
     /**
+     * Never activated. Disabled.
+     */
+    NONE(Predicates.alwaysFalse()),
+
+    /**
      * Activated by the client with the Fabric counterpart to allow players to use their
      * own keybinds.
      */
