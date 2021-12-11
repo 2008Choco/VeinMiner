@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.data.PlayerPreferences;
 import wtf.choco.veinminer.tool.ToolCategory;
 
@@ -48,13 +49,20 @@ public class PlaceholderAPIIntegration extends PlaceholderExpansion {
             return String.valueOf(playerPreferences.isVeinMinerEnabled());
         }
 
-        if (identifier.startsWith("enabled_category_")) {
-            final ToolCategory category = ToolCategory.get(identifier.split("_")[2]);
+        else if (identifier.startsWith("enabled_category_")) {
+            ToolCategory category = ToolCategory.get(identifier.split("_")[2]);
             if (category == null) {
                 return null;
             }
 
             return String.valueOf(playerPreferences.isVeinMinerEnabled(category));
+        }
+
+        else if (identifier.equals("active")) {
+            PlayerPreferences playerData = PlayerPreferences.get(player);
+            ActivationStrategy activation = playerData.getActivationStrategy();
+
+            return String.valueOf(activation.isValid(player));
         }
 
         return null;
