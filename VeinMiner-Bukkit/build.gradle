@@ -20,9 +20,9 @@ repositories {
 dependencies {
     implementation 'org.bstats:bstats-bukkit:2.2.1'
 
-    // Swap to Spigot 1.17 as Bukkit API is not updated after 1.15.2
-    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
-    compileOnly 'org.jetbrains:annotations:18.0.0'
+    // Using Spigot as the Bukkit API is not published to the Spigot Nexus after 1.15.2
+    compileOnly 'org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT'
+    compileOnly 'org.jetbrains:annotations:23.0.0'
 
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
 
@@ -37,7 +37,7 @@ dependencies {
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
 
     // placeholderapi
-    compileOnly 'me.clip:placeholderapi:2.10.9'
+    compileOnly 'me.clip:placeholderapi:2.10.10'
 }
 
 compileJava {

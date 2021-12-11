@@ -76,6 +76,7 @@ public final class UpdateChecker {
      *
      * @return a future update result
      */
+    @SuppressWarnings("deprecation") // JsonParser#parse(). Gson update not present in 1.17.x
     @NotNull
     public CompletableFuture<@NotNull UpdateResult> requestUpdateCheck() {
         return CompletableFuture.supplyAsync(() -> {
