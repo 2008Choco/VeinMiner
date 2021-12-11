@@ -59,25 +59,20 @@ public final class ReflectionUtil {
 
         ReflectionUtil.version = version.concat(".");
 
-        /*
-         * We're going to check against this field!
-         *
-         * The 1.17 CraftBukkit server has these classes under their NMS packages.
-         * If it's not where we expect it (net.minecraft.server.EntityPlayer), we're in 1.17
-         */
-        nmsPlayer = getNMSClass("EntityPlayer");
-        if (nmsPlayer == null) {
+        try {
+            // If Player#breakBlock() exists, we're not going to use NMS
+            Player.class.getMethod("breakBlock", Block.class);
             isLegacy = false;
-            return;
+        } catch (ReflectiveOperationException e) {
+            nmsPlayer = getNMSClass("EntityPlayer");
+            playerInteractManager = getNMSClass("PlayerInteractManager");
+            fieldPlayerInteractManager = getPublicField(nmsPlayer, "playerInteractManager");
+            blockPosition = getNMSClass("BlockPosition");
+            constructorBlockPosition = getConstructor(blockPosition, Integer.TYPE, Integer.TYPE, Integer.TYPE);
+            craftPlayer = getCraftBukkitClass("entity.CraftPlayer");
+            methodGetHandle = getMethod("getHandle", craftPlayer);
+            methodBreakBlock = getMethod("breakBlock", playerInteractManager, blockPosition);
         }
-
-        playerInteractManager = getNMSClass("PlayerInteractManager");
-        fieldPlayerInteractManager = getPublicField(nmsPlayer, "playerInteractManager");
-        blockPosition = getNMSClass("BlockPosition");
-        constructorBlockPosition = getConstructor(blockPosition, Integer.TYPE, Integer.TYPE, Integer.TYPE);
-        craftPlayer = getCraftBukkitClass("entity.CraftPlayer");
-        methodGetHandle = getMethod("getHandle", craftPlayer);
-        methodBreakBlock = getMethod("breakBlock", playerInteractManager, blockPosition);
     }
 
     private static Method getMethod(String name, Class<?> clazz, Class<?>... paramTypes) {
