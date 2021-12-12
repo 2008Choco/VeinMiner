@@ -17,9 +17,11 @@ tasks.withType(JavaCompile) {
 }
 
 processResources {
-    filter ReplaceTokens, tokens: [
-        "project.version": version
-    ]
+    from ("fabric.mod.json") {
+        filter ReplaceTokens, tokens: [
+            "project.version": version
+        ]
+    }
 }
 
 jar {
