@@ -10,7 +10,7 @@ import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FabricPlatformReconstructor implements PlatformReconstructor {
+public final class FabricPlatformReconstructor implements PlatformReconstructor {
 
     public static final PlatformReconstructor INSTANCE = new FabricPlatformReconstructor();
 

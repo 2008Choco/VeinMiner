@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.block;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -233,6 +235,31 @@ public class BlockList implements Iterable<VeinMinerBlock>, Cloneable {
     @NotNull
     public Set<VeinMinerBlock> asSet() {
         return new HashSet<>(blocks);
+    }
+
+    /**
+     * Get this {@link BlockList} as a sorted {@link List}.
+     *
+     * @param comparator the comparator by which to sort the elements, or null to use
+     * {@link VeinMinerBlock}'s natural sorting order
+     *
+     * @return a new list matching the elements of this list
+     */
+    @NotNull
+    public List<VeinMinerBlock> asList(@Nullable Comparator<VeinMinerBlock> comparator) {
+        List<VeinMinerBlock> blocks = new ArrayList<>(this.blocks);
+        blocks.sort(comparator);
+        return blocks;
+    }
+
+    /**
+     * Get this {@link BlockList} as a {@link List}.
+     *
+     * @return a new list matching the elements of this list
+     */
+    @NotNull
+    public List<VeinMinerBlock> asList() {
+        return new ArrayList<>(blocks);
     }
 
     /**

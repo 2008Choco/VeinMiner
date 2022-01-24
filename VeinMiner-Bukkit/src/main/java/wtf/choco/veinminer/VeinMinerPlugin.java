@@ -11,7 +11,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
@@ -39,7 +38,9 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.command.VeinMinerCommand;
+import wtf.choco.veinminer.command.CommandBlocklist;
+import wtf.choco.veinminer.command.CommandToollist;
+import wtf.choco.veinminer.command.CommandVeinMiner;
 import wtf.choco.veinminer.config.VeinMinerConfig;
 import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.economy.EmptyEconomyModifier;
@@ -75,8 +76,6 @@ import wtf.choco.veinminer.util.VMConstants;
 public final class VeinMinerPlugin extends JavaPlugin {
 
     public static final Gson GSON = new Gson();
-
-    public static final Pattern BLOCK_DATA_PATTERN = Pattern.compile("(?:[\\w:]+)(?:\\[(.+=.+)+\\])*");
 
     private static VeinMinerPlugin instance;
 
@@ -164,7 +163,10 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         // Register commands
         this.getLogger().info("Registering commands");
-        this.registerCommandSafely("veinminer", new VeinMinerCommand(this));
+
+        this.registerCommand("blocklist", new CommandBlocklist(this));
+        this.registerCommand("toollist", new CommandToollist(this));
+        this.registerCommand("veinminer", new CommandVeinMiner(this, getCommandOrThrow("blocklist"), getCommandOrThrow("toollist")));
 
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.getLogger().info("Vault found. Attempting to enable economy support...");
@@ -228,7 +230,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.anticheatHooks.clear();
 
         // TODO: Write all VeinMinerPlayer information to a data source
-        this.playerManager.clear();
     }
 
     /**
@@ -501,17 +502,27 @@ public final class VeinMinerPlugin extends JavaPlugin {
         }
     }
 
-    private void registerCommandSafely(@NotNull String commandString, @NotNull CommandExecutor executor) {
-        PluginCommand command = getCommand(commandString);
+    private void registerCommand(@NotNull String commandName, @NotNull CommandExecutor executor) {
+        PluginCommand command = getCommand(commandName);
         if (command == null) {
             return;
         }
 
         command.setExecutor(executor);
 
-        if (executor instanceof TabCompleter) {
-            command.setTabCompleter((TabCompleter) executor);
+        if (executor instanceof TabCompleter tabCompleter) {
+            command.setTabCompleter(tabCompleter);
         }
+    }
+
+    private PluginCommand getCommandOrThrow(@NotNull String commandName) {
+        PluginCommand command = getCommand(commandName);
+
+        if (command == null) {
+            throw new IllegalStateException("Missing command: " + commandName);
+        }
+
+        return command;
     }
 
     @NotNull
