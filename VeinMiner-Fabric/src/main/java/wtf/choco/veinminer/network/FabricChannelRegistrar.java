@@ -1,15 +1,11 @@
-package wtf.choco.veinminer.fabric.network;
+package wtf.choco.veinminer.network;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.fabric.VeinMinerMod;
-import wtf.choco.veinminer.network.ChannelRegistrar;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.PluginMessageRegistry;
+import wtf.choco.veinminer.VeinMinerMod;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.util.NamespacedKey;

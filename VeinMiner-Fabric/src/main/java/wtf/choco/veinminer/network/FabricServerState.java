@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.fabric.network;
+package wtf.choco.veinminer.network;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -7,7 +7,6 @@ import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.network.MessageReceiver;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.util.NamespacedKey;
 

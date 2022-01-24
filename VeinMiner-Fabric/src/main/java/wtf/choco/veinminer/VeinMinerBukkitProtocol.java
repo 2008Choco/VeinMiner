@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.fabric;
+package wtf.choco.veinminer;
 
 import net.minecraft.util.Identifier;
 

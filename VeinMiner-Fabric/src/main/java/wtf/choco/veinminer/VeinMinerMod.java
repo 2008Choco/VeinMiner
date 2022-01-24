@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.fabric;
+package wtf.choco.veinminer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -18,9 +18,8 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.fabric.network.FabricChannelRegistrar;
-import wtf.choco.veinminer.fabric.network.FabricServerState;
+import wtf.choco.veinminer.network.FabricChannelRegistrar;
+import wtf.choco.veinminer.network.FabricServerState;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 

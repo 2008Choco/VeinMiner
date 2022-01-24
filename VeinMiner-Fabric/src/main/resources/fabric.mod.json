@@ -20,7 +20,7 @@
     "environment": "client",
     "entrypoints": {
         "client": [
-            "wtf.choco.veinminer.fabric.VeinMinerMod"
+            "wtf.choco.veinminer.VeinMinerMod"
         ]
     },
 
