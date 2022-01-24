@@ -22,6 +22,7 @@ import wtf.choco.veinminer.network.FabricChannelRegistrar;
 import wtf.choco.veinminer.network.FabricServerState;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
+import wtf.choco.veinminer.platform.FabricPlatformReconstructor;
 
 public final class VeinMinerMod implements ClientModInitializer {
 
@@ -33,6 +34,9 @@ public final class VeinMinerMod implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        VeinMiner veinminer = VeinMiner.getInstance();
+        veinminer.setPlatformReconstructor(FabricPlatformReconstructor.INSTANCE);
+
         VeinMiner.PROTOCOL.registerChannels(new FabricChannelRegistrar());
 
         KeyBinding activationBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -52,7 +56,7 @@ public final class VeinMinerMod implements ClientModInitializer {
         });
 
         ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-            serverState = new FabricServerState(); // Initialize a new server state
+            serverState = new FabricServerState(client); // Initialize a new server state
         });
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
@@ -65,7 +69,7 @@ public final class VeinMinerMod implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((stack, delta) -> {
-            if (!veinminerActivated || !MinecraftClient.isHudEnabled()) {
+            if (!hasServerState() || !serverState.isEnabled() || !veinminerActivated || !MinecraftClient.isHudEnabled()) {
                 return;
             }
 

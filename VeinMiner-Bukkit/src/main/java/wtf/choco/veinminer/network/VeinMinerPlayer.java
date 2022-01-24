@@ -20,6 +20,7 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
@@ -268,7 +269,12 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         }
 
         FileConfiguration config = VeinMinerPlugin.getInstance().getConfig();
-        if (!config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+        boolean allowClientActivation = config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true);
+
+        // Let the client know whether or not the client is even allowed
+        VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundHandshakeResponse(allowClientActivation));
+
+        if (!allowClientActivation) {
             List<String> disallowedMessage = config.getStringList(VMConstants.CONFIG_CLIENT_DISALLOWED_MESSAGE);
             disallowedMessage.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', line)));
             return;

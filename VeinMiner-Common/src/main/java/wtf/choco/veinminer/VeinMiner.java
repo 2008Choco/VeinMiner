@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.network.PluginMessageProtocol;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.platform.PlatformReconstructor;
@@ -36,7 +37,8 @@ public final class VeinMiner {
                 .registerMessage(PluginMessageServerboundHandshake.class, PluginMessageServerboundHandshake::new)
                 .registerMessage(PluginMessageServerboundToggleVeinMiner.class, PluginMessageServerboundToggleVeinMiner::new),
 
-            clientboundRegistry -> { }
+            clientboundRegistry -> clientboundRegistry
+                .registerMessage(PluginMessageClientboundHandshakeResponse.class, PluginMessageClientboundHandshakeResponse::new)
     );
 
     private static VeinMiner instance;
