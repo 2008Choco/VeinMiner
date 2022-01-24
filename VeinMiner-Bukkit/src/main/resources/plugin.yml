@@ -1,11 +1,11 @@
 name: VeinMiner
-main: wtf.choco.veinminer.VeinMiner
+main: wtf.choco.veinminer.VeinMinerPlugin
 version: '@project.version@'
-description: Aims to recreate the Forge mod, VeinMiner, in an efficient, flexible and feature-filled way
-author: 2008Choco
+description: Mine multiple blocks of the same type in quick succession.
+author: Choco
 website: https://www.spigotmc.org/resources/12038/
 softdepend: [ AAC5, AntiAura, Matrix, NoCheatPlus, Spartan, Vault, WorldGuard, mcMMO, PlaceholderAPI ]
-api-version: 1.13
+api-version: 1.17
 
 commands:
   veinminer:
@@ -66,7 +66,3 @@ permissions:
   veinminer.toollist.list.*:
     description: Allow the use of the '/veinminer toollist list' subcommand
     default: op
-
-  veinminer.client.reminded:
-    description: Exempt players from the client reminder message on join
-    default: false

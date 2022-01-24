@@ -9,7 +9,7 @@ import org.apache.commons.lang.reflect.MethodUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
  * The default AntiAura hook implementation
@@ -21,12 +21,12 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
     private final Method methodIsExemptedFromFastBreak;
     private final Method methodToggleExemptFromFastBreak;
 
-    private final @NotNull VeinMiner plugin;
+    private final @NotNull VeinMinerPlugin plugin;
     private final Set<@NotNull UUID> exempt = new HashSet<>();
 
     private boolean compatible;
 
-    public AntiCheatHookAntiAura(@NotNull VeinMiner plugin) {
+    public AntiCheatHookAntiAura(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
         this.compatible = true;
 

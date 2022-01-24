@@ -10,16 +10,17 @@
     ],
     "contact": {
         "homepage": "https://spigotmc.org/resources/12038/",
-        "sources": "https://github.com/2008Choco/VeinMiner/"
+        "sources": "https://github.com/2008Choco/VeinMiner/",
+        "issues": "https://github.com/2008Choco/VeinMiner/issues/"
     },
 
     "license": "GPLv3",
     "icon": "assets/veinminer4bukkit/icon.png",
 
-    "environment": "*",
+    "environment": "client",
     "entrypoints": {
         "client": [
-            "wtf.choco.veinminer.fabric.VeinMiner"
+            "wtf.choco.veinminer.fabric.VeinMinerMod"
         ]
     },
 

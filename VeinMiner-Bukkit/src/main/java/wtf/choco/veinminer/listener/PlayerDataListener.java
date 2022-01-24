@@ -1,10 +1,6 @@
 package wtf.choco.veinminer.listener;
 
-import java.util.List;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,25 +9,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.ActivationStrategy;
-import wtf.choco.veinminer.api.ClientActivation;
-import wtf.choco.veinminer.data.PlayerPreferences;
-import wtf.choco.veinminer.utils.MathUtil;
-import wtf.choco.veinminer.utils.VMConstants;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.network.VeinMinerPlayer;
 
 public final class PlayerDataListener implements Listener {
 
-    private final VeinMiner plugin;
+    private final VeinMinerPlugin plugin;
 
-    public PlayerDataListener(@NotNull VeinMiner plugin) {
+    public PlayerDataListener(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    private void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        PlayerPreferences playerData = PlayerPreferences.get(player);
+    private void onPlayerJoin(@SuppressWarnings("unused") PlayerJoinEvent event) {
+//        Player player = event.getPlayer();
+//        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
 
         // If the directory is only just created, there's no player data to read from anyways
         if (plugin.getPlayerDataDirectory().mkdirs()) {
@@ -40,56 +32,20 @@ public final class PlayerDataListener implements Listener {
 
         BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.runTaskAsynchronously(plugin, () -> {
-            playerData.readFromFile(plugin.getPlayerDataDirectory());
-
-            // Notify the player of the client mod (if they're not using it)
-            FileConfiguration config = plugin.getConfig();
-            if (!config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true) || player.hasPermission(VMConstants.PERMISSION_CLIENT_REMINDED)) {
-                return;
-            }
-
-            scheduler.runTaskLater(plugin, () -> {
-                if (ClientActivation.isUsingClientMod(player)) {
-                    // Activate client mode if not already set
-                    if (playerData.getActivationStrategy() != ActivationStrategy.CLIENT) {
-                        playerData.setActivationStrategy(ActivationStrategy.CLIENT);
-                    }
-
-                    return;
-                }
-
-                List<String> reminderMessages = config.getStringList(VMConstants.CONFIG_CLIENT_SUGGESTION_MESSAGE);
-                if (reminderMessages.isEmpty()) {
-                    return;
-                }
-
-                long reminderPeriod = MathUtil.parseSeconds(config.getString(VMConstants.CONFIG_CLIENT_SUGGEST_CLIENT_MOD_PERIOD, "1d"), -1) * 1000;
-                if (reminderPeriod < 0) {
-                    return;
-                }
-
-                long lastNotified = playerData.getLastNotifiedOfClientMod();
-                long now = System.currentTimeMillis();
-
-                if (now - lastNotified >= reminderPeriod) {
-                    reminderMessages.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', line)));
-                    playerData.setLastNotifiedOfClientMod(now);
-                }
-            }, 100L);
+            // TODO: Read player state from file/database
         });
     }
 
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        ClientActivation.setUsingClientMod(player, false);
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(player);
 
-        PlayerPreferences playerData = PlayerPreferences.get(player);
-        if (!playerData.isDirty()) {
+        if (veinMinerPlayer == null || !veinMinerPlayer.isDirty()) {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> playerData.writeToFile(plugin.getPlayerDataDirectory()));
+        // TODO: Save player state to file/database
     }
 
 }

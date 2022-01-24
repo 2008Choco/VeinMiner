@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.VeinMinerPlugin;
 
 public final class WorldGuardIntegration {
 
@@ -26,7 +26,7 @@ public final class WorldGuardIntegration {
 
     private WorldGuardIntegration() { }
 
-    public static void init(@NotNull VeinMiner plugin) {
+    public static void init(@NotNull VeinMinerPlugin plugin) {
         registerFlag(plugin, WorldGuard.getInstance().getFlagRegistry(), FLAG_VEINMINER);
         initialized = true;
     }

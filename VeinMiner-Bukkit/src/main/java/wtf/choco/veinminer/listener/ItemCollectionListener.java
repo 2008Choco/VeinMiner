@@ -10,14 +10,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.metadata.MetadataValue;
 
-import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.utils.VMConstants;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.util.VMConstants;
 
 public final class ItemCollectionListener implements Listener {
 
-    private final VeinMiner plugin;
+    private final VeinMinerPlugin plugin;
 
-    public ItemCollectionListener(VeinMiner plugin) {
+    public ItemCollectionListener(VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

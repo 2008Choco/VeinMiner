@@ -3,13 +3,9 @@ package wtf.choco.veinminer.economy;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.data.AlgorithmConfig;
-
 /**
  * An implementation of {@link EconomyModifier} with no affect on the player.
  * Players will never require money to be withdrawn.
- *
- * @author Parker Hawke - 2008Choco
  */
 public final class EmptyEconomyModifier implements EconomyModifier {
 
@@ -18,17 +14,17 @@ public final class EmptyEconomyModifier implements EconomyModifier {
     private EmptyEconomyModifier() { }
 
     @Override
-    public boolean shouldCharge(@NotNull Player player, @NotNull AlgorithmConfig config) {
+    public boolean shouldCharge(@NotNull Player player) {
         return false;
     }
 
     @Override
-    public boolean hasSufficientBalance(@NotNull Player player, @NotNull AlgorithmConfig config) {
+    public boolean hasSufficientBalance(@NotNull Player player, double amount) {
         return true;
     }
 
     @Override
-    public void charge(@NotNull Player player, @NotNull AlgorithmConfig config) { }
+    public void withdraw(@NotNull Player player, double amount) { }
 
     /**
      * Get an instance of the empty economy modifier.

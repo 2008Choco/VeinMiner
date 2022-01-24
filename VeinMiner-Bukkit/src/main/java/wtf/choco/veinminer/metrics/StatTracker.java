@@ -13,13 +13,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents a statistic tracker for the bStats {@link Metrics} class. Any temporary data to do
  * with bStats custom charts will be calculated here.
- *
- * @author Parker Hawke - 2008Choco
  */
 public final class StatTracker {
 
-    private static final Map<@NotNull Material, @NotNull Integer> MINED_BLOCKS = new EnumMap<>(Material.class);
-    private static final Set<@NotNull AntiCheatInformation> INSTALLED_ANTI_CHEATS = new HashSet<>(2);
+    private static final Map<Material, Integer> MINED_BLOCKS = new EnumMap<>(Material.class);
+    private static final Set<AntiCheat> INSTALLED_ANTI_CHEATS = new HashSet<>(2); // Using a Set in the rare case that a server has two anti cheats installed
 
     private StatTracker() { }
 
@@ -40,7 +38,7 @@ public final class StatTracker {
      * @return the readable bStats data
      */
     @NotNull
-    public static Map<@NotNull String, @NotNull Integer> getVeinMinedCountAsData() {
+    public static Map<String, Integer> getVeinMinedCountAsData() {
         Map<String, Integer> data = new HashMap<>();
 
         MINED_BLOCKS.forEach((material, amount) -> data.put(material.getKey().toString(), amount));
@@ -52,10 +50,10 @@ public final class StatTracker {
     /**
      * Recognize an installed anti cheat.
      *
-     * @param information the anti cheat information
+     * @param antiCheat the anti cheat information
      */
-    public static void recognizeInstalledAntiCheat(AntiCheatInformation information) {
-        INSTALLED_ANTI_CHEATS.add(information);
+    public static void recognizeInstalledAntiCheat(@NotNull AntiCheat antiCheat) {
+        INSTALLED_ANTI_CHEATS.add(antiCheat);
     }
 
     /**
@@ -64,13 +62,13 @@ public final class StatTracker {
      * @return the readable bStats data
      */
     @NotNull
-    public static Map<@NotNull String, @NotNull Map<@NotNull String, @NotNull Integer>> getInstalledAntiCheatsAsData() {
+    public static Map<String, Map<String, Integer>> getInstalledAntiCheatsAsData() {
         Map<String, Map<String, Integer>> data = new HashMap<>();
 
-        INSTALLED_ANTI_CHEATS.forEach(antiCheatInformation -> {
+        INSTALLED_ANTI_CHEATS.forEach(antiCheat -> {
             Map<String, Integer> versionData = new HashMap<>();
-            versionData.put(antiCheatInformation.getVersion(), 1); // There will only ever be 1 installed
-            data.put(antiCheatInformation.getName(), versionData);
+            versionData.put(antiCheat.version(), 1); // There will only ever be 1 installed
+            data.put(antiCheat.name(), versionData);
         });
 
         return data;

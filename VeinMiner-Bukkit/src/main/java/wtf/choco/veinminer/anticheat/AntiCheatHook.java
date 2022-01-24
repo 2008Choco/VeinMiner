@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a hook for an anticheat plugin. Implementations of this hook should exempt and
+ * Represents a hook for an anti cheat plugin. Implementations of this hook should exempt and
  * unexempt players in the respective methods
  */
 public interface AntiCheatHook {

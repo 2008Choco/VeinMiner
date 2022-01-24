@@ -15,7 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
  * The default Spartan hook implementation
@@ -26,7 +26,7 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
 
     private final Set<@NotNull UUID> exempt = new HashSet<>();
 
-    public AntiCheatHookSpartan(@NotNull VeinMiner plugin) {
+    public AntiCheatHookSpartan(@NotNull VeinMinerPlugin plugin) {
         Class<? extends Event> eventClass = null;
 
         try {
@@ -56,7 +56,7 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
         }, plugin);
     }
 
-    private void sendIncompatibleMessage(@NotNull VeinMiner veinMiner) {
+    private void sendIncompatibleMessage(@NotNull VeinMinerPlugin veinMiner) {
         veinMiner.getLogger().severe("The version of " + getPluginName() + " on this server is incompatible with VeinMiner. Please post information on the spigot resource discussion page.");
     }
 

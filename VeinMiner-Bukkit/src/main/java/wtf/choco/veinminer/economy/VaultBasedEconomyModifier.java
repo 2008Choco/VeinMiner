@@ -9,14 +9,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.data.AlgorithmConfig;
-import wtf.choco.veinminer.utils.VMConstants;
+import wtf.choco.veinminer.util.VMConstants;
 
 /**
  * An implementation of {@link EconomyModifier} to make use of a Vault-supported
  * economy plugin.
- *
- * @author Parker Hawke - 2008Choco
  */
 public class VaultBasedEconomyModifier implements EconomyModifier {
 
@@ -33,27 +30,24 @@ public class VaultBasedEconomyModifier implements EconomyModifier {
     }
 
     @Override
-    public boolean shouldCharge(@NotNull Player player, @NotNull AlgorithmConfig config) {
-        Preconditions.checkArgument(config != null, "Must provide algorithm config");
-        return economy != null && player != null && config.getCost() > 0.0 && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
+    public boolean shouldCharge(@NotNull Player player) {
+        return economy != null && player != null && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
     }
 
     @Override
-    public boolean hasSufficientBalance(@NotNull Player player, @NotNull AlgorithmConfig config) {
-        Preconditions.checkArgument(config != null, "Must provide algorithm config");
-        return economy == null || (player != null && economy.has(player, config.getCost()));
+    public boolean hasSufficientBalance(@NotNull Player player, double amount) {
+        return economy == null || (player != null && economy.has(player, amount));
     }
 
     @Override
-    public void charge(@NotNull Player player, @NotNull AlgorithmConfig config) {
+    public void withdraw(@NotNull Player player, double amount) {
         Preconditions.checkArgument(player != null, "Cannot charge null player");
-        Preconditions.checkArgument(config != null, "Must provide algorithm config");
 
         if (economy == null) {
             return;
         }
 
-        this.economy.withdrawPlayer(player, config.getCost());
+        this.economy.withdrawPlayer(player, amount);
     }
 
     /**

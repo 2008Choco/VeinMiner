@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.VeinMinerPlugin;
 
 import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
@@ -20,9 +20,9 @@ import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 public final class AntiCheatHookNCP implements AntiCheatHook {
 
     private final Multimap<@NotNull UUID, @NotNull CheckType> exempt = ArrayListMultimap.create();
-    private final VeinMiner plugin;
+    private final VeinMinerPlugin plugin;
 
-    public AntiCheatHookNCP(VeinMiner plugin) {
+    public AntiCheatHookNCP(VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

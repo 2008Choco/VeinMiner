@@ -8,8 +8,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.utils.VMConstants;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.network.VeinMinerPlayer;
+import wtf.choco.veinminer.util.VMConstants;
 
 /**
  * Represents the different methods of activating VeinMiner.
@@ -22,10 +23,13 @@ public enum ActivationStrategy {
     NONE(Predicates.alwaysFalse()),
 
     /**
-     * Activated by the client with the Fabric counterpart to allow players to use their
-     * own keybinds.
+     * Activated by the client with the client-sided mod to allow players to use their
+     * own key binds.
+     * <p>
+     * This strategy should not be set on {@link VeinMinerPlayer VeinMinerPlayers} that
+     * do not have the client mod installed.
      */
-    CLIENT(ClientActivation::isActivatedOnClient),
+    CLIENT(player -> VeinMinerPlugin.getInstance().getPlayerManager().get(player).isVeinMinerActive()),
 
     /**
      * Activated when a Player is holding sneak.
@@ -55,7 +59,7 @@ public enum ActivationStrategy {
      *
      * @return true if valid to vein mine, false otherwise
      */
-    public boolean isValid(@NotNull Player player) {
+    public boolean isActive(@NotNull Player player) {
         return player != null && player.isValid() && this.condition.test(player);
     }
 
@@ -84,7 +88,7 @@ public enum ActivationStrategy {
      */
     @NotNull
     public static ActivationStrategy getDefaultActivationStrategy() {
-        VeinMiner plugin = VeinMiner.getPlugin();
+        VeinMinerPlugin plugin = VeinMinerPlugin.getInstance();
 
         String strategyName = plugin.getConfig().getString(VMConstants.CONFIG_DEFAULT_ACTIVATION_STRATEGY);
         if (strategyName == null) {

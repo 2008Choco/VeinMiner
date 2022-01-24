@@ -1,20 +1,19 @@
 # Material values are 1:1 with in-game IDs. The prepending of "minecraft:" is optional
 # To specify states, do so with [brackets]. For example, "minecraft:chest[waterlogged=true]"
 # The above will search for any waterlogged chests. Other states will be ignored when checking.
-
+#
 # To add a custom category, see the categories.yml
 
 MetricsEnabled: true
 PerformUpdateChecks: true
 
 DefaultActivationStrategy: SNEAK
-VeinMiningPattern: 'veinminer:expansive'
+DefaultVeinMiningPattern: 'veinminer:default'
 SortBlocklistAlphabetically: true
 CollectItemsAtSource: true
 NerfMcMMO: false
 
 RepairFriendlyVeinminer: false
-IncludeEdges: true
 MaxVeinSize: 64
 Cost: 0.0
 
@@ -132,9 +131,6 @@ BlockList:
   - 'minecraft:blue_ice'
   - 'minecraft:ice'
   - 'minecraft:packed_ice'
-# ExampleCategory:
-# - 'minecraft:dirt'
-# - 'minecraft:grass'
 
 Aliases:
 - 'minecraft:acacia_log,minecraft:acacia_wood'

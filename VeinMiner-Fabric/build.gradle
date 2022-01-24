@@ -4,16 +4,21 @@ plugins {
     id 'fabric-loom' version '0.10-SNAPSHOT'
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 dependencies {
+    implementation project(':VeinMiner-Common')
+    include project(':VeinMiner-Common') // include provided by Fabric to create a dummy mod
+
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-}
-
-tasks.withType(JavaCompile) {
-    options.release = 17
 }
 
 processResources {
@@ -25,7 +30,7 @@ processResources {
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archives_base_name}" }
+    from('LICENSE') {
+        rename { '${it}_${project.name}' }
     }
 }

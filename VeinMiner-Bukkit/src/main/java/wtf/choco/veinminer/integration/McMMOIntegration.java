@@ -7,14 +7,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.utils.VMConstants;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.util.VMConstants;
 
 public final class McMMOIntegration implements Listener {
 
-    private final VeinMiner plugin;
+    private final VeinMinerPlugin plugin;
 
-    public McMMOIntegration(VeinMiner plugin) {
+    public McMMOIntegration(VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

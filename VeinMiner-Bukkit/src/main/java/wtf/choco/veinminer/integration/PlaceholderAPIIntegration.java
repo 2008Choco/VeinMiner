@@ -4,13 +4,19 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.api.ActivationStrategy;
-import wtf.choco.veinminer.data.PlayerPreferences;
-import wtf.choco.veinminer.tool.ToolCategory;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.network.VeinMinerPlayer;
+import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 public class PlaceholderAPIIntegration extends PlaceholderExpansion {
+
+    private final VeinMinerPlugin plugin;
+
+    public PlaceholderAPIIntegration(VeinMinerPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean persist() {
@@ -22,49 +28,50 @@ public class PlaceholderAPIIntegration extends PlaceholderExpansion {
         return true;
     }
 
+    @NotNull
     @Override
-    public @NotNull String getAuthor() {
-        return "2008Choco";
+    public String getAuthor() {
+        return "Choco";
     }
 
+    @NotNull
     @Override
-    public @NotNull String getIdentifier() {
+    public String getIdentifier() {
         return "veinminer";
     }
 
+    @NotNull
     @Override
-    public @NotNull String getVersion() {
-        return VeinMiner.getPlugin().getDescription().getVersion();
+    public String getVersion() {
+        return VeinMinerPlugin.getInstance().getDescription().getVersion();
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
+    public String onPlaceholderRequest(@Nullable Player player, @NotNull String identifier) {
         if (player == null) {
             return "";
         }
 
-        final PlayerPreferences playerPreferences = PlayerPreferences.get(player);
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
 
         if (identifier.equals("enabled")) {
-            return String.valueOf(playerPreferences.isVeinMinerEnabled());
+            return String.valueOf(veinMinerPlayer.isVeinMinerEnabled());
         }
 
         else if (identifier.startsWith("enabled_category_")) {
-            ToolCategory category = ToolCategory.get(identifier.split("_")[2]);
+            VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(identifier.split("_")[2]);
             if (category == null) {
                 return null;
             }
 
-            return String.valueOf(playerPreferences.isVeinMinerEnabled(category));
+            return String.valueOf(veinMinerPlayer.isVeinMinerEnabled(category));
         }
 
         else if (identifier.equals("active")) {
-            PlayerPreferences playerData = PlayerPreferences.get(player);
-            ActivationStrategy activation = playerData.getActivationStrategy();
-
-            return String.valueOf(activation.isValid(player));
+            return String.valueOf(veinMinerPlayer.getActivationStrategy().isActive(player));
         }
 
         return null;
     }
+
 }
