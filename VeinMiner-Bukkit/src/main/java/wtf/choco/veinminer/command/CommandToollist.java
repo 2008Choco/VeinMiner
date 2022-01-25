@@ -22,7 +22,6 @@ import wtf.choco.veinminer.platform.ItemType;
 import wtf.choco.veinminer.tool.BukkitVeinMinerToolCategoryHand;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.util.ConfigWrapper;
-import wtf.choco.veinminer.util.VMConstants;
 
 public final class CommandToollist implements TabExecutor {
 
@@ -52,11 +51,6 @@ public final class CommandToollist implements TabExecutor {
         }
 
         if (args[1].equalsIgnoreCase("add")) {
-            if (!sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_ADD)) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
-                return true;
-            }
-
             if (args.length < 3) {
                 return false;
             }
@@ -95,11 +89,6 @@ public final class CommandToollist implements TabExecutor {
         }
 
         else if (args[1].equalsIgnoreCase("remove")) {
-            if (!sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_REMOVE)) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
-                return true;
-            }
-
             if (args.length < 3) {
                 return false;
             }
@@ -143,11 +132,6 @@ public final class CommandToollist implements TabExecutor {
         }
 
         else if (args[1].equalsIgnoreCase("list")) {
-            if (!sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_LIST + "." + category.getId().toLowerCase())) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
-                return true;
-            }
-
             Set<ItemType> items = category.getItems();
 
             if (items.isEmpty()) {

@@ -38,35 +38,23 @@ public final class VMConstants {
 
 
     // Permission nodes
-    public static final String PERMISSION_RELOAD = "veinminer.reload";
-    public static final String PERMISSION_TOGGLE = "veinminer.toggle";
-    public static final String PERMISSION_MODE = "veinminer.mode";
-    public static final String PERMISSION_PATTERN = "veinminer.pattern";
+    public static final String PERMISSION_COMMAND_RELOAD = "veinminer.command.reload";
+    public static final String PERMISSION_COMMAND_BLOCKLIST = "veinminer.command.blocklist";
+    public static final String PERMISSION_COMMAND_TOOLLIST = "veinminer.command.toollist";
+    public static final String PERMISSION_COMMAND_TOGGLE = "veinminer.command.toggle";
+    public static final String PERMISSION_COMMAND_MODE = "veinminer.command.mode";
+    public static final String PERMISSION_COMMAND_PATTERN = "veinminer.command.pattern";
 
     public static final String PERMISSION_FREE_ECONOMY = "veinminer.free.economy";
     public static final String PERMISSION_FREE_HUNGER = "veinminer.free.hunger";
 
-    public static final String PERMISSION_BLOCKLIST_ADD = "veinminer.blocklist.add";
-    public static final String PERMISSION_BLOCKLIST_REMOVE = "veinminer.blocklist.remove";
-    public static final String PERMISSION_BLOCKLIST_LIST = "veinminer.blocklist.list";
-    public static final String PERMISSION_TOOLLIST = "veinminer.toollist.add";
-    public static final String PERMISSION_TOOLLIST_ADD = "veinminer.toollist.add";
-    public static final String PERMISSION_TOOLLIST_REMOVE = "veinminer.toollist.remove";
-    public static final String PERMISSION_TOOLLIST_LIST = "veinminer.toollist.list";
-
-    public static final String PERMISSION_CLIENT_REMINDED = "veinminer.client.reminded";
-
     // Dynamic permission nodes
-    public static final String PERMISSION_DYNAMIC_LIST_ADD = "veinminer.%s.list";
-    public static final String PERMISSION_DYNAMIC_LIST_REMOVE = "veinminer.%s.list";
-    public static final String PERMISSION_DYNAMIC_LIST_LIST = "veinminer.%s.list";
     public static final String PERMISSION_DYNAMIC_VEINMINE = "veinminer.veinmine.%s";
 
 
     // Metadata keys
     public static final String METADATA_KEY_TO_BE_VEINMINED = "veinminer:to_be_veinmined";
     public static final String METADATA_KEY_VEINMINER_SOURCE = "veinminer:source";
-
     public static final String METADATA_KEY_VEINMINING = "veinminer:veinmining";
 
     private VMConstants() { }

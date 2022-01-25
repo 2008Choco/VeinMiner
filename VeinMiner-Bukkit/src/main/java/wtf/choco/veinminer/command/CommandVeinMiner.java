@@ -50,7 +50,7 @@ public final class CommandVeinMiner implements TabExecutor {
 
         // Reload subcommand
         if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.hasPermission(VMConstants.PERMISSION_RELOAD)) {
+            if (!sender.hasPermission(VMConstants.PERMISSION_COMMAND_RELOAD)) {
                 sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
                 return true;
             }
@@ -92,7 +92,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            if (!player.hasPermission(VMConstants.PERMISSION_TOGGLE)) {
+            if (!player.hasPermission(VMConstants.PERMISSION_COMMAND_TOGGLE)) {
                 player.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
                 return true;
             }
@@ -133,7 +133,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            if (!player.hasPermission(VMConstants.PERMISSION_MODE)) {
+            if (!player.hasPermission(VMConstants.PERMISSION_COMMAND_MODE)) {
                 player.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
                 return true;
             }
@@ -143,7 +143,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            Optional<wtf.choco.veinminer.ActivationStrategy> strategyOptional = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase());
+            Optional<ActivationStrategy> strategyOptional = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase());
             if (!strategyOptional.isPresent()) {
                 player.sendMessage(ChatColor.GRAY + "Invalid activation strategy: " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + ".");
                 return true;
@@ -184,7 +184,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            if (!sender.hasPermission(VMConstants.PERMISSION_PATTERN)) {
+            if (!sender.hasPermission(VMConstants.PERMISSION_COMMAND_PATTERN)) {
                 sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
                 return true;
             }
@@ -211,7 +211,7 @@ public final class CommandVeinMiner implements TabExecutor {
             this.plugin.getConfig().set(VMConstants.CONFIG_DEFAULT_VEIN_MINING_PATTERN, pattern.getKey().toString());
             this.plugin.saveConfig();
 
-            sender.sendMessage(ChatColor.GREEN + "Patterns successfully set to " + ChatColor.YELLOW + patternKey + ChatColor.GRAY + ".");
+            sender.sendMessage(ChatColor.GREEN + "Pattern successfully set to " + ChatColor.YELLOW + patternKey + ChatColor.GRAY + ".");
         }
 
         // Unknown command usage
@@ -229,22 +229,22 @@ public final class CommandVeinMiner implements TabExecutor {
 
         if (args.length == 1) {
             values.add("version");
-            if (sender.hasPermission(VMConstants.PERMISSION_RELOAD)) {
+            if (sender.hasPermission(VMConstants.PERMISSION_COMMAND_RELOAD)) {
                 values.add("reload");
             }
-            if (sender.hasPermission(VMConstants.PERMISSION_TOGGLE)) {
-                values.add("toggle");
-            }
-            if (sender.hasPermission(VMConstants.PERMISSION_MODE)) {
-                values.add("mode");
-            }
-            if (hasBlocklistPerms(sender)) {
+            if (sender.hasPermission(VMConstants.PERMISSION_COMMAND_BLOCKLIST)) {
                 values.add("blocklist");
             }
-            if (hasToolListPerms(sender)) {
+            if (sender.hasPermission(VMConstants.PERMISSION_COMMAND_TOOLLIST)) {
                 values.add("toollist");
             }
-            if (sender.hasPermission(VMConstants.PERMISSION_PATTERN)) {
+            if (sender.hasPermission(VMConstants.PERMISSION_COMMAND_TOGGLE)) {
+                values.add("toggle");
+            }
+            if (sender.hasPermission(VMConstants.PERMISSION_COMMAND_MODE)) {
+                values.add("mode");
+            }
+            if (sender.hasPermission(VMConstants.PERMISSION_COMMAND_PATTERN)) {
                 values.add("pattern");
             }
 
@@ -289,18 +289,6 @@ public final class CommandVeinMiner implements TabExecutor {
         }
 
         return StringUtil.copyPartialMatches(args[args.length - 1], values, new ArrayList<>());
-    }
-
-    private boolean hasBlocklistPerms(CommandSender sender) {
-        return sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_ADD)
-            || sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_REMOVE)
-            || sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_LIST + ".*");
-    }
-
-    private boolean hasToolListPerms(CommandSender sender) {
-        return sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_ADD)
-            || sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_REMOVE)
-            || sender.hasPermission(VMConstants.PERMISSION_TOOLLIST_LIST + ".*");
     }
 
     private boolean canVeinMine(Player player) {

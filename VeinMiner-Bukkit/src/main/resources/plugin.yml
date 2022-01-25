@@ -14,28 +14,17 @@ commands:
     aliases: [vm]
   blocklist:
     description: Edit the block lists of vein mining categories
+    permission: veinminer.command.blocklist
     usage: /<command> <category> <add|remove|list> [state]
   toollist:
     description: Edit the tool lists of vein mining categories
+    permission: veinminer.command.toollist
     usage: /<command> <category> <add|remove|list> [item]
 
 permissions:
   veinminer.veinmine.*:
-    description: Allow the use of VeinMiner for all tool categories
+    description: Allow the use of vein miner for all tool categories
     default: true
-
-  veinminer.reload:
-    description: Allow the use of the '/veinminer reload' subcommand
-    default: op
-  veinminer.toggle:
-    description: Allow the use of the '/veinminer toggle' subcommand
-    default: true
-  veinminer.mode:
-    description: Allow the use of the '/veinminer mode' subcommand
-    default: true
-  veinminer.pattern:
-    description: Allow the use of the '/veinminer pattern' subcommand
-    default: op
   veinminer.free.*:
     description: Grants a bypass to all VeinMiner debuffs and costs
     default: false
@@ -44,31 +33,26 @@ permissions:
       veinminer.free.hunger: true
 
   veinminer.free.economy:
-    description: Grants a bypass to the VeinMiner cost. Only used if a Vault-supported economy is installed and the cost is greater than 0
+    description: Grants a bypass to the vein miner cost. Only used if a Vault-supported economy is installed and the cost is greater than 0
 
   veinminer.free.hunger:
-    description: Grants a bypass to the VeinMiner hunger debuff. Only used if hunger modifier is greater than 0
+    description: Grants a bypass to the vein miner hunger debuff. Only used if hunger modifier is greater than 0
 
-  veinminer.blocklist.*:
-    description: Allow the use of the '/veinminer blocklist' subcommand
+  veinminer.command.reload:
+    description: Allow the use of the '/veinminer reload' subcommand
     default: op
-    children:
-      veinminer.blocklist.add: true
-      veinminer.blocklist.remove: true
-      veinminer.blocklist.list.*: true
-
-  veinminer.toollist.*:
-    description: Allow the use of the '/veinminer toollist' subcommand
+  veinminer.command.blocklist:
+    description: Allow the use of the '/blocklist' command
     default: op
-    children:
-      veinminer.toollist.add: true
-      veinminer.toollist.remove: true
-      veinminer.toollist.list.*: true
-
-  veinminer.blocklist.list.*:
-    description: Allow the use of the '/veinminer blocklist list' subcommand
+  veinminer.command.toollist:
+    description: Allow the use of the '/toollist' command
     default: op
-
-  veinminer.toollist.list.*:
-    description: Allow the use of the '/veinminer toollist list' subcommand
-    default: op
+  veinminer.command.toggle:
+    description: Allow the use of the '/veinminer toggle' subcommand
+    default: true
+  veinminer.command.mode:
+    description: Allow the use of the '/veinminer mode' subcommand
+    default: true
+  veinminer.command.pattern:
+    description: Allow the use of the '/veinminer pattern' subcommand
+    default: true

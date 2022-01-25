@@ -18,7 +18,6 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
-import wtf.choco.veinminer.util.VMConstants;
 
 public final class CommandBlocklist implements TabExecutor {
 
@@ -48,11 +47,6 @@ public final class CommandBlocklist implements TabExecutor {
         }
 
         if (args[1].equalsIgnoreCase("add")) {
-            if (!sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_ADD)) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
-                return true;
-            }
-
             if (args.length < 3) {
                 return false;
             }
@@ -82,11 +76,6 @@ public final class CommandBlocklist implements TabExecutor {
         }
 
         else if (args[1].equalsIgnoreCase("remove")) {
-            if (!sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_REMOVE)) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
-                return true;
-            }
-
             if (args.length < 3) {
                 return false;
             }
@@ -116,11 +105,6 @@ public final class CommandBlocklist implements TabExecutor {
         }
 
         else if (args[1].equalsIgnoreCase("list")) {
-            if (!sender.hasPermission(VMConstants.PERMISSION_BLOCKLIST_LIST + "." + category.getId().toLowerCase())) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
-                return true;
-            }
-
             List<VeinMinerBlock> blockList = category.getBlockList().asList(null);
 
             if (blockList.isEmpty()) {
