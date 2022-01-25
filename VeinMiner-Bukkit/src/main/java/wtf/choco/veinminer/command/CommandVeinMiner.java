@@ -276,9 +276,9 @@ public final class CommandVeinMiner implements TabExecutor {
 
             else if (args[0].equalsIgnoreCase("pattern")) {
                 for (VeinMiningPattern pattern : plugin.getPatternRegistry().getPatterns()) {
-                    NamespacedKey key = pattern.getKey();
-                    if (key.toString().startsWith(args[0]) || key.key().startsWith(args[0])) {
-                        values.add(pattern.getKey().toString());
+                    String patternKey = pattern.getKey().toString();
+                    if (patternKey.contains(args[1])) {
+                        values.add(patternKey);
                     }
                 }
             }
