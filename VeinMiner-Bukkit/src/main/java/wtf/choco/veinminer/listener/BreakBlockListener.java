@@ -126,7 +126,7 @@ public final class BreakBlockListener implements Listener {
         for (BlockPosition blockPosition : blockPositions) {
             Block block = world.getBlockAt(blockPosition.x(), blockPosition.y(), blockPosition.z());
 
-            if (block.isEmpty()) {
+            if (block.isEmpty() || !WorldGuardIntegration.queryFlagVeinMiner(block, player)) {
                 continue;
             }
 
