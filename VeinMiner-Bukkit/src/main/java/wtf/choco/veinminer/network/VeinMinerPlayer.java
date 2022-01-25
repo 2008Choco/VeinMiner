@@ -12,6 +12,8 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.LazyMetadataValue;
+import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
@@ -44,17 +47,31 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     private boolean usingClientMod = false;
     private boolean clientKeyPressed = false;
 
+    private boolean veinMining = false;
+
     private final Reference<Player> player;
     private final UUID playerUUID;
 
     /**
      * Construct a new {@link VeinMinerPlayer}.
+     * <p>
+     * This is an internal method. To get an instance of VeinMinerPlayer, the {@link VeinMinerPlayerManager}
+     * should be used instead. Constructing a new instance of this class may have unintended side-effects
+     * and will not have accurate information tracked by VeinMiner.
      *
      * @param player the player
+     *
+     * @see VeinMinerPlayerManager
      */
+    @Internal
     public VeinMinerPlayer(@NotNull Player player) {
         this.player = new WeakReference<>(player);
         this.playerUUID = player.getUniqueId();
+
+        // Assign metadata values to this player
+        VeinMinerPlugin plugin = VeinMinerPlugin.getInstance();
+        player.setMetadata(VMConstants.METADATA_KEY_VEINMINING, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, this::isVeinMining));
+        player.setMetadata(VMConstants.METADATA_KEY_VEIN_MINER_ACTIVE, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, this::isVeinMinerActive));
     }
 
     /**
@@ -270,6 +287,25 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             case STAND -> !player.get().isSneaking();
             default -> false;
         };
+    }
+
+    /**
+     * Set whether or not the player is actively vein mining.
+     *
+     * @param veinMining the new vein mining state
+     */
+    @Internal
+    public void setVeinMining(boolean veinMining) {
+        this.veinMining = veinMining;
+    }
+
+    /**
+     * Check whether or not the player is actively vein mining.
+     *
+     * @return true if using vein miner, false otherwise
+     */
+    public boolean isVeinMining() {
+        return veinMining;
     }
 
     /**
