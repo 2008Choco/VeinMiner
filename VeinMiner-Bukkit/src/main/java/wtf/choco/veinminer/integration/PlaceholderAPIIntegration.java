@@ -68,7 +68,7 @@ public class PlaceholderAPIIntegration extends PlaceholderExpansion {
         }
 
         else if (identifier.equals("active")) {
-            return String.valueOf(veinMinerPlayer.getActivationStrategy().isActive(player));
+            return String.valueOf(veinMinerPlayer.isVeinMinerActive());
         }
 
         return null;

@@ -43,10 +43,21 @@ public final class VeinMiner {
 
     private static VeinMiner instance;
 
+    private ActivationStrategy defaultActivationStrategy = ActivationStrategy.SNEAK;
+
     private ToolCategoryRegistry toolCategoryRegistry;
     private PlatformReconstructor platformReconstructor;
 
     private VeinMiner() { }
+
+    public void setDefaultActivationStrategy(@NotNull ActivationStrategy defaultActivationStrategy) {
+        this.defaultActivationStrategy = defaultActivationStrategy;
+    }
+
+    @NotNull
+    public ActivationStrategy getDefaultActivationStrategy() {
+        return defaultActivationStrategy;
+    }
 
     /**
      * Set the {@link ToolCategoryRegistry}.

@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
-import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
 import wtf.choco.veinminer.block.BlockAccessor;
 import wtf.choco.veinminer.block.BukkitBlockAccessor;
@@ -85,10 +84,9 @@ public final class BreakBlockListener implements Listener {
 
         // Invalid player state check
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
-        ActivationStrategy activation = veinMinerPlayer.getActivationStrategy();
         VeinMinerConfig veinMinerConfig = category.getConfig();
 
-        if (!activation.isActive(player)
+        if (!veinMinerPlayer.isVeinMinerActive()
                 || veinMinerPlayer.isVeinMinerDisabled(category)
                 || veinMinerManager.isDisabledGameMode(GameMode.getByIdOrThrow(player.getGameMode().name()))
                 || veinMinerConfig.isDisabledWorld(origin.getWorld().getName())

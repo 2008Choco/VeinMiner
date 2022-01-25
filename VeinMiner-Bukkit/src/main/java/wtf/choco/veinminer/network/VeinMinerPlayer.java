@@ -16,9 +16,9 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
@@ -31,14 +31,14 @@ import wtf.choco.veinminer.util.VMEventFactory;
 
 public final class VeinMinerPlayer implements MessageReceiver, ServerboundPluginMessageListener {
 
-    private ActivationStrategy activationStrategy = ActivationStrategy.getDefaultActivationStrategy();
+    private ActivationStrategy activationStrategy = VeinMiner.getInstance().getDefaultActivationStrategy();
     private final Set<VeinMinerToolCategory> disabledCategories = new HashSet<>();
     private VeinMiningPattern veinMiningPattern;
 
     private boolean dirty = false;
 
     private boolean usingClientMod = false;
-    private boolean veinMinerActive = false; // Not to be confused with "enabled". Active means their activation strategy is enabled. Used for the client
+    private boolean clientKeyPressed = false;
 
     private final Reference<Player> player;
     private final UUID playerUUID;
@@ -216,15 +216,31 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
     /**
      * Check whether or not VeinMiner is active as a result of this user's client mod.
+     *
+     * @return true if active, false otherwise
+     */
+    public boolean isClientKeyPressed() {
+        return clientKeyPressed;
+    }
+
+    /**
+     * Check whether or not vein miner is currently active and ready to be used.
      * <p>
      * <strong>NOTE:</strong> Do not confuse this with {@link #isVeinMinerEnabled()}. This method
-     * verifies whether or not the player has activated VeinMiner using the client-sided mod with
-     * a key, <strong>NOT</strong> whether or not they have VeinMiner enabled through commands.
+     * verifies whether or not the player has activated vein miner according to their current
+     * activation strategy ({@link #getActivationStrategy()}), <strong>NOT</strong> whether they
+     * have it enabled via commands.
      *
      * @return true if active, false otherwise
      */
     public boolean isVeinMinerActive() {
-        return veinMinerActive;
+        return switch (activationStrategy) {
+            case ALWAYS -> true;
+            case CLIENT -> clientKeyPressed;
+            case SNEAK -> player.get().isSneaking();
+            case STAND -> !player.get().isSneaking();
+            default -> false;
+        };
     }
 
     /**
@@ -299,7 +315,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             return;
         }
 
-        this.veinMinerActive = message.isActivated();
+        this.clientKeyPressed = message.isActivated();
     }
 
 }

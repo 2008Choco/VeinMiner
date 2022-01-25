@@ -19,8 +19,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.api.ActivationStrategy;
 import wtf.choco.veinminer.network.VeinMinerPlayer;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
@@ -58,6 +58,7 @@ public final class CommandVeinMiner implements TabExecutor {
             this.plugin.reloadConfig();
             this.plugin.getCategoriesConfig().reload();
 
+            this.plugin.reloadGeneralConfig();
             this.plugin.reloadVeinMinerManagerConfig();
             this.plugin.reloadToolCategoryRegistryConfig();
 
@@ -142,7 +143,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            Optional<@NotNull ActivationStrategy> strategyOptional = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase());
+            Optional<wtf.choco.veinminer.ActivationStrategy> strategyOptional = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase());
             if (!strategyOptional.isPresent()) {
                 player.sendMessage(ChatColor.GRAY + "Invalid activation strategy: " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + ".");
                 return true;

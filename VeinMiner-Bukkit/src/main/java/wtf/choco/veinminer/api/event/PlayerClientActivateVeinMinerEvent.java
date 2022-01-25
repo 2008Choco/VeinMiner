@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.api.ActivationStrategy;
+import wtf.choco.veinminer.ActivationStrategy;
 
 /**
  * Called when a player toggles the vein mine state using their client.

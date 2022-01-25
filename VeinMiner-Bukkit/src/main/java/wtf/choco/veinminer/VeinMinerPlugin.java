@@ -1,5 +1,6 @@
 package wtf.choco.veinminer;
 
+import com.google.common.base.Enums;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 
@@ -117,6 +118,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
+
+        this.reloadGeneralConfig();
 
         // Configuration handling
         this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
@@ -355,6 +358,15 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @NotNull
     public List<AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
+    }
+
+    /**
+     * Reload general configuration values.
+     */
+    public void reloadGeneralConfig() {
+        String defaultActivationStrategyString = getConfig().getString(VMConstants.CONFIG_DEFAULT_ACTIVATION_STRATEGY, "SNEAK");
+        assert defaultActivationStrategyString != null;
+        VeinMiner.getInstance().setDefaultActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, defaultActivationStrategyString.toUpperCase()).or(ActivationStrategy.SNEAK));
     }
 
     /**
