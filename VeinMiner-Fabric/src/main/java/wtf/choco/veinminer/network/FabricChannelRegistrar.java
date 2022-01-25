@@ -10,6 +10,9 @@ import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.util.NamespacedKey;
 
+/**
+ * A Fabric implementation of {@link ChannelRegistrar}.
+ */
 public final class FabricChannelRegistrar implements ChannelRegistrar {
 
     @Override

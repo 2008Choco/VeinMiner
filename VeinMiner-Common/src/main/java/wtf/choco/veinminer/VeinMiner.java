@@ -31,6 +31,8 @@ public final class VeinMiner {
 
     /**
      * VeinMiner's messaging protocol.
+     *
+     * @see PluginMessageProtocol
      */
     public static final PluginMessageProtocol PROTOCOL = new PluginMessageProtocol(PROTOCOL_CHANNEL, PROTOCOL_VERSION,
             serverboundRegistry -> serverboundRegistry
@@ -50,10 +52,22 @@ public final class VeinMiner {
 
     private VeinMiner() { }
 
-    public void setDefaultActivationStrategy(@NotNull ActivationStrategy defaultActivationStrategy) {
-        this.defaultActivationStrategy = defaultActivationStrategy;
+    /**
+     * Get the default {@link ActivationStrategy} to use for players that have not explicitly
+     * set one.
+     *
+     * @param activationStrategy the activation strategy to set
+     */
+    public void setDefaultActivationStrategy(@NotNull ActivationStrategy activationStrategy) {
+        this.defaultActivationStrategy = activationStrategy;
     }
 
+    /**
+     * Get the default {@link ActivationStrategy} to use for players that have not explicitly
+     * set one.
+     *
+     * @return the default activation strategy
+     */
     @NotNull
     public ActivationStrategy getDefaultActivationStrategy() {
         return defaultActivationStrategy;
@@ -88,6 +102,13 @@ public final class VeinMiner {
         return toolCategoryRegistry;
     }
 
+    /**
+     * Set the implementation of {@link PlatformReconstructor}.
+     *
+     * @param platformReconstructor the instance to set
+     *
+     * @throws IllegalStateException if the PlatformReconstructor has already been set
+     */
     public void setPlatformReconstructor(@NotNull PlatformReconstructor platformReconstructor) {
         if (this.platformReconstructor != null) {
             throw new IllegalStateException("platformReconstructor has already been set");
@@ -96,6 +117,12 @@ public final class VeinMiner {
         this.platformReconstructor = platformReconstructor;
     }
 
+    /**
+     * Get the {@link PlatformReconstructor} instance.
+     *
+     * @return the PlatformReconstructor instance
+     */
+    @NotNull
     public PlatformReconstructor getPlatformReconstructor() {
         if (toolCategoryRegistry == null) {
             throw new IllegalStateException("platformReconstructor has not been set.");

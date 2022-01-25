@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
- * The default AntiAura hook implementation
+ * The default AntiAura hook implementation.
  */
 public final class AntiCheatHookAntiAura implements AntiCheatHook {
 
@@ -47,12 +47,6 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
         }
     }
 
-    /**
-     * Checks whether the hook is in a compatible state.
-     * eg. none of the methods are null.
-     *
-     * @return true if hook is in an incompatible state.
-     */
     private boolean isIncompatible() {
         return !compatible || methodToggleExemptFromFastBreak == null || methodIsExemptedFromFastBreak == null;
     }

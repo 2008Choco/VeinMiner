@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.integration;
+package wtf.choco.veinminer.listener;
 
 import com.gmail.nossr50.datatypes.skills.PrimarySkillType;
 import com.gmail.nossr50.events.experience.McMMOPlayerXpGainEvent;
@@ -6,15 +6,16 @@ import com.gmail.nossr50.events.experience.McMMOPlayerXpGainEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.util.VMConstants;
 
-public final class McMMOIntegration implements Listener {
+public final class McMMOIntegrationListener implements Listener {
 
     private final VeinMinerPlugin plugin;
 
-    public McMMOIntegration(VeinMinerPlugin plugin) {
+    public McMMOIntegrationListener(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.util.NamespacedKey;
 
+/**
+ * A Fabric implementation of {@link ItemType}.
+ */
 public final class FabricItemType implements ItemType {
 
     private static final Map<Item, ItemType> CACHE = new HashMap<>();
@@ -28,6 +31,13 @@ public final class FabricItemType implements ItemType {
         return key;
     }
 
+    /**
+     * Get an {@link ItemType} for the given {@link Item}.
+     *
+     * @param item the item
+     *
+     * @return the ItemType instance
+     */
     public static ItemType of(Item item) {
         return CACHE.computeIfAbsent(item, FabricItemType::new);
     }

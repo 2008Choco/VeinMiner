@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.platform;
 
+import com.google.common.base.Preconditions;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -8,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.util.NamespacedKey;
 
+/**
+ * A Bukkit implementation of {@link BlockType}.
+ */
 public final class BukkitBlockType implements BlockType {
 
     private static final Map<Material, BlockType> CACHE = new EnumMap<>(Material.class);
@@ -39,8 +44,16 @@ public final class BukkitBlockType implements BlockType {
         return material;
     }
 
+    /**
+     * Get a {@link BlockType} for the given {@link Material}.
+     *
+     * @param material the material
+     *
+     * @return the block type
+     */
     @NotNull
     public static BlockType of(@NotNull Material material) {
+        Preconditions.checkArgument(material.isBlock(), "material is not a block");
         return CACHE.computeIfAbsent(material, BukkitBlockType::new);
     }
 

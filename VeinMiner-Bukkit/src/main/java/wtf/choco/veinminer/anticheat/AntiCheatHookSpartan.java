@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
- * The default Spartan hook implementation
+ * The default Spartan hook implementation.
  */
 public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
 
@@ -80,4 +80,5 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
     public boolean shouldUnexempt(@NotNull Player player) {
         return exempt.contains(player.getUniqueId());
     }
+
 }

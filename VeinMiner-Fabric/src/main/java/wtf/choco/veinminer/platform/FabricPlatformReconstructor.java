@@ -10,8 +10,14 @@ import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A Fabric implementation of {@link PlatformReconstructor}.
+ */
 public final class FabricPlatformReconstructor implements PlatformReconstructor {
 
+    /**
+     * The singleton instance of the {@link FabricPlatformReconstructor}.
+     */
     public static final PlatformReconstructor INSTANCE = new FabricPlatformReconstructor();
 
     private FabricPlatformReconstructor() { }

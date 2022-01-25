@@ -9,11 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.ActivationStrategy;
 
 /**
- * Called when a player toggles the vein mine state using their client.
+ * Called when a player toggles the vein mine state using a client-sided mod.
  * <p>
  * Note that this event is only fired for players that have installed the client-sided
  * VeinMiner mod when {@link ActivationStrategy#CLIENT} is enabled and the client-configured
- * button was pressed.
+ * button was pressed or released.
  * <p>
  * The key that was pressed is not included in this event, only the action that the key was
  * pressed and has changed the player's activation state.

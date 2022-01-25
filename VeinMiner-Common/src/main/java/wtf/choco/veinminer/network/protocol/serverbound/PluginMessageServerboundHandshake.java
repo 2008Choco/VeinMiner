@@ -7,16 +7,21 @@ import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 
 /**
- * A serverbound {@link PluginMessage} including the following data:
+ * A server bound {@link PluginMessage} including the following data:
  * <ol>
  *   <li><strong>varint</strong>: protocol version
  * </ol>
- * Sent when the client joins the server.
+ * Sent when a client joins the server.
  */
 public final class PluginMessageServerboundHandshake implements PluginMessage<ServerboundPluginMessageListener> {
 
     private final int protocolVersion;
 
+    /**
+     * Construct a new {@link PluginMessageServerboundHandshake}.
+     *
+     * @param protocolVersion the client's VeinMiner protocol version
+     */
     public PluginMessageServerboundHandshake(int protocolVersion) {
         this.protocolVersion = protocolVersion;
     }
@@ -25,6 +30,11 @@ public final class PluginMessageServerboundHandshake implements PluginMessage<Se
         this.protocolVersion = buffer.readVarInt();
     }
 
+    /**
+     * Get the client's VeinMiner protocol version.
+     *
+     * @return the protocol version
+     */
     public int getProtocolVersion() {
         return protocolVersion;
     }

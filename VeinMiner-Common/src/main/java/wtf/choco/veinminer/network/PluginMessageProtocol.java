@@ -14,28 +14,27 @@ import wtf.choco.veinminer.util.NamespacedKey;
  * Represents a protocol definition by which plugin messages ("custom packets") may be registered
  * and parsed in a more convenient and object-oriented way. Plugins can define their own protocols
  * and register custom {@link PluginMessage} implementations.
- *
  * <pre>
- *  private static final PluginMessageProtocol PROTOCOL = new PluginMessageProtocol("veinminer:bukkit", 1,
- *      serverRegistry -> serverRegistry
- *          .registerMessage(PluginMessageInHandshake.class, PluginMessageInHandshake::new) // 0x00
- *          .registerMessage(PluginMessageInToggleVeinMiner.class, PluginMessageInToggleVeinMiner::new), // 0x01
+ * public static final PluginMessageProtocol PROTOCOL = new PluginMessageProtocol(new NamespacedKey("namespace", "key"), 1,
+ *     serverRegistry -> serverRegistry
+ *         .registerMessage(PluginMessageServerboundExampleOne.class, PluginMessageServerboundExampleOne::new) // 0x00
+ *         .registerMessage(PluginMessageServerboundExampleTwo.class, PluginMessageServerboundExampleTwo::new), // 0x01
  *
- *      clientRegistry -> clientRegistry
- *          .registerMessage(PluginMessageOutExampleMessage.class, PluginMessageOutExampleMessage::new) // 0x00
- *  );
+ *     clientRegistry -> clientRegistry
+ *         .registerMessage(PluginMessageClientboundExampleOne.class, PluginMessageClientboundExampleOne::new) // 0x00
+ * );
  *
- *  { // Somewhere in initialization, the channels have to be registered with a ChannelRegistrar
- *      PROTOCOL.registerChannels(new MyChannelRegisrarImplementation());
+ * { // Somewhere in initialization, the channels have to be registered with a ChannelRegistrar
+ *     PROTOCOL.registerChannels(new MyChannelRegisrarImplementation());
  *
- *      // Now things are ready to go and send messages
- *      PROTOCOL.sendServerMessage(messageReceiver, new PluginMessageInToggleVeinMiner(true));
- *  }
+ *     // Now things are ready to go and send messages
+ *     PROTOCOL.sendServerMessage(messageReceiver, new PluginMessageServerboundExampleOne("some parameter", "whatever data you want in here", 10));
+ * }
  * </pre>
+ * The above may be used to send or receive client or server bound PluginMessages to and from
+ * third party software listening for Minecraft's custom payload packet.
  *
- * The above may be used to send or receive client or server bound {@link PluginMessage PluginMessages}
- * to and from third party software listening for Minecraft's custom payload packet.
- *
+ * @see ChannelRegistrar
  * @see PluginMessage
  * @see PluginMessageByteBuffer
  */
@@ -85,7 +84,7 @@ public final class PluginMessageProtocol {
     }
 
     /**
-     * Send the provided client-bound {@link PluginMessage} to the given {@link MessageReceiver}.
+     * Send a client-bound {@link PluginMessage} to the given {@link MessageReceiver}.
      *
      * @param receiver the receiver to which the message should be send
      * @param message the message to send
@@ -95,7 +94,7 @@ public final class PluginMessageProtocol {
     }
 
     /**
-     * Send the provided server-bound {@link PluginMessage} to the given {@link MessageReceiver}.
+     * Send a server-bound {@link PluginMessage} to the given {@link MessageReceiver}.
      *
      * @param receiver the receiver to which the message should be send
      * @param message the message to send

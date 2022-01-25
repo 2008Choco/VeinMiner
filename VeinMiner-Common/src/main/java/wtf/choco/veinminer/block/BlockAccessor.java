@@ -20,7 +20,7 @@ public interface BlockAccessor {
     public String getWorldName();
 
     /**
-     * Get the type at the given coordinates.
+     * Get the {@link BlockType} at the given coordinates.
      *
      * @param x the x coordinate
      * @param y the y coordinate
@@ -32,7 +32,7 @@ public interface BlockAccessor {
     public BlockType getType(int x, int y, int z);
 
     /**
-     * Get the type at the given {@link BlockPosition}.
+     * Get the {@link BlockType} at the given {@link BlockPosition}.
      *
      * @param position the position
      *
@@ -44,7 +44,7 @@ public interface BlockAccessor {
     }
 
     /**
-     * Get the state at the given coordinates.
+     * Get the {@link BlockState} at the given coordinates.
      *
      * @param x the x coordinate
      * @param y the y coordinate
@@ -56,7 +56,7 @@ public interface BlockAccessor {
     public BlockState getState(int x, int y, int z);
 
     /**
-     * Get the state at the given {@link BlockPosition}.
+     * Get the {@link BlockState} at the given {@link BlockPosition}.
      *
      * @param position the position
      *

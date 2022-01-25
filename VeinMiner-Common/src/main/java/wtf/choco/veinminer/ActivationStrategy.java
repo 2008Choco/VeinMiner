@@ -1,7 +1,7 @@
 package wtf.choco.veinminer;
 
 /**
- * Represents the different methods of activating VeinMiner.
+ * Represents the different methods of activating vein miner.
  */
 public enum ActivationStrategy {
 
@@ -11,18 +11,17 @@ public enum ActivationStrategy {
     NONE,
 
     /**
-     * Activated by the client with the client-sided mod to allow players to use their
-     * own key binds.
+     * Activated by the client with a client-sided mod.
      */
     CLIENT,
 
     /**
-     * Activated when a Player is holding sneak.
+     * Activated when a player is holding sneak.
      */
     SNEAK,
 
     /**
-     * Activated when a Player is standing up (i.e. not sneaking).
+     * Activated when a player is standing up (i.e. not sneaking).
      */
     STAND,
 

@@ -46,11 +46,11 @@ import wtf.choco.veinminer.config.VeinMinerConfig;
 import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.economy.EmptyEconomyModifier;
 import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
-import wtf.choco.veinminer.integration.McMMOIntegration;
-import wtf.choco.veinminer.integration.PlaceholderAPIIntegration;
+import wtf.choco.veinminer.integration.PlaceholderExpansionVeinMiner;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.ItemCollectionListener;
+import wtf.choco.veinminer.listener.McMMOIntegrationListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
 import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
@@ -150,7 +150,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         if (mcMMOPlugin != null && manager.isPluginEnabled("mcMMO")) {
             // Integrate with McMMO, but don't integrate with mcMMO-Classic, version 1.x
             if (!mcMMOPlugin.getDescription().getVersion().startsWith("1")) {
-                manager.registerEvents(new McMMOIntegration(this), this);
+                manager.registerEvents(new McMMOIntegrationListener(this), this);
             }
             else if (getConfig().getBoolean(VMConstants.CONFIG_NERF_MCMMO, false)) {
                 this.getLogger().warning(VMConstants.CONFIG_NERF_MCMMO + " is enabled but McMMO-Classic is installed.");
@@ -161,7 +161,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         Plugin placeholderAPIPlugin = manager.getPlugin("PlaceholderAPI");
         if (placeholderAPIPlugin != null && manager.isPluginEnabled("PlaceholderAPI")) {
-            new PlaceholderAPIIntegration(this).register();
+            new PlaceholderExpansionVeinMiner(this).register();
         }
 
         // Register commands

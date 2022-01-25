@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.network.protocol;
 
+import org.jetbrains.annotations.NotNull;
+
 import wtf.choco.veinminer.network.PluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
 
@@ -10,6 +12,6 @@ import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientbound
  */
 public interface ClientboundPluginMessageListener extends PluginMessageListener {
 
-    public void handleClientboundHandshakeResponse(PluginMessageClientboundHandshakeResponse message);
+    public void handleClientboundHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message);
 
 }

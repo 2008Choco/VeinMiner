@@ -14,6 +14,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A simple wrapper to more easily handle {@link YamlConfiguration} instances.
+ */
 public final class ConfigWrapper {
 
     private final JavaPlugin plugin;
@@ -22,10 +25,23 @@ public final class ConfigWrapper {
     private final File file;
     private FileConfiguration config;
 
-    public ConfigWrapper(@NotNull JavaPlugin plugin, @NotNull File directory, String path) {
-        this(plugin, directory.getPath().concat(path));
+    /**
+     * Construct a new {@link ConfigWrapper}.
+     *
+     * @param plugin the plugin instance
+     * @param directory the directory at which the config is located
+     * @param name the name of the config file
+     */
+    public ConfigWrapper(@NotNull JavaPlugin plugin, @NotNull File directory, String name) {
+        this(plugin, directory.getPath().concat(name));
     }
 
+    /**
+     * Construct a new {@link ConfigWrapper}.
+     *
+     * @param plugin the plugin instance
+     * @param path the path at which the config is located
+     */
     public ConfigWrapper(@NotNull JavaPlugin plugin, @NotNull String path) {
         Preconditions.checkArgument(plugin != null, "Cannot provide null plugin");
         Preconditions.checkArgument(!StringUtils.isEmpty(path), "File path must not be null");
@@ -40,15 +56,29 @@ public final class ConfigWrapper {
         this.config = YamlConfiguration.loadConfiguration(file);
     }
 
+    /**
+     * Get this {@link ConfigWrapper} as a raw {@link FileConfiguration} instance.
+     *
+     * @return the raw config
+     */
     @NotNull
     public FileConfiguration asRawConfig() {
         return config;
     }
 
+    /**
+     * Save this {@link ConfigWrapper} and throw an {@link IOException} if one occurs
+     * according to {@link FileConfiguration#save(File)}.
+     *
+     * @throws IOException if an IOException is thrown by {@link FileConfiguration#save(File)}
+     */
     public void saveExceptionally() throws IOException {
         this.config.save(file);
     }
 
+    /**
+     * Save this {@link ConfigWrapper}.
+     */
     public void save() {
         try {
             this.saveExceptionally();
@@ -57,6 +87,9 @@ public final class ConfigWrapper {
         }
     }
 
+    /**
+     * Reload values from file into memory.
+     */
     public void reload() {
         this.config = YamlConfiguration.loadConfiguration(file);
 

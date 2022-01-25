@@ -11,7 +11,7 @@ import wtf.choco.veinminer.platform.BlockType;
 import wtf.choco.veinminer.platform.PlatformReconstructor;
 
 /**
- * Represents a block understood by VeinMiner.
+ * Represents a block understood by vein miner.
  */
 public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
 
@@ -23,7 +23,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
     public static final VeinMinerBlock WILDCARD = new VeinMinerBlockWildcard();
 
     /**
-     * Get the type represented by this block.
+     * Get the {@link BlockType} represented by this block.
      *
      * @return the type
      */
@@ -31,7 +31,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
     public BlockType getType();
 
     /**
-     * Get the block state represented by this block.
+     * Get the {@link BlockState} represented by this block.
      * <p>
      * If this block has no state (e.g. {@link #hasState()} is {@code false}), this method
      * should return a state with default block state values.
@@ -49,7 +49,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
     public boolean hasState();
 
     /**
-     * Check whether or not this {@link VeinMinerBlock} matches the given type.
+     * Check whether or not this {@link VeinMinerBlock} matches the given {@link BlockType}.
      *
      * @param type the type to check
      *
@@ -58,7 +58,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
     public boolean matchesType(@NotNull BlockType type);
 
     /**
-     * Check whether or not this {@link VeinMinerBlock} matches the given state.
+     * Check whether or not this {@link VeinMinerBlock} matches the given {@link BlockState}.
      *
      * @param state the state to check
      * @param exact whether or not to match against all states
@@ -102,7 +102,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
      * chest
      * minecraft:chest
      * minecraft:chest[waterlogged=true]
-     * minecraft:chest[facing=north, waterlogged=true]
+     * minecraft:chest[facing=north,waterlogged=true]
      * * // The wildcard state
      * </pre>
      *

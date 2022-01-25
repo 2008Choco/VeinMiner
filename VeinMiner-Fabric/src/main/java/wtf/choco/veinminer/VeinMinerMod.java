@@ -88,10 +88,24 @@ public final class VeinMinerMod implements ClientModInitializer {
         });
     }
 
+    /**
+     * Check whether or not the client is connected to a server and has a valid server state.
+     * <p>
+     * The result of this method should be checked before accessing {@link #getServerState()}.
+     *
+     * @return true if a server state is available, false otherwise
+     */
     public static boolean hasServerState() {
         return serverState != null;
     }
 
+    /**
+     * Get the {@link FabricServerState} for this client.
+     *
+     * @return the server state
+     *
+     * @throws IllegalStateException if there is no server state
+     */
     @NotNull
     public static FabricServerState getServerState() {
         if (!hasServerState()) {

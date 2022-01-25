@@ -29,6 +29,10 @@ import wtf.choco.veinminer.util.NamespacedKey;
 import wtf.choco.veinminer.util.VMConstants;
 import wtf.choco.veinminer.util.VMEventFactory;
 
+/**
+ * A player wrapper containing player-related data for VeinMiner, as well as a network
+ * handler for vein miner protocol messages.
+ */
 public final class VeinMinerPlayer implements MessageReceiver, ServerboundPluginMessageListener {
 
     private ActivationStrategy activationStrategy = VeinMiner.getInstance().getDefaultActivationStrategy();
@@ -43,23 +47,38 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     private final Reference<Player> player;
     private final UUID playerUUID;
 
+    /**
+     * Construct a new {@link VeinMinerPlayer}.
+     *
+     * @param player the player
+     */
     public VeinMinerPlayer(@NotNull Player player) {
         this.player = new WeakReference<>(player);
         this.playerUUID = player.getUniqueId();
     }
 
+    /**
+     * Get the {@link UUID} of this player.
+     *
+     * @return the player UUID
+     */
     @NotNull
     public UUID getPlayerUUID() {
         return playerUUID;
     }
 
+    /**
+     * Get the {@link Player} instance of this player (if still valid).
+     *
+     * @return the player instance, or null if no longer available
+     */
     @Nullable
     public Player getPlayer() {
         return player.get();
     }
 
     /**
-     * Enable VeinMiner for this player (all categories).
+     * Enable vein miner for this player (all categories).
      */
     public void enableVeinMiner() {
         this.dirty = !disabledCategories.isEmpty();
@@ -67,7 +86,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Enable VeinMiner for this player for a specific category.
+     * Enable vein miner for this player for a specific category.
      *
      * @param category the category to enable
      */
@@ -77,14 +96,14 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Disable VeinMiner for this player (all categories).
+     * Disable vein miner for this player (all categories).
      */
     public void disableVeinMiner() {
         this.dirty = disabledCategories.addAll(VeinMinerPlugin.getInstance().getToolCategoryRegistry().getAll());
     }
 
     /**
-     * Disable VeinMiner for this player for a specific category.
+     * Disable vein miner for this player for a specific category.
      *
      * @param category the category to disable
      */
@@ -94,9 +113,9 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Set VeinMiner's enabled state for this player (all categories).
+     * Set vein miner's enabled state for this player (all categories).
      *
-     * @param enable whether or not to enable VeinMiner
+     * @param enable whether or not to enable vein miner
      */
     public void setVeinMinerEnabled(boolean enable) {
         if (enable) {
@@ -107,9 +126,9 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Set VeinMiner's enabled state for this player for a specific category.
+     * Set vein miner's enabled state for this player for a specific category.
      *
-     * @param enable whether or not to enable VeinMiner
+     * @param enable whether or not to enable vein miner
      * @param category the category to enable (or disable)
      */
     public void setVeinMinerEnabled(boolean enable, @NotNull VeinMinerToolCategory category) {
@@ -121,7 +140,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Check whether or not VeinMiner is enabled for this player (at least one category).
+     * Check whether or not vein miner is enabled for this player (at least one category).
      *
      * @return true if enabled, false otherwise
      */
@@ -130,7 +149,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Check whether or not VeinMiner is enabled for this player for the specified category.
+     * Check whether or not vein miner is enabled for this player for the specified category.
      *
      * @param category the category to check
      *
@@ -141,7 +160,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Check whether or not VeinMiner is disabled for this player (all categories)
+     * Check whether or not vein miner is disabled for this player (all categories)
      *
      * @return true if disabled, false otherwise
      */
@@ -150,7 +169,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Check whether or not VeinMiner is disabled for this player for the specified category.
+     * Check whether or not vein miner is disabled for this player for the specified category.
      *
      * @param category the category to check
      *
@@ -161,7 +180,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Check whether or not VeinMiner is disabled in at least one category. This is effectively
+     * Check whether or not vein miner is disabled in at least one category. This is effectively
      * the inverse of {@link #isVeinMinerEnabled()}.
      *
      * @return true if at least one category is disabled, false otherwise (all enabled)
@@ -171,7 +190,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Set the activation strategy to use for this player.
+     * Set the {@link ActivationStrategy} to use for this player.
      *
      * @param activationStrategy the activation strategy
      */
@@ -183,7 +202,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Get the activation strategy to use for this player.
+     * Get the {@link ActivationStrategy} to use for this player.
      *
      * @return the activation strategy
      */
@@ -192,10 +211,20 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         return activationStrategy;
     }
 
+    /**
+     * Set the {@link VeinMiningPattern} to use for this player.
+     *
+     * @param veinMiningPattern the pattern
+     */
     public void setVeinMiningPattern(@NotNull VeinMiningPattern veinMiningPattern) {
         this.veinMiningPattern = veinMiningPattern;
     }
 
+    /**
+     * Get the {@link VeinMiningPattern} to use for this player.
+     *
+     * @return the pattern
+     */
     @NotNull
     public VeinMiningPattern getVeinMiningPattern() {
         if (veinMiningPattern == null) {
@@ -215,7 +244,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Check whether or not VeinMiner is active as a result of this user's client mod.
+     * Check whether or not vein miner is active as a result of this user's client mod.
      *
      * @return true if active, false otherwise
      */

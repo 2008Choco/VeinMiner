@@ -26,10 +26,10 @@ public class BlockList implements Iterable<VeinMinerBlock>, Cloneable {
 
     /**
      * Construct a new {@link BlockList} containing the values of the given lists.
+     * Duplicate entries will be ignored.
      *
-     * @param lists the lists
+     * @param lists the block lists
      */
-    @SafeVarargs
     public BlockList(@NotNull BlockList... lists) {
         this.blocks = new HashSet<>();
 
@@ -218,6 +218,15 @@ public class BlockList implements Iterable<VeinMinerBlock>, Cloneable {
      */
     public int size() {
         return blocks.size();
+    }
+
+    /**
+     * Check whether or not this {@link BlockList} is empty.
+     *
+     * @return true if empty (size is 0), false if it contains at least one entry
+     */
+    public boolean isEmpty() {
+        return blocks.isEmpty();
     }
 
     /**

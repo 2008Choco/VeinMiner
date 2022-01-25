@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The default Matrix hook implementation
+ * The default Matrix hook implementation.
  */
 public final class AntiCheatHookMatrix implements AntiCheatHook, Listener {
 
@@ -32,11 +32,11 @@ public final class AntiCheatHookMatrix implements AntiCheatHook, Listener {
     }
 
     @Override
-    public void unexempt(@NotNull Player player) {
-    }
+    public void unexempt(@NotNull Player player) { }
 
     @Override
     public boolean shouldUnexempt(@NotNull Player player) {
         return false;
     }
+
 }

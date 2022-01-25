@@ -7,6 +7,9 @@ import java.util.Objects;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A Bukkit implementation of {@link BlockState}.
+ */
 public final class BukkitBlockState implements BlockState {
 
     private static final Map<BlockData, BlockState> CACHE = new HashMap<>();
@@ -34,6 +37,13 @@ public final class BukkitBlockState implements BlockState {
         return (state instanceof BukkitBlockState other) && blockData.matches(other.blockData);
     }
 
+    /**
+     * Get a {@link BlockState} for the given {@link BlockData}.
+     *
+     * @param blockData the block data
+     *
+     * @return the BlockState
+     */
     @NotNull
     public static BlockState of(@NotNull BlockData blockData) {
         return CACHE.computeIfAbsent(blockData, BukkitBlockState::new);

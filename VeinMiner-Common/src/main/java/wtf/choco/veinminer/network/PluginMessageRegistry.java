@@ -19,6 +19,9 @@ public final class PluginMessageRegistry<T extends PluginMessageListener> {
     private final Map<Class<? extends PluginMessage<T>>, Integer> messageIds = new IdentityHashMap<>();
     private final List<Function<PluginMessageByteBuffer, ? extends PluginMessage<T>>> messageConstructors = new ArrayList<>();
 
+    /**
+     * Construct a new {@link PluginMessageRegistry}.
+     */
     PluginMessageRegistry() { }
 
     /**

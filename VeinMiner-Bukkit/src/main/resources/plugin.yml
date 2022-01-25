@@ -12,6 +12,12 @@ commands:
     description: The main command for VeinMiner
     usage: /<command> <version|reload|blocklist|toollist|toggle|pattern|mode>
     aliases: [vm]
+  blocklist:
+    description: Edit the block lists of vein mining categories
+    usage: /<command> <category> <add|remove|list> [state]
+  toollist:
+    description: Edit the tool lists of vein mining categories
+    usage: /<command> <category> <add|remove|list> [item]
 
 permissions:
   veinminer.veinmine.*:

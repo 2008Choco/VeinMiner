@@ -6,8 +6,7 @@ import java.nio.ByteBuffer;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A utility class to wrap a {@link ByteBuffer} (or byte array) allowing for reading
- * and writing of more complex types.
+ * A utility class to allow for reading and writing of complex types to/from a byte array.
  */
 public class PluginMessageByteBuffer {
 

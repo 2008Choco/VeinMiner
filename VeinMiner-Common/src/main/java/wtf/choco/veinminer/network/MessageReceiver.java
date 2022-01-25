@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
- * A target capable of being sent a plugin message.
+ * A target capable of being sent a {@link PluginMessage}.
  */
 public interface MessageReceiver {
 

@@ -7,16 +7,21 @@ import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 
 /**
- * A serverbound {@link PluginMessage} including the following data:
+ * A server bound {@link PluginMessage} including the following data:
  * <ol>
  *   <li><strong>boolean</strong>: whether or not vein miner is active
  * </ol>
- * Sent when the client presses or releases the vein miner activating keybind.
+ * Sent when a client presses or releases the vein miner activation key bind.
  */
 public final class PluginMessageServerboundToggleVeinMiner implements PluginMessage<ServerboundPluginMessageListener> {
 
     private final boolean activated;
 
+    /**
+     * Construct a new {@link PluginMessageServerboundToggleVeinMiner}.
+     *
+     * @param activated whether or not vein miner has been activated
+     */
     public PluginMessageServerboundToggleVeinMiner(boolean activated) {
         this.activated = activated;
     }
@@ -25,6 +30,11 @@ public final class PluginMessageServerboundToggleVeinMiner implements PluginMess
         this.activated = buffer.readBoolean();
     }
 
+    /**
+     * Check whether or not vein miner is activated.
+     *
+     * @return true if activated, false if deactivated
+     */
     public boolean isActivated() {
         return activated;
     }

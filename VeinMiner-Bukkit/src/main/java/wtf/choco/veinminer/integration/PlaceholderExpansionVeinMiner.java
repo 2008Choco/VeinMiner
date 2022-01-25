@@ -10,11 +10,26 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.network.VeinMinerPlayer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
-public class PlaceholderAPIIntegration extends PlaceholderExpansion {
+/**
+ * A {@link PlaceholderExpansion} for VeinMiner's placeholders.
+ * <p>
+ * Supported placeholders:
+ * <ul>
+ *   <li>%veinminer_enabled%: Whether or not at least one vein miner category is enabled
+ *   <li>%veinminer_enabled_{@literal <tool>}%: Whether or not the vein miner category is enabled
+ *   <li>%veinminer_active%: Whether or not vein miner is active and ready to use
+ * </ul>
+ */
+public final class PlaceholderExpansionVeinMiner extends PlaceholderExpansion {
 
     private final VeinMinerPlugin plugin;
 
-    public PlaceholderAPIIntegration(VeinMinerPlugin plugin) {
+    /**
+     * Construct a new {@link PlaceholderExpansionVeinMiner}.
+     *
+     * @param plugin the plugin instance
+     */
+    public PlaceholderExpansionVeinMiner(VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

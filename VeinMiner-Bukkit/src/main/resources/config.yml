@@ -9,7 +9,6 @@ PerformUpdateChecks: true
 
 DefaultActivationStrategy: SNEAK
 DefaultVeinMiningPattern: 'veinminer:default'
-SortBlocklistAlphabetically: true
 CollectItemsAtSource: true
 NerfMcMMO: false
 

@@ -9,7 +9,8 @@ import wtf.choco.veinminer.config.VeinMinerConfig;
 import wtf.choco.veinminer.platform.ItemType;
 
 /**
- * A Bukkit implementation of {@link VeinMinerToolCategory}.
+ * A more specific type of {@link BukkitVeinMinerToolCategory} whereby the hand category
+ * is being represented. No items may be added to or removed from this category.
  */
 public final class BukkitVeinMinerToolCategoryHand extends BukkitVeinMinerToolCategory {
 

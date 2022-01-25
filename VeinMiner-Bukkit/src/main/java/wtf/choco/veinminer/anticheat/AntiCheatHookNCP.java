@@ -15,7 +15,7 @@ import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 
 /**
- * The default NoCheatPlus (NCP) hook implementation
+ * The default NoCheatPlus (NCP) hook implementation.
  */
 public final class AntiCheatHookNCP implements AntiCheatHook {
 

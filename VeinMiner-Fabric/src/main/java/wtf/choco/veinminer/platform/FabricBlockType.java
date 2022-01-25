@@ -15,6 +15,9 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.util.NamespacedKey;
 
+/**
+ * A Fabric implementation of {@link BlockType}.
+ */
 public final class FabricBlockType implements BlockType {
 
     private static final Map<Block, BlockType> CACHE = new HashMap<>();
@@ -49,6 +52,13 @@ public final class FabricBlockType implements BlockType {
         }
     }
 
+    /**
+     * Get a {@link BlockType} for the given {@link Block}.
+     *
+     * @param block the block
+     *
+     * @return the BlockType instance
+     */
     public static BlockType of(Block block) {
         return CACHE.computeIfAbsent(block, FabricBlockType::new);
     }

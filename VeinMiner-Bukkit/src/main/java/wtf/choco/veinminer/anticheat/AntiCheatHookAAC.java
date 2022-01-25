@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The default Advanced AntiCheat (AAC) hook implementation
+ * The default Advanced AntiCheat (AAC) hook implementation.
  */
 public final class AntiCheatHookAAC implements AntiCheatHook {
 

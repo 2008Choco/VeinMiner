@@ -18,7 +18,8 @@ import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
- * Represents the default vein mining pattern.
+ * The default {@link VeinMiningPattern} that mines as many blocks in an arbitrary pattern
+ * as possible.
  */
 public final class VeinMiningPatternDefault implements VeinMiningPattern {
 

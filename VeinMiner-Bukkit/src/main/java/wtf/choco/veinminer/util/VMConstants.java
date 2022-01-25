@@ -1,5 +1,10 @@
 package wtf.choco.veinminer.util;
 
+/**
+ * General purpose constants used throughout VeinMiner.
+ * <p>
+ * Fields are intentionally left undocumented due to their self-explanatory nature.
+ */
 public final class VMConstants {
 
     // Configuration options

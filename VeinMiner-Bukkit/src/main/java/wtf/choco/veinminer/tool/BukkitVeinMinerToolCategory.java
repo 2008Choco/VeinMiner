@@ -16,7 +16,7 @@ import wtf.choco.veinminer.platform.BukkitItemType;
 import wtf.choco.veinminer.platform.ItemType;
 
 /**
- * A Bukkit implementation of {@link VeinMinerToolCategory}
+ * A Bukkit implementation of {@link VeinMinerToolCategory}.
  */
 public class BukkitVeinMinerToolCategory implements VeinMinerToolCategory {
 
@@ -39,7 +39,7 @@ public class BukkitVeinMinerToolCategory implements VeinMinerToolCategory {
         this.config = config;
 
         this.items = new HashSet<>();
-        items.forEach(material -> this.items.add(new BukkitItemType(material)));
+        items.forEach(material -> this.items.add(BukkitItemType.of(material)));
     }
 
     @NotNull

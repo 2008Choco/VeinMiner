@@ -16,7 +16,7 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
- * Called when VeinMiner is used for a set of blocks.
+ * Called when vein miner is used for a set of blocks.
  */
 public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 
@@ -51,8 +51,8 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     }
 
     /**
-     * Get the item used to vein mine (if any). Any changes made to the ItemStack returned by
-     * this method will not be reflected in the player's inventory.
+     * Get the item used to vein mine (if any). Any changes made to the {@link ItemStack}
+     * returned by this method will not be reflected in the player's inventory.
      *
      * @return the item used to vein mine. null if none
      */
@@ -83,7 +83,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     }
 
     /**
-     * Get the vein mining pattern used for this vein mine.
+     * Get the {@link VeinMiningPattern} used for this vein mine.
      *
      * @return the pattern used
      */

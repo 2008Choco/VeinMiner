@@ -18,6 +18,9 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
 
+/**
+ * Integration with WorldGuard providing custom flags.
+ */
 public final class WorldGuardIntegration {
 
     private static final StateFlag FLAG_VEINMINER = new StateFlag("veinminer", true);
@@ -26,11 +29,25 @@ public final class WorldGuardIntegration {
 
     private WorldGuardIntegration() { }
 
+    /**
+     * Initialize the WorldGuard integration and register the "veinminer" flag.
+     *
+     * @param plugin the plugin instance
+     */
     public static void init(@NotNull VeinMinerPlugin plugin) {
         registerFlag(plugin, WorldGuard.getInstance().getFlagRegistry(), FLAG_VEINMINER);
         initialized = true;
     }
 
+    /**
+     * Check whether or not VeinMiner is allowed for the given {@link Block} according to
+     * WorldGuard region flags.
+     *
+     * @param block the block to check
+     * @param player the player to check
+     *
+     * @return true if allowed, false if denied permission
+     */
     public static boolean queryFlagVeinMiner(@NotNull Block block, @NotNull Player player) {
         return initialized && testFlag(block, player, FLAG_VEINMINER);
     }

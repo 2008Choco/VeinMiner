@@ -8,27 +8,27 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a hook for an anti cheat plugin. Implementations of this hook should exempt and
- * unexempt players in the respective methods
+ * unexempt players in the respective methods.
  */
 public interface AntiCheatHook {
 
     /**
-     * Get the name of the plugin representing this hook
+     * Get the name of the plugin representing this hook.
      *
-     * @return this plugin hook
+     * @return the name of this hook's plugin
      */
     @NotNull
     public String getPluginName();
 
     /**
-     * Exempt a player from a fast-break check in the hooked anticheat
+     * Exempt a player from a fast-break check in the hooked anti cheat.
      *
      * @param player the player to exempt
      */
     public void exempt(@NotNull Player player);
 
     /**
-     * Unexempt a player from a fast-break check in the hooked anticheat
+     * Unexempt a player from a fast-break check in the hooked anti cheat.
      *
      * @param player the player to unexempt
      */
@@ -38,7 +38,10 @@ public interface AntiCheatHook {
      * Check whether the provided player should be unexempted. This is a special-case method used to
      * check if players should be unexempted under certain situations. For example, in the case of
      * {@link AntiCheatHookNCP}, this method returns false if the player was exempted prior to the
-     * execution of {@link #exempt(Player)} and should not be unexempted
+     * execution of {@link #exempt(Player)} and should not be unexempted.
+     * <p>
+     * For anti cheats where temporary exemptions can be made, this method is not relevant and should
+     * be left implemented as default.
      *
      * @param player the player to check
      *
@@ -49,9 +52,9 @@ public interface AntiCheatHook {
     }
 
     /**
-     * Check whether this anticheat hook is supported or not. This should return false if, for
+     * Check whether or not this anti cheat hook is supported. This should return false if, for
      * example in AntiAura, an API method to exempt players was added in a later version of the
-     * anticheat plugin
+     * anti cheat plugin
      *
      * @return true if supported, false otherwise
      */
@@ -60,7 +63,7 @@ public interface AntiCheatHook {
     }
 
     /**
-     * Attempt to fetch the Plugin instance for this hook.
+     * Attempt to fetch the {@link Plugin} instance for this hook.
      *
      * @return the plugin. null if could not be found
      */

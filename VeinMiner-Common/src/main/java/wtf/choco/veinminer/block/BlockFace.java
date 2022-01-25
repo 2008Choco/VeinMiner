@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.util.BlockPosition;
 
 /**
- * Represents all possible relative directions of a block supported by VeinMiner.
+ * Represents a block face.
  */
 public enum BlockFace {
 
@@ -66,7 +66,8 @@ public enum BlockFace {
     }
 
     /**
-     * Get the block relative to the specified block based on the current block face.
+     * Get a {@link BlockPosition} offset by this {@link BlockFace}'s offset coordinates
+     * relative to the given BlockPosition.
      *
      * @param position the block of reference
      *
@@ -76,17 +77,5 @@ public enum BlockFace {
     public BlockPosition getRelative(@NotNull BlockPosition position) {
         return position.offset(xOffset, yOffset, zOffset);
     }
-
-    /* Block views:
-     *
-     *       Arial:               Front:
-     *
-     *   NW    N    NE          WU   UP    EU
-     *
-     *   W   BLOCK   E          W   BLOCK   E
-     *
-     *   SW    S    ES          WD  DOWN   ED
-     *
-     */
 
 }
