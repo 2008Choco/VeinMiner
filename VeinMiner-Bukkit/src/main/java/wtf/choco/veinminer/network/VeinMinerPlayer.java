@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,7 @@ import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMiner;
@@ -204,6 +206,17 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      */
     public boolean isVeinMinerPartiallyDisabled() {
         return !disabledCategories.isEmpty();
+    }
+
+    /**
+     * Get this player's disabled {@link VeinMinerToolCategory VeinMinerToolCategories}.
+     *
+     * @return the disabled tool categories
+     */
+    @NotNull
+    @UnmodifiableView
+    public Set<VeinMinerToolCategory> getDisabledCategories() {
+        return Collections.unmodifiableSet(disabledCategories);
     }
 
     /**

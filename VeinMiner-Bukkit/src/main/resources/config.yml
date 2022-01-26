@@ -36,6 +36,24 @@ Client:
   - "&7This server runs &fVeinMiner&7. An &ooptional &7Fabric mod may be installed to allow you to use custom keybinds."
   - "&7Download at: &fhttps://www.curseforge.com/minecraft/mc-mods/veinminer4bukkit"
 
+Storage:
+  # Supported types...
+  # JSON: Each player's data is stored in its own JSON file under the specified directory.
+  # SQLite: Player data is stored in an SQLite database table. A flat file database. Generally faster than JSON.
+  # MySQL: Player data is stored remotely in a MySQL-compliant database (MySQL, MariaDB, etc.). Use this if you want to share VeinMiner data on multiple servers and have a MySQL server available to use.
+  Type: 'SQLite'
+
+  JSON:
+    Directory: '%plugin%/playerdata/'
+
+  MySQL:
+    Host: 'localhost'
+    Port: 3306
+    Username: 'username'
+    Password: 'password'
+    Database: 'veinminer'
+    TablePrefix: 'veinminer_'
+
 BlockList:
   Pickaxe:
   - 'minecraft:amethyst_cluster'

@@ -1,12 +1,9 @@
 package wtf.choco.veinminer.listener;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
@@ -21,31 +18,24 @@ public final class PlayerDataListener implements Listener {
     }
 
     @EventHandler
-    private void onPlayerJoin(@SuppressWarnings("unused") PlayerJoinEvent event) {
-//        Player player = event.getPlayer();
-//        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
-
-        // If the directory is only just created, there's no player data to read from anyways
-        if (plugin.getPlayerDataDirectory().mkdirs()) {
-            return;
-        }
-
-        BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.runTaskAsynchronously(plugin, () -> {
-            // TODO: Read player state from file/database
+    private void onPlayerJoin(PlayerJoinEvent event) {
+        this.plugin.getPersistentDataStorage().load(plugin, plugin.getPlayerManager().get(event.getPlayer())).exceptionally(e -> {
+            e.printStackTrace();
+            return null;
         });
     }
 
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(player);
-
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(event.getPlayer());
         if (veinMinerPlayer == null || !veinMinerPlayer.isDirty()) {
             return;
         }
 
-        // TODO: Save player state to file/database
+        this.plugin.getPersistentDataStorage().save(plugin, veinMinerPlayer).exceptionally(e -> {
+            e.printStackTrace();
+            return null;
+        });
     }
 
 }

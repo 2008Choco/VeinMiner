@@ -34,6 +34,15 @@ public final class VMConstants {
     public static final String CONFIG_CLIENT_SUGGEST_CLIENT_MOD_PERIOD = "Client.SuggestClientModPeriod";
     public static final String CONFIG_CLIENT_SUGGESTION_MESSAGE = "Client.SuggestionMessage";
 
+    public static final String CONFIG_STORAGE_TYPE = "Storage.Type";
+    public static final String CONFIG_STORAGE_JSON_DIRECTORY = "Storage.JSON.Directory";
+    public static final String CONFIG_STORAGE_MYSQL_HOST = "Storage.MySQL.Host";
+    public static final String CONFIG_STORAGE_MYSQL_PORT = "Storage.MySQL.Port";
+    public static final String CONFIG_STORAGE_MYSQL_USERNAME = "Storage.MySQL.Username";
+    public static final String CONFIG_STORAGE_MYSQL_PASSWORD = "Storage.MySQL.Password";
+    public static final String CONFIG_STORAGE_MYSQL_DATABASE = "Storage.MySQL.Database";
+    public static final String CONFIG_STORAGE_MYSQL_TABLE_PREFIX = "Storage.MySQL.TablePrefix";
+
     public static final String CONFIG_ALIASES = "Aliases";
 
 

@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,6 +44,11 @@ import wtf.choco.veinminer.command.CommandBlocklist;
 import wtf.choco.veinminer.command.CommandToollist;
 import wtf.choco.veinminer.command.CommandVeinMiner;
 import wtf.choco.veinminer.config.VeinMinerConfig;
+import wtf.choco.veinminer.data.PersistentDataStorage;
+import wtf.choco.veinminer.data.PersistentDataStorageJSON;
+import wtf.choco.veinminer.data.PersistentDataStorageMySQL;
+import wtf.choco.veinminer.data.PersistentDataStorageNoOp;
+import wtf.choco.veinminer.data.PersistentDataStorageSQLite;
 import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.economy.EmptyEconomyModifier;
 import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
@@ -86,15 +92,14 @@ public final class VeinMinerPlugin extends JavaPlugin {
     private final VeinMinerManager veinMinerManager = new VeinMinerManager();
     private final PatternRegistry patternRegistry = new PatternRegistry();
     private final ToolCategoryRegistry toolCategoryRegistry = new ToolCategoryRegistry();
-
     private final VeinMinerPlayerManager playerManager = new VeinMinerPlayerManager();
 
     private EconomyModifier economyModifier;
 
     private VeinMiningPattern defaultVeinMiningPattern = new VeinMiningPatternDefault();
+    private PersistentDataStorage persistentDataStorage;
 
     private ConfigWrapper categoriesConfig;
-    private File playerDataDirectory;
 
     @Override
     public void onLoad() {
@@ -121,10 +126,11 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         this.reloadGeneralConfig();
 
+        // Assign persistent storage
+        this.setupPersistentStorage();
+
         // Configuration handling
         this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
-        this.playerDataDirectory = new File(getDataFolder(), "playerdata");
-        this.playerDataDirectory.mkdirs();
 
         // Fetching the default pattern to use for all players that have not yet explicitly set one
         String defaultVeinMiningPatternId = getConfig().getString(VMConstants.CONFIG_DEFAULT_VEIN_MINING_PATTERN, defaultVeinMiningPattern.getKey().toString());
@@ -194,13 +200,13 @@ public final class VeinMinerPlugin extends JavaPlugin {
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
         }
 
-        // Load blocks to the veinable list
+        // Load configuration data into memory
         this.getLogger().info("Loading configuration options to local memory");
         this.reloadVeinMinerManagerConfig();
         this.reloadToolCategoryRegistryConfig();
 
-        // Special case for reloads and crashes
-        // TODO: Read all online VeinMinerPlayer data of all online players to better support reloads
+        // Special case for reloads
+        Bukkit.getOnlinePlayers().forEach(player -> persistentDataStorage.load(this, playerManager.get(player)));
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
@@ -232,7 +238,15 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.toolCategoryRegistry.unregisterAll();
         this.anticheatHooks.clear();
 
-        // TODO: Write all VeinMinerPlayer information to a data source
+        this.playerManager.getAll().forEach(player -> {
+            if (!player.isDirty()) {
+                return;
+            }
+
+            this.persistentDataStorage.save(this, player);
+        });
+
+        this.persistentDataStorage.close();
     }
 
     /**
@@ -296,6 +310,16 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
+     * Get the {@link PersistentDataStorage} instance used to store player data.
+     *
+     * @return the persistent data storage
+     */
+    @NotNull
+    public PersistentDataStorage getPersistentDataStorage() {
+        return persistentDataStorage;
+    }
+
+    /**
      * Get an instance of the categories configuration file.
      *
      * @return the categories config
@@ -303,16 +327,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @NotNull
     public ConfigWrapper getCategoriesConfig() {
         return categoriesConfig;
-    }
-
-    /**
-     * Get VeinMiner's playerdata directory.
-     *
-     * @return the playerdata directory
-     */
-    @NotNull
-    public File getPlayerDataDirectory() {
-        return playerDataDirectory;
     }
 
     /**
@@ -489,6 +503,60 @@ public final class VeinMinerPlugin extends JavaPlugin {
         veinminePermissionParent.recalculatePermissibles();
         blocklistPermissionParent.recalculatePermissibles();
         toollistPermissionParent.recalculatePermissibles();
+    }
+
+    private void setupPersistentStorage() {
+        String storageTypeId = getConfig().getString(VMConstants.CONFIG_STORAGE_TYPE);
+        assert storageTypeId != null;
+        PersistentDataStorage.Type storageType = Enums.getIfPresent(PersistentDataStorage.Type.class, storageTypeId.toUpperCase()).or(PersistentDataStorage.Type.SQLITE);
+
+        try {
+            this.persistentDataStorage = switch (storageType) {
+                case JSON -> {
+                    String jsonDirectoryName = getConfig().getString(VMConstants.CONFIG_STORAGE_JSON_DIRECTORY);
+
+                    if (jsonDirectoryName == null) {
+                        this.getLogger().warning("Incomplete configuration for JSON persistent storage. Requires a valid directory.");
+                        yield PersistentDataStorageNoOp.INSTANCE;
+                    }
+
+                    File jsonDirectory = new File(".", jsonDirectoryName.replace("%plugin%", "plugins/" + getDataFolder().getName()));
+                    yield new PersistentDataStorageJSON(jsonDirectory);
+                }
+                case SQLITE -> new PersistentDataStorageSQLite(this, "veinminer.db");
+                case MYSQL -> {
+                    String host = getConfig().getString(VMConstants.CONFIG_STORAGE_MYSQL_HOST);
+                    int port = getConfig().getInt(VMConstants.CONFIG_STORAGE_MYSQL_PORT);
+                    String username = getConfig().getString(VMConstants.CONFIG_STORAGE_MYSQL_USERNAME);
+                    String password = getConfig().getString(VMConstants.CONFIG_STORAGE_MYSQL_PASSWORD);
+                    String database = getConfig().getString(VMConstants.CONFIG_STORAGE_MYSQL_DATABASE);
+                    String tablePrefix = getConfig().getString(VMConstants.CONFIG_STORAGE_MYSQL_TABLE_PREFIX);
+
+                    if (host == null || database == null || username == null || password == null || tablePrefix == null) {
+                        this.getLogger().warning("Incomplete configuration for MySQL persistent storage. Requires a valid host, port, database, username, password, and table prefix.");
+                        yield PersistentDataStorageNoOp.INSTANCE;
+                    }
+
+                    yield new PersistentDataStorageMySQL(host, port, username, password, database, tablePrefix);
+                }
+                default -> {
+                    this.getLogger().warning("No persistent storage is available. This may be a bug.");
+                    yield PersistentDataStorageNoOp.INSTANCE;
+                }
+            };
+
+            this.persistentDataStorage.init().whenComplete((result, e) -> {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                this.getLogger().info("Using " + persistentDataStorage.getType() + " for persistent storage.");
+            });
+        } catch (IOException e) {
+            this.getLogger().severe("Could not setup persistent file storage. Player data cannot be saved nor loaded. Investigate IMMEDIATELY.");
+            e.printStackTrace();
+        }
     }
 
     private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
