@@ -1,25 +1,26 @@
-# Each category and each item may define one of the following options:
-# "SortBlocklistAlphabetically", "RepairFriendlyVeinminer", "IncludeEdges", "MaxVeinSize" and "Cost"
-# If defined in the category, it will be used for that specific category (and override the global value).
-# If defined in the item, it will be used for that specific item (and override the category value).
-# If NOT defined, the global value will be used.
-
+# All tool categories and their item lists are defined here.
+#
+# Each category may define any of the following options:
+# "RepairFriendly", "MaxVeinSize", "Cost", and "DisabledWorlds"
+# If NOT defined, the global value (the one in the config.yml) will be used instead.
+# Everything except for 'Items' is OPTIONAL. They are not required to be set.
+#
 # ExampleCategory:
-#   MaxVeinSize: 10
+#   RepairFriendly: true
+#   MaxVeinSize: 32
+#   Cost: 100.0
+#   DisabledWorlds:
+#   - 'world_name'
+#   - 'other_world_name'
 #   Items:
-#   - 'minecraft:torch'
-#   - 'minecraft:redstone_torch':
-#     Name: "&6My Cool Torch!"
-#     Lore:
-#     - "First line!"
-#     - "&5Second line!"
-#   - 'minecraft:potato':
-#     Name: "&8Special item!"
-#     MaxVeinSize: 128
-#     IncludeEdges: false
+#   - 'minecraft:wooden_sword'
+#   - 'minecraft:stone_sword'
+#   - 'minecraft:golden_sword'
+#   - 'minecraft:iron_sword'
+#   - 'minecraft:diamond_sword'
+#   - 'minecraft:netherite_sword'
 
 Axe:
-  MaxVeinSize: 64
   Items:
   - 'minecraft:wooden_axe'
   - 'minecraft:stone_axe'
@@ -29,7 +30,6 @@ Axe:
   - 'minecraft:netherite_axe'
 
 Hoe:
-  MaxVeinSize: 64
   Items:
   - 'minecraft:wooden_hoe'
   - 'minecraft:stone_hoe'
@@ -39,7 +39,6 @@ Hoe:
   - 'minecraft:netherite_hoe'
 
 Pickaxe:
-  MaxVeinSize: 64
   Items:
   - 'minecraft:wooden_pickaxe'
   - 'minecraft:stone_pickaxe'
@@ -49,12 +48,10 @@ Pickaxe:
   - 'minecraft:netherite_pickaxe'
 
 Shears:
-  MaxVeinSize: 64
   Items:
   - 'minecraft:shears'
 
 Shovel:
-  MaxVeinSize: 64
   Items:
   - 'minecraft:wooden_shovel'
   - 'minecraft:stone_shovel'

@@ -3,6 +3,11 @@
 # The above will search for any waterlogged chests. Other states will be ignored when checking.
 #
 # To add a custom category, see the categories.yml
+#
+# VeinMiner supports 3 different types of storage (SQLite is used by default)
+#   JSON: Each player's data is stored in its own JSON file under the specified directory.
+#   SQLite: Player data is stored in an SQLite database table. A flat file database. Generally faster than JSON.
+#   MySQL: Player data is stored remotely in a MySQL-compliant database (MySQL, MariaDB, etc.). Use this if you want to share VeinMiner data on multiple servers and have a MySQL server available to use
 
 MetricsEnabled: true
 PerformUpdateChecks: true
@@ -12,7 +17,7 @@ DefaultVeinMiningPattern: 'veinminer:default'
 CollectItemsAtSource: true
 NerfMcMMO: false
 
-RepairFriendlyVeinminer: false
+RepairFriendly: false
 MaxVeinSize: 64
 Cost: 0.0
 

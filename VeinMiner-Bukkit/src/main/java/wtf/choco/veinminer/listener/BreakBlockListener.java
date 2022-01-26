@@ -156,7 +156,7 @@ public final class BreakBlockListener implements Listener {
 
         // Actually destroying the allocated blocks
         FileConfiguration config = plugin.getConfig();
-        int maxDurability = item.getType().getMaxDurability() - (config.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY_VEINMINER, false) ? 1 : 0);
+        int maxDurability = item.getType().getMaxDurability() - (config.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY, false) ? 1 : 0);
         float hungerModifier = ((float) Math.max((config.getDouble(VMConstants.CONFIG_HUNGER_HUNGER_MODIFIER)), 0.0D)) * 0.025F;
         int minimumFoodLevel = Math.max(config.getInt(VMConstants.CONFIG_HUNGER_MINIMUM_FOOD_LEVEL), 0);
 

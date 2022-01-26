@@ -391,7 +391,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         this.veinMinerManager.setGlobalBlockList(BlockList.parseBlockList(config.getStringList("BlockList.Global"), getLogger()));
         this.veinMinerManager.setGlobalConfig(VeinMinerConfig.builder()
-                .repairFriendly(config.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY_VEINMINER, false))
+                .repairFriendly(config.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY, false))
                 .maxVeinSize(config.getInt(VMConstants.CONFIG_MAX_VEIN_SIZE, 64))
                 .cost(config.getDouble(VMConstants.CONFIG_COST, 0.0))
                 .disableWorlds(config.getStringList(VMConstants.CONFIG_DISABLED_WORLDS))
@@ -435,7 +435,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
             Collection<String> disabledWorlds = categoryRoot.contains(VMConstants.CONFIG_DISABLED_WORLDS) ? categoryRoot.getStringList(VMConstants.CONFIG_DISABLED_WORLDS) : globalVeinMinerConfig.getDisabledWorlds();
             VeinMinerConfig veinMinerConfig = VeinMinerConfig.builder()
-                    .repairFriendly(categoryRoot.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY_VEINMINER, globalVeinMinerConfig.isRepairFriendly()))
+                    .repairFriendly(categoryRoot.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY, globalVeinMinerConfig.isRepairFriendly()))
                     .maxVeinSize(categoryRoot.getInt(VMConstants.CONFIG_MAX_VEIN_SIZE, globalVeinMinerConfig.getMaxVeinSize()))
                     .cost(categoryRoot.getDouble(VMConstants.CONFIG_COST, globalVeinMinerConfig.getCost()))
                     .disableWorlds(disabledWorlds)

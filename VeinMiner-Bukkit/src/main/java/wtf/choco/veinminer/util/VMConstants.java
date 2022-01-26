@@ -17,7 +17,7 @@ public final class VMConstants {
     public static final String CONFIG_COLLECT_ITEMS_AT_SOURCE = "CollectItemsAtSource";
     public static final String CONFIG_NERF_MCMMO = "NerfMcMMO";
 
-    public static final String CONFIG_REPAIR_FRIENDLY_VEINMINER = "RepairFriendlyVeinminer";
+    public static final String CONFIG_REPAIR_FRIENDLY = "RepairFriendly";
     public static final String CONFIG_INCLUDE_EDGES = "IncludeEdges";
     public static final String CONFIG_MAX_VEIN_SIZE = "MaxVeinSize";
     public static final String CONFIG_COST = "Cost";
