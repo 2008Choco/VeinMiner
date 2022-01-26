@@ -2,13 +2,19 @@ package wtf.choco.veinminer.network;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 import org.jetbrains.annotations.NotNull;
+
+import wtf.choco.veinminer.util.BlockPosition;
+import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * A utility class to allow for reading and writing of complex types to/from a byte array.
  */
 public class PluginMessageByteBuffer {
+
+    private static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
 
     private ByteBuffer inputBuffer;
     private ByteArrayOutputStream outputStream;
@@ -44,11 +50,8 @@ public class PluginMessageByteBuffer {
      * Write a variable-length integer.
      *
      * @param value the value to write
-     *
-     * @return this instance. Allows for chained method calls
      */
-    @NotNull
-    public PluginMessageByteBuffer writeVarInt(int value) {
+    public void writeVarInt(int value) {
         this.ensureWriting();
 
         while ((value & -128) != 0) {
@@ -57,7 +60,6 @@ public class PluginMessageByteBuffer {
         }
 
         this.writeByte(value);
-        return this;
     }
 
     /**
@@ -88,18 +90,55 @@ public class PluginMessageByteBuffer {
     }
 
     /**
+     * Write a variable-length long.
+     *
+     * @param value the value to write
+     */
+    public void writeVarLong(long value) {
+        this.ensureWriting();
+
+        while ((value & -128L) != 0L) {
+            this.writeByte((int) (value & 127L) | 128);
+            value >>>= 7;
+        }
+
+        this.writeByte((int) value);
+    }
+
+    /**
+     * Read a variable-length long.
+     *
+     * @return the read value
+     *
+     * @throws IllegalStateException if the var long is too large
+     */
+    public long readVarLong() {
+        this.ensureReading();
+
+        long result = 0L;
+        int size = 0;
+
+        byte currentByte;
+
+        do {
+            currentByte = this.readByte();
+            result |= (long) (currentByte & 127) << size++ * 7;
+            if (size > 10) {
+                throw new IllegalStateException("VarLong too big");
+            }
+        } while ((currentByte & 128) == 128);
+
+        return result;
+    }
+
+    /**
      * Write a boolean primitive.
      *
      * @param value the value to write
-     *
-     * @return this instance. Allows for chained method calls
      */
-    @NotNull
-    public PluginMessageByteBuffer writeBoolean(boolean value) {
+    public void writeBoolean(boolean value) {
         this.ensureWriting();
-
         this.outputStream.write(value ? (byte) 1 : 0);
-        return this;
     }
 
     /**
@@ -113,35 +152,63 @@ public class PluginMessageByteBuffer {
     }
 
     /**
+     * Write a UTF-8 String.
+     *
+     * @param string the string to write
+     */
+    public void writeString(@NotNull String string) {
+        this.ensureWriting();
+
+        byte[] stringBytes = string.getBytes(CHARSET_UTF_8);
+        this.writeByteArray(stringBytes);
+    }
+
+    /**
+     * Read a UTF-8 String.
+     *
+     * @return the string
+     */
+    @NotNull
+    public String readString() {
+        this.ensureReading();
+        return new String(readByteArray(), CHARSET_UTF_8);
+    }
+
+    /**
      * Write an array of bytes.
      *
      * @param bytes the bytes to write
-     *
-     * @return this instance. Allows for chained method calls
      */
-    @NotNull
-    public PluginMessageByteBuffer writeBytes(byte[] bytes) {
+    public void writeBytes(byte[] bytes) {
         this.ensureWriting();
-
         this.outputStream.writeBytes(bytes);
-        return this;
     }
 
     /**
      * Write an array of bytes prefixed by a variable-length int.
      *
      * @param bytes the bytes to write
-     * @param length the length prefix to write
-     *
-     * @return this instance. Allows for chained method calls
      */
-    @NotNull
-    public PluginMessageByteBuffer writeByteArray(byte[] bytes, int length) {
+    public void writeByteArray(byte[] bytes) {
         this.ensureWriting();
 
-        this.writeVarInt(length);
+        this.writeVarInt(bytes.length);
         this.writeBytes(bytes);
-        return this;
+    }
+
+    /**
+     * Read an array of bytes prefixed by a variable-length int.
+     *
+     * @return the byte array
+     */
+    public byte[] readByteArray() {
+        this.ensureReading();
+
+        int size = readVarInt();
+        byte[] bytes = new byte[size];
+        this.inputBuffer.get(bytes);
+
+        return bytes;
     }
 
     /**
@@ -191,15 +258,10 @@ public class PluginMessageByteBuffer {
      * Write a raw byte.
      *
      * @param value the value to write
-     *
-     * @return this instance. Allows for chained method calls
      */
-    @NotNull
-    public PluginMessageByteBuffer writeByte(int value) {
+    public void writeByte(int value) {
         this.ensureWriting();
-
         this.outputStream.write((byte) value);
-        return this;
     }
 
     /**
@@ -213,12 +275,55 @@ public class PluginMessageByteBuffer {
     }
 
     /**
+     * Write a {@link BlockPosition}.
+     *
+     * @param position the position to write
+     */
+    public void writeBlockPosition(@NotNull BlockPosition position) {
+        this.ensureWriting();
+        this.writeVarLong(position.pack());
+    }
+
+    /**
+     * Read a {@link BlockPosition}.
+     *
+     * @return the BlockPosition
+     */
+    @NotNull
+    public BlockPosition readBlockPosition() {
+        this.ensureReading();
+        return BlockPosition.unpack(readVarLong());
+    }
+
+    /**
+     * Write a {@link NamespacedKey}.
+     *
+     * @param key the key to write
+     */
+    public void writeNamespacedKey(@NotNull NamespacedKey key) {
+        this.ensureWriting();
+        this.writeString(key.namespace());
+        this.writeString(key.key());
+    }
+
+    /**
+     * Read a {@link NamespacedKey}.
+     *
+     * @return the NamespacedKey
+     */
+    @NotNull
+    public NamespacedKey readNamespacedKey() {
+        this.ensureReading();
+        return new NamespacedKey(readString(), readString());
+    }
+
+    /**
      * Get this byte buffer as a byte array.
      *
      * @return the byte array
      */
     public byte[] asByteArray() {
-        this.ensureWriting();
+        this.ensureReading();
         return outputStream.toByteArray();
     }
 

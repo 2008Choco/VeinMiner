@@ -58,7 +58,7 @@ public final class BukkitBlockAccessor implements BlockAccessor {
      * @return the block accessor
      */
     @NotNull
-    public static BlockAccessor forWorld(World world) {
+    public static BlockAccessor forWorld(@NotNull World world) {
         return BLOCK_ACCESSORS.computeIfAbsent(world.getUID(), uuid -> new BukkitBlockAccessor(world));
     }
 
