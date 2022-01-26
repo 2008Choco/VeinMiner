@@ -95,7 +95,8 @@ public final class BreakBlockListener implements Listener {
         }
 
         // WorldGuard check
-        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard") && !WorldGuardIntegration.queryFlagVeinMiner(origin, player)) {
+        boolean worldGuard = Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
+        if (worldGuard && !WorldGuardIntegration.queryFlagVeinMiner(origin, player)) {
             player.sendMessage(ChatColor.GRAY + "You are not allowed to vein mine in this area.");
             return;
         }
@@ -126,7 +127,7 @@ public final class BreakBlockListener implements Listener {
         for (BlockPosition blockPosition : blockPositions) {
             Block block = world.getBlockAt(blockPosition.x(), blockPosition.y(), blockPosition.z());
 
-            if (block.isEmpty() || !WorldGuardIntegration.queryFlagVeinMiner(block, player)) {
+            if (block.isEmpty() || (worldGuard && !WorldGuardIntegration.queryFlagVeinMiner(block, player))) {
                 continue;
             }
 
