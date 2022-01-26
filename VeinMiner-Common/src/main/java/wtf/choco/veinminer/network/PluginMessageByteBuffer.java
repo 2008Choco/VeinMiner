@@ -318,12 +318,12 @@ public class PluginMessageByteBuffer {
     }
 
     /**
-     * Get this byte buffer as a byte array.
+     * Get this byte buffer as a byte array (for writing).
      *
      * @return the byte array
      */
     public byte[] asByteArray() {
-        this.ensureReading();
+        this.ensureWriting();
         return outputStream.toByteArray();
     }
 
