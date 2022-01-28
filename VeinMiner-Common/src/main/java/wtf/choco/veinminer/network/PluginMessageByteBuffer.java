@@ -2,7 +2,7 @@ package wtf.choco.veinminer.network;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -13,8 +13,6 @@ import wtf.choco.veinminer.util.NamespacedKey;
  * A utility class to allow for reading and writing of complex types to/from a byte array.
  */
 public class PluginMessageByteBuffer {
-
-    private static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
 
     private ByteBuffer inputBuffer;
     private ByteArrayOutputStream outputStream;
@@ -54,12 +52,15 @@ public class PluginMessageByteBuffer {
     public void writeVarInt(int value) {
         this.ensureWriting();
 
-        while ((value & -128) != 0) {
-            this.writeByte(value & 127 | 128);
+        while (true) {
+            if ((value & ~0x7F) == 0) {
+                this.writeByte(value);
+                return;
+            }
+
+            this.writeByte((value & 0x7F) | 0x80);
             value >>>= 7;
         }
-
-        this.writeByte(value);
     }
 
     /**
@@ -72,21 +73,24 @@ public class PluginMessageByteBuffer {
     public int readVarInt() {
         this.ensureReading();
 
-        int result = 0;
-        int size = 0;
-
+        int value = 0;
+        int length = 0;
         byte currentByte;
 
-        do {
-            currentByte = this.readByte();
-            result |= (currentByte & 127) << size++ * 7;
+        while (true) {
+            currentByte = readByte();
+            value |= (currentByte & 0x7F) << (length * 7);
 
-            if (size > 5) {
-                throw new IllegalStateException("VarInt too big");
+            length += 1;
+            if (length > 5) {
+                throw new RuntimeException("VarInt is too big");
             }
-        } while ((currentByte & 128) == 128);
 
-        return result;
+            if ((currentByte & 0x80) != 0x80) {
+                break;
+            }
+        }
+        return value;
     }
 
     /**
@@ -97,12 +101,15 @@ public class PluginMessageByteBuffer {
     public void writeVarLong(long value) {
         this.ensureWriting();
 
-        while ((value & -128L) != 0L) {
-            this.writeByte((int) (value & 127L) | 128);
+        while (true) {
+            if ((value & ~0x7F) == 0) {
+                this.writeByte((byte) value);
+                return;
+            }
+
+            this.writeByte((byte) (value & 0x7F) | 0x80);
             value >>>= 7;
         }
-
-        this.writeByte((int) value);
     }
 
     /**
@@ -115,20 +122,24 @@ public class PluginMessageByteBuffer {
     public long readVarLong() {
         this.ensureReading();
 
-        long result = 0L;
-        int size = 0;
-
+        long value = 0;
+        int length = 0;
         byte currentByte;
 
-        do {
-            currentByte = this.readByte();
-            result |= (long) (currentByte & 127) << size++ * 7;
-            if (size > 10) {
-                throw new IllegalStateException("VarLong too big");
-            }
-        } while ((currentByte & 128) == 128);
+        while (true) {
+            currentByte = readByte();
+            value |= (currentByte & 0x7F) << (length * 7);
 
-        return result;
+            length += 1;
+            if (length > 10) {
+                throw new RuntimeException("VarLong is too big");
+            }
+
+            if ((currentByte & 0x80) != 0x80) {
+                break;
+            }
+        }
+        return value;
     }
 
     /**
@@ -159,7 +170,7 @@ public class PluginMessageByteBuffer {
     public void writeString(@NotNull String string) {
         this.ensureWriting();
 
-        byte[] stringBytes = string.getBytes(CHARSET_UTF_8);
+        byte[] stringBytes = string.getBytes(StandardCharsets.UTF_8);
         this.writeByteArray(stringBytes);
     }
 
@@ -171,7 +182,7 @@ public class PluginMessageByteBuffer {
     @NotNull
     public String readString() {
         this.ensureReading();
-        return new String(readByteArray(), CHARSET_UTF_8);
+        return new String(readByteArray(), StandardCharsets.UTF_8);
     }
 
     /**
@@ -252,6 +263,16 @@ public class PluginMessageByteBuffer {
     public void readBytes(byte[] destination) {
         this.ensureReading();
         this.inputBuffer.get(destination);
+    }
+
+    /**
+     * Write a raw byte.
+     *
+     * @param value the value to write
+     */
+    public void writeByte(byte value) {
+        this.ensureWriting();
+        this.outputStream.write(value);
     }
 
     /**

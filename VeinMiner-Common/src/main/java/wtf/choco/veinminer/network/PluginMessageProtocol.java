@@ -45,9 +45,6 @@ public final class PluginMessageProtocol {
 
     private final Map<@NotNull MessageDirection, @NotNull PluginMessageRegistry<?>> registries = new EnumMap<>(MessageDirection.class);
 
-    private final Consumer<PluginMessageRegistry<ServerboundPluginMessageListener>> serverboundMessageSupplier;
-    private final Consumer<PluginMessageRegistry<ClientboundPluginMessageListener>> clientboundMessageSupplier;
-
     /**
      * Construct a new {@link PluginMessageProtocol}.
      *
@@ -60,8 +57,14 @@ public final class PluginMessageProtocol {
         this.channel = channel;
         this.version = version;
 
-        this.serverboundMessageSupplier = serverboundMessageSupplier;
-        this.clientboundMessageSupplier = clientboundMessageSupplier;
+        // Register the registries
+        PluginMessageRegistry<ServerboundPluginMessageListener> serverboundRegistry = new PluginMessageRegistry<>();
+        this.registries.put(MessageDirection.SERVERBOUND, serverboundRegistry);
+        serverboundMessageSupplier.accept(serverboundRegistry);
+
+        PluginMessageRegistry<ClientboundPluginMessageListener> clientboundRegistry = new PluginMessageRegistry<>();
+        this.registries.put(MessageDirection.CLIENTBOUND, clientboundRegistry);
+        clientboundMessageSupplier.accept(clientboundRegistry);
     }
 
     /**
@@ -121,22 +124,10 @@ public final class PluginMessageProtocol {
      *
      * @param registrar the registrar
      */
+    @SuppressWarnings("unchecked")
     public void registerChannels(@NotNull ChannelRegistrar registrar) {
-        if (serverboundMessageSupplier != null) {
-            PluginMessageRegistry<ServerboundPluginMessageListener> registry = new PluginMessageRegistry<>();
-            this.registries.put(MessageDirection.SERVERBOUND, registry);
-            this.serverboundMessageSupplier.accept(registry);
-
-            registrar.registerServerboundMessageHandler(channel, registry);
-        }
-
-        if (clientboundMessageSupplier != null) {
-            PluginMessageRegistry<ClientboundPluginMessageListener> registry = new PluginMessageRegistry<>();
-            this.registries.put(MessageDirection.CLIENTBOUND, registry);
-            this.clientboundMessageSupplier.accept(registry);
-
-            registrar.registerClientboundMessageHandler(channel, registry);
-        }
+        registrar.registerServerboundMessageHandler(channel, (PluginMessageRegistry<ServerboundPluginMessageListener>) registries.get(MessageDirection.SERVERBOUND));
+        registrar.registerClientboundMessageHandler(channel, (PluginMessageRegistry<ClientboundPluginMessageListener>) registries.get(MessageDirection.CLIENTBOUND));
     }
 
 }

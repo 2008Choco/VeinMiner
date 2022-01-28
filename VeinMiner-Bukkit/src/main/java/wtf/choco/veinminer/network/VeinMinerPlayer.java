@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -360,13 +361,11 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         int serverProtocolVersion = VeinMiner.PROTOCOL.getVersion();
         if (serverProtocolVersion != message.getProtocolVersion()) {
             player.kickPlayer("Your client-side version of VeinMiner (for Bukkit) is " + (serverProtocolVersion > message.getProtocolVersion() ? "out of date. Please update." : "too new. Please downgrade."));
+            return;
         }
 
         FileConfiguration config = VeinMinerPlugin.getInstance().getConfig();
         boolean allowClientActivation = config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true);
-
-        // Let the client know whether or not the client is even allowed
-        VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundHandshakeResponse(allowClientActivation));
 
         if (!allowClientActivation) {
             List<String> disallowedMessage = config.getStringList(VMConstants.CONFIG_CLIENT_DISALLOWED_MESSAGE);
@@ -377,6 +376,14 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         this.usingClientMod = true;
         this.setActivationStrategy(ActivationStrategy.CLIENT);
         this.dirty = false; // We can force dirty = false. Data hasn't loaded yet, but we still want to set the strategy to client automatically
+
+        /*
+         * Let the client know whether or not the client is even allowed.
+         * We send this one tick later so we know that the player's connection has been initialized
+         */
+        Bukkit.getScheduler().runTaskLater(VeinMinerPlugin.getInstance(), () -> {
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundHandshakeResponse(allowClientActivation));
+        }, 1);
     }
 
     @Internal
