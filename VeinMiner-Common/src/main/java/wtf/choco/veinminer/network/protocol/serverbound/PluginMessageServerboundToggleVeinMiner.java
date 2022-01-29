@@ -46,7 +46,7 @@ public final class PluginMessageServerboundToggleVeinMiner implements PluginMess
 
     @Override
     public void handle(@NotNull ServerboundPluginMessageListener listener) {
-        listener.handleServerboundToggleVeinMiner(this);
+        listener.handleToggleVeinMiner(this);
     }
 
 }

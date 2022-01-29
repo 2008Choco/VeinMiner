@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public record BlockPosition(int x, int y, int z) {
 
+    private static final double MAXIMUM_UPPER_BOUND = Math.pow(2, 25), NEGATIVE_UPPER_BOUND = Math.pow(2, 26);
+
     /**
      * Get a new {@link BlockPosition} offset by the given values.
      *
@@ -57,6 +59,7 @@ public record BlockPosition(int x, int y, int z) {
      *
      * @return the resulting BlockPosition
      */
+    @NotNull
     public static BlockPosition unpack(long packedPos) {
         return new BlockPosition(unpackX(packedPos), unpackY(packedPos), unpackZ(packedPos));
     }
@@ -71,7 +74,7 @@ public record BlockPosition(int x, int y, int z) {
      * @return the packed position
      */
     public static long pack(int x, int y, int z) {
-        return ((long) x & 0x7FFFFFF) | (((long) z & 0x7FFFFFF) << 27) | ((long) y << 54);
+        return (((long) x & 0x3FFFFFF) << 38) | (((long) z & 0x3FFFFFF) << 12) | ((long) y & 0xFFF);
     }
 
     /**
@@ -82,7 +85,13 @@ public record BlockPosition(int x, int y, int z) {
      * @return the unpacked x coordinate
      */
     public static int unpackX(long packedPos) {
-        return (int) ((packedPos << 37) >> 37);
+        int value = (int) ((packedPos >> 38) & 0x3FFFFFF);
+
+        if (value > MAXIMUM_UPPER_BOUND) {
+            value -= NEGATIVE_UPPER_BOUND;
+        }
+
+        return value;
     }
 
     /**
@@ -93,7 +102,7 @@ public record BlockPosition(int x, int y, int z) {
      * @return the unpacked y coordinate
      */
     public static int unpackY(long packedPos) {
-        return (int) (packedPos >> 54);
+        return (int) (packedPos & 0xFFF);
     }
 
     /**
@@ -104,7 +113,13 @@ public record BlockPosition(int x, int y, int z) {
      * @return the unpacked z coordinate
      */
     public static int unpackZ(long packedPos) {
-        return (int) ((packedPos << 10) >> 37);
+        int value = (int) ((packedPos >> 12) & 0x3FFFFFF);
+
+        if (value > MAXIMUM_UPPER_BOUND) {
+            value -= NEGATIVE_UPPER_BOUND;
+        }
+
+        return value;
     }
 
 }

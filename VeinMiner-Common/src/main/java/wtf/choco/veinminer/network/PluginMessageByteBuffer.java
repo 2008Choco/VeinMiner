@@ -45,6 +45,37 @@ public class PluginMessageByteBuffer {
     }
 
     /**
+     * Write a 4 byte integer.
+     *
+     * @param value the value to write
+     */
+    public void writeInt(int value) {
+        this.ensureWriting();
+
+        for (int i = Integer.BYTES; i > 0; i--) {
+            this.writeByte((byte) (value & 0xFF));
+            value >>= 8;
+        }
+    }
+
+    /**
+     * Read a 4 byte integer.
+     *
+     * @return the read value
+     */
+    public int readInt() {
+        this.ensureReading();
+
+        int result = 0;
+        for (int i = 0; i < Integer.BYTES; i++) {
+            result <<= 8;
+            result |= (readByte() & 0xFF);
+        }
+
+        return Integer.reverseBytes(result);
+    }
+
+    /**
      * Write a variable-length integer.
      *
      * @param value the value to write
@@ -90,7 +121,39 @@ public class PluginMessageByteBuffer {
                 break;
             }
         }
+
         return value;
+    }
+
+    /**
+     * Write an 8 byte long.
+     *
+     * @param value the value to write
+     */
+    public void writeLong(long value) {
+        this.ensureWriting();
+
+        for (int i = Long.BYTES; i > 0; i--) {
+            this.writeByte((byte) (value & 0xFF));
+            value >>= 8;
+        }
+    }
+
+    /**
+     * Read an 8 byte long.
+     *
+     * @return the read value
+     */
+    public long readLong() {
+        this.ensureReading();
+
+        long result = 0;
+        for (int i = 0; i < Long.BYTES; i++) {
+            result <<= 8;
+            result |= (readByte() & 0xFF);
+        }
+
+        return Long.reverseBytes(result);
     }
 
     /**
@@ -302,7 +365,7 @@ public class PluginMessageByteBuffer {
      */
     public void writeBlockPosition(@NotNull BlockPosition position) {
         this.ensureWriting();
-        this.writeVarLong(position.pack());
+        this.writeLong(position.pack());
     }
 
     /**
@@ -313,7 +376,7 @@ public class PluginMessageByteBuffer {
     @NotNull
     public BlockPosition readBlockPosition() {
         this.ensureReading();
-        return BlockPosition.unpack(readVarLong());
+        return BlockPosition.unpack(readLong());
     }
 
     /**

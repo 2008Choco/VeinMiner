@@ -21,6 +21,7 @@ import org.lwjgl.glfw.GLFW;
 import wtf.choco.veinminer.network.FabricChannelRegistrar;
 import wtf.choco.veinminer.network.FabricServerState;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
+import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.platform.FabricPlatformReconstructor;
 
@@ -47,16 +48,25 @@ public final class VeinMinerMod implements ClientModInitializer {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (!hasServerState() || !getServerState().isEnabled()) {
+                return;
+            }
+
             boolean last = veinminerActivated;
             this.veinminerActivated = activationBinding.isPressed();
 
-            if (last ^ veinminerActivated && hasServerState()) {
+            if (last ^ veinminerActivated) {
                 VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(veinminerActivated));
+
+                if (veinminerActivated) {
+                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
+                }
             }
         });
 
         ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-            serverState = new FabricServerState(client); // Initialize a new server state
+            // Initialize a new server state
+            serverState = new FabricServerState(client);
         });
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
@@ -69,7 +79,7 @@ public final class VeinMinerMod implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((stack, delta) -> {
-            if (!hasServerState() || !serverState.isEnabled() || !veinminerActivated || !MinecraftClient.isHudEnabled()) {
+            if (!hasServerState() || !getServerState().isEnabled() || !veinminerActivated || !MinecraftClient.isHudEnabled()) {
                 return;
             }
 

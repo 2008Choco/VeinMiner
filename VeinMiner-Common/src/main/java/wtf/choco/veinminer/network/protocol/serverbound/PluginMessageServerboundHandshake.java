@@ -26,7 +26,7 @@ public final class PluginMessageServerboundHandshake implements PluginMessage<Se
         this.protocolVersion = protocolVersion;
     }
 
-    public PluginMessageServerboundHandshake(PluginMessageByteBuffer buffer) {
+    public PluginMessageServerboundHandshake(@NotNull PluginMessageByteBuffer buffer) {
         this.protocolVersion = buffer.readVarInt();
     }
 
@@ -46,7 +46,7 @@ public final class PluginMessageServerboundHandshake implements PluginMessage<Se
 
     @Override
     public void handle(@NotNull ServerboundPluginMessageListener listener) {
-        listener.handleServerboundHandshake(this);
+        listener.handleHandshake(this);
     }
 
 }

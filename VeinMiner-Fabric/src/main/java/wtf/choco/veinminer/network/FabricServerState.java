@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
 import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
@@ -53,8 +54,13 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     }
 
     @Override
-    public void handleClientboundHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message) {
+    public void handleHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message) {
         this.enabled = message.isEnabled();
+    }
+
+    @Override
+    public void handleVeinMineResults(@NotNull PluginMessageClientboundVeinMineResults message) {
+        // TODO: Handle the results
     }
 
 }

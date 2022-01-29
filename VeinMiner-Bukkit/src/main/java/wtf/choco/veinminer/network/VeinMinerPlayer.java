@@ -12,6 +12,9 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.LazyMetadataValue;
@@ -24,13 +27,21 @@ import org.jetbrains.annotations.UnmodifiableView;
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.block.BlockAccessor;
+import wtf.choco.veinminer.block.BukkitBlockAccessor;
+import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
+import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.platform.BukkitBlockState;
+import wtf.choco.veinminer.platform.BukkitItemType;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
 import wtf.choco.veinminer.util.VMConstants;
 import wtf.choco.veinminer.util.VMEventFactory;
@@ -354,7 +365,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
     @Internal
     @Override
-    public void handleServerboundHandshake(@NotNull PluginMessageServerboundHandshake message) {
+    public void handleHandshake(@NotNull PluginMessageServerboundHandshake message) {
         Player player = getPlayer();
         assert player != null;
 
@@ -388,7 +399,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
     @Internal
     @Override
-    public void handleServerboundToggleVeinMiner(@NotNull PluginMessageServerboundToggleVeinMiner message) {
+    public void handleToggleVeinMiner(@NotNull PluginMessageServerboundToggleVeinMiner message) {
         Player player = getPlayer();
         assert player != null;
 
@@ -401,6 +412,34 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         }
 
         this.clientKeyPressed = message.isActivated();
+    }
+
+    @Internal
+    @Override
+    public void handleRequestVeinMine(@NotNull PluginMessageServerboundRequestVeinMine message) {
+        Player player = getPlayer();
+        assert player != null;
+
+        World world = player.getWorld();
+        VeinMinerToolCategory category = VeinMiner.getInstance().getToolCategoryRegistry().get(BukkitItemType.of(player.getInventory().getItemInMainHand().getType()));
+
+        if (category == null) {
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults());
+            return;
+        }
+
+        BlockAccessor blockAccessor = BukkitBlockAccessor.forWorld(world);
+        Block targetBlock = player.getTargetBlock(null, 6);
+        BlockData targetBlockData = targetBlock.getBlockData();
+        VeinMinerBlock block = VeinMinerPlugin.getInstance().getVeinMinerManager().getVeinMinerBlock(BukkitBlockState.of(targetBlockData), category);
+
+        if (block == null) {
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults());
+            return;
+        }
+
+        Set<BlockPosition> blocks = getVeinMiningPattern().allocateBlocks(blockAccessor, BlockPosition.at(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()), block, category.getConfig());
+        VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults(blocks));
     }
 
 }

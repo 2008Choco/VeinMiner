@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.network.PluginMessageProtocol;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
+import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.platform.PlatformReconstructor;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
@@ -37,10 +39,12 @@ public final class VeinMiner {
     public static final PluginMessageProtocol PROTOCOL = new PluginMessageProtocol(PROTOCOL_CHANNEL, PROTOCOL_VERSION,
             serverboundRegistry -> serverboundRegistry
                 .registerMessage(PluginMessageServerboundHandshake.class, PluginMessageServerboundHandshake::new)
-                .registerMessage(PluginMessageServerboundToggleVeinMiner.class, PluginMessageServerboundToggleVeinMiner::new),
+                .registerMessage(PluginMessageServerboundToggleVeinMiner.class, PluginMessageServerboundToggleVeinMiner::new)
+                .registerMessage(PluginMessageServerboundRequestVeinMine.class, PluginMessageServerboundRequestVeinMine::new),
 
             clientboundRegistry -> clientboundRegistry
                 .registerMessage(PluginMessageClientboundHandshakeResponse.class, PluginMessageClientboundHandshakeResponse::new)
+                .registerMessage(PluginMessageClientboundVeinMineResults.class, PluginMessageClientboundVeinMineResults::new)
     );
 
     private static VeinMiner instance;

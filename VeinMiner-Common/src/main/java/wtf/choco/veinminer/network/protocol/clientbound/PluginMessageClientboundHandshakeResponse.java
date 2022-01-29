@@ -30,7 +30,7 @@ public final class PluginMessageClientboundHandshakeResponse implements PluginMe
         this.enabled = enabled;
     }
 
-    public PluginMessageClientboundHandshakeResponse(PluginMessageByteBuffer buffer) {
+    public PluginMessageClientboundHandshakeResponse(@NotNull PluginMessageByteBuffer buffer) {
         this.enabled = buffer.readBoolean();
     }
 
@@ -54,7 +54,7 @@ public final class PluginMessageClientboundHandshakeResponse implements PluginMe
 
     @Override
     public void handle(@NotNull ClientboundPluginMessageListener listener) {
-        listener.handleClientboundHandshakeResponse(this);
+        listener.handleHandshakeResponse(this);
     }
 
 }
