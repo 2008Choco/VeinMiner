@@ -112,7 +112,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      * Enable vein miner for this player (all categories).
      */
     public void enableVeinMiner() {
-        this.dirty = !disabledCategories.isEmpty();
+        this.dirty |= !disabledCategories.isEmpty();
         this.disabledCategories.clear();
     }
 
@@ -123,14 +123,14 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      */
     public void enableVeinMiner(@NotNull VeinMinerToolCategory category) {
         Preconditions.checkArgument(category != null, "Cannot enable null category");
-        this.dirty = disabledCategories.remove(category);
+        this.dirty |= disabledCategories.remove(category);
     }
 
     /**
      * Disable vein miner for this player (all categories).
      */
     public void disableVeinMiner() {
-        this.dirty = disabledCategories.addAll(VeinMinerPlugin.getInstance().getToolCategoryRegistry().getAll());
+        this.dirty |= disabledCategories.addAll(VeinMinerPlugin.getInstance().getToolCategoryRegistry().getAll());
     }
 
     /**
@@ -140,7 +140,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      */
     public void disableVeinMiner(@NotNull VeinMinerToolCategory category) {
         Preconditions.checkArgument(category != null, "Cannot disable null category");
-        this.dirty = disabledCategories.add(category);
+        this.dirty |= disabledCategories.add(category);
     }
 
     /**
@@ -239,7 +239,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     public void setActivationStrategy(@NotNull ActivationStrategy activationStrategy) {
         Preconditions.checkArgument(activationStrategy != null, "activationStrategy must not be null");
 
-        this.dirty = (this.activationStrategy != activationStrategy);
+        this.dirty |= (this.activationStrategy != activationStrategy);
         this.activationStrategy = activationStrategy;
     }
 
@@ -259,6 +259,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      * @param veinMiningPattern the pattern
      */
     public void setVeinMiningPattern(@NotNull VeinMiningPattern veinMiningPattern) {
+        this.dirty |= (!this.veinMiningPattern.equals(veinMiningPattern));
         this.veinMiningPattern = veinMiningPattern;
     }
 
