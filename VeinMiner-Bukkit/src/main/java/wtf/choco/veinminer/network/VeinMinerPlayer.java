@@ -356,7 +356,6 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     @Override
     public void sendMessage(@NotNull NamespacedKey channel, byte[] message) {
         Player player = getPlayer();
-
         if (player == null) {
             return;
         }
@@ -368,7 +367,9 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     @Override
     public void handleHandshake(@NotNull PluginMessageServerboundHandshake message) {
         Player player = getPlayer();
-        assert player != null;
+        if (player == null) {
+            return;
+        }
 
         int serverProtocolVersion = VeinMiner.PROTOCOL.getVersion();
         if (serverProtocolVersion != message.getProtocolVersion()) {
@@ -402,7 +403,9 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     @Override
     public void handleToggleVeinMiner(@NotNull PluginMessageServerboundToggleVeinMiner message) {
         Player player = getPlayer();
-        assert player != null;
+        if (player == null) {
+            return;
+        }
 
         if (!VeinMinerPlugin.getInstance().getConfig().getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
             return;
@@ -419,7 +422,9 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     @Override
     public void handleRequestVeinMine(@NotNull PluginMessageServerboundRequestVeinMine message) {
         Player player = getPlayer();
-        assert player != null;
+        if (player == null) {
+            return;
+        }
 
         World world = player.getWorld();
         VeinMinerToolCategory category = VeinMiner.getInstance().getToolCategoryRegistry().get(BukkitItemType.of(player.getInventory().getItemInMainHand().getType()));
