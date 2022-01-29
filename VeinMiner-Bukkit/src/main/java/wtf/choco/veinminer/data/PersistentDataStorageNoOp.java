@@ -44,7 +44,4 @@ public final class PersistentDataStorageNoOp implements PersistentDataStorage {
         return CompletableFuture.completedFuture(player);
     }
 
-    @Override
-    public void close() { }
-
 }

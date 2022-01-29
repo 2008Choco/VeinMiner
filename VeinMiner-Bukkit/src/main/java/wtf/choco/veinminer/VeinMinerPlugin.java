@@ -245,8 +245,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
             this.persistentDataStorage.save(this, player);
         });
-
-        this.persistentDataStorage.close();
     }
 
     /**

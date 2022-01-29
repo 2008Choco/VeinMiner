@@ -2,7 +2,6 @@ package wtf.choco.veinminer.data;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
@@ -53,13 +52,6 @@ public interface PersistentDataStorage {
      */
     @NotNull
     public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player);
-
-    /**
-     * Close this persistent data storage if necessary. Will block the thread on which this
-     * method is invoked.
-     */
-    @Blocking
-    public void close();
 
     /**
      * Represents a support type of persistent storage.

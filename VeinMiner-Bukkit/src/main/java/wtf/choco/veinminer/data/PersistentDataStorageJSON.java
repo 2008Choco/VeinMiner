@@ -123,7 +123,4 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
         });
     }
 
-    @Override
-    public void close() { }
-
 }

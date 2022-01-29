@@ -161,9 +161,6 @@ public final class PersistentDataStorageMySQL implements PersistentDataStorage {
         });
     }
 
-    @Override
-    public void close() { }
-
     private Connection openConnection() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         return DriverManager.getConnection(connectionURL, username, password);

@@ -11,13 +11,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletionException;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -57,11 +53,7 @@ public final class PersistentDataStorageSQLite implements PersistentDataStorage 
             SELECT * FROM player_data WHERE player_uuid = ?
             """;
 
-    private final Thread connectionThread;
-    private final Lock lock = new ReentrantLock();
-
     private final String connectionURL;
-    private final Queue<Consumer<Connection>> connectionQueue = new ConcurrentLinkedDeque<>();
 
     /**
      * Construct a new {@link PersistentDataStorageSQLite}.
@@ -83,9 +75,6 @@ public final class PersistentDataStorageSQLite implements PersistentDataStorage 
         }
 
         this.connectionURL = "jdbc:sqlite:plugins/" + plugin.getDataFolder().getName() + "/" + fileName;
-
-        this.connectionThread = new Thread(new SQLConnectionRunnable());
-        this.connectionThread.start();
     }
 
     @NotNull
@@ -97,18 +86,13 @@ public final class PersistentDataStorageSQLite implements PersistentDataStorage 
     @NotNull
     @Override
     public CompletableFuture<Void> init() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-
-        this.connectionQueue.add(connection -> {
-            try {
+        return CompletableFuture.runAsync(() -> {
+            try (Connection connection = openConnection()) {
                 connection.createStatement().execute(CREATE_TABLE_PLAYERS);
-                future.complete(null);
-            } catch (SQLException e) {
-                future.completeExceptionally(e);
+            } catch (SQLException | ClassNotFoundException e) {
+                throw new CompletionException(e);
             }
         });
-
-        return future;
     }
 
     @NotNull
@@ -118,10 +102,8 @@ public final class PersistentDataStorageSQLite implements PersistentDataStorage 
             return CompletableFuture.completedFuture(player);
         }
 
-        CompletableFuture<VeinMinerPlayer> future = new CompletableFuture<>();
-
-        this.connectionQueue.add(connection -> {
-            try {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = openConnection()) {
                 // Insert player
                 PreparedStatement statement = connection.prepareStatement(INSERT_PLAYER_DATA);
                 statement.setString(1, player.getPlayerUUID().toString());
@@ -131,22 +113,18 @@ public final class PersistentDataStorageSQLite implements PersistentDataStorage 
                 statement.setString(4, player.getVeinMiningPattern().getKey().toString());
                 statement.execute();
 
-                future.complete(player);
-            } catch (SQLException e) {
-                future.completeExceptionally(e);
+                return player;
+            } catch (SQLException | ClassNotFoundException e) {
+                throw new CompletionException(e);
             }
         });
-
-        return future;
     }
 
     @NotNull
     @Override
     public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
-        CompletableFuture<VeinMinerPlayer> future = new CompletableFuture<>();
-
-        this.connectionQueue.add(connection -> {
-            try {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = openConnection()) {
                 PreparedStatement statement = connection.prepareStatement(SELECT_PLAYER_DATA);
                 statement.setString(1, player.getPlayerUUID().toString());
 
@@ -183,54 +161,16 @@ public final class PersistentDataStorageSQLite implements PersistentDataStorage 
                     player.setDirty(false); // They are no longer dirty. We just loaded them
                 }
 
-                future.complete(player);
-            } catch (SQLException e) {
-                future.completeExceptionally(e);
+                return player;
+            } catch (SQLException | ClassNotFoundException e) {
+                throw new CompletionException(e);
             }
         });
-
-        return future;
-    }
-
-    @Override
-    public void close() {
-        try {
-            this.connectionThread.join(5000);
-        } catch (InterruptedException e) {
-            // If there were still queries waiting for a connection, something went wrong. Print our stack trace
-            if (!connectionQueue.isEmpty()) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private Connection openConnection() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("org.sqlite.JDBC");
         return DriverManager.getConnection(connectionURL);
-    }
-
-    private class SQLConnectionRunnable implements Runnable {
-
-        @Override
-        public void run() {
-            while (true) {
-                Consumer<Connection> task = connectionQueue.poll();
-                if (task == null) {
-                    continue;
-                }
-
-                lock.lock();
-                try (Connection connection = openConnection()) {
-                    task.accept(connection);
-                } catch (SQLException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                } finally {
-                    lock.unlock();
-                }
-
-            }
-        }
-
     }
 
 }
