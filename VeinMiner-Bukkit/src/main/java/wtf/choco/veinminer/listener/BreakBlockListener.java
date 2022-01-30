@@ -68,7 +68,7 @@ public final class BreakBlockListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(BukkitItemType.of(item.getType()), cat -> player.hasPermission(VMConstants.PERMISSION_DYNAMIC_VEINMINE.formatted(cat.getId().toLowerCase())));
+        VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(BukkitItemType.of(item.getType()), cat -> player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(cat)));
         if (category == null) {
             return;
         }
@@ -89,7 +89,7 @@ public final class BreakBlockListener implements Listener {
                 || veinMinerPlayer.isVeinMinerDisabled(category)
                 || veinMinerManager.isDisabledGameMode(GameMode.getByIdOrThrow(player.getGameMode().name()))
                 || veinMinerConfig.isDisabledWorld(origin.getWorld().getName())
-                || !player.hasPermission(String.format(VMConstants.PERMISSION_DYNAMIC_VEINMINE, category.getId().toLowerCase()))) {
+                || !player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(category))) {
             return;
         }
 

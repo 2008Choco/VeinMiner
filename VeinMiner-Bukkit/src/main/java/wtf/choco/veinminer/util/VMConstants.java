@@ -1,5 +1,9 @@
 package wtf.choco.veinminer.util;
 
+import java.util.function.Function;
+
+import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+
 /**
  * General purpose constants used throughout VeinMiner.
  * <p>
@@ -59,7 +63,7 @@ public final class VMConstants {
     public static final String PERMISSION_FREE_HUNGER = "veinminer.free.hunger";
 
     // Dynamic permission nodes
-    public static final String PERMISSION_DYNAMIC_VEINMINE = "veinminer.veinmine.%s";
+    public static final Function<VeinMinerToolCategory, String> PERMISSION_VEINMINE = category -> "veinminer.veinmine." + category.getId().toLowerCase();
 
 
     // Metadata keys
