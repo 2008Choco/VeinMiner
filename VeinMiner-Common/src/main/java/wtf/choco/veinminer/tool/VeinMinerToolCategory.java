@@ -12,7 +12,7 @@ import wtf.choco.veinminer.platform.ItemType;
 /**
  * Represents a category of tools.
  */
-public interface VeinMinerToolCategory {
+public interface VeinMinerToolCategory extends Comparable<VeinMinerToolCategory> {
 
     /**
      * Get the unique id of this tool category.
@@ -21,6 +21,20 @@ public interface VeinMinerToolCategory {
      */
     @NotNull
     public String getId();
+
+    /**
+     * Get the priority of this tool category.
+     * <p>
+     * Priority determines whether or not one category will be selected over another under
+     * the circumstance that more than one category matches any given item type. For instance,
+     * if two categories declare that a {@code diamond_pickaxe} is on the list of items, the
+     * category with the higher priority should be selected for use. Higher integers are
+     * more important than categories with lower integers. Categories with the same priority
+     * will not abide by any defined behaviour.
+     *
+     * @return the priority
+     */
+    public int getPriority();
 
     /**
      * Get the {@link BlockList} for this tool category.
@@ -73,5 +87,15 @@ public interface VeinMinerToolCategory {
      * @return true if this category contains the item, false otherwise
      */
     public boolean containsItem(@NotNull ItemType item);
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Default behaviour is to compare against a category's priority ({@link #getPriority()}).
+     */
+    @Override
+    default int compareTo(VeinMinerToolCategory other) {
+        return Integer.compare(getPriority(), other.getPriority());
+    }
 
 }

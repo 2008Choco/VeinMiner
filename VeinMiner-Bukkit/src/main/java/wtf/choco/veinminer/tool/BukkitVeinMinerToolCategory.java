@@ -21,6 +21,7 @@ import wtf.choco.veinminer.platform.ItemType;
 public class BukkitVeinMinerToolCategory implements VeinMinerToolCategory {
 
     private final String id;
+    private final int priority;
     private final BlockList blockList;
     private final VeinMinerConfig config;
     private final Set<ItemType> items;
@@ -29,12 +30,14 @@ public class BukkitVeinMinerToolCategory implements VeinMinerToolCategory {
      * Construct a new {@link BukkitVeinMinerToolCategory}.
      *
      * @param id the unique id of the tool category
+     * @param priority the category's priority
      * @param blockList the category block list
      * @param config the category config
      * @param items the items in this category
      */
-    public BukkitVeinMinerToolCategory(@NotNull String id, @NotNull BlockList blockList, @NotNull VeinMinerConfig config, @NotNull Set<Material> items) {
+    public BukkitVeinMinerToolCategory(@NotNull String id, int priority, @NotNull BlockList blockList, @NotNull VeinMinerConfig config, @NotNull Set<Material> items) {
         this.id = id;
+        this.priority = priority;
         this.blockList = blockList;
         this.config = config;
 
@@ -46,6 +49,11 @@ public class BukkitVeinMinerToolCategory implements VeinMinerToolCategory {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 
     @NotNull

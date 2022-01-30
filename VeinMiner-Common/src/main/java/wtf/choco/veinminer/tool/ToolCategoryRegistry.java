@@ -50,13 +50,15 @@ public final class ToolCategoryRegistry {
      */
     @Nullable
     public VeinMinerToolCategory get(@NotNull ItemType itemType) {
+        VeinMinerToolCategory resultCategory = null;
+
         for (VeinMinerToolCategory category : categories.values()) {
-            if (category.containsItem(itemType)) {
-                return category;
+            if (category.containsItem(itemType) && (resultCategory == null || category.compareTo(resultCategory) > 1)) {
+                resultCategory = category;
             }
         }
 
-        return null;
+        return resultCategory;
     }
 
     /**

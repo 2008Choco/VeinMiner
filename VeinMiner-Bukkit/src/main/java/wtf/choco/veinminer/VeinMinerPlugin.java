@@ -472,7 +472,9 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 continue;
             }
 
-            getToolCategoryRegistry().register(new BukkitVeinMinerToolCategory(categoryId, blocklist, veinMinerConfig, items));
+            int priority = categoryRoot.getInt(VMConstants.CONFIG_PRIORITY, 0);
+
+            getToolCategoryRegistry().register(new BukkitVeinMinerToolCategory(categoryId, priority, blocklist, veinMinerConfig, items));
             this.getLogger().info(String.format("Registered category with id \"%s\" holding %d unique items and %d unique blocks.", categoryId, items.size(), blocklist.size()));
         }
 
