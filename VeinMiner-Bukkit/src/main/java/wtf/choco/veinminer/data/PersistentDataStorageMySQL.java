@@ -3,6 +3,8 @@ package wtf.choco.veinminer.data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.function.IntFunction;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,8 +38,11 @@ public final class PersistentDataStorageMySQL extends PersistentDataStorageSQL {
             """;
 
     private static final String SELECT_PLAYER_DATA = """
-            SELECT * FROM %prefix%player_data players WHERE player_uuid = ?
+            SELECT * FROM %prefix%player_data WHERE player_uuid = ?
             """;
+
+    // SELECT * FROM %prefix%player_data WHERE player_uuid IN (?, ?, ?, ?, ...)
+    private static final IntFunction<String> SELECT_PLAYER_DATA_BATCH = count -> SELECT_PLAYER_DATA.replace("= ?", "IN (" + String.join(", ", Collections.nCopies(count, "?")) + ")");
 
     private final String connectionURL;
     private final String username, password;
@@ -93,6 +98,12 @@ public final class PersistentDataStorageMySQL extends PersistentDataStorageSQL {
     @Override
     protected String getSelectAllPlayerDataQuery() {
         return SELECT_PLAYER_DATA.replace("%prefix%", tablePrefix);
+    }
+
+    @NotNull
+    @Override
+    protected String getSelectAllPlayerDataBatchQuery(int count) {
+        return SELECT_PLAYER_DATA_BATCH.apply(count).replace("%prefix%", tablePrefix);
     }
 
 }

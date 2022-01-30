@@ -2,6 +2,7 @@ package wtf.choco.veinminer;
 
 import com.google.common.base.Enums;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Collections2;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -204,7 +205,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.reloadToolCategoryRegistryConfig();
 
         // Special case for reloads
-        Bukkit.getOnlinePlayers().forEach(player -> persistentDataStorage.load(this, playerManager.get(player)));
+        this.persistentDataStorage.load(this, Collections2.transform(Bukkit.getOnlinePlayers(), playerManager::get));
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
@@ -237,13 +238,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.getPatternRegistry().unregisterAll();
         this.getToolCategoryRegistry().unregisterAll();
 
-        this.playerManager.getAll().forEach(player -> {
-            if (!player.isDirty()) {
-                return;
-            }
-
-            this.persistentDataStorage.save(this, player);
-        });
+        this.persistentDataStorage.save(this, playerManager.getAll());
     }
 
     /**

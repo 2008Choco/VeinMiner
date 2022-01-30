@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.data;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +45,17 @@ public interface PersistentDataStorage {
     public CompletableFuture<VeinMinerPlayer> save(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player);
 
     /**
+     * Save the data of the given list of {@link VeinMinerPlayer VeinMinerPlayers} to disk.
+     *
+     * @param plugin the plugin instance
+     * @param players the players to save
+     *
+     * @return a {@link CompletableFuture} completed when saving has finished
+     */
+    @NotNull
+    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players);
+
+    /**
      * Load the data of the given {@link VeinMinerPlayer} from disk.
      *
      * @param plugin the plugin instance
@@ -52,6 +65,17 @@ public interface PersistentDataStorage {
      */
     @NotNull
     public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player);
+
+    /**
+     * Load the data of the given list of {@link VeinMinerPlayer VeinMinerPlayers} from disk.
+     *
+     * @param plugin the plugin instance
+     * @param players the players whose data to load
+     *
+     * @return a {@link CompletableFuture} completed when loading has finished
+     */
+    @NotNull
+    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players);
 
     /**
      * Represents a support type of persistent storage.

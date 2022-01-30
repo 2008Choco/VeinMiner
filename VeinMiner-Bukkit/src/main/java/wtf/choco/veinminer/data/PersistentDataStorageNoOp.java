@@ -1,5 +1,8 @@
 package wtf.choco.veinminer.data;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,8 +43,20 @@ public final class PersistentDataStorageNoOp implements PersistentDataStorage {
 
     @NotNull
     @Override
+    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
+        return CompletableFuture.completedFuture(new ArrayList<>(players));
+    }
+
+    @NotNull
+    @Override
     public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
         return CompletableFuture.completedFuture(player);
+    }
+
+    @NotNull
+    @Override
+    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
+        return CompletableFuture.completedFuture(new ArrayList<>(players));
     }
 
 }

@@ -2,6 +2,7 @@ package wtf.choco.veinminer.data;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Enums;
+import com.google.common.base.Predicates;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -11,6 +12,9 @@ import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
@@ -56,71 +60,103 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
     @NotNull
     @Override
     public CompletableFuture<VeinMinerPlayer> save(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
+        return CompletableFuture.supplyAsync(() -> savePlayer(player));
+    }
+
+    @NotNull
+    @Override
+    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
+        if (players.isEmpty() || players.stream().allMatch(Predicates.not(VeinMinerPlayer::isDirty))) {
+            return CompletableFuture.completedFuture(new ArrayList<>(players));
+        }
+
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                File playerFile = new File(directory, player.getPlayerUUID().toString() + ".json");
-                playerFile.createNewFile();
-
-                JsonObject root = new JsonObject();
-                root.addProperty("activation_strategy_id", player.getActivationStrategy().name());
-                root.addProperty("vein_mining_pattern_id", player.getVeinMiningPattern().getKey().toString());
-
-                JsonArray disabledCategoriesArray = new JsonArray();
-                player.getDisabledCategories().forEach(category -> disabledCategoriesArray.add(category.getId()));
-                root.add("disabled_categories", disabledCategoriesArray);
-
-                Files.write(gson.toJson(root).getBytes(Charsets.UTF_8), playerFile);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-
-            return player;
+            List<VeinMinerPlayer> result = new ArrayList<>(players.size());
+            players.forEach(player -> result.add(savePlayer(player)));
+            return result;
         });
     }
 
     @NotNull
     @Override
     public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
+        return CompletableFuture.supplyAsync(() -> loadPlayer(plugin, player));
+    }
+
+    @NotNull
+    @Override
+    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
+        if (players.isEmpty()) {
+            return CompletableFuture.completedFuture(new ArrayList<>());
+        }
+
         return CompletableFuture.supplyAsync(() -> {
-            File playerFile = new File(directory, player.getPlayerUUID().toString() + ".json");
-
-            if (!playerFile.exists()) {
-                return player;
-            }
-
-            try (BufferedReader reader = Files.newReader(playerFile, Charsets.UTF_8)) {
-                JsonObject root = gson.fromJson(reader, JsonObject.class);
-
-                if (root.has("activation_strategy_id")) {
-                    player.setActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, root.get("activation_strategy_id").getAsString().toUpperCase()).or(VeinMiner.getInstance().getDefaultActivationStrategy()));
-                }
-
-                if (root.has("disabled_categories")) {
-                    player.enableVeinMiner(); // Ensure that all categories are loaded again
-
-                    root.getAsJsonArray("disabled_categories").forEach(element -> {
-                        if (!element.isJsonPrimitive()) {
-                            return;
-                        }
-
-                        VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(element.getAsString().toUpperCase());
-                        if (category == null) {
-                            return;
-                        }
-
-                        player.disableVeinMiner(category);
-                    });
-                }
-
-                if (root.has("vein_mining_pattern_id")) {
-                    player.setVeinMiningPattern(plugin.getPatternRegistry().getOrDefault(root.get("vein_mining_pattern_id").getAsString(), plugin.getDefaultVeinMiningPattern()));
-                }
-            } catch (IOException | JsonSyntaxException e) {
-                throw new CompletionException(e);
-            }
-
-            return player;
+            List<VeinMinerPlayer> result = new ArrayList<>(players.size());
+            players.forEach(player -> result.add(loadPlayer(plugin, player)));
+            return result;
         });
+    }
+
+    private VeinMinerPlayer savePlayer(VeinMinerPlayer player) {
+        try {
+            File playerFile = new File(directory, player.getPlayerUUID().toString() + ".json");
+            playerFile.createNewFile();
+
+            JsonObject root = new JsonObject();
+            root.addProperty("activation_strategy_id", player.getActivationStrategy().name());
+            root.addProperty("vein_mining_pattern_id", player.getVeinMiningPattern().getKey().toString());
+
+            JsonArray disabledCategoriesArray = new JsonArray();
+            player.getDisabledCategories().forEach(category -> disabledCategoriesArray.add(category.getId()));
+            root.add("disabled_categories", disabledCategoriesArray);
+
+            Files.write(gson.toJson(root).getBytes(Charsets.UTF_8), playerFile);
+        } catch (IOException e) {
+            throw new CompletionException(e);
+        }
+
+        return player;
+    }
+
+    private VeinMinerPlayer loadPlayer(VeinMinerPlugin plugin, VeinMinerPlayer player) {
+        File playerFile = new File(directory, player.getPlayerUUID().toString() + ".json");
+
+        if (!playerFile.exists()) {
+            return player;
+        }
+
+        try (BufferedReader reader = Files.newReader(playerFile, Charsets.UTF_8)) {
+            JsonObject root = gson.fromJson(reader, JsonObject.class);
+
+            if (root.has("activation_strategy_id")) {
+                player.setActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, root.get("activation_strategy_id").getAsString().toUpperCase()).or(VeinMiner.getInstance().getDefaultActivationStrategy()));
+            }
+
+            if (root.has("disabled_categories")) {
+                player.enableVeinMiner(); // Ensure that all categories are loaded again
+
+                root.getAsJsonArray("disabled_categories").forEach(element -> {
+                    if (!element.isJsonPrimitive()) {
+                        return;
+                    }
+
+                    VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(element.getAsString().toUpperCase());
+                    if (category == null) {
+                        return;
+                    }
+
+                    player.disableVeinMiner(category);
+                });
+            }
+
+            if (root.has("vein_mining_pattern_id")) {
+                player.setVeinMiningPattern(plugin.getPatternRegistry().getOrDefault(root.get("vein_mining_pattern_id").getAsString(), plugin.getDefaultVeinMiningPattern()));
+            }
+        } catch (IOException | JsonSyntaxException e) {
+            throw new CompletionException(e);
+        }
+
+        return player;
     }
 
 }

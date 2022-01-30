@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.function.IntFunction;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +41,9 @@ public final class PersistentDataStorageSQLite extends PersistentDataStorageSQL 
     private static final String SELECT_PLAYER_DATA = """
             SELECT * FROM player_data WHERE player_uuid = ?
             """;
+
+    // SELECT * FROM %prefix%player_data WHERE player_uuid IN (?, ?, ?, ?, ...)
+    private static final IntFunction<String> SELECT_PLAYER_DATA_BATCH = count -> SELECT_PLAYER_DATA.replace("= ?", "IN (" + String.join(", ", Collections.nCopies(count, "?")) + ")");
 
     private final String connectionURL;
 
@@ -97,6 +102,12 @@ public final class PersistentDataStorageSQLite extends PersistentDataStorageSQL 
     @Override
     protected String getSelectAllPlayerDataQuery() {
         return SELECT_PLAYER_DATA;
+    }
+
+    @NotNull
+    @Override
+    protected String getSelectAllPlayerDataBatchQuery(int count) {
+        return SELECT_PLAYER_DATA_BATCH.apply(count);
     }
 
 }
