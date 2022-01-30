@@ -19,6 +19,7 @@
 #   DisabledWorlds:
 #   - 'world_name'
 #   - 'other_world_name'
+#   Priority: 10 # This is optional and defaults to 0
 #   Items:
 #   - 'minecraft:wooden_sword'
 #   - 'minecraft:stone_sword'
