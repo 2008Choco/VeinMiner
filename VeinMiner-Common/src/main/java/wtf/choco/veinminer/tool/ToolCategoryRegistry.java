@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,8 @@ import wtf.choco.veinminer.platform.ItemType;
  * A registry to which {@link VeinMinerToolCategory VeinMinerToolCategories} may be registered.
  */
 public final class ToolCategoryRegistry {
+
+    private static final Predicate<VeinMinerToolCategory> PREDICATE_ALWAYS_TRUE = category -> true;
 
     private final Map<String, VeinMinerToolCategory> categories = new HashMap<>();
 
@@ -40,6 +43,31 @@ public final class ToolCategoryRegistry {
     }
 
     /**
+     * Get the {@link VeinMinerToolCategory} that contains the given {@link ItemType} and matches
+     * the given {@link Predicate}. There is no guarantee as to which category will be returned if
+     * more than one category contains the provided ItemType.
+     *
+     * @param itemType the item type
+     * @param categoryPredicate a predicate to apply on top of the item condition. If the predicate
+     * returns false for any given category, it will not be returned by this method. Useful for an
+     * additional permission check on a category
+     *
+     * @return the corresponding tool category, or null if no category contains the item
+     */
+    @Nullable
+    public VeinMinerToolCategory get(@NotNull ItemType itemType, @NotNull Predicate<VeinMinerToolCategory> categoryPredicate) {
+        VeinMinerToolCategory resultCategory = null;
+
+        for (VeinMinerToolCategory category : categories.values()) {
+            if (category.containsItem(itemType) && (resultCategory == null || category.compareTo(resultCategory) > 1) && categoryPredicate.test(category)) {
+                resultCategory = category;
+            }
+        }
+
+        return resultCategory;
+    }
+
+    /**
      * Get the {@link VeinMinerToolCategory} that contains the given {@link ItemType}. There is
      * no guarantee as to which category will be returned if more than one category contains the
      * provided ItemType.
@@ -50,15 +78,7 @@ public final class ToolCategoryRegistry {
      */
     @Nullable
     public VeinMinerToolCategory get(@NotNull ItemType itemType) {
-        VeinMinerToolCategory resultCategory = null;
-
-        for (VeinMinerToolCategory category : categories.values()) {
-            if (category.containsItem(itemType) && (resultCategory == null || category.compareTo(resultCategory) > 1)) {
-                resultCategory = category;
-            }
-        }
-
-        return resultCategory;
+        return get(itemType, PREDICATE_ALWAYS_TRUE);
     }
 
     /**
