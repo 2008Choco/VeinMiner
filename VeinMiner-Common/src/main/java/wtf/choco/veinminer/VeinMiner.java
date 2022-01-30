@@ -10,6 +10,7 @@ import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientbound
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
+import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.platform.PlatformReconstructor;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
 import wtf.choco.veinminer.util.NamespacedKey;
@@ -52,6 +53,8 @@ public final class VeinMiner {
     private ActivationStrategy defaultActivationStrategy = ActivationStrategy.SNEAK;
 
     private ToolCategoryRegistry toolCategoryRegistry;
+    private PatternRegistry patternRegistry = new PatternRegistry();
+
     private PlatformReconstructor platformReconstructor;
 
     private VeinMiner() { }
@@ -104,6 +107,15 @@ public final class VeinMiner {
         }
 
         return toolCategoryRegistry;
+    }
+
+    /**
+     * Get the {@link PatternRegistry}.
+     *
+     * @return the pattern registry
+     */
+    public PatternRegistry getPatternRegistry() {
+        return patternRegistry;
     }
 
     /**

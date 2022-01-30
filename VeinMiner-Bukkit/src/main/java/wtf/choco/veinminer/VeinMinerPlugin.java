@@ -90,8 +90,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
     private final BukkitChannelHandler channelHandler = new BukkitChannelHandler(this);
     private final VeinMinerManager veinMinerManager = new VeinMinerManager();
-    private final PatternRegistry patternRegistry = new PatternRegistry();
-    private final ToolCategoryRegistry toolCategoryRegistry = new ToolCategoryRegistry();
     private final VeinMinerPlayerManager playerManager = new VeinMinerPlayerManager();
 
     private EconomyModifier economyModifier;
@@ -104,10 +102,10 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @Override
     public void onLoad() {
         VeinMiner veinMiner = VeinMiner.getInstance();
-        veinMiner.setToolCategoryRegistry(toolCategoryRegistry);
+        veinMiner.setToolCategoryRegistry(new ToolCategoryRegistry());
         veinMiner.setPlatformReconstructor(BukkitPlatformReconstructor.INSTANCE);
 
-        this.patternRegistry.register(defaultVeinMiningPattern);
+        veinMiner.getPatternRegistry().register(defaultVeinMiningPattern);
 
         VeinMiner.PROTOCOL.registerChannels(channelHandler);
 
@@ -136,7 +134,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         String defaultVeinMiningPatternId = getConfig().getString(VMConstants.CONFIG_DEFAULT_VEIN_MINING_PATTERN, defaultVeinMiningPattern.getKey().toString());
         assert defaultVeinMiningPatternId != null;
 
-        this.defaultVeinMiningPattern = patternRegistry.getOrDefault(defaultVeinMiningPatternId, defaultVeinMiningPattern);
+        this.defaultVeinMiningPattern = getPatternRegistry().getOrDefault(defaultVeinMiningPatternId, defaultVeinMiningPattern);
 
         // Enable anticheat hooks if required
         PluginManager manager = Bukkit.getPluginManager();
@@ -234,9 +232,10 @@ public final class VeinMinerPlugin extends JavaPlugin {
     public void onDisable() {
         this.getLogger().info("Clearing localized data");
         this.veinMinerManager.clear();
-        this.patternRegistry.unregisterAll();
-        this.toolCategoryRegistry.unregisterAll();
         this.anticheatHooks.clear();
+
+        this.getPatternRegistry().unregisterAll();
+        this.getToolCategoryRegistry().unregisterAll();
 
         this.playerManager.getAll().forEach(player -> {
             if (!player.isDirty()) {
@@ -257,15 +256,10 @@ public final class VeinMinerPlugin extends JavaPlugin {
         return instance;
     }
 
-    @NotNull
-    public BukkitChannelHandler getChannelHandler() {
-        return channelHandler;
-    }
-
     /**
-     * Get the VeinMiner Manager used to keep track of Veinminable blocks, and other utilities.
+     * Get the {@link VeinMinerManager}.
      *
-     * @return an instance of the VeinMiner manager
+     * @return the vein miner manager
      */
     @NotNull
     public VeinMinerManager getVeinMinerManager() {
@@ -273,18 +267,23 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get the pattern registry used to register custom vein mining patterns.
+     * Get the {@link ToolCategoryRegistry}.
      *
-     * @return an instance of the pattern registry
+     * @return the tool category registry
+     */
+    @NotNull
+    public ToolCategoryRegistry getToolCategoryRegistry() {
+        return VeinMiner.getInstance().getToolCategoryRegistry();
+    }
+
+    /**
+     * Get the {@link PatternRegistry}.
+     *
+     * @return the pattern registry
      */
     @NotNull
     public PatternRegistry getPatternRegistry() {
-        return patternRegistry;
-    }
-
-    @NotNull
-    public ToolCategoryRegistry getToolCategoryRegistry() {
-        return toolCategoryRegistry;
+        return VeinMiner.getInstance().getPatternRegistry();
     }
 
     /**
@@ -415,7 +414,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
      * Reload the {@link ToolCategoryRegistry}'s values from config into memory.
      */
     public void reloadToolCategoryRegistryConfig() {
-        this.toolCategoryRegistry.unregisterAll(); // Unregister all the categories before re-loading them
+        getToolCategoryRegistry().unregisterAll(); // Unregister all the categories before re-loading them
 
         FileConfiguration config = getConfig();
         FileConfiguration categoriesConfig = getCategoriesConfig().asRawConfig();
@@ -473,12 +472,12 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 continue;
             }
 
-            this.toolCategoryRegistry.register(new BukkitVeinMinerToolCategory(categoryId, blocklist, veinMinerConfig, items));
+            getToolCategoryRegistry().register(new BukkitVeinMinerToolCategory(categoryId, blocklist, veinMinerConfig, items));
             this.getLogger().info(String.format("Registered category with id \"%s\" holding %d unique items and %d unique blocks.", categoryId, items.size(), blocklist.size()));
         }
 
         // Also register the hand category (required)
-        this.toolCategoryRegistry.register(new BukkitVeinMinerToolCategoryHand(BlockList.parseBlockList(config.getStringList("BlockList.Hand"), getLogger()), veinMinerManager.getGlobalConfig()));
+        getToolCategoryRegistry().register(new BukkitVeinMinerToolCategoryHand(BlockList.parseBlockList(config.getStringList("BlockList.Hand"), getLogger()), veinMinerManager.getGlobalConfig()));
 
         // Register permissions dynamically
         PluginManager pluginManager = Bukkit.getPluginManager();
@@ -487,7 +486,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         Permission blocklistPermissionParent = getOrRegisterPermission(pluginManager, "veinminer.blocklist.list.*");
         Permission toollistPermissionParent = getOrRegisterPermission(pluginManager, "veinminer.toollist.list.*");
 
-        for (VeinMinerToolCategory category : toolCategoryRegistry.getAll()) {
+        for (VeinMinerToolCategory category : getToolCategoryRegistry().getAll()) {
             String id = category.getId().toLowerCase();
             Permission veinminePermission = new Permission("veinminer.veinmine." + id, "Allows players to vein mine using the " + category.getId() + " category", PermissionDefault.TRUE);
             Permission blocklistPermission = new Permission("veinminer.blocklist.list." + id, "Allows players to list blocks in the " + category.getId() + " category", PermissionDefault.OP);
