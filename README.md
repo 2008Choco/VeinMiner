@@ -28,7 +28,7 @@ These are messages sent from the client to the server.
 
 ### Handshake (serverbound)
 
-Sent by the client when logging in to inform the server that the client has the VeinMiner client-sided mod installed. The server is expected to respond promptly with a [Handshake Response](#Handshake_Response). Upon receiving this message, the server will automatically set the player's activation mode to `CLIENT`.
+Sent by the client when logging in to inform the server that the client has the VeinMiner client-sided mod installed. The server is expected to respond promptly with a Handshake Response. Upon receiving this message, the server will automatically set the player's activation mode to `CLIENT`.
 
 <table>
     <thead>
@@ -101,7 +101,7 @@ These are messages sent by the server to the client
 
 ### Handshake Response
 
-Sent in response to a client's [Handshake](#Handshake_Serverbound) indicating whether or not vein miner should be allowed on the client.
+Sent in response to a client's Handshake indicating whether or not vein miner should be allowed on the client.
 
 <table>
     <thead>
@@ -126,7 +126,7 @@ Sent in response to a client's [Handshake](#Handshake_Serverbound) indicating wh
 
 ### Vein Mine Results
 
-Sent in response to a client's [Request Vein Mine](#Request-Vein-Mine) including all block positions as a result of a vein mine at the client's target block and currently active tool category (according to the tool in the player's hand at the time the message was received by the server).
+Sent in response to a client's Request Vein Mine including all block positions as a result of a vein mine at the client's target block and currently active tool category (according to the tool in the player's hand at the time the message was received by the server).
 
 <table>
     <thead>
