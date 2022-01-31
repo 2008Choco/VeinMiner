@@ -259,7 +259,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      * @param veinMiningPattern the pattern
      */
     public void setVeinMiningPattern(@NotNull VeinMiningPattern veinMiningPattern) {
-        this.dirty |= (!this.veinMiningPattern.equals(veinMiningPattern));
+        this.dirty |= (!veinMiningPattern.equals(this.veinMiningPattern));
         this.veinMiningPattern = veinMiningPattern;
     }
 
