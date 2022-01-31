@@ -1,0 +1,13 @@
+serverbound
+  0x00[Handshake (serverbound)]
+    VarInt[Protocol Version]The client's protocol version
+  0x01[Toggle Vein Miner]
+    Boolean[State]The new state of the vein miner activation
+  0x02[Request Vein Mine]
+
+clientbound
+  0x00[Handshake Response]
+    Boolean[Allowed]Whether or not the client is allowed to use the client-sided mod. If false, the client should not continue sending any packets to the server
+  0x01[Vein Mine Results]
+    VarInt[Size]The amount of block positions that were included in the resulting vein mine
+    Array of BlockPosition[Positions]An array containing all block positions that would be vein mined by the server.

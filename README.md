@@ -13,3 +13,143 @@
 This Minecraft (Bukkit) plugin aims to recreate portablejim's popular Minecraft Forge mod, VeinMiner, for CraftBukkit and Spigot servers. Licensed under GPLv3, releases are made on GitHub to comply with this license. You are currently on the GitHub page for VeinMiner (for Bukkit). portablejim's VeinMiner (for Forge) repository may be found [here](https://github.com/portablejim/VeinMiner). You are welcome to fork this project and create a pull request or request features/report bugs through the issue tracker.
 
 For information about the plugin and how to use it, please see the plugin's [resource page on SpigotMC](https://www.spigotmc.org/resources/12038/).
+
+# Messaging Protocol
+
+VeinMiner takes advantage of Minecraft's [custom payload packet](https://wiki.vg/Protocol#Plugin_Message_.28clientbound.29) to send messages to and from the client to interact with an optional cient sided mod. To do this, VeinMiner makes use of a specific sequence of bytes to identify specific messages and the data they contain. The following outlines the communications between client and server for VeinMiner's payloads. Every message is prefixed with a series of bytes representing a [VarInt](https://wiki.vg/Protocol#VarInt_and_VarLong) (as per Minecraft's protocol specification) identifying the message's id, followed by the data displayed in the tables below.
+
+The messages are sent along the `veinminer:veinminer` channel under current protocol version `1`.
+
+VeinMiner does take advantage of types similar to that of Minecraft's default protocol which you may read about [here](https://wiki.vg/Protocol#Data_types).
+
+## Serverbound
+
+These are messages sent from the client to the server.
+
+### Handshake (serverbound)
+
+Sent by the client when logging in to inform the server that the client has the VeinMiner client-sided mod installed. The server is expected to respond promptly with a [Handshake Response](#Handshake_Response). Upon receiving this message, the server will automatically set the player's activation mode to `CLIENT`.
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0x00</td>
+            <td>Server</td>
+            <td>Protocol Version</td>
+            <td><a href="https://wiki.vg/Protocol#VarInt_and_VarLong">VarInt</href></td>
+            <td>The client's protocol version</td>
+        </tr>
+    </tbody>
+</table>
+
+### Toggle Vein Miner
+
+Sent by the client to inform the server that it has activated or deactivated its vein miner keybind.
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0x01</td>
+            <td>Server</td>
+            <td>State</td>
+            <td>Boolean</td>
+            <td>The new state of the vein miner activation</td>
+        </tr>
+    </tbody>
+</table>
+
+### Request Vein Mine
+
+A simple request with no additional fields requesting that the server perform a no-op vein mine on the block at which the player is currently looking. The player's target block, active tool category, and all other vein miner required information is calculated on the server, not by the client.
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0x02</td>
+            <td>Server</td>
+        </tr>
+    </tbody>
+</table>
+
+## Clientbound
+
+These are messages sent by the server to the client
+
+### Handshake Response
+
+Sent in response to a client's [Handshake](#Handshake_Serverbound) indicating whether or not vein miner should be allowed on the client.
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0x00</td>
+            <td>Client</td>
+            <td>Allowed</td>
+            <td>Boolean</td>
+            <td>Whether or not the client is allowed to use the client-sided mod. If false, the client should not continue sending any packets to the server</td>
+        </tr>
+    </tbody>
+</table>
+
+### Vein Mine Results
+
+Sent in response to a client's [Request Vein Mine](#Request-Vein-Mine) including all block positions as a result of a vein mine at the client's target block and currently active tool category (according to the tool in the player's hand at the time the message was received by the server).
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=2>0x01</td>
+            <td rowspan=2>Client</td>
+            <td>Size</td>
+            <td><a href="https://wiki.vg/Protocol#VarInt_and_VarLong">VarInt</href></td>
+            <td>The amount of block positions that were included in the resulting vein mine</td>
+        </tr>
+        <tr>
+            <td>Positions</td>
+            <td>Array of <a href="https://wiki.vg/Protocol#Position">BlockPosition</a></td>
+            <td>An array containing all block positions that would be vein mined by the server.</td>
+        </tr>
+    </tbody>
+</table>
