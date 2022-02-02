@@ -12,25 +12,26 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
- * The default AntiAura hook implementation.
+ * The default LightAntiCheat hook implementation.
  */
-public final class AntiCheatHookAntiAura implements AntiCheatHook {
+public final class AntiCheatHookLightAntiCheat implements AntiCheatHook {
 
-    private Class<?> antiAuraApiClass;
-    private Method methodIsExemptedFromFastBreak;
-    private Method methodToggleExemptFromFastBreak;
+    private Class<?> lightAntiCheatApiClass;
+    private Method methodIsApiBypass, methodSetApiBypass;
 
     private boolean supported;
 
     private final Set<UUID> exempt = new HashSet<>();
 
-    public AntiCheatHookAntiAura(@NotNull VeinMinerPlugin plugin) {
+    public AntiCheatHookLightAntiCheat(VeinMinerPlugin plugin) {
         try {
-            this.antiAuraApiClass = Class.forName("AntiAuraAPI.API");
-            this.methodIsExemptedFromFastBreak = MethodUtils.getAccessibleMethod(antiAuraApiClass, "isExemptedFromFastBreak", Player.class);
-            this.methodToggleExemptFromFastBreak = MethodUtils.getAccessibleMethod(antiAuraApiClass, "toggleExemptFromFastBreak", Player.class);
+            this.lightAntiCheatApiClass = Class.forName("vekster.lightanticheat.api.Utils");
+            this.methodIsApiBypass = MethodUtils.getAccessibleMethod(lightAntiCheatApiClass, "isApiBypass", Player.class);
+            this.methodSetApiBypass = MethodUtils.getAccessibleMethod(lightAntiCheatApiClass, "setApiBypass", new Class[] {
+                Player.class, Boolean.TYPE
+            });
 
-            this.supported = (methodToggleExemptFromFastBreak != null && methodIsExemptedFromFastBreak != null);
+            this.supported = (methodIsApiBypass != null && methodSetApiBypass != null);
         } catch (ReflectiveOperationException e) {
             plugin.getLogger().severe("The version of " + getPluginName() + " on this server is incompatible with Veinminer. Please post information on the spigot resource discussion page.");
             e.printStackTrace();
@@ -40,18 +41,18 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
     @NotNull
     @Override
     public String getPluginName() {
-        return "AntiAura";
+        return "LightAntiCheat";
     }
 
     @Override
     public void exempt(@NotNull Player player) {
         try {
-            if (Boolean.TRUE.equals(methodIsExemptedFromFastBreak.invoke(antiAuraApiClass, player))) {
+            if (Boolean.TRUE.equals(methodIsApiBypass.invoke(null, player))) {
                 return;
             }
 
             if (exempt.add(player.getUniqueId())) {
-                this.methodToggleExemptFromFastBreak.invoke(antiAuraApiClass, player);
+                this.methodSetApiBypass.invoke(null, player, true);
             }
         } catch (ReflectiveOperationException e) { } // Ignore
     }
@@ -63,7 +64,7 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
         }
 
         try {
-            this.methodToggleExemptFromFastBreak.invoke(antiAuraApiClass, player);
+            this.methodSetApiBypass.invoke(null, player, false);
         } catch (ReflectiveOperationException e) { } // Ignore
     }
 

@@ -24,7 +24,9 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
 
     private Method methodGetPlayer;
 
-    private final Set<@NotNull UUID> exempt = new HashSet<>();
+    private boolean supported;
+
+    private final Set<UUID> exempt = new HashSet<>();
 
     public AntiCheatHookSpartan(@NotNull VeinMinerPlugin plugin) {
         Class<? extends Event> eventClass = null;
@@ -33,31 +35,29 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
             eventClass = ClassUtils.getClass(plugin.getClass().getClassLoader(), "me.vagdedes.spartan.api.PlayerViolationEvent");
             this.methodGetPlayer = MethodUtils.getAccessibleMethod(eventClass, "getPlayer", new Class<?>[] {});
         } catch (ClassNotFoundException e) {
-            this.sendIncompatibleMessage(plugin);
-            this.methodGetPlayer = null;
-            return;
+            plugin.getLogger().severe("The version of " + getPluginName() + " on this server is incompatible with VeinMiner. Please post information on the spigot resource discussion page.");
         }
 
-        //Registers the player violation event reflectively since spartan doesn't have a repo.
-        Bukkit.getPluginManager().registerEvent(eventClass, this, EventPriority.LOWEST, (listener, event) -> {
-            Player player;
+        this.supported = (eventClass != null && methodGetPlayer != null);
 
-            try {
-                player = (Player) methodGetPlayer.invoke(event);
-            } catch (ReflectiveOperationException e) {
-                return;
-            }
+        // Registers the player violation event reflectively since Spartan doesn't have an API repository.
+        if (eventClass != null && methodGetPlayer != null) { // Repeating this statement because IDEs are stupid sometimes and give nullability warnings
+            Bukkit.getPluginManager().registerEvent(eventClass, this, EventPriority.NORMAL, (listener, event) -> {
+                Player player;
 
-            if (!exempt.contains(player.getUniqueId())) {
-                return;
-            }
+                try {
+                    player = (Player) methodGetPlayer.invoke(event);
+                } catch (ReflectiveOperationException e) {
+                    return;
+                }
 
-            ((Cancellable) event).setCancelled(true);
-        }, plugin);
-    }
+                if (!exempt.contains(player.getUniqueId())) {
+                    return;
+                }
 
-    private void sendIncompatibleMessage(@NotNull VeinMinerPlugin veinMiner) {
-        veinMiner.getLogger().severe("The version of " + getPluginName() + " on this server is incompatible with VeinMiner. Please post information on the spigot resource discussion page.");
+                ((Cancellable) event).setCancelled(true);
+            }, plugin);
+        }
     }
 
     @NotNull
@@ -79,6 +79,11 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
     @Override
     public boolean shouldUnexempt(@NotNull Player player) {
         return exempt.contains(player.getUniqueId());
+    }
+
+    @Override
+    public boolean isSupported() {
+        return supported;
     }
 
 }

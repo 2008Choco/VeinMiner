@@ -72,4 +72,35 @@ public interface AntiCheatHook {
         return Bukkit.getPluginManager().getPlugin(getPluginName());
     }
 
+    /**
+     * Represents a result for an anti cheat registration.
+     */
+    public enum RegistrationResult {
+
+        /**
+         * The registration succeeded.
+         */
+        SUCCESS,
+
+        /**
+         * An anti cheat hook with the given plugin name was already registered.
+         */
+        ALREADY_REGISTERED,
+
+        /**
+         * The anti cheat is unsupported (according to {@link AntiCheatHook#isSupported()}).
+         */
+        UNSUPPORTED;
+
+        /**
+         * Check whether or not the registration was a success.
+         *
+         * @return true if a success, false if it failed
+         */
+        public boolean isSuccess() {
+            return this == SUCCESS;
+        }
+
+    }
+
 }
