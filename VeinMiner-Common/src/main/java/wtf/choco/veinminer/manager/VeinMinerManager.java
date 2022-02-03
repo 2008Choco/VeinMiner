@@ -1,8 +1,11 @@
 package wtf.choco.veinminer.manager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +28,7 @@ public final class VeinMinerManager {
 
     private BlockList globalBlockList = new BlockList();
     private VeinMinerConfig globalConfig = new VeinMinerConfig();
+    private List<BlockList> aliases = new ArrayList<>(); // There has to be a better way to implement aliases... I just can't think of one
 
     private final Set<GameMode> disabledGameModes = EnumSet.noneOf(GameMode.class);
 
@@ -221,11 +225,80 @@ public final class VeinMinerManager {
     }
 
     /**
+     * Add a new alias {@link BlockList}.
+     *
+     * @param blockList the list of blocks in this alias
+     *
+     * @return true if the alias was added, false if it was already added
+     */
+    public boolean addAlias(@NotNull BlockList blockList) {
+        if (aliases.contains(blockList)) {
+            return false;
+        }
+
+        this.aliases.add(blockList);
+        return true;
+    }
+
+    /**
+     * Remove an alias {@link BlockList}.
+     *
+     * @param blockList the alias block list to remove
+     *
+     * @return true if the alias was removed, false if it was not already added
+     */
+    public boolean removeAlias(@NotNull BlockList blockList) {
+        return aliases.remove(blockList);
+    }
+
+    /**
+     * Remove an alias that contains the given {@link VeinMinerBlock}.
+     *
+     * @param block the block
+     *
+     * @return the removed alias block list, or null if none contained the block
+     */
+    @Nullable
+    public BlockList removeAliasContaining(@NotNull VeinMinerBlock block) {
+        Iterator<BlockList> aliasIterator = aliases.iterator();
+
+        while (aliasIterator.hasNext()) {
+            BlockList blockList = aliasIterator.next();
+
+            if (blockList.contains(block)) {
+                aliasIterator.remove();
+                return blockList;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get an alias {@link BlockList} that contains the given {@link VeinMinerBlock}.
+     *
+     * @param block the block
+     *
+     * @return the alias block list to which the block belongs
+     */
+    @Nullable
+    public BlockList getAlias(@NotNull VeinMinerBlock block) {
+        for (BlockList blockList : aliases) {
+            if (blockList.contains(block)) {
+                return blockList;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Clear values stored in this {@link VeinMinerManager} (excluding the {@link #getGlobalConfig()}).
      */
     public void clear() {
         this.globalBlockList.clear();
         this.disabledGameModes.clear();
+        this.aliases.clear();
     }
 
 }

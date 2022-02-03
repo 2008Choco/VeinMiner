@@ -27,6 +27,7 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
 import wtf.choco.veinminer.block.BlockAccessor;
+import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.BukkitBlockAccessor;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMinerConfig;
@@ -119,8 +120,9 @@ public final class BreakBlockListener implements Listener {
         BlockAccessor blockAccessor = BukkitBlockAccessor.forWorld(world);
         VeinMiningPattern pattern = veinMinerPlayer.getVeinMiningPattern();
         BlockPosition originPosition = new BlockPosition(origin.getX(), origin.getY(), origin.getZ());
+        BlockList aliasBlockList = veinMinerManager.getAlias(originVeinMinerBlock);
 
-        Set<BlockPosition> blockPositions = pattern.allocateBlocks(blockAccessor, originPosition, originVeinMinerBlock, veinMinerConfig);
+        Set<BlockPosition> blockPositions = pattern.allocateBlocks(blockAccessor, originPosition, originVeinMinerBlock, veinMinerConfig, aliasBlockList);
         Set<Block> blocks = new HashSet<>();
 
         for (BlockPosition blockPosition : blockPositions) {

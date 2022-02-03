@@ -381,8 +381,11 @@ public final class VeinMinerPlugin extends JavaPlugin {
      * Reload the {@link VeinMinerManager}'s values from config into memory.
      */
     public void reloadVeinMinerManagerConfig() {
+        this.veinMinerManager.clear();
+
         FileConfiguration config = getConfig();
 
+        // Global block list and config
         this.veinMinerManager.setGlobalBlockList(BlockList.parseBlockList(config.getStringList("BlockList.Global"), getLogger()));
         this.veinMinerManager.setGlobalConfig(VeinMinerConfig.builder()
                 .repairFriendly(config.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY, false))
@@ -392,6 +395,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 .build()
         );
 
+        // Disabled game modes
         Set<GameMode> disabledGameModes = EnumSet.noneOf(GameMode.class);
         for (String disabledGameModeString : config.getStringList(VMConstants.CONFIG_DISABLED_GAME_MODES)) {
             GameMode gameMode = GameMode.getById(disabledGameModeString);
@@ -405,6 +409,27 @@ public final class VeinMinerPlugin extends JavaPlugin {
         }
 
         this.veinMinerManager.setDisabledGameModes(disabledGameModes);
+
+        // Aliases
+        int aliasesAdded = 0;
+        for (String aliasString : config.getStringList(VMConstants.CONFIG_ALIASES)) {
+            List<String> aliasStringEntries = List.of(aliasString.split(";"));
+            if (aliasStringEntries.size() <= 1) {
+                this.getLogger().info(String.format("Alias \"%s\" contains %d entries but must have at least 2. Not adding.", aliasString, aliasStringEntries.size()));
+                continue;
+            }
+
+            BlockList aliasBlockList = BlockList.parseBlockList(aliasStringEntries, getLogger());
+
+            if (aliasBlockList.isEmpty()) {
+                continue;
+            }
+
+            this.veinMinerManager.addAlias(aliasBlockList);
+            aliasesAdded++;
+        }
+
+        this.getLogger().info("Added " + aliasesAdded + " aliases.");
     }
 
     /**
