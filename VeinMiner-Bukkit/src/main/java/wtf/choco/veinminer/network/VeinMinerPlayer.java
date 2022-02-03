@@ -28,8 +28,10 @@ import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockAccessor;
+import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.BukkitBlockAccessor;
 import wtf.choco.veinminer.block.VeinMinerBlock;
+import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
@@ -437,14 +439,18 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         BlockAccessor blockAccessor = BukkitBlockAccessor.forWorld(world);
         Block targetBlock = player.getTargetBlock(null, 6);
         BlockData targetBlockData = targetBlock.getBlockData();
-        VeinMinerBlock block = VeinMinerPlugin.getInstance().getVeinMinerManager().getVeinMinerBlock(BukkitBlockState.of(targetBlockData), category);
+
+        VeinMinerManager veinMinerManager = VeinMinerPlugin.getInstance().getVeinMinerManager();
+        VeinMinerBlock block = veinMinerManager.getVeinMinerBlock(BukkitBlockState.of(targetBlockData), category);
 
         if (block == null) {
             VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults());
             return;
         }
 
-        Set<BlockPosition> blocks = getVeinMiningPattern().allocateBlocks(blockAccessor, BlockPosition.at(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()), block, category.getConfig());
+        BlockList aliasBlockList = veinMinerManager.getAlias(block);
+
+        Set<BlockPosition> blocks = getVeinMiningPattern().allocateBlocks(blockAccessor, BlockPosition.at(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()), block, category.getConfig(), aliasBlockList);
         VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults(blocks));
     }
 
