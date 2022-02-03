@@ -447,6 +447,11 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 continue;
             }
 
+            if (categoryId.equalsIgnoreCase("Hand")) {
+                this.getLogger().info("Redefinition of the Hand category is illegal. Ignoring.");
+                continue;
+            }
+
             ConfigurationSection categoryRoot = categoriesConfig.getConfigurationSection(categoryId);
             assert categoryRoot != null;
 
