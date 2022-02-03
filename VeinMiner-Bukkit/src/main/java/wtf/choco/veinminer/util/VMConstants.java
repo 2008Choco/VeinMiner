@@ -2,6 +2,9 @@ package wtf.choco.veinminer.util;
 
 import java.util.function.Function;
 
+import org.jetbrains.annotations.NotNull;
+
+import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
@@ -25,7 +28,9 @@ public final class VMConstants {
     public static final String CONFIG_INCLUDE_EDGES = "IncludeEdges";
     public static final String CONFIG_MAX_VEIN_SIZE = "MaxVeinSize";
     public static final String CONFIG_COST = "Cost";
+
     public static final String CONFIG_PRIORITY = "Priority";
+    public static final String CONFIG_NBT = "NBT";
 
     public static final String CONFIG_DISABLED_GAME_MODES = "DisabledGameModes";
     public static final String CONFIG_DISABLED_WORLDS = "DisabledWorlds";
@@ -73,6 +78,22 @@ public final class VMConstants {
     public static final String METADATA_KEY_VEINMINING = "veinminer:vein_mining";
     public static final String METADATA_KEY_VEIN_MINER_ACTIVE = "veinminer:vein_miner_active";
 
+    private static org.bukkit.NamespacedKey key;
+
     private VMConstants() { }
+
+    /**
+     * Get the {@link org.bukkit.NamespacedKey NamespacedKey} of the NBT key for items.
+     *
+     * @return the NBT key
+     */
+    @NotNull
+    public static org.bukkit.NamespacedKey getVeinMinerNBTKey() {
+        if (key == null) {
+            key = VeinMinerPlugin.key("veinminer");
+        }
+
+        return key;
+    }
 
 }

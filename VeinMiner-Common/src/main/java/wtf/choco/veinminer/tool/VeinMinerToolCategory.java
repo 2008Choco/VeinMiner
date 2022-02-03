@@ -3,6 +3,7 @@ package wtf.choco.veinminer.tool;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.veinminer.block.BlockList;
@@ -35,6 +36,17 @@ public interface VeinMinerToolCategory extends Comparable<VeinMinerToolCategory>
      * @return the priority
      */
     public int getPriority();
+
+    /**
+     * Get the value that must be on items in this category to be vein mineable.
+     * <p>
+     * Callers of {@link #containsItem(ItemType)} should verify also that any ItemStack to be
+     * checked contains also the value returned by this method.
+     *
+     * @return the NBT value, or null if no NBT is required
+     */
+    @Nullable
+    public String getNBTValue();
 
     /**
      * Get the {@link BlockList} for this tool category.
@@ -85,6 +97,10 @@ public interface VeinMinerToolCategory extends Comparable<VeinMinerToolCategory>
      * @param item the item to check
      *
      * @return true if this category contains the item, false otherwise
+     *
+     * @apiNote this method only verifies that the type is contained in this category, not whether
+     * or not an item stack contains the required NBT. For this, callers should also check that
+     * the value of {@link #getNBTValue()} is present in addition to the result of this method.
      */
     public boolean containsItem(@NotNull ItemType item);
 

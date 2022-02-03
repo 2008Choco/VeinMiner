@@ -21,7 +21,7 @@ public final class BukkitVeinMinerToolCategoryHand extends BukkitVeinMinerToolCa
      * @param config the category config
      */
     public BukkitVeinMinerToolCategoryHand(@NotNull BlockList blockList, @NotNull VeinMinerConfig config) {
-        super("Hand", Integer.MAX_VALUE, blockList, config, Collections.emptySet());
+        super("Hand", Integer.MAX_VALUE, null, blockList, config, Collections.emptySet());
     }
 
     @Override

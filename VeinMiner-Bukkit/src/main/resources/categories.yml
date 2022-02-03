@@ -12,6 +12,12 @@
 # Please avoid situations where multiple categories have the same item, but if absolutely
 # required (e.g. for a permission/hierarchical structure), give each category a priority.
 #
+# Furthermore, 'NBT' may be set to a string which MUST be on an item under the NBT key
+# "PublicBukkitValues": { "veinminer:veinminer": "the_value" }
+# For example, a category that defines NBT: "MyValue" must also have the NBT key
+# "PublicBukkitValues": { "veinminer:veinminer": "MyValue" }
+# If not set, no NBT value is required.
+#
 # ExampleCategory:
 #   RepairFriendly: true
 #   MaxVeinSize: 32
@@ -20,6 +26,7 @@
 #   - 'world_name'
 #   - 'other_world_name'
 #   Priority: 10 # This is optional and defaults to 0
+#   NBT: "ExampleValue" # This is optional and defaults to no required NBT
 #   Items:
 #   - 'minecraft:wooden_sword'
 #   - 'minecraft:stone_sword'

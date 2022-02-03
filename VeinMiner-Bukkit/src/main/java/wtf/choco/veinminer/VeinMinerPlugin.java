@@ -21,6 +21,7 @@ import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -251,6 +252,18 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @NotNull
     public static VeinMinerPlugin getInstance() {
         return instance;
+    }
+
+    /**
+     * Get a {@link NamespacedKey} with VeinMiner's namespace.
+     *
+     * @param key the key
+     *
+     * @return a VeinMiner namespaced key
+     */
+    @NotNull
+    public static NamespacedKey key(String key) {
+        return new NamespacedKey(instance, key);
     }
 
     /**
@@ -500,8 +513,9 @@ public final class VeinMinerPlugin extends JavaPlugin {
             }
 
             int priority = categoryRoot.getInt(VMConstants.CONFIG_PRIORITY, 0);
+            String nbtValue = categoryRoot.getString(VMConstants.CONFIG_NBT); // Should be allowed to be null
 
-            getToolCategoryRegistry().register(new BukkitVeinMinerToolCategory(categoryId, priority, blocklist, veinMinerConfig, items));
+            getToolCategoryRegistry().register(new BukkitVeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, veinMinerConfig, items));
             this.getLogger().info(String.format("Registered category with id \"%s\" holding %d unique items and %d unique blocks.", categoryId, items.size(), blocklist.size()));
         }
 

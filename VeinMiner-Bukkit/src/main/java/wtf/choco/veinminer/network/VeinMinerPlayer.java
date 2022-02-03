@@ -17,8 +17,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -429,11 +432,21 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         }
 
         World world = player.getWorld();
-        VeinMinerToolCategory category = VeinMiner.getInstance().getToolCategoryRegistry().get(BukkitItemType.of(player.getInventory().getItemInMainHand().getType()));
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        VeinMinerToolCategory category = VeinMiner.getInstance().getToolCategoryRegistry().get(BukkitItemType.of(itemStack.getType()));
 
         if (category == null) {
             VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults());
             return;
+        }
+
+        // Check for the NBT value is one is present
+        String nbtValue = category.getNBTValue();
+        if (nbtValue != null) {
+            ItemMeta meta = itemStack.getItemMeta();
+            if (meta != null && !nbtValue.equals(meta.getPersistentDataContainer().get(VMConstants.getVeinMinerNBTKey(), PersistentDataType.STRING))) {
+                return;
+            }
         }
 
         BlockAccessor blockAccessor = BukkitBlockAccessor.forWorld(world);

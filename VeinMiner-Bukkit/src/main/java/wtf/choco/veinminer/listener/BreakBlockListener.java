@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
@@ -72,6 +73,15 @@ public final class BreakBlockListener implements Listener {
         VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(BukkitItemType.of(item.getType()), cat -> player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(cat)));
         if (category == null) {
             return;
+        }
+
+        // Check for the NBT value is one is present
+        String nbtValue = category.getNBTValue();
+        if (nbtValue != null) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null && !nbtValue.equals(meta.getPersistentDataContainer().get(VMConstants.getVeinMinerNBTKey(), PersistentDataType.STRING))) {
+                return;
+            }
         }
 
         VeinMinerManager veinMinerManager = plugin.getVeinMinerManager();
