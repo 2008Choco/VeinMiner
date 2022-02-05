@@ -204,7 +204,8 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            if (!player.hasPermission(VMConstants.PERMISSION_PATTERN.apply(pattern))) {
+            String permission = pattern.getPermission();
+            if (permission != null && !player.hasPermission(permission)) {
                 sender.sendMessage(ChatColor.RED + "You do not have permission to use this pattern.");
                 return true;
             }
@@ -262,6 +263,11 @@ public final class CommandVeinMiner implements TabExecutor {
 
             else if (args[0].equalsIgnoreCase("pattern")) {
                 for (VeinMiningPattern pattern : plugin.getPatternRegistry().getPatterns()) {
+                    String permission = pattern.getPermission();
+                    if (permission != null && !sender.hasPermission(permission)) {
+                        continue;
+                    }
+
                     String patternKey = pattern.getKey().toString();
                     if (patternKey.contains(args[1])) {
                         suggestions.add(patternKey);

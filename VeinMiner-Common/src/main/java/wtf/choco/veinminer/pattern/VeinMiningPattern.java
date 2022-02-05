@@ -57,4 +57,14 @@ public interface VeinMiningPattern {
         return allocateBlocks(blockAccessor, origin, destroyedFace, block, config, null);
     }
 
+    /**
+     * Get the permission node required to use this pattern.
+     *
+     * @return the permission node, or null if none
+     */
+    @Nullable
+    public default String getPermission() {
+        return null;
+    }
+
 }

@@ -75,4 +75,10 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
         return positions;
     }
 
+    @Nullable
+    @Override
+    public String getPermission() {
+        return "veinminer.pattern.default";
+    }
+
 }

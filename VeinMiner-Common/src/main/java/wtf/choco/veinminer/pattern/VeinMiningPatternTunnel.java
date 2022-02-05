@@ -72,6 +72,12 @@ public final class VeinMiningPatternTunnel implements VeinMiningPattern {
         return positions;
     }
 
+    @Nullable
+    @Override
+    public String getPermission() {
+        return "veinminer.pattern.tunnel";
+    }
+
     private boolean calculateSquare(Set<BlockPosition> positions, BlockAccessor blockAccessor, BlockPosition center, VeinMinerBlock block, BlockList aliasList, int maxVeinSize, BiAxisRelativeGetter relativeGetter) {
         boolean changed = false;
 
