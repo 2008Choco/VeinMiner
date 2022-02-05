@@ -34,9 +34,11 @@ permissions:
 
   veinminer.free.economy:
     description: Grants a bypass to the vein miner cost. Only used if a Vault-supported economy is installed and the cost is greater than 0
+    default: false
 
   veinminer.free.hunger:
     description: Grants a bypass to the vein miner hunger debuff. Only used if hunger modifier is greater than 0
+    default: false
 
   veinminer.command.reload:
     description: Allow the use of the '/veinminer reload' subcommand
