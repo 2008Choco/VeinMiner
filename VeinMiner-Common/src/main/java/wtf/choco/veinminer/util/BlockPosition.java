@@ -2,6 +2,8 @@ package wtf.choco.veinminer.util;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.block.BlockFace;
+
 /**
  * Represents a set of x, y, and z coordinates in a world.
  *
@@ -25,6 +27,18 @@ public record BlockPosition(int x, int y, int z) {
     @NotNull
     public BlockPosition offset(int dx, int dy, int dz) {
         return new BlockPosition(x + dx, y + dy, z + dz);
+    }
+
+    /**
+     * Get a new {@link BlockPosition} relative to the given {@link BlockFace}.
+     *
+     * @param face the direction in which to get the relative position
+     *
+     * @return the relative position
+     */
+    @NotNull
+    public BlockPosition getRelative(@NotNull BlockFace face) {
+        return face.getRelative(this);
     }
 
     /**

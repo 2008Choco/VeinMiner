@@ -12,8 +12,10 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -22,6 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -450,7 +453,15 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         }
 
         BlockAccessor blockAccessor = BukkitBlockAccessor.forWorld(world);
-        Block targetBlock = player.getTargetBlock(null, 6);
+        RayTraceResult rayTraceResult = player.rayTraceBlocks(6, FluidCollisionMode.NEVER);
+        Block targetBlock;
+        BlockFace targetBlockFace;
+
+        if (rayTraceResult == null || (targetBlock = rayTraceResult.getHitBlock()) == null || (targetBlockFace = rayTraceResult.getHitBlockFace()) == null) {
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults());
+            return;
+        }
+
         BlockData targetBlockData = targetBlock.getBlockData();
 
         VeinMinerManager veinMinerManager = VeinMinerPlugin.getInstance().getVeinMinerManager();
@@ -463,7 +474,8 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
         BlockList aliasBlockList = veinMinerManager.getAlias(block);
 
-        Set<BlockPosition> blocks = getVeinMiningPattern().allocateBlocks(blockAccessor, BlockPosition.at(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()), block, category.getConfig(), aliasBlockList);
+        wtf.choco.veinminer.block.BlockFace vmBlockFace = wtf.choco.veinminer.block.BlockFace.valueOf(targetBlockFace.name());
+        Set<BlockPosition> blocks = getVeinMiningPattern().allocateBlocks(blockAccessor, BlockPosition.at(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()), vmBlockFace, block, category.getConfig(), aliasBlockList);
         VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults(blocks));
     }
 

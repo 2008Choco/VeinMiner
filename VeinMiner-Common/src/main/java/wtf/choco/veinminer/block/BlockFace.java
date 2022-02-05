@@ -66,6 +66,26 @@ public enum BlockFace {
     }
 
     /**
+     * Get the {@link BlockFace} opposite to this BlockFace. Note that this works only for
+     * cardinal faces (up, down, east, west, north, and south). Any other face will throw
+     * an {@link UnsupportedOperationException}.
+     *
+     * @return the opposite block face
+     */
+    @NotNull
+    public BlockFace getOpposite() {
+        return switch (this) {
+            case UP -> DOWN;
+            case DOWN -> UP;
+            case EAST -> WEST;
+            case WEST -> EAST;
+            case NORTH -> SOUTH;
+            case SOUTH -> NORTH;
+            default -> throw new UnsupportedOperationException("Unknown opposing BlockFace");
+        };
+    }
+
+    /**
      * Get a {@link BlockPosition} offset by this {@link BlockFace}'s offset coordinates
      * relative to the given BlockPosition.
      *

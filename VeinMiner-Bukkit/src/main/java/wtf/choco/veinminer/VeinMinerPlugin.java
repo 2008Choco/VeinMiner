@@ -69,6 +69,7 @@ import wtf.choco.veinminer.network.BukkitChannelHandler;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
+import wtf.choco.veinminer.pattern.VeinMiningPatternTunnel;
 import wtf.choco.veinminer.platform.BukkitPlatformReconstructor;
 import wtf.choco.veinminer.platform.GameMode;
 import wtf.choco.veinminer.tool.BukkitVeinMinerToolCategory;
@@ -97,7 +98,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
     private EconomyModifier economyModifier;
 
-    private VeinMiningPattern defaultVeinMiningPattern = new VeinMiningPatternDefault();
+    private VeinMiningPattern defaultVeinMiningPattern;
     private PersistentDataStorage persistentDataStorage;
 
     private ConfigWrapper categoriesConfig;
@@ -108,7 +109,9 @@ public final class VeinMinerPlugin extends JavaPlugin {
         veinMiner.setToolCategoryRegistry(new ToolCategoryRegistry());
         veinMiner.setPlatformReconstructor(BukkitPlatformReconstructor.INSTANCE);
 
-        veinMiner.getPatternRegistry().register(defaultVeinMiningPattern);
+        PatternRegistry patternRegistry = veinMiner.getPatternRegistry();
+        patternRegistry.register(defaultVeinMiningPattern = new VeinMiningPatternDefault());
+        patternRegistry.register(new VeinMiningPatternTunnel());
 
         VeinMiner.PROTOCOL.registerChannels(channelHandler);
 

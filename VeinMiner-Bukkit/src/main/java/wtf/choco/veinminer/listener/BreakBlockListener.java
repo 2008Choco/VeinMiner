@@ -6,9 +6,11 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -22,6 +24,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
@@ -122,6 +125,14 @@ public final class BreakBlockListener implements Listener {
             economy.withdraw(player, veinMinerConfig.getCost());
         }
 
+        // Fetch the target block face
+        BlockFace targetBlockFace;
+        RayTraceResult rayTraceResult = player.rayTraceBlocks(6, FluidCollisionMode.NEVER);
+
+        if (rayTraceResult == null || (targetBlockFace = rayTraceResult.getHitBlockFace()) == null) {
+            return;
+        }
+
         // TIME TO VEINMINE
         VeinMinerBlock originVeinMinerBlock = veinMinerManager.getVeinMinerBlock(originBlockState, category);
         assert originVeinMinerBlock != null; // If this is null, something is broken internally
@@ -131,8 +142,9 @@ public final class BreakBlockListener implements Listener {
         VeinMiningPattern pattern = veinMinerPlayer.getVeinMiningPattern();
         BlockPosition originPosition = new BlockPosition(origin.getX(), origin.getY(), origin.getZ());
         BlockList aliasBlockList = veinMinerManager.getAlias(originVeinMinerBlock);
+        wtf.choco.veinminer.block.BlockFace vmBlockFace = wtf.choco.veinminer.block.BlockFace.valueOf(targetBlockFace.name());
 
-        Set<BlockPosition> blockPositions = pattern.allocateBlocks(blockAccessor, originPosition, originVeinMinerBlock, veinMinerConfig, aliasBlockList);
+        Set<BlockPosition> blockPositions = pattern.allocateBlocks(blockAccessor, originPosition, vmBlockFace, originVeinMinerBlock, veinMinerConfig, aliasBlockList);
         Set<Block> blocks = new HashSet<>();
 
         for (BlockPosition blockPosition : blockPositions) {
