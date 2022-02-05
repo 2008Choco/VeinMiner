@@ -50,7 +50,22 @@ public final class VeinMiningPatternTunnel implements VeinMiningPattern {
         BlockPosition currentCenter = origin;
         int maxVeinSize = config.getMaxVeinSize();
 
-        while (calculateSquare(positions, blockAccessor, currentCenter, block, aliasList, maxVeinSize, relativeGetter)) {
+        /*
+         * So that this can't be abused by players, the tunnel length has to be capped. Otherwise, players could
+         * theoretically mine a "max vein size"-length 1x1 tunnel of blocks, which is not ideal.
+         *
+         * To combat this, the maximum tunnel depth should be equal to the depth you would be able to reach should
+         * a perfect radius-sized tunnel be mined. For instance, with a radius of 1 and maximum vein size of 64, 9
+         * blocks are mined in a single depth (a square of 3x3 blocks), meaning that the maximum tunnel depth would
+         * be (max blocks / 9), or 7.1. Rounding up results is a tunnel of depth 8. Therefore, if a 1x1 tunnel were
+         * mined, the maximum length can then be limited to just 8 blocks instead of 64 had it not been restricted.
+         *
+         * This is a decent compromise to avoid players mining 4 chunks ahead of them if the tunnel is very thin...
+         */
+        int blocksPerSquare = (int) Math.pow((radius * 2) + 1, 2);
+        int maxTunnelDepth = (int) Math.ceil(((double) maxVeinSize) / blocksPerSquare);
+
+        while (maxTunnelDepth-- > 0 && calculateSquare(positions, blockAccessor, currentCenter, block, aliasList, maxVeinSize, relativeGetter)) {
             currentCenter = currentCenter.getRelative(tunnelDirection);
         }
 
