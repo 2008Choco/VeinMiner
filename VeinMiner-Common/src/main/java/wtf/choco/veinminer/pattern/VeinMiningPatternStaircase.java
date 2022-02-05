@@ -14,13 +14,21 @@ import wtf.choco.veinminer.config.VeinMinerConfig;
 import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
 
+/**
+ * A staircase {@link VeinMiningPattern} that digs a 1x3 column either upwards or downwards.
+ */
 public final class VeinMiningPatternStaircase implements VeinMiningPattern {
 
     private final Direction direction;
     private final NamespacedKey key;
     private final String permission;
 
-    public VeinMiningPatternStaircase(Direction direction) {
+    /**
+     * Construct a new {@link VeinMiningPatternStaircase}.
+     *
+     * @param direction the direction of the staircase
+     */
+    public VeinMiningPatternStaircase(@NotNull Direction direction) {
         String nameLowercase = direction.name().toLowerCase();
 
         this.direction = direction;

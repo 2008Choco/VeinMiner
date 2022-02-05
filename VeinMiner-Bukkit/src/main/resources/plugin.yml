@@ -39,11 +39,26 @@ permissions:
     description: Grants a bypass to the vein miner hunger debuff. Only used if hunger modifier is greater than 0
     default: false
 
+  veinminer.pattern.*:
+    description: Grants access to all vein mining patterns
+    default: true
+    children:
+      veinminer.pattern.default: true
+      veinminer.pattern.tunnel: true
+      veinminer.pattern.staircase_up: true
+      veinminer.pattern.staircase_down: true
+
   veinminer.pattern.default:
     description: Grants access to the veinminer:default pattern
     default: true
   veinminer.pattern.tunnel:
     description: Grants access to the veinminer:tunnel pattern
+    default: true
+  veinminer.pattern.staircase_up:
+    description: Grants access to the veinminer:staircase_up pattern
+    default: true
+  veinminer.pattern.staircase_down:
+    description: Grants access to the veinminer:staircase_down pattern
     default: true
 
   veinminer.command.reload:

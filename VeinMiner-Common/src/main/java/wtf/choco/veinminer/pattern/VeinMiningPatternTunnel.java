@@ -14,6 +14,9 @@ import wtf.choco.veinminer.config.VeinMinerConfig;
 import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
 
+/**
+ * A tunnel {@link VeinMiningPattern} that mines a square tunnel in a direction.
+ */
 public final class VeinMiningPatternTunnel implements VeinMiningPattern {
 
     private static final NamespacedKey KEY = NamespacedKey.veinminer("tunnel");
@@ -26,10 +29,18 @@ public final class VeinMiningPatternTunnel implements VeinMiningPattern {
 
     private final int radius;
 
+    /**
+     * Construct a new {@link VeinMiningPatternTunnel}.
+     *
+     * @param radius the radius of the tunnel in blocks (excluding the center block).
+     */
     public VeinMiningPatternTunnel(int radius) {
         this.radius = radius;
     }
 
+    /**
+     * Construct a new {@link VeinMiningPatternTunnel} with the default tunnel radius of 1.
+     */
     public VeinMiningPatternTunnel() {
         this(DEFAULT_TUNNEL_RADIUS);
     }
