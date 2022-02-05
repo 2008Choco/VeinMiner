@@ -204,6 +204,11 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
+            if (!player.hasPermission(VMConstants.PERMISSION_PATTERN.apply(pattern))) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to use this pattern.");
+                return true;
+            }
+
             VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
             veinMinerPlayer.setVeinMiningPattern(pattern);
 

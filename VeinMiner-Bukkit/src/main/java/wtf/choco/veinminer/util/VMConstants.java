@@ -5,6 +5,7 @@ import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
@@ -69,6 +70,7 @@ public final class VMConstants {
 
     // Dynamic permission nodes
     public static final Function<VeinMinerToolCategory, String> PERMISSION_VEINMINE = category -> "veinminer.veinmine." + category.getId().toLowerCase();
+    public static final Function<VeinMiningPattern, String> PERMISSION_PATTERN = category -> "veinminer.pattern." + category.getKey().key();
 
 
     // Metadata keys
