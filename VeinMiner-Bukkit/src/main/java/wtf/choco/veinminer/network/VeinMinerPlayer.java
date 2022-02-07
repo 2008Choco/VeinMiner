@@ -4,11 +4,16 @@ import com.google.common.base.Preconditions;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,9 +46,12 @@ import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
+import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.platform.BukkitBlockState;
@@ -65,6 +73,9 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     private VeinMiningPattern veinMiningPattern;
 
     private boolean dirty = false;
+
+    private boolean clientReady = false;
+    private Queue<Runnable> onClientReady = new ConcurrentLinkedQueue<>();
 
     private boolean usingClientMod = false;
     private boolean clientKeyPressed = false;
@@ -265,10 +276,25 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      * Set the {@link VeinMiningPattern} to use for this player.
      *
      * @param veinMiningPattern the pattern
+     * @param updateClient whether or not the client should be informed of this update
+     */
+    public void setVeinMiningPattern(@NotNull VeinMiningPattern veinMiningPattern, boolean updateClient) {
+        boolean newPattern = !Objects.equals(veinMiningPattern, this.veinMiningPattern);
+        this.dirty |= newPattern;
+        this.veinMiningPattern = veinMiningPattern;
+
+        if (newPattern && updateClient) {
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundSetPattern(veinMiningPattern));
+        }
+    }
+
+    /**
+     * Set the {@link VeinMiningPattern} to use for this player and update the client.
+     *
+     * @param veinMiningPattern the pattern
      */
     public void setVeinMiningPattern(@NotNull VeinMiningPattern veinMiningPattern) {
-        this.dirty |= (!veinMiningPattern.equals(this.veinMiningPattern));
-        this.veinMiningPattern = veinMiningPattern;
+        this.setVeinMiningPattern(veinMiningPattern, true);
     }
 
     /**
@@ -283,6 +309,57 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         }
 
         return veinMiningPattern;
+    }
+
+    /**
+     * Execute the given {@link Runnable} when the client is ready.
+     *
+     * @param runnable the runnable to execute
+     *
+     * @return true if the client is not yet ready and the task was queued, false if the task
+     * was executed immediately
+     *
+     * @see #isClientReady()
+     */
+    public boolean executeWhenClientIsReady(@NotNull Runnable runnable) {
+        if (!isClientReady()) {
+            this.onClientReady.add(runnable);
+            return true;
+        }
+
+        // If the client is ready, we might as well just execute it now
+        runnable.run();
+        return false;
+    }
+
+    /**
+     * Execute the given {@link Consumer} when the client is ready.
+     *
+     * @param consumer the consumer to execute
+     *
+     * @return true if the client is not yet ready and the task was queued, false if the task
+     * was executed immediately
+     *
+     * @see #isClientReady()
+     */
+    public boolean executeWhenClientIsReady(@NotNull Consumer<VeinMinerPlayer> consumer) {
+        return executeWhenClientIsReady(() -> consumer.accept(this));
+    }
+
+    /**
+     * Check whether or not the client is ready to receive messages.
+     * <p>
+     * This method will only be true if {@link #isUsingClientMod()} is true, and if the client
+     * has successfully shaken hands with the server, is capable of being sent a client message,
+     * and has been synchronized with the server as per the protocol specification.
+     *
+     * @return true if the client is ready, false otherwise
+     *
+     * @see #executeWhenClientIsReady(Runnable)
+     * @see #executeWhenClientIsReady(Consumer)
+     */
+    public boolean isClientReady() {
+        return clientReady;
     }
 
     /**
@@ -404,6 +481,26 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
          */
         Bukkit.getScheduler().runTaskLater(VeinMinerPlugin.getInstance(), () -> {
             VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundHandshakeResponse(allowClientActivation));
+
+            // Synchronize all registered patterns to the client
+            List<NamespacedKey> patternKeys = new ArrayList<>();
+            VeinMiner.getInstance().getPatternRegistry().getPatterns().forEach(pattern -> patternKeys.add(pattern.getKey()));
+            VeinMiningPattern defaultPattern = VeinMinerPlugin.getInstance().getDefaultVeinMiningPattern();
+
+            // Move the default pattern to the start if it wasn't already there
+            if (patternKeys.size() > 1 && patternKeys.remove(defaultPattern.getKey())) {
+                patternKeys.add(0, defaultPattern.getKey());
+            }
+
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundSyncRegisteredPatterns(patternKeys));
+
+            // The client is ready, accept post-client init tasks now
+            this.clientReady = true;
+
+            Runnable runnable;
+            while ((runnable = onClientReady.poll()) != null) {
+                runnable.run();
+            }
         }, 1);
     }
 
@@ -477,6 +574,15 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         wtf.choco.veinminer.block.BlockFace vmBlockFace = wtf.choco.veinminer.block.BlockFace.valueOf(targetBlockFace.name());
         Set<BlockPosition> blocks = getVeinMiningPattern().allocateBlocks(blockAccessor, BlockPosition.at(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()), vmBlockFace, block, category.getConfig(), aliasBlockList);
         VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults(blocks));
+    }
+
+    @Override
+    public void handleSelectPattern(@NotNull PluginMessageServerboundSelectPattern message) {
+        VeinMiningPattern pattern = VeinMiner.getInstance().getPatternRegistry().getOrDefault(message.getPatternKey(), VeinMinerPlugin.getInstance().getDefaultVeinMiningPattern());
+
+        // TODO: Call an event
+
+        this.setVeinMiningPattern(pattern);
     }
 
 }

@@ -212,7 +212,7 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
 
         if (veinMiningPatternId != null) {
             VeinMiningPattern pattern = plugin.getPatternRegistry().get(veinMiningPatternId);
-            player.setVeinMiningPattern(pattern != null ? pattern : plugin.getDefaultVeinMiningPattern());
+            player.setVeinMiningPattern(pattern != null ? pattern : plugin.getDefaultVeinMiningPattern(), false);
         }
 
         player.setDirty(false); // They are no longer dirty. We just loaded them

@@ -95,6 +95,31 @@ A simple request with no additional fields requesting that the server perform a 
     </tbody>
 </table>
 
+### Select Pattern
+
+Sent by the client when it wants to change vein mining patterns as a result of a key press. The server is expected to respond with a Set Pattern message to confirm that the requested pattern is to be set on the client. The server may intercept this request and change the client's desired pattern due to an event on the server and a third party listener.
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=1>0x03</td>
+            <td rowspan=1>Server</td>
+            <td>Pattern Key</td>
+            <td>NamespacedKey</td>
+            <td>The key of the pattern to request to be set</td>
+        </tr>
+    </tbody>
+</table>
+
 ## Clientbound
 
 These are messages sent by the server to the client
@@ -124,9 +149,9 @@ Sent in response to a client's Handshake indicating whether or not vein miner sh
     </tbody>
 </table>
 
-### Vein Mine Results
+### Sync Registered Patterns
 
-Sent in response to a client's Request Vein Mine including all block positions as a result of a vein mine at the client's target block and currently active tool category (according to the tool in the player's hand at the time the message was received by the server).
+Sent by the server after the client has successfully shaken hands and has been sent the handshake response. Synchronizes the server's registered pattern keys with the client so that it may switch between patterns using a key bind.
 
 <table>
     <thead>
@@ -143,6 +168,36 @@ Sent in response to a client's Request Vein Mine including all block positions a
             <td rowspan=2>0x01</td>
             <td rowspan=2>Client</td>
             <td>Size</td>
+            <td>VarInt</td>
+            <td>The amount of pattern keys being sent to the client</td>
+        </tr>
+        <tr>
+            <td>Pattern Keys</td>
+            <td>Array of NamespacedKey</td>
+            <td>An array containing the namespaced keys of all vein mining patterns registered on the server</td>
+        </tr>
+    </tbody>
+</table>
+
+### Vein Mine Results
+
+Sent in response to a client's Request Vein Mine including all block positions as a result of a vein mine at the client's target block and currently active tool category (according to the tool in the player's hand at the time the message was received by the server).
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=2>0x02</td>
+            <td rowspan=2>Client</td>
+            <td>Size</td>
             <td><a href="https://wiki.vg/Protocol#VarInt_and_VarLong">VarInt</href></td>
             <td>The amount of block positions that were included in the resulting vein mine</td>
         </tr>
@@ -150,6 +205,31 @@ Sent in response to a client's Request Vein Mine including all block positions a
             <td>Positions</td>
             <td>Array of <a href="https://wiki.vg/Protocol#Position">BlockPosition</a></td>
             <td>An array containing all block positions that would be vein mined by the server.</td>
+        </tr>
+    </tbody>
+</table>
+
+### Set Pattern
+
+Sets the selected pattern on the client. Sent in response to a server-bound Select Pattern message from the client, or when set by the server manually. If the client does not recognize this pattern key, the client should fall back to the pattern at index 0 of the patterns that were sent by the Sync Registered Patterns message.
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=1>0x03</td>
+            <td rowspan=1>Client</td>
+            <td>Pattern Key</td>
+            <td>NamespacedKey</td>
+            <td>The pattern key to set on the client.</td>
         </tr>
     </tbody>
 </table>

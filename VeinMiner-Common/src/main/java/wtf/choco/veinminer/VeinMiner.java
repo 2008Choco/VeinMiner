@@ -6,9 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.network.PluginMessageProtocol;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
+import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.platform.PlatformReconstructor;
@@ -41,11 +44,14 @@ public final class VeinMiner {
             serverboundRegistry -> serverboundRegistry
                 .registerMessage(PluginMessageServerboundHandshake.class, PluginMessageServerboundHandshake::new)
                 .registerMessage(PluginMessageServerboundToggleVeinMiner.class, PluginMessageServerboundToggleVeinMiner::new)
-                .registerMessage(PluginMessageServerboundRequestVeinMine.class, PluginMessageServerboundRequestVeinMine::new),
+                .registerMessage(PluginMessageServerboundRequestVeinMine.class, PluginMessageServerboundRequestVeinMine::new)
+                .registerMessage(PluginMessageServerboundSelectPattern.class, PluginMessageServerboundSelectPattern::new),
 
             clientboundRegistry -> clientboundRegistry
                 .registerMessage(PluginMessageClientboundHandshakeResponse.class, PluginMessageClientboundHandshakeResponse::new)
+                .registerMessage(PluginMessageClientboundSyncRegisteredPatterns.class, PluginMessageClientboundSyncRegisteredPatterns::new)
                 .registerMessage(PluginMessageClientboundVeinMineResults.class, PluginMessageClientboundVeinMineResults::new)
+                .registerMessage(PluginMessageClientboundSetPattern.class, PluginMessageClientboundSetPattern::new)
     );
 
     private static VeinMiner instance;

@@ -150,7 +150,7 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
             }
 
             if (root.has("vein_mining_pattern_id")) {
-                player.setVeinMiningPattern(plugin.getPatternRegistry().getOrDefault(root.get("vein_mining_pattern_id").getAsString(), plugin.getDefaultVeinMiningPattern()));
+                player.setVeinMiningPattern(plugin.getPatternRegistry().getOrDefault(root.get("vein_mining_pattern_id").getAsString(), plugin.getDefaultVeinMiningPattern()), false);
             }
         } catch (IOException | JsonSyntaxException e) {
             throw new CompletionException(e);

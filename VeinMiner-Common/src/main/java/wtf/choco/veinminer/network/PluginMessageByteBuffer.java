@@ -232,9 +232,7 @@ public class PluginMessageByteBuffer {
      */
     public void writeString(@NotNull String string) {
         this.ensureWriting();
-
-        byte[] stringBytes = string.getBytes(StandardCharsets.UTF_8);
-        this.writeByteArray(stringBytes);
+        this.writeByteArray(string.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -305,13 +303,7 @@ public class PluginMessageByteBuffer {
     public byte[] readBytes(int size) {
         this.ensureReading();
 
-        int expectedSize = readVarInt();
-
-        if (expectedSize > size) {
-            throw new IllegalStateException("ByteArray with size " + expectedSize + " is bigger than allowed " + size);
-        }
-
-        byte[] bytes = new byte[expectedSize];
+        byte[] bytes = new byte[size];
         this.readBytes(bytes);
 
         return bytes;
@@ -386,8 +378,7 @@ public class PluginMessageByteBuffer {
      */
     public void writeNamespacedKey(@NotNull NamespacedKey key) {
         this.ensureWriting();
-        this.writeString(key.namespace());
-        this.writeString(key.key());
+        this.writeString(key.toString());
     }
 
     /**
@@ -398,7 +389,7 @@ public class PluginMessageByteBuffer {
     @NotNull
     public NamespacedKey readNamespacedKey() {
         this.ensureReading();
-        return new NamespacedKey(readString(), readString());
+        return NamespacedKey.fromString(readString());
     }
 
     /**

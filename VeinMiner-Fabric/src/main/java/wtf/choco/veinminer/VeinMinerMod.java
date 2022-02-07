@@ -27,11 +27,15 @@ import wtf.choco.veinminer.platform.FabricPlatformReconstructor;
 
 public final class VeinMinerMod implements ClientModInitializer {
 
+    public static final KeyBinding KEY_BINDING_ACTIVATE_VEINMINER = registerKeybind("activate_veinminer", GLFW.GLFW_KEY_GRAVE_ACCENT);
+    public static final KeyBinding KEY_BINDING_NEXT_PATTERN = registerKeybind("next_pattern", GLFW.GLFW_KEY_RIGHT_BRACKET);
+    public static final KeyBinding KEY_BINDING_PREVIOUS_PATTERN = registerKeybind("previous_pattern", GLFW.GLFW_KEY_LEFT_BRACKET);
+
     private static final Identifier TEXTURE_VEINMINER_ICON = new Identifier("veinminer4bukkit", "textures/gui/veinminer_icon.png");
 
     private static FabricServerState serverState;
 
-    private boolean veinminerActivated = false;
+    private boolean veinminerActivated = false, changingPatterns = false;
 
     @Override
     public void onInitializeClient() {
@@ -40,20 +44,13 @@ public final class VeinMinerMod implements ClientModInitializer {
 
         VeinMiner.PROTOCOL.registerChannels(new FabricChannelRegistrar());
 
-        KeyBinding activationBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.veinminer4bukkit.activate_veinminer",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_GRAVE_ACCENT, // Tilde ~
-            "category.veinminer4bukkit.general"
-        ));
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!hasServerState() || !getServerState().isEnabled()) {
                 return;
             }
 
             boolean last = veinminerActivated;
-            this.veinminerActivated = activationBinding.isPressed();
+            this.veinminerActivated = KEY_BINDING_ACTIVATE_VEINMINER.isPressed();
 
             if (last ^ veinminerActivated) {
                 VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(veinminerActivated));
@@ -61,6 +58,25 @@ public final class VeinMinerMod implements ClientModInitializer {
                 if (veinminerActivated) {
                     VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
                 }
+            }
+
+            boolean lastChangingPatterns = changingPatterns;
+            this.changingPatterns = (KEY_BINDING_NEXT_PATTERN.isPressed() || KEY_BINDING_PREVIOUS_PATTERN.isPressed());
+
+            if (lastChangingPatterns ^ changingPatterns) {
+                boolean next;
+
+                if (KEY_BINDING_NEXT_PATTERN.isPressed()) {
+                    next = true;
+                }
+                else if (KEY_BINDING_PREVIOUS_PATTERN.isPressed()) {
+                    next = false;
+                }
+                else {
+                    return;
+                }
+
+                serverState.changePattern(next);
             }
         });
 
@@ -123,6 +139,15 @@ public final class VeinMinerMod implements ClientModInitializer {
         }
 
         return serverState;
+    }
+
+    private static KeyBinding registerKeybind(String id, int key) {
+        return KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.veinminer4bukkit." + id,
+            InputUtil.Type.KEYSYM,
+            key,
+            "category.veinminer4bukkit.general"
+        ));
     }
 
 }

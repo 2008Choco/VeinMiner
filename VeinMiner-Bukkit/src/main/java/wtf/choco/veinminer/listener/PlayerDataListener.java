@@ -6,8 +6,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.network.VeinMinerPlayer;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
 
 public final class PlayerDataListener implements Listener {
 
@@ -19,9 +21,14 @@ public final class PlayerDataListener implements Listener {
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
-        this.plugin.getPersistentDataStorage().load(plugin, plugin.getPlayerManager().get(event.getPlayer())).exceptionally(e -> {
-            e.printStackTrace();
-            return null;
+        this.plugin.getPersistentDataStorage().load(plugin, plugin.getPlayerManager().get(event.getPlayer())).whenComplete((player, e) -> {
+            if (e != null) {
+                e.printStackTrace();
+                return;
+            }
+
+            // Update the selected pattern on the client
+            player.executeWhenClientIsReady(() -> VeinMiner.PROTOCOL.sendMessageToClient(player, new PluginMessageClientboundSetPattern(player.getVeinMiningPattern())));
         });
     }
 

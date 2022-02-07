@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.network.PluginMessageListener;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
+import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 
 /**
@@ -19,5 +20,7 @@ public interface ServerboundPluginMessageListener extends PluginMessageListener 
     public void handleToggleVeinMiner(@NotNull PluginMessageServerboundToggleVeinMiner message);
 
     public void handleRequestVeinMine(@NotNull PluginMessageServerboundRequestVeinMine message);
+
+    public void handleSelectPattern(@NotNull PluginMessageServerboundSelectPattern message);
 
 }
