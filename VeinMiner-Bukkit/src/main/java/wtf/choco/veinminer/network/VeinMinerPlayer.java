@@ -38,6 +38,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.api.event.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.block.BlockAccessor;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.BukkitBlockAccessor;
@@ -578,11 +579,19 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
     @Override
     public void handleSelectPattern(@NotNull PluginMessageServerboundSelectPattern message) {
+        Player player = getPlayer();
+        if (player == null) {
+            return;
+        }
+
         VeinMiningPattern pattern = VeinMiner.getInstance().getPatternRegistry().getOrDefault(message.getPatternKey(), VeinMinerPlugin.getInstance().getDefaultVeinMiningPattern());
 
-        // TODO: Call an event
+        PlayerVeinMiningPatternChangeEvent event = VMEventFactory.callPlayerVeinMiningPatternChangeEvent(player, getVeinMiningPattern(), pattern);
+        if (event.isCancelled()) {
+            return;
+        }
 
-        this.setVeinMiningPattern(pattern);
+        this.setVeinMiningPattern(event.getNewPattern());
     }
 
 }

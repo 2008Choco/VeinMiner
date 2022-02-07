@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.api.event.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.network.VeinMinerPlayer;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
@@ -30,6 +31,7 @@ import wtf.choco.veinminer.util.NamespacedKey;
 import wtf.choco.veinminer.util.UpdateChecker;
 import wtf.choco.veinminer.util.UpdateChecker.UpdateResult;
 import wtf.choco.veinminer.util.VMConstants;
+import wtf.choco.veinminer.util.VMEventFactory;
 
 public final class CommandVeinMiner implements TabExecutor {
 
@@ -211,9 +213,16 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
+            PlayerVeinMiningPatternChangeEvent event = VMEventFactory.callPlayerVeinMiningPatternChangeEvent(player, veinMinerPlayer.getVeinMiningPattern(), pattern);
+
+            if (event.isCancelled()) {
+                return true;
+            }
+
+            pattern = event.getNewPattern();
             veinMinerPlayer.setVeinMiningPattern(pattern);
 
-            sender.sendMessage(ChatColor.GREEN + "Pattern set to " + patternKey + ".");
+            sender.sendMessage(ChatColor.GREEN + "Pattern set to " + pattern.getKey() + ".");
             return true;
         }
 

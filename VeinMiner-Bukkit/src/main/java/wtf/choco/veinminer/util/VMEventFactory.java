@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.api.event.PlayerClientActivateVeinMinerEvent;
 import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
+import wtf.choco.veinminer.api.event.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
@@ -54,4 +55,18 @@ public final class VMEventFactory {
         return !event.isCancelled();
     }
 
+    /**
+     * Call the {@link PlayerVeinMiningPatternChangeEvent}.
+     *
+     * @param player the player whose pattern was changed
+     * @param currentPattern the player's current pattern
+     * @param newPattern the pattern to be set
+     *
+     * @return the called event
+     */
+    public static PlayerVeinMiningPatternChangeEvent callPlayerVeinMiningPatternChangeEvent(@NotNull Player player, @NotNull VeinMiningPattern currentPattern, @NotNull VeinMiningPattern newPattern) {
+        PlayerVeinMiningPatternChangeEvent event = new PlayerVeinMiningPatternChangeEvent(player, currentPattern, newPattern);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
 }

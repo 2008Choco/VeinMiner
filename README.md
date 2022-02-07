@@ -97,7 +97,7 @@ A simple request with no additional fields requesting that the server perform a 
 
 ### Select Pattern
 
-Sent by the client when it wants to change vein mining patterns as a result of a key press. The server is expected to respond with a Set Pattern message to confirm that the requested pattern is to be set on the client. The server may intercept this request and change the client's desired pattern due to an event on the server and a third party listener.
+Sent by the client when it wants to change vein mining patterns as a result of a key press. The server is expected to respond with a Set Pattern message to confirm that the requested pattern is to be set on the client, however the server is not guaranteed to respond in the event that the request was unsuccessful.
 
 <table>
     <thead>
