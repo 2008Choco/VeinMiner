@@ -213,7 +213,7 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
-            PlayerVeinMiningPatternChangeEvent event = VMEventFactory.callPlayerVeinMiningPatternChangeEvent(player, veinMinerPlayer.getVeinMiningPattern(), pattern);
+            PlayerVeinMiningPatternChangeEvent event = VMEventFactory.callPlayerVeinMiningPatternChangeEvent(player, veinMinerPlayer.getVeinMiningPattern(), pattern, PlayerVeinMiningPatternChangeEvent.Cause.COMMAND);
 
             if (event.isCancelled()) {
                 return true;

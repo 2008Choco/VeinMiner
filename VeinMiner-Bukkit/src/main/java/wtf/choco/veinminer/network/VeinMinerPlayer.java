@@ -586,7 +586,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
         VeinMiningPattern pattern = VeinMiner.getInstance().getPatternRegistry().getOrDefault(message.getPatternKey(), VeinMinerPlugin.getInstance().getDefaultVeinMiningPattern());
 
-        PlayerVeinMiningPatternChangeEvent event = VMEventFactory.callPlayerVeinMiningPatternChangeEvent(player, getVeinMiningPattern(), pattern);
+        PlayerVeinMiningPatternChangeEvent event = VMEventFactory.callPlayerVeinMiningPatternChangeEvent(player, getVeinMiningPattern(), pattern, PlayerVeinMiningPatternChangeEvent.Cause.CLIENT);
         if (event.isCancelled()) {
             return;
         }

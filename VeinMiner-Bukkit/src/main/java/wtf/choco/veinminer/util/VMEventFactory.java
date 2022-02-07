@@ -61,11 +61,12 @@ public final class VMEventFactory {
      * @param player the player whose pattern was changed
      * @param currentPattern the player's current pattern
      * @param newPattern the pattern to be set
+     * @param cause the cause of the event
      *
      * @return the called event
      */
-    public static PlayerVeinMiningPatternChangeEvent callPlayerVeinMiningPatternChangeEvent(@NotNull Player player, @NotNull VeinMiningPattern currentPattern, @NotNull VeinMiningPattern newPattern) {
-        PlayerVeinMiningPatternChangeEvent event = new PlayerVeinMiningPatternChangeEvent(player, currentPattern, newPattern);
+    public static PlayerVeinMiningPatternChangeEvent callPlayerVeinMiningPatternChangeEvent(@NotNull Player player, @NotNull VeinMiningPattern currentPattern, @NotNull VeinMiningPattern newPattern, @NotNull PlayerVeinMiningPatternChangeEvent.Cause cause) {
+        PlayerVeinMiningPatternChangeEvent event = new PlayerVeinMiningPatternChangeEvent(player, currentPattern, newPattern, cause);
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }

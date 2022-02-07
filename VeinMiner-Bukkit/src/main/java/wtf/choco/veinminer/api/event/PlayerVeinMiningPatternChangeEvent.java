@@ -19,6 +19,7 @@ public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implem
 
     private final VeinMiningPattern pattern;
     private VeinMiningPattern newPattern;
+    private final Cause cause;
 
     /**
      * Construct a new {@link PlayerVeinMiningPatternChangeEvent}.
@@ -26,12 +27,14 @@ public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implem
      * @param player the player whose pattern was changed
      * @param pattern the player's current pattern
      * @param newPattern the pattern to be set
+     * @param cause the cause of this event
      */
-    public PlayerVeinMiningPatternChangeEvent(@NotNull Player player, @NotNull VeinMiningPattern pattern, @NotNull VeinMiningPattern newPattern) {
+    public PlayerVeinMiningPatternChangeEvent(@NotNull Player player, @NotNull VeinMiningPattern pattern, @NotNull VeinMiningPattern newPattern, @NotNull Cause cause) {
         super(player);
 
         this.pattern = pattern;
         this.newPattern = newPattern;
+        this.cause = cause;
     }
 
     /**
@@ -61,6 +64,16 @@ public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implem
     @NotNull
     public VeinMiningPattern getNewPattern() {
         return newPattern;
+    }
+
+    /**
+     * Get the {@link Cause} of this event.
+     *
+     * @return the cause
+     */
+    @NotNull
+    public Cause getCause() {
+        return cause;
     }
 
     @Override
