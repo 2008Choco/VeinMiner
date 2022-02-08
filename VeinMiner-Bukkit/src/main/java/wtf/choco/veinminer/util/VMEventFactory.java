@@ -9,9 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.veinminer.api.event.PlayerClientActivateVeinMinerEvent;
-import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
-import wtf.choco.veinminer.api.event.PlayerVeinMiningPatternChangeEvent;
+import wtf.choco.veinminer.api.event.player.PlayerClientActivateVeinMinerEvent;
+import wtf.choco.veinminer.api.event.player.PlayerVeinMineEvent;
+import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;

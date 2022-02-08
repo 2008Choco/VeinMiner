@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
-import wtf.choco.veinminer.api.event.PlayerVeinMineEvent;
+import wtf.choco.veinminer.api.event.player.PlayerVeinMineEvent;
 import wtf.choco.veinminer.block.BlockAccessor;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.BukkitBlockAccessor;

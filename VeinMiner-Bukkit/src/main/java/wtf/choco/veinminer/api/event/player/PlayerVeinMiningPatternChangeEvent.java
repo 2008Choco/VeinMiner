@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.api.event;
+package wtf.choco.veinminer.api.event.player;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
