@@ -54,6 +54,7 @@ import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerbound
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
+import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.platform.BukkitBlockState;
 import wtf.choco.veinminer.platform.BukkitItemType;
@@ -484,14 +485,27 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundHandshakeResponse(allowClientActivation));
 
             // Synchronize all registered patterns to the client
+            PatternRegistry patternRegistry = VeinMiner.getInstance().getPatternRegistry();
+
             List<NamespacedKey> patternKeys = new ArrayList<>();
-            VeinMiner.getInstance().getPatternRegistry().getPatterns().forEach(pattern -> patternKeys.add(pattern.getKey()));
+            patternRegistry.getPatterns().forEach(pattern -> patternKeys.add(pattern.getKey()));
             VeinMiningPattern defaultPattern = VeinMinerPlugin.getInstance().getDefaultVeinMiningPattern();
 
             // Move the default pattern to the start if it wasn't already there
             if (patternKeys.size() > 1 && patternKeys.remove(defaultPattern.getKey())) {
                 patternKeys.add(0, defaultPattern.getKey());
             }
+
+            // Don't send any patterns to which the player does not have access
+            patternKeys.removeIf(patternKey -> {
+                VeinMiningPattern pattern = patternRegistry.get(patternKey);
+                if (pattern == null) {
+                    return true;
+                }
+
+                String permission = pattern.getPermission();
+                return permission != null && !player.hasPermission(permission);
+            });
 
             VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundSyncRegisteredPatterns(patternKeys));
 
@@ -585,6 +599,11 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         }
 
         VeinMiningPattern pattern = VeinMiner.getInstance().getPatternRegistry().getOrDefault(message.getPatternKey(), VeinMinerPlugin.getInstance().getDefaultVeinMiningPattern());
+        String patternPermission = pattern.getPermission();
+
+        if (patternPermission != null && !player.hasPermission(patternPermission)) {
+            return;
+        }
 
         PlayerVeinMiningPatternChangeEvent event = VMEventFactory.callPlayerVeinMiningPatternChangeEvent(player, getVeinMiningPattern(), pattern, PlayerVeinMiningPatternChangeEvent.Cause.CLIENT);
         if (event.isCancelled()) {
