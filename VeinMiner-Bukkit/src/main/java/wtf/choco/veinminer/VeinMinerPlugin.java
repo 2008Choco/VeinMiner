@@ -3,7 +3,6 @@ package wtf.choco.veinminer;
 import com.google.common.base.Enums;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,8 +86,6 @@ import wtf.choco.veinminer.util.VMConstants;
  * The VeinMiner {@link JavaPlugin} class.
  */
 public final class VeinMinerPlugin extends JavaPlugin {
-
-    public static final Gson GSON = new Gson();
 
     private static VeinMinerPlugin instance;
 
