@@ -86,6 +86,22 @@ public final class PlaceholderExpansionVeinMiner extends PlaceholderExpansion {
             return String.valueOf(veinMinerPlayer.isVeinMinerActive());
         }
 
+        else if (identifier.equals("vein_mining")) {
+            return String.valueOf(veinMinerPlayer.isVeinMining());
+        }
+
+        else if (identifier.equals("using_client_mod")) {
+            return String.valueOf(veinMinerPlayer.isUsingClientMod());
+        }
+
+        else if (identifier.equals("selected_pattern")) {
+            return veinMinerPlayer.getVeinMiningPattern().getKey().toString();
+        }
+
+        else if (identifier.equals("activation_strategy")) {
+            return veinMinerPlayer.getActivationStrategy().getFriendlyName();
+        }
+
         return null;
     }
 
