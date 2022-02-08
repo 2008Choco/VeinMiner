@@ -70,4 +70,5 @@ public final class VMEventFactory {
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }
+
 }

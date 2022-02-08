@@ -2,6 +2,8 @@ package wtf.choco.veinminer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import java.util.Objects;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -14,6 +16,9 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -36,6 +41,7 @@ public final class VeinMinerMod implements ClientModInitializer {
     private static FabricServerState serverState;
 
     private boolean veinminerActivated = false, changingPatterns = false;
+    private BlockPos lastTargetBlockPosition = null;
 
     @Override
     public void onInitializeClient() {
@@ -52,6 +58,7 @@ public final class VeinMinerMod implements ClientModInitializer {
             boolean last = veinminerActivated;
             this.veinminerActivated = KEY_BINDING_ACTIVATE_VEINMINER.isPressed();
 
+            // Activating / deactivating vein miner
             if (last ^ veinminerActivated) {
                 VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(veinminerActivated));
 
@@ -60,6 +67,15 @@ public final class VeinMinerMod implements ClientModInitializer {
                 }
             }
 
+            // Requesting that the server vein mine at the player's current target block because it's different
+            HitResult result = client.crosshairTarget;
+            if (veinminerActivated && result instanceof BlockHitResult blockResult && !Objects.equals(lastTargetBlockPosition, blockResult.getBlockPos())) {
+                VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
+            }
+
+            this.lastTargetBlockPosition = (result instanceof BlockHitResult blockResult) ? blockResult.getBlockPos() : null;
+
+            // Changing patterns
             boolean lastChangingPatterns = changingPatterns;
             this.changingPatterns = (KEY_BINDING_NEXT_PATTERN.isPressed() || KEY_BINDING_PREVIOUS_PATTERN.isPressed());
 
