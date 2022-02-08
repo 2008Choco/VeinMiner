@@ -9,4 +9,4 @@ import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
  * @see ClientboundPluginMessageListener
  * @see ServerboundPluginMessageListener
  */
-public interface PluginMessageListener { } // TODO: Java 17, sealed
+public interface PluginMessageListener { }

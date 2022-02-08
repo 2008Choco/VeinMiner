@@ -27,7 +27,8 @@ public final class VMEventFactory {
      * Call the {@link PlayerVeinMineEvent}.
      *
      * @param player the player
-     * @param block the type of block being vein mined
+     * @param block the origin block that was broken by the player
+     * @param veinMinerBlock the type of block being vein mined
      * @param item the item used to vein mine
      * @param category the tool category
      * @param blocks the blocks being vein mined
@@ -36,8 +37,8 @@ public final class VMEventFactory {
      * @return the event
      */
     @NotNull
-    public static PlayerVeinMineEvent callPlayerVeinMineEvent(@NotNull Player player, @NotNull VeinMinerBlock block, @Nullable ItemStack item, @NotNull VeinMinerToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
-        PlayerVeinMineEvent event = new PlayerVeinMineEvent(player, block, item, category, blocks, pattern);
+    public static PlayerVeinMineEvent callPlayerVeinMineEvent(@NotNull Player player, @NotNull Block block, @NotNull VeinMinerBlock veinMinerBlock, @Nullable ItemStack item, @NotNull VeinMinerToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
+        PlayerVeinMineEvent event = new PlayerVeinMineEvent(player, block, veinMinerBlock, item, category, blocks, pattern);
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }

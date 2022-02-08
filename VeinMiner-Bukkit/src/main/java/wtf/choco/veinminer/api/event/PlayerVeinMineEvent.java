@@ -24,7 +24,8 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 
     private boolean cancelled = false;
 
-    private final VeinMinerBlock block;
+    private final Block block;
+    private final VeinMinerBlock veinMinerBlock;
     private final ItemStack itemStack;
     private final VeinMinerToolCategory category;
     private final Set<Block> blocks;
@@ -34,20 +35,32 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
      * Construct a new {@link PlayerVeinMineEvent}.
      *
      * @param player the player performing the vein mine
-     * @param block the type of {@link VeinMinerBlock} that was broken at the origin
+     * @param block the origin {@link Block} that was broken by the player
+     * @param veinMinerBlock the type of {@link VeinMinerBlock} that was broken at the origin
      * @param itemStack the {@link ItemStack} used to vein mine
      * @param category the {@link VeinMinerToolCategory} of the itemStack
      * @param blocks the blocks to be destroyed as a result of vein miner
      * @param pattern the pattern used to vein mine
      */
-    public PlayerVeinMineEvent(@NotNull Player player, @NotNull VeinMinerBlock block, @Nullable ItemStack itemStack, @NotNull VeinMinerToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
+    public PlayerVeinMineEvent(@NotNull Player player, @NotNull Block block, @NotNull VeinMinerBlock veinMinerBlock, @Nullable ItemStack itemStack, @NotNull VeinMinerToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
         super(player);
 
         this.block = block;
+        this.veinMinerBlock = veinMinerBlock;
         this.itemStack = itemStack;
         this.category = category;
         this.blocks = blocks;
         this.pattern = pattern;
+    }
+
+    /**
+     * Get the origin {@link Block} that was destroyed to trigger this vein mine.
+     *
+     * @return the origin block
+     */
+    @NotNull
+    public Block getBlock() {
+        return block;
     }
 
     /**
@@ -56,8 +69,8 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
      * @return the block
      */
     @NotNull
-    public VeinMinerBlock getBlock() {
-        return block;
+    public VeinMinerBlock getVeinMinerBlock() {
+        return veinMinerBlock;
     }
 
     /**

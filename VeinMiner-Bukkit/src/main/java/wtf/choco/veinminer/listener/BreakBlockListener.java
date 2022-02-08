@@ -162,7 +162,7 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Fire a new PlayerVeinMineEvent
-        PlayerVeinMineEvent veinmineEvent = VMEventFactory.callPlayerVeinMineEvent(player, originVeinMinerBlock, item, category, blocks, pattern);
+        PlayerVeinMineEvent veinmineEvent = VMEventFactory.callPlayerVeinMineEvent(player, origin, originVeinMinerBlock, item, category, blocks, pattern);
         if (veinmineEvent.isCancelled() || blockPositions.isEmpty()) {
             return;
         }
