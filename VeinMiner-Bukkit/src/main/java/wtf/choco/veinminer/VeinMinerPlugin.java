@@ -361,6 +361,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
      *
      * @return the registration result
      */
+    @NotNull
     public AntiCheatHook.RegistrationResult registerAntiCheatHook(@NotNull AntiCheatHook hook) {
         Preconditions.checkNotNull(hook, "Cannot register a null anticheat hook implementation");
 

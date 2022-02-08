@@ -20,7 +20,7 @@ public class VaultBasedEconomyModifier implements EconomyModifier {
     private final Economy economy;
 
     /**
-     * Construct a new economy modifier with a bypass permission.
+     * Construct a new {@link VaultBasedEconomyModifier}.
      */
     public VaultBasedEconomyModifier() {
         Preconditions.checkArgument(Bukkit.getPluginManager().isPluginEnabled("Vault"), "Vault must be enabled in order to use a VaultBasedEconomyModifier");

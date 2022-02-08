@@ -114,7 +114,8 @@ public final class VeinMiningPatternTunnel implements VeinMiningPattern {
     @FunctionalInterface
     private interface BiAxisRelativeGetter {
 
-        public BlockPosition apply(BlockPosition position, int first, int second);
+        @NotNull
+        public BlockPosition apply(@NotNull BlockPosition position, int first, int second);
 
     }
 

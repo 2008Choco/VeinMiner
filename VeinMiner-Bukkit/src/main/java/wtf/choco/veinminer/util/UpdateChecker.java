@@ -193,7 +193,6 @@ public final class UpdateChecker {
         return instance != null;
     }
 
-
     /**
      * A functional interface to compare two version Strings with similar version schemes.
      */

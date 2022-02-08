@@ -39,7 +39,7 @@ public final class CommandVeinMiner implements TabExecutor {
     private final PluginCommand commandBlocklist;
     private final PluginCommand commandToollist;
 
-    public CommandVeinMiner(@NotNull VeinMinerPlugin plugin, PluginCommand commandBlocklist, PluginCommand commandToollist) {
+    public CommandVeinMiner(@NotNull VeinMinerPlugin plugin, @NotNull PluginCommand commandBlocklist, @NotNull PluginCommand commandToollist) {
         this.plugin = plugin;
         this.commandBlocklist = commandBlocklist;
         this.commandToollist = commandToollist;

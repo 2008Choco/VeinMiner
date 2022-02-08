@@ -23,7 +23,7 @@ public final class AntiCheatHookLightAntiCheat implements AntiCheatHook {
 
     private final Set<UUID> exempt = new HashSet<>();
 
-    public AntiCheatHookLightAntiCheat(VeinMinerPlugin plugin) {
+    public AntiCheatHookLightAntiCheat(@NotNull VeinMinerPlugin plugin) {
         try {
             this.lightAntiCheatApiClass = Class.forName("vekster.lightanticheat.api.Utils");
             this.methodIsApiBypass = MethodUtils.getAccessibleMethod(lightAntiCheatApiClass, "isApiBypass", Player.class);

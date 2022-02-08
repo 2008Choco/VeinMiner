@@ -26,7 +26,7 @@ public final class CommandBlocklist implements TabExecutor {
 
     private final VeinMinerPlugin plugin;
 
-    public CommandBlocklist(VeinMinerPlugin plugin) {
+    public CommandBlocklist(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

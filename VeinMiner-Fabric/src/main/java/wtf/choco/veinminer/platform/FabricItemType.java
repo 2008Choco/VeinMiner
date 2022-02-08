@@ -20,7 +20,7 @@ public final class FabricItemType implements ItemType {
 
     private final NamespacedKey key;
 
-    private FabricItemType(Item item) {
+    private FabricItemType(@NotNull Item item) {
         Identifier id = Registry.ITEM.getId(item);
         this.key = new NamespacedKey(id.getNamespace(), id.getPath());
     }
@@ -38,7 +38,8 @@ public final class FabricItemType implements ItemType {
      *
      * @return the ItemType instance
      */
-    public static ItemType of(Item item) {
+    @NotNull
+    public static ItemType of(@NotNull Item item) {
         return CACHE.computeIfAbsent(item, FabricItemType::new);
     }
 

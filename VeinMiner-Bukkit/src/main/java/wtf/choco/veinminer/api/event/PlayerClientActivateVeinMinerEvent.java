@@ -26,6 +26,12 @@ public class PlayerClientActivateVeinMinerEvent extends PlayerEvent implements C
 
     private final boolean activated;
 
+    /**
+     * Construct a new {@link PlayerClientActivateVeinMinerEvent}.
+     *
+     * @param player the player that changed activation state
+     * @param activated the new activation state
+     */
     public PlayerClientActivateVeinMinerEvent(@NotNull Player player, boolean activated) {
         super(player);
         this.activated = activated;

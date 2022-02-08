@@ -82,9 +82,24 @@ public interface PersistentDataStorage {
      */
     public enum Type {
 
+        /**
+         * A series of JSON files in a directory. One file per player.
+         */
         JSON,
+
+        /**
+         * A remote MySQL server.
+         */
         MYSQL,
+
+        /**
+         * A local SQLite flat file.
+         */
         SQLITE,
+
+        /**
+         * An unknown type of persistent storage. Not supported.
+         */
         UNKNOWN;
 
     }

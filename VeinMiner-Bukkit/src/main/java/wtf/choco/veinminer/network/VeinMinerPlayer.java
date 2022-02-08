@@ -282,6 +282,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      */
     public void setVeinMiningPattern(@NotNull VeinMiningPattern veinMiningPattern, boolean updateClient) {
         boolean newPattern = !Objects.equals(veinMiningPattern, this.veinMiningPattern);
+
         this.dirty |= newPattern;
         this.veinMiningPattern = veinMiningPattern;
 
@@ -404,6 +405,8 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
     /**
      * Set whether or not the player is actively vein mining.
+     * <p>
+     * Not part of the public API. This method is intended for internal use only.
      *
      * @param veinMining the new vein mining state
      */

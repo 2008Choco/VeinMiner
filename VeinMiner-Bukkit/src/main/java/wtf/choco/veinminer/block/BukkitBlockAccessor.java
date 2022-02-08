@@ -23,12 +23,7 @@ public final class BukkitBlockAccessor implements BlockAccessor {
 
     private final Reference<World> world;
 
-    /**
-     * Construct a new {@link BukkitBlockAccessor}.
-     *
-     * @param world the world
-     */
-    public BukkitBlockAccessor(@NotNull World world) {
+    private BukkitBlockAccessor(@NotNull World world) {
         this.world = new WeakReference<>(world);
     }
 

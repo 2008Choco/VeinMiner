@@ -13,6 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
@@ -38,7 +39,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
      *
      * @param client the {@link MinecraftClient} instance
      */
-    public FabricServerState(MinecraftClient client) {
+    public FabricServerState(@NotNull MinecraftClient client) {
         // We'll enable VeinMiner if we're in singleplayer development mode, just for testing
         this.enabled = client.isInSingleplayer() && FabricLoader.getInstance().isDevelopmentEnvironment();
     }
@@ -57,10 +58,23 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         return enabled;
     }
 
+    /**
+     * Get the index of the currently selected pattern.
+     *
+     * @return the selected pattern index
+     */
     public int getSelectedPatternIndex() {
         return selectedPatternIndex;
     }
 
+    /**
+     * Change to an adjacent pattern.
+     *
+     * @param next whether or not to move to the next or previous index
+     *
+     * @return true if the pattern was changed, false if the client does not recognize any
+     * pattern yet and could not be changed
+     */
     public boolean changePattern(boolean next) {
         if (patternKeys == null) {
             return false;
@@ -77,6 +91,13 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         return true;
     }
 
+    /**
+     * Get a {@link List} of all pattern keys known to the client.
+     *
+     * @return all known pattern keys
+     */
+    @NotNull
+    @UnmodifiableView
     public List<NamespacedKey> getPatternKeys() {
         return (patternKeys != null) ? Collections.unmodifiableList(patternKeys) : Collections.emptyList();
     }

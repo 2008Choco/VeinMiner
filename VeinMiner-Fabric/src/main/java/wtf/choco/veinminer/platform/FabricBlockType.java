@@ -24,7 +24,7 @@ public final class FabricBlockType implements BlockType {
 
     private final NamespacedKey key;
 
-    private FabricBlockType(Block block) {
+    private FabricBlockType(@NotNull Block block) {
         Identifier id = Registry.BLOCK.getId(block);
         this.key = new NamespacedKey(id.getNamespace(), id.getPath());
     }
@@ -59,7 +59,8 @@ public final class FabricBlockType implements BlockType {
      *
      * @return the BlockType instance
      */
-    public static BlockType of(Block block) {
+    @NotNull
+    public static BlockType of(@NotNull Block block) {
         return CACHE.computeIfAbsent(block, FabricBlockType::new);
     }
 

@@ -63,7 +63,7 @@ public final class PluginMessageRegistry<T extends PluginMessageListener> {
      *
      * @return the id of the plugin message, or -1 if no message exists
      */
-    public int getPluginMessageId(Class<?> message) {
+    public int getPluginMessageId(@NotNull Class<?> message) {
         return messageIds.getOrDefault(message, -1);
     }
 

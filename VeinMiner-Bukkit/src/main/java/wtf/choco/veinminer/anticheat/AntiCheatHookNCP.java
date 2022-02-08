@@ -22,7 +22,7 @@ public final class AntiCheatHookNCP implements AntiCheatHook {
     private final Multimap<@NotNull UUID, @NotNull CheckType> exempt = ArrayListMultimap.create();
     private final VeinMinerPlugin plugin;
 
-    public AntiCheatHookNCP(VeinMinerPlugin plugin) {
+    public AntiCheatHookNCP(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

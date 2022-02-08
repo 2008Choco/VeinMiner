@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.metadata.MetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.util.VMConstants;
@@ -17,7 +18,7 @@ public final class ItemCollectionListener implements Listener {
 
     private final VeinMinerPlugin plugin;
 
-    public ItemCollectionListener(VeinMinerPlugin plugin) {
+    public ItemCollectionListener(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

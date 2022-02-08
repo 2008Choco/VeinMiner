@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 
 /**
- * Called when a {@link Player} changes their {@link VeinMiningPattern}.
+ * Called when a {@link Player} changes their {@link VeinMiningPattern} either by command
+ * or with the client-sided mod.
  */
 public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implements Cancellable {
 

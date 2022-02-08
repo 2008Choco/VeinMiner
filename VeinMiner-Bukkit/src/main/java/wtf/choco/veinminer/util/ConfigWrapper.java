@@ -32,7 +32,7 @@ public final class ConfigWrapper {
      * @param directory the directory at which the config is located
      * @param name the name of the config file
      */
-    public ConfigWrapper(@NotNull JavaPlugin plugin, @NotNull File directory, String name) {
+    public ConfigWrapper(@NotNull JavaPlugin plugin, @NotNull File directory, @NotNull String name) {
         this(plugin, directory.getPath().concat(name));
     }
 

@@ -43,7 +43,7 @@ public final class PluginMessageProtocol {
     private final NamespacedKey channel;
     private final int version;
 
-    private final Map<@NotNull MessageDirection, @NotNull PluginMessageRegistry<?>> registries = new EnumMap<>(MessageDirection.class);
+    private final Map<MessageDirection, PluginMessageRegistry<?>> registries = new EnumMap<>(MessageDirection.class);
 
     /**
      * Construct a new {@link PluginMessageProtocol}.

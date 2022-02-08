@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A wrapper for economic transactions provided either by a
- * {@link VaultBasedEconomyModifier vault based economy} or a custom one supplied by
+ * {@link VaultBasedEconomyModifier Vault-based economy} or a custom one supplied by
  * another plugin.
  */
 public interface EconomyModifier {

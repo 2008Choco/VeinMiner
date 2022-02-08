@@ -30,7 +30,7 @@ public final class FabricBlockState implements BlockState {
      * @param block the type of block for which to create a BlockState
      * @param properties the explicitly set properties
      */
-    public FabricBlockState(Block block, Map<Property<?>, Comparable<?>> properties) {
+    public FabricBlockState(@NotNull Block block, @NotNull Map<Property<?>, Comparable<?>> properties) {
         this.block = block;
         this.properties = properties;
     }
@@ -45,7 +45,7 @@ public final class FabricBlockState implements BlockState {
      *
      * @param state the state to wrap
      */
-    public FabricBlockState(net.minecraft.block.BlockState state) {
+    public FabricBlockState(@NotNull net.minecraft.block.BlockState state) {
         this.block = state.getBlock();
         this.properties = state.getEntries();
     }

@@ -120,6 +120,7 @@ public final class VeinMiner {
      *
      * @return the pattern registry
      */
+    @NotNull
     public PatternRegistry getPatternRegistry() {
         return patternRegistry;
     }

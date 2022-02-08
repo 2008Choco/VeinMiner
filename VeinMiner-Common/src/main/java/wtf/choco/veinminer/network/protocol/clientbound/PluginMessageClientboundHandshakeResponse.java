@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.network.protocol.clientbound;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.network.PluginMessage;
@@ -17,8 +18,6 @@ import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerbound
  */
 public final class PluginMessageClientboundHandshakeResponse implements PluginMessage<ClientboundPluginMessageListener> {
 
-    // TODO: Include configuration here
-
     private final boolean enabled;
 
     /**
@@ -30,6 +29,7 @@ public final class PluginMessageClientboundHandshakeResponse implements PluginMe
         this.enabled = enabled;
     }
 
+    @Internal
     public PluginMessageClientboundHandshakeResponse(@NotNull PluginMessageByteBuffer buffer) {
         this.enabled = buffer.readBoolean();
     }

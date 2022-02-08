@@ -5,8 +5,14 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A Bukkit implementation of {@link PlatformReconstructor}.
+ */
 public final class BukkitPlatformReconstructor implements PlatformReconstructor {
 
+    /**
+     * The {@link PlatformReconstructor} singleton instance.
+     */
     public static final PlatformReconstructor INSTANCE = new BukkitPlatformReconstructor();
 
     private BukkitPlatformReconstructor() { }

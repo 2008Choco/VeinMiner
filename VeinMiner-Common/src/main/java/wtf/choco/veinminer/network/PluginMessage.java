@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
  *
  *     // This is intended for reading from the byte buffer. Used on construction of this message.
  *     public PluginMessageServerboundExample(PluginMessageByteBuffer buffer) {
- *         this(buffer.readUTF(), buffer.readVarInt());
+ *         this(buffer.readString(), buffer.readVarInt());
  *     }
  *
  *     public String getStringValue() {
@@ -34,13 +34,13 @@ import org.jetbrains.annotations.NotNull;
  *     }
  *
  *     {@literal @Override}
- *     public void write({@literal @NotNull} PluginMessageByteBuffer buffer) {
- *         buffer.writeUTF(stringValue);
+ *     public void write(PluginMessageByteBuffer buffer) {
+ *         buffer.writeString(stringValue);
  *         buffer.writeVarInt(intValue);
  *     }
  *
  *     {@literal @Override}
- *     public void handle({@literal @NotNull} ServerboundPluginMessageListener listener) {
+ *     public void handle(ServerboundPluginMessageListener listener) {
  *         // Handle here. Conventionally, the listener should have a method to handle this message in specific... like so:
  *         listener.handleExample(this);
  *     }

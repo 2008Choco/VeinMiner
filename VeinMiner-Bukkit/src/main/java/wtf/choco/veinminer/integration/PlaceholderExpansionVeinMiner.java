@@ -18,6 +18,11 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
  *   <li>%veinminer_enabled%: Whether or not at least one vein miner category is enabled
  *   <li>%veinminer_enabled_{@literal <tool>}%: Whether or not the vein miner category is enabled
  *   <li>%veinminer_active%: Whether or not vein miner is active and ready to use
+ *   <li>%veinminer_vein_mining%: Whether or not the player is currently vein mining. Active only
+ *   for a brief moment
+ *   <li>%veinminer_using_client_mod%: Whether or not the player has the client mod installed
+ *   <li>%veinminer_selected_pattern%: The key of the player's selected vein mining pattern
+ *   <li>%veinminer_activation_strategy%: The name of the player's selected activation strategy
  * </ul>
  */
 public final class PlaceholderExpansionVeinMiner extends PlaceholderExpansion {
@@ -29,7 +34,7 @@ public final class PlaceholderExpansionVeinMiner extends PlaceholderExpansion {
      *
      * @param plugin the plugin instance
      */
-    public PlaceholderExpansionVeinMiner(VeinMinerPlugin plugin) {
+    public PlaceholderExpansionVeinMiner(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

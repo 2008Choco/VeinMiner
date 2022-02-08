@@ -30,7 +30,7 @@ public final class CommandToollist implements TabExecutor {
 
     private final VeinMinerPlugin plugin;
 
-    public CommandToollist(VeinMinerPlugin plugin) {
+    public CommandToollist(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
 

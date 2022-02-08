@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.network.protocol.serverbound;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.network.PluginMessage;
@@ -9,7 +10,7 @@ import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 /**
  * A server bound {@link PluginMessage} including the following data:
  * <ol>
- *   <li><strong>varint</strong>: protocol version
+ *   <li><strong>VarInt</strong>: protocol version
  * </ol>
  * Sent when a client joins the server.
  */
@@ -26,6 +27,7 @@ public final class PluginMessageServerboundHandshake implements PluginMessage<Se
         this.protocolVersion = protocolVersion;
     }
 
+    @Internal
     public PluginMessageServerboundHandshake(@NotNull PluginMessageByteBuffer buffer) {
         this.protocolVersion = buffer.readVarInt();
     }

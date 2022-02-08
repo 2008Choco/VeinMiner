@@ -35,6 +35,7 @@ public final class VMEventFactory {
      *
      * @return the event
      */
+    @NotNull
     public static PlayerVeinMineEvent callPlayerVeinMineEvent(@NotNull Player player, @NotNull VeinMinerBlock block, @Nullable ItemStack item, @NotNull VeinMinerToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
         PlayerVeinMineEvent event = new PlayerVeinMineEvent(player, block, item, category, blocks, pattern);
         Bukkit.getPluginManager().callEvent(event);
@@ -65,6 +66,7 @@ public final class VMEventFactory {
      *
      * @return the called event
      */
+    @NotNull
     public static PlayerVeinMiningPatternChangeEvent callPlayerVeinMiningPatternChangeEvent(@NotNull Player player, @NotNull VeinMiningPattern currentPattern, @NotNull VeinMiningPattern newPattern, @NotNull PlayerVeinMiningPatternChangeEvent.Cause cause) {
         PlayerVeinMiningPatternChangeEvent event = new PlayerVeinMiningPatternChangeEvent(player, currentPattern, newPattern, cause);
         Bukkit.getPluginManager().callEvent(event);

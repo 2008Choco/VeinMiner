@@ -3,7 +3,11 @@ package wtf.choco.veinminer.platform;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import java.util.Optional;
+
+import net.minecraft.block.Block;
 import net.minecraft.command.argument.BlockArgumentParser;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -47,7 +51,8 @@ public final class FabricPlatformReconstructor implements PlatformReconstructor 
             return null;
         }
 
-        return Registry.BLOCK.getOrEmpty(identifier).map(FabricBlockType::of).orElse(null);
+        Optional<Block> block = Registry.BLOCK.getOrEmpty(identifier);
+        return block.isPresent() ? block.map(FabricBlockType::of).get() : null;
     }
 
     @Nullable
@@ -58,7 +63,8 @@ public final class FabricPlatformReconstructor implements PlatformReconstructor 
             return null;
         }
 
-        return Registry.ITEM.getOrEmpty(identifier).map(FabricItemType::of).orElse(null);
+        Optional<Item> item = Registry.ITEM.getOrEmpty(identifier);
+        return item.isPresent() ? item.map(FabricItemType::of).get() : null;
     }
 
 }

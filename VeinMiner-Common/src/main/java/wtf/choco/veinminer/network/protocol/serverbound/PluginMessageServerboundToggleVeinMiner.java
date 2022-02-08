@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.network.protocol.serverbound;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.network.PluginMessage;
@@ -26,6 +27,7 @@ public final class PluginMessageServerboundToggleVeinMiner implements PluginMess
         this.activated = activated;
     }
 
+    @Internal
     public PluginMessageServerboundToggleVeinMiner(@NotNull PluginMessageByteBuffer buffer) {
         this.activated = buffer.readBoolean();
     }

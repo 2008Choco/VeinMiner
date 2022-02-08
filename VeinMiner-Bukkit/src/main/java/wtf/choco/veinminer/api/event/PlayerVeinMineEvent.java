@@ -16,7 +16,7 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
- * Called when vein miner is used for a set of blocks.
+ * Called when a player uses vein miner.
  */
 public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
 
@@ -30,6 +30,16 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     private final Set<Block> blocks;
     private final VeinMiningPattern pattern;
 
+    /**
+     * Construct a new {@link PlayerVeinMineEvent}.
+     *
+     * @param player the player performing the vein mine
+     * @param block the type of {@link VeinMinerBlock} that was broken at the origin
+     * @param itemStack the {@link ItemStack} used to vein mine
+     * @param category the {@link VeinMinerToolCategory} of the itemStack
+     * @param blocks the blocks to be destroyed as a result of vein miner
+     * @param pattern the pattern used to vein mine
+     */
     public PlayerVeinMineEvent(@NotNull Player player, @NotNull VeinMinerBlock block, @Nullable ItemStack itemStack, @NotNull VeinMinerToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
         super(player);
 
@@ -41,7 +51,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     }
 
     /**
-     * Get the original {@link VeinMinerBlock} broken in this event.
+     * Get the {@link VeinMinerBlock} broken at the origin in this event.
      *
      * @return the block
      */
@@ -72,10 +82,15 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     }
 
     /**
-     * Get a set of all blocks destroyed by this vein mine. This set is mutable. Modifications
-     * will directly manipulate what blocks are and are not destroyed.
+     * Get a {@link Set} of all blocks destroyed by this vein mine. This set is mutable. Changes made
+     * to the returned collection will directly affect what blocks are destroyed.
+     * <p>
+     * Note that just because a block is present in the returned collection does not mean that it will
+     * be destroyed for certain. Additional checks are made on the blocks in this collection during the
+     * vein mining process including whether or not the player is allowed to break the block (e.g.
+     * support for land claiming plugins or other protection plugins such as WorldGuard).
      *
-     * @return the blocks to be affected by this event
+     * @return the blocks to be destroyed
      */
     @NotNull
     public Set<Block> getBlocks() {

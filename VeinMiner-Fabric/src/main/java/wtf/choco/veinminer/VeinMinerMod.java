@@ -30,6 +30,9 @@ import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerbound
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.platform.FabricPlatformReconstructor;
 
+/**
+ * The Fabric VeinMiner mod entry class.
+ */
 public final class VeinMinerMod implements ClientModInitializer {
 
     public static final KeyBinding KEY_BINDING_ACTIVATE_VEINMINER = registerKeybind("activate_veinminer", GLFW.GLFW_KEY_GRAVE_ACCENT);
