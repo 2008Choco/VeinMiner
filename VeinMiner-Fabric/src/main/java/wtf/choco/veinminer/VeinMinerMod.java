@@ -1,7 +1,5 @@
 package wtf.choco.veinminer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import java.util.Objects;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -10,12 +8,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.Window;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -23,6 +17,8 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
+import wtf.choco.veinminer.hud.HudRenderComponent;
+import wtf.choco.veinminer.hud.HudRenderComponentVeinMiningIcon;
 import wtf.choco.veinminer.network.FabricChannelRegistrar;
 import wtf.choco.veinminer.network.FabricServerState;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
@@ -39,11 +35,13 @@ public final class VeinMinerMod implements ClientModInitializer {
     public static final KeyBinding KEY_BINDING_NEXT_PATTERN = registerKeybind("next_pattern", GLFW.GLFW_KEY_RIGHT_BRACKET);
     public static final KeyBinding KEY_BINDING_PREVIOUS_PATTERN = registerKeybind("previous_pattern", GLFW.GLFW_KEY_LEFT_BRACKET);
 
-    private static final Identifier TEXTURE_VEINMINER_ICON = new Identifier("veinminer4bukkit", "textures/gui/veinminer_icon.png");
-
     private static FabricServerState serverState;
 
-    private boolean veinminerActivated = false, changingPatterns = false;
+    private final HudRenderComponent[] hudRenderComponents = {
+            new HudRenderComponentVeinMiningIcon()
+    };
+
+    private boolean changingPatterns = false;
     private BlockPos lastTargetBlockPosition = null;
 
     @Override
@@ -58,21 +56,21 @@ public final class VeinMinerMod implements ClientModInitializer {
                 return;
             }
 
-            boolean last = veinminerActivated;
-            this.veinminerActivated = KEY_BINDING_ACTIVATE_VEINMINER.isPressed();
+            boolean lastActive = getServerState().isActive(), active = KEY_BINDING_ACTIVATE_VEINMINER.isPressed();
+            getServerState().setActive(active);
 
             // Activating / deactivating vein miner
-            if (last ^ veinminerActivated) {
-                VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(veinminerActivated));
+            if (lastActive ^ active) {
+                VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(active));
 
-                if (veinminerActivated) {
+                if (active) {
                     VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
                 }
             }
 
             // Requesting that the server vein mine at the player's current target block because it's different
             HitResult result = client.crosshairTarget;
-            if (veinminerActivated && result instanceof BlockHitResult blockResult && !Objects.equals(lastTargetBlockPosition, blockResult.getBlockPos())) {
+            if (active && result instanceof BlockHitResult blockResult && !Objects.equals(lastTargetBlockPosition, blockResult.getBlockPos())) {
                 VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
             }
 
@@ -114,22 +112,19 @@ public final class VeinMinerMod implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((stack, delta) -> {
-            if (!hasServerState() || !getServerState().isEnabled() || !veinminerActivated || !MinecraftClient.isHudEnabled()) {
+            if (!hasServerState() || !getServerState().isEnabled() || !MinecraftClient.isHudEnabled()) {
                 return;
             }
 
             MinecraftClient client = MinecraftClient.getInstance();
-            Window window = client.getWindow();
-            int width = window.getScaledWidth(), height = window.getScaledHeight();
 
-            stack.push();
+            for (HudRenderComponent component : hudRenderComponents) {
+                if (!component.shouldRender()) {
+                    continue;
+                }
 
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, TEXTURE_VEINMINER_ICON);
-            DrawableHelper.drawTexture(stack, (width / 2) + 8, (height / 2) - 4, 0, 0, 8, 8, 8, 8);
-
-            stack.pop();
+                component.render(client, stack, delta);
+            }
         });
     }
 

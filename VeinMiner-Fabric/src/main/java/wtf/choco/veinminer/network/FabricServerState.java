@@ -29,7 +29,7 @@ import wtf.choco.veinminer.util.NamespacedKey;
  */
 public final class FabricServerState implements ClientboundPluginMessageListener, MessageReceiver {
 
-    private boolean enabled;
+    private boolean enabled, active;
 
     private int selectedPatternIndex = -1;
     private List<NamespacedKey> patternKeys = null;
@@ -56,6 +56,24 @@ public final class FabricServerState implements ClientboundPluginMessageListener
      */
     public boolean isEnabled() {
         return enabled;
+    }
+
+    /**
+     * Set whether or not vein miner is active.
+     *
+     * @param active the new active state
+     */
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    /**
+     * Check whether or not vein mine is active.
+     *
+     * @return true if active, false otherwise
+     */
+    public boolean isActive() {
+        return active;
     }
 
     /**
