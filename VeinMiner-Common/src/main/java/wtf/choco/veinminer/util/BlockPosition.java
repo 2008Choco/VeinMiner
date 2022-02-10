@@ -14,6 +14,7 @@ import wtf.choco.veinminer.block.BlockFace;
 public record BlockPosition(int x, int y, int z) {
 
     private static final double MAXIMUM_UPPER_BOUND = Math.pow(2, 25), NEGATIVE_UPPER_BOUND = Math.pow(2, 26);
+    private static final double MAXIMUM_UPPER_BOUND_Y = Math.pow(2, 11), NEGATIVE_UPPER_BOUND_Y = Math.pow(2, 12);
 
     /**
      * Get a new {@link BlockPosition} offset by the given values.
@@ -116,7 +117,13 @@ public record BlockPosition(int x, int y, int z) {
      * @return the unpacked y coordinate
      */
     public static int unpackY(long packedPos) {
-        return (int) (packedPos & 0xFFF);
+        int value = (int) (packedPos & 0xFFF);
+
+        if (value > MAXIMUM_UPPER_BOUND_Y) {
+            value -= NEGATIVE_UPPER_BOUND_Y;
+        }
+
+        return value;
     }
 
     /**
