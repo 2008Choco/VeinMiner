@@ -22,6 +22,8 @@ public final class HudRenderComponentVeinMiningIcon implements HudRenderComponen
 
     @Override
     public void render(@NotNull MinecraftClient client, @NotNull MatrixStack stack, float delta) {
+        client.getProfiler().push("veinMiningIcon");
+
         Window window = client.getWindow();
         int width = window.getScaledWidth(), height = window.getScaledHeight();
 
@@ -33,6 +35,8 @@ public final class HudRenderComponentVeinMiningIcon implements HudRenderComponen
         DrawableHelper.drawTexture(stack, (width / 2) + 8, (height / 2) - 4, 0, 0, 8, 8, 8, 8);
 
         stack.pop();
+
+        client.getProfiler().pop();
     }
 
     @Override

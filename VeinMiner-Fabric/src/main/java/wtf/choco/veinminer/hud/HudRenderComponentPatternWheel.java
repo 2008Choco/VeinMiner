@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.hud;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -23,8 +25,13 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
 
     @Override
     public void render(@NotNull MinecraftClient client, @NotNull MatrixStack stack, float tickDelta) {
+        client.getProfiler().push("veinminerPatternWheel");
+
         stack.push();
         stack.translate(4, 0, 0);
+
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
 
         // Calculate alpha based on progress of fade in/out times
         float alphaProgress = 1.0F;
@@ -38,7 +45,7 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
         alphaProgress = MathHelper.clamp(alphaProgress, 0.0F, 1.0F);
 
         // Final colour with alpha included
-        int alpha = MathHelper.floor(alphaProgress * 255) << 24;
+        int alpha = (MathHelper.floor(alphaProgress * 255) << 24) & 0xFF000000;
         int colour = 0xFFFFFF | alpha;
 
         FabricServerState serverState = VeinMinerMod.getServerState();
@@ -55,9 +62,13 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
         client.textRenderer.drawWithShadow(stack, Text.of(after), 0, client.textRenderer.fontHeight * 3, colour);
         stack.pop();
 
+        RenderSystem.disableBlend();
+
         stack.pop();
 
         this.remainingMs -= (client.getLastFrameDuration() * 50);
+
+        client.getProfiler().pop();
     }
 
     @Override
@@ -73,6 +84,7 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
      * period. If it is fading out, it will start fading in starting from the current fade out time.
      */
     public void pushRender() {
+        System.out.println("-------------");
         if (remainingMs <= 0) { // If not rendered, set to max time
             this.remainingMs = TOTAL_TIME_MS;
         }
