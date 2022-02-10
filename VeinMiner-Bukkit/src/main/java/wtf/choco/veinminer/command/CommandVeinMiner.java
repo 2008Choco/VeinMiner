@@ -104,7 +104,7 @@ public final class CommandVeinMiner implements TabExecutor {
                     return true;
                 }
 
-                veinMinerPlayer.setVeinMinerEnabled(!veinMinerPlayer.isVeinMinerEnabled(), category);
+                veinMinerPlayer.setVeinMinerEnabled(!veinMinerPlayer.isVeinMinerEnabled(category), category);
                 player.sendMessage(ChatColor.GRAY + "Vein miner toggled "
                     + (veinMinerPlayer.isVeinMinerDisabled(category)
                             ? ChatColor.RED.toString() + ChatColor.BOLD + "OFF"
