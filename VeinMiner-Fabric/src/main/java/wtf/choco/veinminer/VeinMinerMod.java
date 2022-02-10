@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import wtf.choco.veinminer.hud.HudRenderComponent;
+import wtf.choco.veinminer.hud.HudRenderComponentPatternWheel;
 import wtf.choco.veinminer.hud.HudRenderComponentVeinMiningIcon;
 import wtf.choco.veinminer.network.FabricChannelRegistrar;
 import wtf.choco.veinminer.network.FabricServerState;
@@ -37,8 +38,10 @@ public final class VeinMinerMod implements ClientModInitializer {
 
     private static FabricServerState serverState;
 
+    private final HudRenderComponentPatternWheel patternWheelRenderComponent = new HudRenderComponentPatternWheel();
     private final HudRenderComponent[] hudRenderComponents = {
-            new HudRenderComponentVeinMiningIcon()
+            new HudRenderComponentVeinMiningIcon(),
+            patternWheelRenderComponent
     };
 
     private boolean changingPatterns = false;
@@ -83,6 +86,7 @@ public final class VeinMinerMod implements ClientModInitializer {
             if (lastChangingPatterns ^ changingPatterns) {
                 boolean next;
 
+                // There has to be a smarter way to write this...
                 if (KEY_BINDING_NEXT_PATTERN.isPressed()) {
                     next = true;
                 }
@@ -93,7 +97,12 @@ public final class VeinMinerMod implements ClientModInitializer {
                     return;
                 }
 
-                serverState.changePattern(next);
+                // If the HUD wheel isn't rendered yet, push a render call but don't change the pattern
+                if (patternWheelRenderComponent.shouldRender()) {
+                    serverState.changePattern(next);
+                }
+
+                this.patternWheelRenderComponent.pushRender();
             }
         });
 
@@ -111,8 +120,8 @@ public final class VeinMinerMod implements ClientModInitializer {
             VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
         });
 
-        HudRenderCallback.EVENT.register((stack, delta) -> {
-            if (!hasServerState() || !getServerState().isEnabled() || !MinecraftClient.isHudEnabled()) {
+        HudRenderCallback.EVENT.register((stack, tickDelta) -> {
+            if (!hasServerState() || !getServerState().isEnabled()) {
                 return;
             }
 
@@ -123,7 +132,7 @@ public final class VeinMinerMod implements ClientModInitializer {
                     continue;
                 }
 
-                component.render(client, stack, delta);
+                component.render(client, stack, tickDelta);
             }
         });
     }

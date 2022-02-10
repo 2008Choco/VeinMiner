@@ -15,9 +15,9 @@ public interface HudRenderComponent {
      *
      * @param client the client instance
      * @param stack the stack to which the hud is being rendered
-     * @param delta delta time
+     * @param tickDelta tick delta time
      */
-    public void render(@NotNull MinecraftClient client, @NotNull MatrixStack stack, float delta);
+    public void render(@NotNull MinecraftClient client, @NotNull MatrixStack stack, float tickDelta);
 
     /**
      * Check whether or not this component should be rendered to the screen.

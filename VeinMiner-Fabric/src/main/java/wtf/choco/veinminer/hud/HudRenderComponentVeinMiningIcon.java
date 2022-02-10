@@ -37,7 +37,7 @@ public final class HudRenderComponentVeinMiningIcon implements HudRenderComponen
 
     @Override
     public boolean shouldRender() {
-        return VeinMinerMod.getServerState().isActive();
+        return MinecraftClient.isHudEnabled() && VeinMinerMod.getServerState().isActive();
     }
 
 }

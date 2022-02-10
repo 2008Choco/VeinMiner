@@ -9,11 +9,9 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
@@ -31,7 +29,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     private boolean enabled, active;
 
-    private int selectedPatternIndex = -1;
+    private int selectedPatternIndex = 0;
     private List<NamespacedKey> patternKeys = null;
 
     /**
@@ -40,8 +38,19 @@ public final class FabricServerState implements ClientboundPluginMessageListener
      * @param client the {@link MinecraftClient} instance
      */
     public FabricServerState(@NotNull MinecraftClient client) {
+        boolean dev = FabricLoader.getInstance().isDevelopmentEnvironment();
+
         // We'll enable VeinMiner if we're in singleplayer development mode, just for testing
-        this.enabled = client.isInSingleplayer() && FabricLoader.getInstance().isDevelopmentEnvironment();
+        this.enabled = client.isInSingleplayer() && dev;
+
+        if (dev) { // Debug patterns
+            this.patternKeys = List.of(
+                NamespacedKey.veinminer("default"),
+                NamespacedKey.veinminer("tunnel"),
+                NamespacedKey.veinminer("staircase_up"),
+                NamespacedKey.veinminer("staircase_down")
+            );
+        }
     }
 
     /**
@@ -85,6 +94,27 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         return selectedPatternIndex;
     }
 
+    @NotNull
+    public NamespacedKey getSelectedPattern() {
+        return patternKeys.get(selectedPatternIndex);
+    }
+
+    @NotNull
+    public NamespacedKey getNextPattern() {
+        return patternKeys.get((selectedPatternIndex + 1) % patternKeys.size());
+    }
+
+    @NotNull
+    public NamespacedKey getPreviousPattern() {
+        int index = (selectedPatternIndex - 1) % patternKeys.size();
+
+        if (index < 0) {
+            index = patternKeys.size() + index;
+        }
+
+        return patternKeys.get(index);
+    }
+
     /**
      * Change to an adjacent pattern.
      *
@@ -106,6 +136,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         }
 
         VeinMiner.PROTOCOL.sendMessageToServer(this, new PluginMessageServerboundSelectPattern(patternKeys.get(selectedPatternIndex)));
+
         return true;
     }
 
@@ -115,9 +146,12 @@ public final class FabricServerState implements ClientboundPluginMessageListener
      * @return all known pattern keys
      */
     @NotNull
-    @UnmodifiableView
     public List<NamespacedKey> getPatternKeys() {
-        return (patternKeys != null) ? Collections.unmodifiableList(patternKeys) : Collections.emptyList();
+        return (patternKeys != null) ? patternKeys : Collections.emptyList();
+    }
+
+    public boolean hasPatternKeys() {
+        return patternKeys != null && !patternKeys.isEmpty();
     }
 
     @Override
@@ -154,12 +188,6 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     @Override
     public void handleSetPattern(@NotNull PluginMessageClientboundSetPattern message) {
         this.selectedPatternIndex = Math.max(patternKeys.indexOf(message.getPatternKey()), 0);
-
-        // debug start, remove this all later
-        if (!patternKeys.isEmpty()) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            client.player.sendMessage(Text.of("[CLIENT] Selected pattern: " + patternKeys.get(selectedPatternIndex) + " (index: " + selectedPatternIndex + ")"), false);
-        }
     }
 
 }
