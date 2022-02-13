@@ -21,6 +21,10 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/veinminer4bukkit.accesswidener")
+}
+
 processResources {
     from ("fabric.mod.json") {
         filter ReplaceTokens, tokens: [

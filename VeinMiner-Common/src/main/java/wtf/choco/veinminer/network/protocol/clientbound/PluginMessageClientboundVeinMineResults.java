@@ -1,8 +1,10 @@
 package wtf.choco.veinminer.network.protocol.clientbound;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
@@ -23,15 +25,15 @@ import wtf.choco.veinminer.util.BlockPosition;
  */
 public final class PluginMessageClientboundVeinMineResults implements PluginMessage<ClientboundPluginMessageListener> {
 
-    private final Collection<? extends BlockPosition> blockPositions;
+    private final List<BlockPosition> blockPositions;
 
     /**
      * Construct a new {@link PluginMessageClientboundVeinMineResults}.
      *
      * @param blockPositions the calculated {@link BlockPosition BlockPositions}
      */
-    public PluginMessageClientboundVeinMineResults(@NotNull Collection<? extends BlockPosition> blockPositions) {
-        this.blockPositions = blockPositions;
+    public PluginMessageClientboundVeinMineResults(@NotNull Collection<BlockPosition> blockPositions) {
+        this.blockPositions = new ArrayList<>(blockPositions);
     }
 
     /**
@@ -53,12 +55,12 @@ public final class PluginMessageClientboundVeinMineResults implements PluginMess
     }
 
     /**
-     * Get a {@link Collection} of all {@link BlockPosition BlockPositions} resulting from
+     * Get a {@link List} of all {@link BlockPosition BlockPositions} resulting from
      * the vein mine. May be empty if the vein mine was unsuccessful.
      *
      * @return the block positions
      */
-    public Collection<? extends BlockPosition> getBlockPositions() {
+    public List<BlockPosition> getBlockPositions() {
         return blockPositions;
     }
 

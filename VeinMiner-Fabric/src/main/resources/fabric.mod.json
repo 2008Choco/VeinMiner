@@ -24,6 +24,11 @@
         ]
     },
 
+    "accessWidener" : "veinminer4bukkit.accesswidener",
+    "mixins": [
+        "veinminer4bukkit.mixins.json"
+    ],
+
     "depends": {
         "fabricloader": ">=0.11",
         "fabric": "*",

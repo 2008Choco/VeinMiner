@@ -7,12 +7,19 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -26,6 +33,7 @@ import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerbound
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 import wtf.choco.veinminer.platform.FabricPlatformReconstructor;
+import wtf.choco.veinminer.render.VeinMinerRenderLayer;
 
 /**
  * The Fabric VeinMiner mod entry class.
@@ -45,7 +53,6 @@ public final class VeinMinerMod implements ClientModInitializer {
     };
 
     private boolean changingPatterns = false;
-    private BlockPos lastTargetBlockPosition = null;
 
     @Override
     public void onInitializeClient() {
@@ -71,13 +78,18 @@ public final class VeinMinerMod implements ClientModInitializer {
                 }
             }
 
-            // Requesting that the server vein mine at the player's current target block because it's different
             HitResult result = client.crosshairTarget;
-            if (active && result instanceof BlockHitResult blockResult && !Objects.equals(lastTargetBlockPosition, blockResult.getBlockPos())) {
-                VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
-            }
+            if (result instanceof BlockHitResult blockResult) {
+                BlockPos position = blockResult.getBlockPos();
 
-            this.lastTargetBlockPosition = (result instanceof BlockHitResult blockResult) ? blockResult.getBlockPos() : null;
+                // Requesting that the server vein mine at the player's current target block because it's different
+                if (active && !Objects.equals(getServerState().getLastLookedAtBlockPos(), position)) {
+                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
+                }
+
+                // Updating the new last looked at position
+                getServerState().setLastLookedAtBlockPos(!client.player.world.isAir(position) ? position : null);
+            }
 
             // Changing patterns
             boolean lastChangingPatterns = changingPatterns;
@@ -134,6 +146,63 @@ public final class VeinMinerMod implements ClientModInitializer {
 
                 component.render(client, stack, tickDelta);
             }
+        });
+
+        /*
+         * Massive credit to FTB-Ultimine for help with this rendering code. I don't think I
+         * would have been able to figure this out myself... I'm not familiar with navigating the
+         * Minecraft codebase. But this does make a lot of sense and it helped a lot. I'm very
+         * appreciative for open source code :)
+         *
+         * https://github.com/FTBTeam/FTB-Ultimine
+         */
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
+            if (!hasServerState() || !getServerState().isActive()) {
+                return;
+            }
+
+            BlockPos origin = getServerState().getLastLookedAtBlockPos();
+            VoxelShape shape = getServerState().getVeinMineResultShape();
+
+            if (origin == null || shape == null) {
+                return;
+            }
+
+            MinecraftClient client = MinecraftClient.getInstance();
+
+            // Calculate the stack
+            MatrixStack stack = context.matrixStack();
+            Vec3d projectedView = client.getEntityRenderDispatcher().camera.getPos();
+
+            stack.push();
+            stack.translate(origin.getX() - projectedView.x, origin.getY() - projectedView.y, origin.getZ() - projectedView.z);
+
+            Matrix4f matrix = stack.peek().getPositionMatrix();
+
+            // Buffer vertices
+            VertexConsumerProvider.Immediate consumers = client.getBufferBuilders().getEntityVertexConsumers();
+
+            // Full wireframe drawing
+            VertexConsumer buffer = consumers.getBuffer(VeinMinerRenderLayer.getWireframe());
+
+            shape.forEachEdge((x1, y1, z1, x2, y2, z2) -> {
+                buffer.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 255).next();
+                buffer.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 255).next();
+            });
+
+            consumers.draw(VeinMinerRenderLayer.getWireframe());
+
+            // Transparent drawing
+            VertexConsumer bufferTransparent = consumers.getBuffer(VeinMinerRenderLayer.getWireframeTransparent());
+
+            shape.forEachEdge((x1, y1, z1, x2, y2, z2) -> {
+                bufferTransparent.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 64).next();
+                bufferTransparent.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 64).next();
+            });
+
+            consumers.draw(VeinMinerRenderLayer.getWireframeTransparent());
+
+            stack.pop();
         });
     }
 

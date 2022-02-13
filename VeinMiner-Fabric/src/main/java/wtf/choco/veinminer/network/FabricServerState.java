@@ -10,8 +10,12 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
@@ -20,6 +24,7 @@ import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientbound
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
+import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
@@ -27,10 +32,15 @@ import wtf.choco.veinminer.util.NamespacedKey;
  */
 public final class FabricServerState implements ClientboundPluginMessageListener, MessageReceiver {
 
+    private static final VoxelShape WIDE_CUBE = VoxelShapes.cuboid(-0.005, -0.005, -0.005, 1.005, 1.005, 1.005);
+
     private boolean enabled, active;
 
     private int selectedPatternIndex = 0;
     private List<NamespacedKey> patternKeys = null;
+
+    private BlockPos lastLookedAtBlockPos;
+    private VoxelShape veinMineResultShape;
 
     /**
      * Construct a new {@link FabricServerState}.
@@ -154,6 +164,20 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         return patternKeys != null && !patternKeys.isEmpty();
     }
 
+    public void setLastLookedAtBlockPos(@Nullable BlockPos lastLookedAtBlockPos) {
+        this.lastLookedAtBlockPos = lastLookedAtBlockPos;
+    }
+
+    @Nullable
+    public BlockPos getLastLookedAtBlockPos() {
+        return lastLookedAtBlockPos;
+    }
+
+    @Nullable
+    public VoxelShape getVeinMineResultShape() {
+        return veinMineResultShape;
+    }
+
     @Override
     public void sendMessage(@NotNull NamespacedKey channel, byte[] message) {
         PacketByteBuf byteBuf = PacketByteBufs.create();
@@ -182,7 +206,33 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     @Override
     public void handleVeinMineResults(@NotNull PluginMessageClientboundVeinMineResults message) {
-        // TODO: Handle the results
+        this.veinMineResultShape = null;
+
+        BlockPos origin = lastLookedAtBlockPos;
+        if (origin == null) {
+            return;
+        }
+
+        List<BlockPosition> positions = message.getBlockPositions();
+        if (positions.isEmpty()) {
+            return;
+        }
+
+        int i = 0;
+        VoxelShape[] shapes = new VoxelShape[positions.size()];
+
+        for (BlockPosition position : positions) {
+            int offsetX = position.x() - origin.getX(), offsetY = position.y() - origin.getY(), offsetZ = position.z() - origin.getZ();
+
+            VoxelShape shape = WIDE_CUBE;
+            if (offsetX != 0 || offsetY != 0 || offsetZ != 0) {
+                shape = shape.offset(offsetX, offsetY, offsetZ);
+            }
+
+            shapes[i++] = shape;
+        }
+
+        this.veinMineResultShape = VoxelShapes.union(WIDE_CUBE, shapes);
     }
 
     @Override
