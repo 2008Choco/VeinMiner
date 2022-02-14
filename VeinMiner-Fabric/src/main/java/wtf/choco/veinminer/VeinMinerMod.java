@@ -17,6 +17,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
@@ -66,29 +67,36 @@ public final class VeinMinerMod implements ClientModInitializer {
                 return;
             }
 
+            boolean shouldRequestVeinMine = false;
             boolean lastActive = getServerState().isActive(), active = KEY_BINDING_ACTIVATE_VEINMINER.isPressed();
             getServerState().setActive(active);
 
             // Activating / deactivating vein miner
             if (lastActive ^ active) {
                 VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(active));
-
-                if (active) {
-                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
-                }
+                shouldRequestVeinMine = active;
             }
 
             HitResult result = client.crosshairTarget;
+
             if (result instanceof BlockHitResult blockResult) {
                 BlockPos position = blockResult.getBlockPos();
+                Direction blockFace = blockResult.getSide();
 
                 // Requesting that the server vein mine at the player's current target block because it's different
-                if (active && !Objects.equals(getServerState().getLastLookedAtBlockPos(), position)) {
-                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine());
+                shouldRequestVeinMine |= (active && (!Objects.equals(getServerState().getLastLookedAtBlockPos(), position) || !Objects.equals(getServerState().getLastLookedAtBlockFace(), blockFace)));
+
+                if (shouldRequestVeinMine) {
+                    getServerState().resetShape();
+                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine(position.getX(), position.getY(), position.getZ()));
                 }
 
                 // Updating the new last looked at position
-                getServerState().setLastLookedAtBlockPos(!client.player.world.isAir(position) ? position : null);
+                if (!client.player.world.isAir(position)) {
+                    getServerState().setLastLookedAt(position, blockFace);
+                } else {
+                    getServerState().setLastLookedAt(null, null);
+                }
             }
 
             // Changing patterns

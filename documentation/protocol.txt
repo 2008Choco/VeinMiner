@@ -4,6 +4,7 @@ serverbound
   0x01[Toggle Vein Miner]
     Boolean[State]The new state of the vein miner activation
   0x02[Request Vein Mine]
+    BlockPosition[Origin]The position at which to initiate vein miner
   0x03[Select Pattern]
     NamespacedKey[Pattern Key]The key of the pattern to request to be set
 

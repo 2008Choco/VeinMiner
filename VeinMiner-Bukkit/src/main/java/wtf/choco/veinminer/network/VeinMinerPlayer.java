@@ -577,6 +577,14 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             return;
         }
 
+        // Validate the client's target block against the server's client block. It should be within 2 blocks of the client's target
+        BlockPosition clientTargetBlock = message.getPosition();
+        if (clientTargetBlock.distanceSquared(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()) >= 4) {
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults());
+            return;
+        }
+
+        targetBlock = world.getBlockAt(clientTargetBlock.x(), clientTargetBlock.y(), clientTargetBlock.z());
         BlockData targetBlockData = targetBlock.getBlockData();
 
         VeinMinerManager veinMinerManager = VeinMinerPlugin.getInstance().getVeinMinerManager();

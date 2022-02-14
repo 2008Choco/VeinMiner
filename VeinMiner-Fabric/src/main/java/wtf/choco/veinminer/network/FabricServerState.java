@@ -11,6 +11,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
@@ -40,6 +41,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     private List<NamespacedKey> patternKeys = null;
 
     private BlockPos lastLookedAtBlockPos;
+    private Direction lastLookedAtBlockFace;
     private VoxelShape veinMineResultShape;
 
     /**
@@ -164,8 +166,13 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         return patternKeys != null && !patternKeys.isEmpty();
     }
 
-    public void setLastLookedAtBlockPos(@Nullable BlockPos lastLookedAtBlockPos) {
-        this.lastLookedAtBlockPos = lastLookedAtBlockPos;
+    public void setLastLookedAt(@Nullable BlockPos position, @Nullable Direction blockFace) {
+        this.lastLookedAtBlockPos = position;
+        this.lastLookedAtBlockFace = blockFace;
+
+        if (position == null || blockFace == null) {
+            this.resetShape();
+        }
     }
 
     @Nullable
@@ -174,8 +181,17 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     }
 
     @Nullable
+    public Direction getLastLookedAtBlockFace() {
+        return lastLookedAtBlockFace;
+    }
+
+    @Nullable
     public VoxelShape getVeinMineResultShape() {
         return veinMineResultShape;
+    }
+
+    public void resetShape() {
+        this.veinMineResultShape = null;
     }
 
     @Override
@@ -206,7 +222,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     @Override
     public void handleVeinMineResults(@NotNull PluginMessageClientboundVeinMineResults message) {
-        this.veinMineResultShape = null;
+        this.resetShape();
 
         BlockPos origin = lastLookedAtBlockPos;
         if (origin == null) {
@@ -232,7 +248,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
             shapes[i++] = shape;
         }
 
-        this.veinMineResultShape = VoxelShapes.union(WIDE_CUBE, shapes);
+        this.veinMineResultShape = VoxelShapes.union(shapes[0], shapes);
     }
 
     @Override

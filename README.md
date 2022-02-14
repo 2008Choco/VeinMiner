@@ -78,19 +78,27 @@ Sent by the client to inform the server that it has activated or deactivated its
 
 ### Request Vein Mine
 
-A simple request with no additional fields requesting that the server perform a no-op vein mine on the block at which the player is currently looking. The player's target block, active tool category, and all other vein miner required information is calculated on the server, not by the client.
+Sent by the client to request the server to perform a no-op vein mine on the block at which the player is currently looking. The player's active tool category, and all other vein miner required information is calculated on the server, not by the client, exception to the provided origin position.
+
+Note that if the player's target block is also calculated on the server but the server will make use of the position sent by the client such that it is within 2 blocks of  the server calculated block position. If the position sent to the server exceeds the 2 block distance limit, the server will respond with an empty vein mine result.
 
 <table>
     <thead>
         <tr>
             <th>Packet ID</th>
             <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>0x02</td>
-            <td>Server</td>
+            <td rowspan=1>0x02</td>
+            <td rowspan=1>Server</td>
+            <td>Origin</td>
+            <td>BlockPosition</td>
+            <td>The position at which to initiate vein miner</td>
         </tr>
     </tbody>
 </table>

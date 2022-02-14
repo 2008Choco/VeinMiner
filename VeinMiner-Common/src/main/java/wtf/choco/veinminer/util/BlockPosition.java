@@ -43,6 +43,36 @@ public record BlockPosition(int x, int y, int z) {
     }
 
     /**
+     * Get the distance squared between this block and the given set of coordinates.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     *
+     * @return the distance squared in blocks
+     *
+     * @see #distance(int, int, int)
+     */
+    public double distanceSquared(int x, int y, int z) {
+        return Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) + Math.pow(z - this.z, 2);
+    }
+
+    /**
+     * Get the distance between this block and the given set of coordinates.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     *
+     * @return the distance in blocks
+     *
+     * @see #distanceSquared(int, int, int)
+     */
+    public double distance(int x, int y, int z) {
+        return Math.sqrt(distanceSquared(x, y, z));
+    }
+
+    /**
      * Pack this {@link BlockPosition}'s coordinates into a primitive long.
      *
      * @return the packed position
