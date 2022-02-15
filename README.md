@@ -134,7 +134,7 @@ These are messages sent by the server to the client
 
 ### Handshake Response
 
-Sent in response to a client's Handshake indicating whether or not vein miner should be allowed on the client.
+Sent in response to a client's Handshake. This message contains no additional data (yet) and acts primarily as a server acknowledgement of the client mod.
 
 <table>
     <thead>
@@ -148,11 +148,11 @@ Sent in response to a client's Handshake indicating whether or not vein miner sh
     </thead>
     <tbody>
         <tr>
-            <td>0x00</td>
-            <td>Client</td>
-            <td>Allowed</td>
-            <td>Boolean</td>
-            <td>Whether or not the client is allowed to use the client-sided mod. If false, the client should not continue sending any packets to the server</td>
+            <td rowspan=0>0x00</td>
+            <td rowspan=0>Client</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
     </tbody>
 </table>
@@ -187,6 +187,37 @@ Sent by the server after the client has successfully shaken hands and has been s
     </tbody>
 </table>
 
+### Set Config
+
+Sent by the server after the client's handshake, or when the server reloads its configuration, to set the client's capabilities. The client is expected to respect these values to avoid network overhead, but the server performs additional checks and will not respond to incoming messages if a specific feature is disabled by the server.
+
+<table>
+    <thead>
+        <tr>
+            <th>Packet ID</th>
+            <th>Bound To</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=1>0x02</td>
+            <td rowspan=1>Client</td>
+            <td>Config Bitmask</td>
+            <td>Byte</td>
+            <td>A bitmask of configured values.
+                <ul>
+                    <li>0x01 = If the activation keybind is allowed
+                    <li>0x02 = If the pattern switching keybinds are allowed
+                    <li>0x04 = If the client is allowed to render a wireframe around vein mine results
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
 ### Vein Mine Results
 
 Sent in response to a client's Request Vein Mine including all block positions as a result of a vein mine at the client's target block and currently active tool category (according to the tool in the player's hand at the time the message was received by the server).
@@ -203,7 +234,7 @@ Sent in response to a client's Request Vein Mine including all block positions a
     </thead>
     <tbody>
         <tr>
-            <td rowspan=2>0x02</td>
+            <td rowspan=2>0x03</td>
             <td rowspan=2>Client</td>
             <td>Size</td>
             <td><a href="https://wiki.vg/Protocol#VarInt_and_VarLong">VarInt</href></td>
@@ -233,7 +264,7 @@ Sets the selected pattern on the client. Sent in response to a server-bound Sele
     </thead>
     <tbody>
         <tr>
-            <td rowspan=1>0x03</td>
+            <td rowspan=1>0x04</td>
             <td rowspan=1>Client</td>
             <td>Pattern Key</td>
             <td>NamespacedKey</td>

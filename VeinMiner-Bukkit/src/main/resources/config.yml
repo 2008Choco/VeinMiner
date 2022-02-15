@@ -33,13 +33,9 @@ Hunger:
   HungryMessage: "&7You are too hungry to vein mine!"
 
 Client:
-  AllowClientActivation: true
-  DisallowedMessage:
-  - "&7&oThe VeinMiner client mod is disabled on this server."
-  SuggestClientModPeriod: "1d"
-  SuggestionMessage:
-  - "&7This server runs &fVeinMiner&7. An &ooptional &7Fabric mod may be installed to allow you to use custom keybinds."
-  - "&7Download at: &fhttps://www.curseforge.com/minecraft/mc-mods/veinminer4bukkit"
+  AllowActivationKeybind: true
+  AllowPatternSwitchingKeybind: true
+  AllowWireframeRendering: true
 
 Storage:
   # Supported types...

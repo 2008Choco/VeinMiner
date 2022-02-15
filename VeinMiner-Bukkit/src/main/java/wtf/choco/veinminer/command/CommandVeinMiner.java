@@ -155,7 +155,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 player.sendMessage(ChatColor.RED + "You do not have VeinMiner4Bukkit installed on your client!");
 
                 // Let them know where to install VeinMiner on the client (if it's allowed)
-                if (plugin.getConfig().getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+                if (veinMinerPlayer.getClientConfig().isAllowActivationKeybind()) {
                     player.sendMessage("In order to use client activation, you must install a client-sided mod.");
                     player.sendMessage("https://www.curseforge.com/minecraft/mc-mods/veinminer4bukkit");
                     player.sendMessage("Supports " + ChatColor.GRAY + "Fabric" + ChatColor.RESET + " (support for " + ChatColor.GRAY + "Forge" + ChatColor.RESET + " Soon™)");
@@ -260,9 +260,11 @@ public final class CommandVeinMiner implements TabExecutor {
                 this.plugin.getToolCategoryRegistry().getAll().forEach(category -> suggestions.add(category.getId().toLowerCase()));
             }
 
-            else if (args[0].equalsIgnoreCase("mode")) {
+            else if (args[0].equalsIgnoreCase("mode") && sender instanceof Player player) {
+                VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
+
                 for (ActivationStrategy activationStrategy : ActivationStrategy.values()) {
-                    if (activationStrategy == ActivationStrategy.CLIENT && !plugin.getConfig().getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+                    if (activationStrategy == ActivationStrategy.CLIENT && !veinMinerPlayer.getClientConfig().isAllowActivationKeybind()) {
                         continue;
                     }
 

@@ -10,12 +10,13 @@ serverbound
 
 clientbound
   0x00[Handshake Response]
-    Boolean[Allowed]Whether or not the client is allowed to use the client-sided mod. If false, the client should not continue sending any packets to the server
   0x01[Sync Registered Patterns]
     VarInt[Size]The amount of pattern keys being sent to the client
     Array of NamespacedKey[Pattern Keys]An array containing the namespaced keys of all vein mining patterns registered on the server
-  0x02[Vein Mine Results]
+  0x02[Set Config]
+    Byte[Config Bitmask]A bitmask of configured values. 0x01 = If the activation keybind is allowed, 0x02 = If the pattern switching keybinds are allowed, 0x04 = If the client is allowed to render a wireframe around vein mine results
+  0x03[Vein Mine Results]
     VarInt[Size]The amount of block positions that were included in the resulting vein mine
     Array of BlockPosition[Positions]An array containing all block positions that would be vein mined by the server.
-  0x03[Set Pattern]
+  0x04[Set Pattern]
     NamespacedKey[Pattern Key]The pattern key to set on the client.

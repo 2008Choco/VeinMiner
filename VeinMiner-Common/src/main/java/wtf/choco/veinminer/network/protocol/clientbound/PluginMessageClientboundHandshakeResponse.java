@@ -7,50 +7,30 @@ import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
 
 /**
- * A client bound {@link PluginMessage} including the following data:
- * <ol>
- *   <li><strong>boolean</strong>: whether or not the server allows activation of vein miner on the client
- * </ol>
+ * A client bound {@link PluginMessage} with no data.
+ * <p>
  * Sent in response to the client sending the {@link PluginMessageServerboundHandshake} message.
  */
 public final class PluginMessageClientboundHandshakeResponse implements PluginMessage<ClientboundPluginMessageListener> {
 
-    private final boolean enabled;
+    /*
+     * At the moment, this message serves no purpose other than to inform the client that
+     * the server has acknowledged its presence. In the future, this message may be used to return
+     * to the client crucial information.
+     */
 
     /**
      * Construct a new {@link PluginMessageClientboundHandshakeResponse}.
-     *
-     * @param enabled whether or not vein miner is allowed for the client
      */
-    public PluginMessageClientboundHandshakeResponse(boolean enabled) {
-        this.enabled = enabled;
-    }
+    public PluginMessageClientboundHandshakeResponse() { }
 
     @Internal
-    public PluginMessageClientboundHandshakeResponse(@NotNull PluginMessageByteBuffer buffer) {
-        this.enabled = buffer.readBoolean();
-    }
-
-    /**
-     * Check whether or not vein miner is allowed to use a client-activated key bind.
-     * <p>
-     * Clients are expected to respect this value. If this value is {@code true}, a client
-     * should never send a {@link PluginMessageServerboundToggleVeinMiner} message. If it
-     * does continue to send messages, they will be ignored.
-     *
-     * @return true if enabled, false if disabled
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
+    public PluginMessageClientboundHandshakeResponse(@SuppressWarnings("unused") @NotNull PluginMessageByteBuffer buffer) { }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) {
-        buffer.writeBoolean(enabled);
-    }
+    public void write(@NotNull PluginMessageByteBuffer buffer) { }
 
     @Override
     public void handle(@NotNull ClientboundPluginMessageListener listener) {

@@ -10,6 +10,7 @@ import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerMod;
+import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.network.FabricServerState;
 
 /**
@@ -72,8 +73,8 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
     }
 
     @Override
-    public boolean shouldRender() {
-        return VeinMinerMod.getServerState().hasPatternKeys() && remainingMs >= 0L;
+    public boolean shouldRender(@NotNull ClientConfig config) {
+        return config.isAllowPatternSwitchingKeybind() && VeinMinerMod.getServerState().hasPatternKeys() && remainingMs >= 0L;
     }
 
     /**
@@ -84,7 +85,6 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
      * period. If it is fading out, it will start fading in starting from the current fade out time.
      */
     public void pushRender() {
-        System.out.println("-------------");
         if (remainingMs <= 0) { // If not rendered, set to max time
             this.remainingMs = TOTAL_TIME_MS;
         }

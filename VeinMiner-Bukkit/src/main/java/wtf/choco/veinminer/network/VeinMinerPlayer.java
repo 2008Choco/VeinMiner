@@ -16,13 +16,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,10 +41,12 @@ import wtf.choco.veinminer.block.BlockAccessor;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.BukkitBlockAccessor;
 import wtf.choco.veinminer.block.VeinMinerBlock;
+import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetConfig;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
@@ -83,6 +83,8 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     private boolean clientKeyPressed = false;
 
     private boolean veinMining = false;
+
+    private ClientConfig clientConfig = VeinMinerPlugin.createClientConfig();
 
     private final Reference<Player> player;
     private final UUID playerUUID;
@@ -384,6 +386,27 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
+     * Set the {@link ClientConfig} for this player.
+     *
+     * @param clientConfig the client config to set
+     */
+    public void setClientConfig(@NotNull ClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
+    }
+
+    /**
+     * Get the {@link ClientConfig} for this player.
+     * <p>
+     * Note that this configuration only really applies if {@link #isUsingClientMod()} is true.
+     *
+     * @return the client config
+     */
+    @NotNull
+    public ClientConfig getClientConfig() {
+        return clientConfig;
+    }
+
+    /**
      * Check whether or not vein miner is currently active and ready to be used.
      * <p>
      * <strong>NOTE:</strong> Do not confuse this with {@link #isVeinMinerEnabled()}. This method
@@ -467,15 +490,6 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             return;
         }
 
-        FileConfiguration config = VeinMinerPlugin.getInstance().getConfig();
-        boolean allowClientActivation = config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true);
-
-        if (!allowClientActivation) {
-            List<String> disallowedMessage = config.getStringList(VMConstants.CONFIG_CLIENT_DISALLOWED_MESSAGE);
-            disallowedMessage.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', line)));
-            return;
-        }
-
         this.usingClientMod = true;
         this.setActivationStrategy(ActivationStrategy.CLIENT);
         this.dirty = false; // We can force dirty = false. Data hasn't loaded yet, but we still want to set the strategy to client automatically
@@ -485,7 +499,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
          * We send this one tick later so we know that the player's connection has been initialized
          */
         Bukkit.getScheduler().runTaskLater(VeinMinerPlugin.getInstance(), () -> {
-            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundHandshakeResponse(allowClientActivation));
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundHandshakeResponse());
 
             // Synchronize all registered patterns to the client
             PatternRegistry patternRegistry = VeinMiner.getInstance().getPatternRegistry();
@@ -511,6 +525,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             });
 
             VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundSyncRegisteredPatterns(patternKeys));
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundSetConfig(clientConfig));
 
             // The client is ready, accept post-client init tasks now
             this.clientReady = true;
@@ -526,11 +541,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     @Override
     public void handleToggleVeinMiner(@NotNull PluginMessageServerboundToggleVeinMiner message) {
         Player player = getPlayer();
-        if (player == null) {
-            return;
-        }
-
-        if (!VeinMinerPlugin.getInstance().getConfig().getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION, true)) {
+        if (player == null || !clientConfig.isAllowActivationKeybind()) {
             return;
         }
 
@@ -605,7 +616,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     @Override
     public void handleSelectPattern(@NotNull PluginMessageServerboundSelectPattern message) {
         Player player = getPlayer();
-        if (player == null) {
+        if (player == null || !clientConfig.isAllowPatternSwitchingKeybind()) {
             return;
         }
 

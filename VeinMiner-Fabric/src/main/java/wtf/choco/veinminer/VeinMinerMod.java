@@ -25,6 +25,7 @@ import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
+import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.hud.HudRenderComponent;
 import wtf.choco.veinminer.hud.HudRenderComponentPatternWheel;
 import wtf.choco.veinminer.hud.HudRenderComponentVeinMiningIcon;
@@ -63,18 +64,24 @@ public final class VeinMinerMod implements ClientModInitializer {
         VeinMiner.PROTOCOL.registerChannels(new FabricChannelRegistrar());
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!hasServerState() || !getServerState().isEnabled()) {
+            if (!hasServerState()) {
                 return;
             }
 
-            boolean shouldRequestVeinMine = false;
-            boolean lastActive = getServerState().isActive(), active = KEY_BINDING_ACTIVATE_VEINMINER.isPressed();
-            getServerState().setActive(active);
+            ClientConfig config = getServerState().getConfig();
 
-            // Activating / deactivating vein miner
-            if (lastActive ^ active) {
-                VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(active));
-                shouldRequestVeinMine = active;
+            boolean shouldRequestVeinMine = false;
+            boolean active = KEY_BINDING_ACTIVATE_VEINMINER.isPressed();
+
+            if (config.isAllowActivationKeybind()) {
+                boolean lastActive = getServerState().isActive();
+                getServerState().setActive(active = KEY_BINDING_ACTIVATE_VEINMINER.isPressed());
+
+                // Activating / deactivating vein miner
+                if (lastActive ^ active) {
+                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(active));
+                    shouldRequestVeinMine = active;
+                }
             }
 
             HitResult result = client.crosshairTarget;
@@ -84,7 +91,7 @@ public final class VeinMinerMod implements ClientModInitializer {
                 Direction blockFace = blockResult.getSide();
 
                 // Requesting that the server vein mine at the player's current target block because it's different
-                shouldRequestVeinMine |= (active && (!Objects.equals(getServerState().getLastLookedAtBlockPos(), position) || !Objects.equals(getServerState().getLastLookedAtBlockFace(), blockFace)));
+                shouldRequestVeinMine |= (active && config.isAllowActivationKeybind() && (!Objects.equals(getServerState().getLastLookedAtBlockPos(), position) || !Objects.equals(getServerState().getLastLookedAtBlockFace(), blockFace)));
 
                 if (shouldRequestVeinMine) {
                     getServerState().resetShape();
@@ -92,7 +99,7 @@ public final class VeinMinerMod implements ClientModInitializer {
                 }
 
                 // Updating the new last looked at position
-                if (!client.player.world.isAir(position)) {
+                if (client.player != null && client.player.world != null && !client.player.world.isAir(position)) {
                     getServerState().setLastLookedAt(position, blockFace);
                 } else {
                     getServerState().setLastLookedAt(null, null);
@@ -100,29 +107,31 @@ public final class VeinMinerMod implements ClientModInitializer {
             }
 
             // Changing patterns
-            boolean lastChangingPatterns = changingPatterns;
-            this.changingPatterns = (KEY_BINDING_NEXT_PATTERN.isPressed() || KEY_BINDING_PREVIOUS_PATTERN.isPressed());
+            if (config.isAllowPatternSwitchingKeybind()) {
+                boolean lastChangingPatterns = changingPatterns;
+                this.changingPatterns = (KEY_BINDING_NEXT_PATTERN.isPressed() || KEY_BINDING_PREVIOUS_PATTERN.isPressed());
 
-            if (lastChangingPatterns ^ changingPatterns) {
-                boolean next;
+                if (lastChangingPatterns ^ changingPatterns) {
+                    boolean next;
 
-                // There has to be a smarter way to write this...
-                if (KEY_BINDING_NEXT_PATTERN.isPressed()) {
-                    next = true;
-                }
-                else if (KEY_BINDING_PREVIOUS_PATTERN.isPressed()) {
-                    next = false;
-                }
-                else {
-                    return;
-                }
+                    // There has to be a smarter way to write this...
+                    if (KEY_BINDING_NEXT_PATTERN.isPressed()) {
+                        next = true;
+                    }
+                    else if (KEY_BINDING_PREVIOUS_PATTERN.isPressed()) {
+                        next = false;
+                    }
+                    else {
+                        return;
+                    }
 
-                // If the HUD wheel isn't rendered yet, push a render call but don't change the pattern
-                if (patternWheelRenderComponent.shouldRender()) {
-                    serverState.changePattern(next);
-                }
+                    // If the HUD wheel isn't rendered yet, push a render call but don't change the pattern
+                    if (patternWheelRenderComponent.shouldRender(config)) {
+                        serverState.changePattern(next);
+                    }
 
-                this.patternWheelRenderComponent.pushRender();
+                    this.patternWheelRenderComponent.pushRender();
+                }
             }
         });
 
@@ -141,14 +150,15 @@ public final class VeinMinerMod implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((stack, tickDelta) -> {
-            if (!hasServerState() || !getServerState().isEnabled()) {
+            if (!hasServerState()) {
                 return;
             }
 
             MinecraftClient client = MinecraftClient.getInstance();
+            ClientConfig config = getServerState().getConfig();
 
             for (HudRenderComponent component : hudRenderComponents) {
-                if (!component.shouldRender()) {
+                if (!component.shouldRender(config)) {
                     continue;
                 }
 
@@ -165,7 +175,7 @@ public final class VeinMinerMod implements ClientModInitializer {
          * https://github.com/FTBTeam/FTB-Ultimine
          */
         WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
-            if (!hasServerState() || !getServerState().isActive()) {
+            if (!hasServerState() || !getServerState().isActive() || !getServerState().getConfig().isAllowWireframeRendering()) {
                 return;
             }
 

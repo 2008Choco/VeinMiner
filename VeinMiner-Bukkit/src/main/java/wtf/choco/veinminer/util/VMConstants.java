@@ -39,10 +39,9 @@ public final class VMConstants {
     public static final String CONFIG_HUNGER_MINIMUM_FOOD_LEVEL = "Hunger.MinimumFoodLevel";
     public static final String CONFIG_HUNGER_HUNGRY_MESSAGE = "Hunger.HungryMessage";
 
-    public static final String CONFIG_CLIENT_ALLOW_CLIENT_ACTIVATION = "Client.AllowClientActivation";
-    public static final String CONFIG_CLIENT_DISALLOWED_MESSAGE = "Client.DisallowedMessage";
-    public static final String CONFIG_CLIENT_SUGGEST_CLIENT_MOD_PERIOD = "Client.SuggestClientModPeriod";
-    public static final String CONFIG_CLIENT_SUGGESTION_MESSAGE = "Client.SuggestionMessage";
+    public static final String CONFIG_CLIENT_ALLOW_ACTIVATION_KEYBIND = "Client.AllowActivationKeybind";
+    public static final String CONFIG_CLIENT_ALLOW_PATTERN_SWITCHING_KEYBIND = "Client.AllowPatternSwitchingKeybind";
+    public static final String CONFIG_CLIENT_ALLOW_WIREFRAME_RENDERING = "Client.AllowWireframeRendering";
 
     public static final String CONFIG_STORAGE_TYPE = "Storage.Type";
     public static final String CONFIG_STORAGE_JSON_DIRECTORY = "Storage.JSON.Directory";

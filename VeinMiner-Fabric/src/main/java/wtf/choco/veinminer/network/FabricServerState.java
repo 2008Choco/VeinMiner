@@ -19,8 +19,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetConfig;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
@@ -35,7 +37,12 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     private static final VoxelShape WIDE_CUBE = VoxelShapes.cuboid(-0.005, -0.005, -0.005, 1.005, 1.005, 1.005);
 
-    private boolean enabled, active;
+    private boolean active;
+    private ClientConfig config = ClientConfig.builder()
+            .allowActivationKeybind(false)
+            .allowPatternSwitchingKeybind(false)
+            .allowWireframeRendering(false)
+            .build();
 
     private int selectedPatternIndex = 0;
     private List<NamespacedKey> patternKeys = null;
@@ -50,12 +57,9 @@ public final class FabricServerState implements ClientboundPluginMessageListener
      * @param client the {@link MinecraftClient} instance
      */
     public FabricServerState(@NotNull MinecraftClient client) {
-        boolean dev = FabricLoader.getInstance().isDevelopmentEnvironment();
-
-        // We'll enable VeinMiner if we're in singleplayer development mode, just for testing
-        this.enabled = client.isInSingleplayer() && dev;
-
-        if (dev) { // Debug patterns
+        // We'll enable VeinMiner if we're in single player development mode, just for testing
+        if (client.isInSingleplayer() && FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            this.config = new ClientConfig();
             this.patternKeys = List.of(
                 NamespacedKey.veinminer("default"),
                 NamespacedKey.veinminer("tunnel"),
@@ -66,17 +70,13 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     }
 
     /**
-     * Check whether or not vein miner is enabled on the client.
-     * <p>
-     * If this method returns {@code false}, this means that the server has not allowed the
-     * client to activate vein miner using a key bind, and therefore the client should not be
-     * sending messages to the server claiming that it has been activated or deactivated, or
-     * perform any other client-sided functionality.
+     * Get the {@link ClientConfig} for the mod.
      *
-     * @return true if enabled, false otherwise
+     * @return the config
      */
-    public boolean isEnabled() {
-        return enabled;
+    @NotNull
+    public ClientConfig getConfig() {
+        return config;
     }
 
     /**
@@ -106,16 +106,31 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         return selectedPatternIndex;
     }
 
+    /**
+     * Get the {@link NamespacedKey} of the currently selected pattern.
+     *
+     * @return the selected pattern key
+     */
     @NotNull
     public NamespacedKey getSelectedPattern() {
         return patternKeys.get(selectedPatternIndex);
     }
 
+    /**
+     * Get the {@link NamespacedKey} of the next pattern to be selected.
+     *
+     * @return the next pattern key
+     */
     @NotNull
     public NamespacedKey getNextPattern() {
         return patternKeys.get((selectedPatternIndex + 1) % patternKeys.size());
     }
 
+    /**
+     * Get the {@link NamespacedKey} of the previous pattern to be selected.
+     *
+     * @return the previous pattern key
+     */
     @NotNull
     public NamespacedKey getPreviousPattern() {
         int index = (selectedPatternIndex - 1) % patternKeys.size();
@@ -162,10 +177,21 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         return (patternKeys != null) ? patternKeys : Collections.emptyList();
     }
 
+    /**
+     * Check whether or not any pattern keys are currently available.
+     *
+     * @return true if there are pattern keys, false otherwise
+     */
     public boolean hasPatternKeys() {
         return patternKeys != null && !patternKeys.isEmpty();
     }
 
+    /**
+     * Set the last {@link BlockPos} and {@link Direction} the client has looked at.
+     *
+     * @param position the last looked at position
+     * @param blockFace the last looked at block face
+     */
     public void setLastLookedAt(@Nullable BlockPos position, @Nullable Direction blockFace) {
         this.lastLookedAtBlockPos = position;
         this.lastLookedAtBlockFace = blockFace;
@@ -175,21 +201,41 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         }
     }
 
+    /**
+     * Get the {@link BlockPos} last looked at by the client, or null if the client has not
+     * looked at a block.
+     *
+     * @return the last looked at block position, or null if none
+     */
     @Nullable
     public BlockPos getLastLookedAtBlockPos() {
         return lastLookedAtBlockPos;
     }
 
+    /**
+     * Get the block face {@link Direction} last looked at by the client, or null if the client
+     * has not looked at a block.
+     *
+     * @return the last looked at block face, or null if none
+     */
     @Nullable
     public Direction getLastLookedAtBlockFace() {
         return lastLookedAtBlockFace;
     }
 
+    /**
+     * Get the {@link VoxelShape} outlining the last vein mine result received from the server.
+     *
+     * @return the last vein mine result shape, or null if none
+     */
     @Nullable
     public VoxelShape getVeinMineResultShape() {
         return veinMineResultShape;
     }
 
+    /**
+     * Reset the last vein mine result shape.
+     */
     public void resetShape() {
         this.veinMineResultShape = null;
     }
@@ -203,9 +249,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     }
 
     @Override
-    public void handleHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message) {
-        this.enabled = message.isEnabled();
-    }
+    public void handleHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message) { } // Stub method. Client does nothing in response
 
     @Override
     public void handleSyncRegisteredPatterns(@NotNull PluginMessageClientboundSyncRegisteredPatterns message) {
@@ -218,6 +262,11 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         if (!firstSync && previouslySelectedPatternKey != null) {
             this.selectedPatternIndex = Math.max(patternKeys.indexOf(previouslySelectedPatternKey), 0);
         }
+    }
+
+    @Override
+    public void handleSetConfig(@NotNull PluginMessageClientboundSetConfig message) {
+        this.config = message.getConfig();
     }
 
     @Override

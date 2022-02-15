@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.network.PluginMessageProtocol;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetConfig;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
@@ -50,6 +51,7 @@ public final class VeinMiner {
             clientboundRegistry -> clientboundRegistry
                 .registerMessage(PluginMessageClientboundHandshakeResponse.class, PluginMessageClientboundHandshakeResponse::new)
                 .registerMessage(PluginMessageClientboundSyncRegisteredPatterns.class, PluginMessageClientboundSyncRegisteredPatterns::new)
+                .registerMessage(PluginMessageClientboundSetConfig.class, PluginMessageClientboundSetConfig::new)
                 .registerMessage(PluginMessageClientboundVeinMineResults.class, PluginMessageClientboundVeinMineResults::new)
                 .registerMessage(PluginMessageClientboundSetPattern.class, PluginMessageClientboundSetPattern::new)
     );

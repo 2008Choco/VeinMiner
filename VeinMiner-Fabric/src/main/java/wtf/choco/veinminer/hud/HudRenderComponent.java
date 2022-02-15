@@ -5,6 +5,8 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.config.ClientConfig;
+
 /**
  * A simple component capable of being rendered on the Minecraft HUD.
  */
@@ -22,8 +24,10 @@ public interface HudRenderComponent {
     /**
      * Check whether or not this component should be rendered to the screen.
      *
+     * @param config the client configuration
+     *
      * @return true if should be rendered, false otherwise
      */
-    public boolean shouldRender();
+    public boolean shouldRender(@NotNull ClientConfig config);
 
 }

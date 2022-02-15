@@ -12,6 +12,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerMod;
+import wtf.choco.veinminer.config.ClientConfig;
 
 /**
  * A {@link HudRenderComponent} for the vein mining icon at the user's crosshair.
@@ -40,8 +41,8 @@ public final class HudRenderComponentVeinMiningIcon implements HudRenderComponen
     }
 
     @Override
-    public boolean shouldRender() {
-        return MinecraftClient.isHudEnabled() && VeinMinerMod.getServerState().isActive();
+    public boolean shouldRender(@NotNull ClientConfig config) {
+        return config.isAllowActivationKeybind() && MinecraftClient.isHudEnabled() && VeinMinerMod.getServerState().isActive();
     }
 
 }

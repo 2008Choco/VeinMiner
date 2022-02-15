@@ -45,6 +45,7 @@ import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.command.CommandBlocklist;
 import wtf.choco.veinminer.command.CommandToollist;
 import wtf.choco.veinminer.command.CommandVeinMiner;
+import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.config.VeinMinerConfig;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.data.PersistentDataStorageJSON;
@@ -256,18 +257,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @NotNull
     public static VeinMinerPlugin getInstance() {
         return instance;
-    }
-
-    /**
-     * Get a {@link NamespacedKey} with VeinMiner's namespace.
-     *
-     * @param key the key
-     *
-     * @return a VeinMiner namespaced key
-     */
-    @NotNull
-    public static NamespacedKey key(String key) {
-        return new NamespacedKey(instance, key);
     }
 
     /**
@@ -548,6 +537,35 @@ public final class VeinMinerPlugin extends JavaPlugin {
         veinminePermissionParent.recalculatePermissibles();
         blocklistPermissionParent.recalculatePermissibles();
         toollistPermissionParent.recalculatePermissibles();
+    }
+
+    /**
+     * Get a {@link NamespacedKey} with VeinMiner's namespace.
+     *
+     * @param key the key
+     *
+     * @return a VeinMiner namespaced key
+     */
+    @NotNull
+    public static NamespacedKey key(String key) {
+        return new NamespacedKey(instance, key);
+    }
+
+    /**
+     * Create a default {@link ClientConfig} with values supplied by {@link VeinMinerPlugin}'s
+     * config.yml.
+     *
+     * @return the default client config
+     */
+    @NotNull
+    public static ClientConfig createClientConfig() {
+        FileConfiguration config = getInstance().getConfig();
+
+        return ClientConfig.builder()
+                .allowActivationKeybind(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_ACTIVATION_KEYBIND, true))
+                .allowPatternSwitchingKeybind(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_PATTERN_SWITCHING_KEYBIND, true))
+                .allowWireframeRendering(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_WIREFRAME_RENDERING, true))
+                .build();
     }
 
     private void setupPersistentStorage() {
