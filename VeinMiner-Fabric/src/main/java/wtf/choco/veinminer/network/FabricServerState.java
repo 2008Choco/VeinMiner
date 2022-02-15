@@ -37,7 +37,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     private static final VoxelShape WIDE_CUBE = VoxelShapes.cuboid(-0.005, -0.005, -0.005, 1.005, 1.005, 1.005);
 
-    private boolean active;
+    private boolean enabledOnServer, active;
     private ClientConfig config = ClientConfig.builder()
             .allowActivationKeybind(false)
             .allowPatternSwitchingKeybind(false)
@@ -77,6 +77,15 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     @NotNull
     public ClientConfig getConfig() {
         return config;
+    }
+
+    /**
+     * Check whether or not VeinMiner is enabled on the server.
+     *
+     * @return true if enabled, false otherwise
+     */
+    public boolean isEnabledOnServer() {
+        return enabledOnServer;
     }
 
     /**
@@ -249,7 +258,9 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     }
 
     @Override
-    public void handleHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message) { } // Stub method. Client does nothing in response
+    public void handleHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message) {
+        this.enabledOnServer = true;
+    }
 
     @Override
     public void handleSyncRegisteredPatterns(@NotNull PluginMessageClientboundSyncRegisteredPatterns message) {

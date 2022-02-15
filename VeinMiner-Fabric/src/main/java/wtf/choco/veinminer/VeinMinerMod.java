@@ -64,7 +64,7 @@ public final class VeinMinerMod implements ClientModInitializer {
         VeinMiner.PROTOCOL.registerChannels(new FabricChannelRegistrar());
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!hasServerState()) {
+            if (!hasServerState() || !getServerState().isEnabledOnServer()) {
                 return;
             }
 
@@ -150,7 +150,7 @@ public final class VeinMinerMod implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((stack, tickDelta) -> {
-            if (!hasServerState()) {
+            if (!hasServerState() || !getServerState().isEnabledOnServer()) {
                 return;
             }
 
@@ -175,7 +175,7 @@ public final class VeinMinerMod implements ClientModInitializer {
          * https://github.com/FTBTeam/FTB-Ultimine
          */
         WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
-            if (!hasServerState() || !getServerState().isActive() || !getServerState().getConfig().isAllowWireframeRendering()) {
+            if (!hasServerState() || !getServerState().isEnabledOnServer() || !getServerState().isActive() || !getServerState().getConfig().isAllowWireframeRendering()) {
                 return;
             }
 
