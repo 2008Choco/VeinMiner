@@ -206,14 +206,27 @@ Sent by the server after the client's handshake, or when the server reloads its 
             <td rowspan=1>0x02</td>
             <td rowspan=1>Client</td>
             <td>Config Bitmask</td>
-            <td>Byte</td>
-            <td>A bitmask of configured values.
-                <ul>
-                    <li>0x01 = If the activation keybind is allowed
-                    <li>0x02 = If the pattern switching keybinds are allowed
-                    <li>0x04 = If the client is allowed to render a wireframe around vein mine results
-                </ul>
-            </td>
+            <td><table>
+                <thead>
+                    <th>Byte</th>
+                    <th>Meaning</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0x01</td>
+                        <td>If the activation keybind is allowed</td>
+                    </tr>
+                    <tr>
+                        <td>0x02</td>
+                        <td>If the pattern switching keybinds are allowed</td>
+                    </tr>
+                    <tr>
+                        <td>0x04</td>
+                        <td>If the client is allowed to render a wireframe around vein mine results</td>
+                    </tr>
+                </tbody>
+            </table></td>
+            <td>A bitmask of configured values.</td>
         </tr>
     </tbody>
 </table>
