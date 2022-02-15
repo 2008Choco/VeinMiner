@@ -64,6 +64,14 @@ public final class CommandVeinMiner implements TabExecutor {
             this.plugin.reloadVeinMinerManagerConfig();
             this.plugin.reloadToolCategoryRegistryConfig();
 
+            // Update configurations for all players
+            this.plugin.getPlayerManager().getAll().forEach(veinMinerPlayer -> {
+                Player player = veinMinerPlayer.getPlayer();
+                if (player != null) {
+                    veinMinerPlayer.setClientConfig(VeinMinerPlugin.createClientConfig(player));
+                }
+            });
+
             sender.sendMessage(ChatColor.GREEN + "VeinMiner configuration successfully reloaded.");
             return true;
         }

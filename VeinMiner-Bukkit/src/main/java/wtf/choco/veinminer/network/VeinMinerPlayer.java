@@ -393,6 +393,10 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      */
     public void setClientConfig(@NotNull ClientConfig clientConfig) {
         this.clientConfig = clientConfig;
+
+        if (usingClientMod) {
+            VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundSetConfig(clientConfig));
+        }
     }
 
     /**
