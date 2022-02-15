@@ -66,6 +66,10 @@ public final class VMConstants {
     public static final String PERMISSION_FREE_ECONOMY = "veinminer.free.economy";
     public static final String PERMISSION_FREE_HUNGER = "veinminer.free.hunger";
 
+    public static final String PERMISSION_CLIENT_ACTIVATION = "veinminer.client.activation";
+    public static final String PERMISSION_CLIENT_PATTERNS = "veinminer.client.patterns";
+    public static final String PERMISSION_CLIENT_WIREFRAME = "veinminer.client.wireframe";
+
     // Dynamic permission nodes
     public static final Function<VeinMinerToolCategory, String> PERMISSION_VEINMINE = category -> "veinminer.veinmine." + category.getId().toLowerCase();
 

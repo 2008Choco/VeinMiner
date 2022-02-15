@@ -84,7 +84,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
     private boolean veinMining = false;
 
-    private ClientConfig clientConfig = VeinMinerPlugin.createClientConfig();
+    private ClientConfig clientConfig;
 
     private final Reference<Player> player;
     private final UUID playerUUID;
@@ -104,6 +104,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     public VeinMinerPlayer(@NotNull Player player) {
         this.player = new WeakReference<>(player);
         this.playerUUID = player.getUniqueId();
+        this.clientConfig = VeinMinerPlugin.createClientConfig(player);
 
         // Assign metadata values to this player
         VeinMinerPlugin plugin = VeinMinerPlugin.getInstance();

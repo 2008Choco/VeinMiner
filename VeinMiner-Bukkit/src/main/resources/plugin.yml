@@ -39,6 +39,21 @@ permissions:
     description: Grants a bypass to the vein miner hunger debuff. Only used if hunger modifier is greater than 0
     default: false
 
+  veinminer.client.*:
+    description: Allows players to use all client mod features. Features must be set to true in the config as well
+    default: true
+    children:
+      veinminer.client.activation: true
+      veinminer.client.patterns: true
+      veinminer.client.wireframe: true
+
+  veinminer.client.activation:
+    description: Allows players to use key bind activation on the client. Must also be true in the configuration
+  veinminer.client.patterns:
+    description: Allows players to use key binds to switch patterns on the client. Must also be true in the configuration
+  veinminer.client.wireframe:
+    description: Allows players to render a wireframe around blocks to be mined. Must also be true in the configuration
+
   veinminer.pattern.*:
     description: Grants access to all vein mining patterns
     default: true

@@ -26,6 +26,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -555,16 +556,18 @@ public final class VeinMinerPlugin extends JavaPlugin {
      * Create a default {@link ClientConfig} with values supplied by {@link VeinMinerPlugin}'s
      * config.yml.
      *
+     * @param player the player for whom to create the config
+     *
      * @return the default client config
      */
     @NotNull
-    public static ClientConfig createClientConfig() {
+    public static ClientConfig createClientConfig(@NotNull Player player) {
         FileConfiguration config = getInstance().getConfig();
 
         return ClientConfig.builder()
-                .allowActivationKeybind(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_ACTIVATION_KEYBIND, true))
-                .allowPatternSwitchingKeybind(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_PATTERN_SWITCHING_KEYBIND, true))
-                .allowWireframeRendering(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_WIREFRAME_RENDERING, true))
+                .allowActivationKeybind(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_ACTIVATION_KEYBIND, true) && player.hasPermission(VMConstants.PERMISSION_CLIENT_ACTIVATION))
+                .allowPatternSwitchingKeybind(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_PATTERN_SWITCHING_KEYBIND, true) && player.hasPermission(VMConstants.PERMISSION_CLIENT_PATTERNS))
+                .allowWireframeRendering(config.getBoolean(VMConstants.CONFIG_CLIENT_ALLOW_WIREFRAME_RENDERING, true) && player.hasPermission(VMConstants.PERMISSION_CLIENT_WIREFRAME))
                 .build();
     }
 
