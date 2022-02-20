@@ -12,12 +12,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class AntiCheatHookMatrix implements AntiCheatHook, Listener {
 
-    @NotNull
-    @Override
-    public String getPluginName() {
-        return "Matrix";
-    }
-
     @Override
     public void exempt(@NotNull Player player) {
         if (MatrixAPIProvider.getAPI().isBypass(player)) {

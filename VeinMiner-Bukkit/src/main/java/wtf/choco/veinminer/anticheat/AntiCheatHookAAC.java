@@ -23,12 +23,6 @@ public final class AntiCheatHookAAC implements AntiCheatHook {
         }
     }
 
-    @NotNull
-    @Override
-    public String getPluginName() {
-        return "AAC5";
-    }
-
     @Override
     public void exempt(@NotNull Player player) {
         this.api.addExemption(player, exemption);

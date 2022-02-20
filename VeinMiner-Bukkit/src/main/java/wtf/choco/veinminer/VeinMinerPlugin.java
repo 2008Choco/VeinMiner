@@ -145,7 +145,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         this.defaultVeinMiningPattern = getPatternRegistry().getOrDefault(defaultVeinMiningPatternId, defaultVeinMiningPattern);
 
-        // Enable anticheat hooks if required
+        // Enable anti cheat hooks if required
         PluginManager manager = Bukkit.getPluginManager();
         this.registerAntiCheatHookIfEnabled(manager, "AAC5", AntiCheatHookAAC::new);
         this.registerAntiCheatHookIfEnabled(manager, "AntiAura", () -> new AntiCheatHookAntiAura(this));
@@ -346,24 +346,17 @@ public final class VeinMinerPlugin extends JavaPlugin {
      *
      * @param hook the hook to register
      *
-     * @return the registration result
+     * @return true if registered, false if unsupported
      */
-    @NotNull
-    public AntiCheatHook.RegistrationResult registerAntiCheatHook(@NotNull AntiCheatHook hook) {
+    public boolean registerAntiCheatHook(@NotNull AntiCheatHook hook) {
         Preconditions.checkNotNull(hook, "Cannot register a null anticheat hook implementation");
 
         if (!hook.isSupported()) {
-            return AntiCheatHook.RegistrationResult.UNSUPPORTED;
-        }
-
-        for (AntiCheatHook anticheatHook : anticheatHooks) {
-            if (anticheatHook.getPluginName().equals(hook.getPluginName())) {
-                return AntiCheatHook.RegistrationResult.ALREADY_REGISTERED;
-            }
+            return false;
         }
 
         this.anticheatHooks.add(hook);
-        return AntiCheatHook.RegistrationResult.SUCCESS;
+        return true;
     }
 
     /**
@@ -633,15 +626,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + pluginName + "\"");
 
         AntiCheatHook hook = hookSupplier.get();
-        AntiCheatHook.RegistrationResult result = registerAntiCheatHook(hook);
-        if (!result.isSuccess()) {
-            String message = switch (result) {
-                case ALREADY_REGISTERED -> "Tried to enable support for anti cheat \"%s\" but one was already registered.";
-                case UNSUPPORTED -> "The installed version of \"%s\" is incompatible with VeinMiner. Please contact the author of VeinMiner.";
-                default -> "Failed to enable support for anti cheat \"%s\". Reason unknown.";
-            };
-
-            this.getLogger().warning(message.formatted(pluginName));
+        if (!registerAntiCheatHook(hook)) {
+            this.getLogger().warning("The installed version of \"%s\" is incompatible with VeinMiner. Please contact the author of VeinMiner.".formatted(pluginName));
             return;
         }
 
@@ -649,7 +635,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
             manager.registerEvents(hookListener, this);
         }
 
-        Plugin antiCheatPlugin = hook.getPlugin();
+        Plugin antiCheatPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
         if (antiCheatPlugin != null) {
             StatTracker.recognizeInstalledAntiCheat(new AntiCheat(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
         }

@@ -32,15 +32,9 @@ public final class AntiCheatHookAntiAura implements AntiCheatHook {
 
             this.supported = (methodToggleExemptFromFastBreak != null && methodIsExemptedFromFastBreak != null);
         } catch (ReflectiveOperationException e) {
-            plugin.getLogger().severe("The version of " + getPluginName() + " on this server is incompatible with Veinminer. Please post information on the spigot resource discussion page.");
+            plugin.getLogger().severe("The version of AntiAura on this server is incompatible with Veinminer. Please post information on the spigot resource discussion page.");
             e.printStackTrace();
         }
-    }
-
-    @NotNull
-    @Override
-    public String getPluginName() {
-        return "AntiAura";
     }
 
     @Override

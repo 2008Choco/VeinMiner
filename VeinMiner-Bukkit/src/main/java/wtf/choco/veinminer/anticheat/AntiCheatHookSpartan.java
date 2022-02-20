@@ -35,7 +35,7 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
             eventClass = ClassUtils.getClass(plugin.getClass().getClassLoader(), "me.vagdedes.spartan.api.PlayerViolationEvent");
             this.methodGetPlayer = MethodUtils.getAccessibleMethod(eventClass, "getPlayer", new Class<?>[] {});
         } catch (ClassNotFoundException e) {
-            plugin.getLogger().severe("The version of " + getPluginName() + " on this server is incompatible with VeinMiner. Please post information on the spigot resource discussion page.");
+            plugin.getLogger().severe("The version of Spartan on this server is incompatible with VeinMiner. Please post information on the spigot resource discussion page.");
         }
 
         this.supported = (eventClass != null && methodGetPlayer != null);
@@ -58,12 +58,6 @@ public final class AntiCheatHookSpartan implements AntiCheatHook, Listener {
                 ((Cancellable) event).setCancelled(true);
             }, plugin);
         }
-    }
-
-    @NotNull
-    @Override
-    public String getPluginName() {
-        return "Spartan";
     }
 
     @Override

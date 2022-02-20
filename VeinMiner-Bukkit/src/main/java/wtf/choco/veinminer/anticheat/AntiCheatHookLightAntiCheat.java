@@ -33,15 +33,9 @@ public final class AntiCheatHookLightAntiCheat implements AntiCheatHook {
 
             this.supported = (methodIsApiBypass != null && methodSetApiBypass != null);
         } catch (ReflectiveOperationException e) {
-            plugin.getLogger().severe("The version of " + getPluginName() + " on this server is incompatible with Veinminer. Please post information on the spigot resource discussion page.");
+            plugin.getLogger().severe("The version of LightAntiCheat on this server is incompatible with Veinminer. Please post information on the spigot resource discussion page.");
             e.printStackTrace();
         }
-    }
-
-    @NotNull
-    @Override
-    public String getPluginName() {
-        return "LightAntiCheat";
     }
 
     @Override

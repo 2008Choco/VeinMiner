@@ -26,12 +26,6 @@ public final class AntiCheatHookNCP implements AntiCheatHook {
         this.plugin = plugin;
     }
 
-    @NotNull
-    @Override
-    public String getPluginName() {
-        return "NCP";
-    }
-
     @Override
     public void exempt(@NotNull Player player) {
         /*
