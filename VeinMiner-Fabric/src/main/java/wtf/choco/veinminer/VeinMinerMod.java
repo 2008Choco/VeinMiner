@@ -214,8 +214,8 @@ public final class VeinMinerMod implements ClientModInitializer {
             VertexConsumer bufferTransparent = consumers.getBuffer(VeinMinerRenderLayer.getWireframeTransparent());
 
             shape.forEachEdge((x1, y1, z1, x2, y2, z2) -> {
-                bufferTransparent.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 64).next();
-                bufferTransparent.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 64).next();
+                bufferTransparent.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 20).next();
+                bufferTransparent.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 20).next();
             });
 
             consumers.draw(VeinMinerRenderLayer.getWireframeTransparent());
