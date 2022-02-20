@@ -26,10 +26,8 @@ loom {
 }
 
 processResources {
-    from ("fabric.mod.json") {
-        filter ReplaceTokens, tokens: [
-            "project.version": version
-        ]
+    filesMatching("fabric.mod.json") {
+        expand "version": version
     }
 }
 
