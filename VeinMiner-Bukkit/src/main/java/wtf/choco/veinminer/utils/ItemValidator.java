@@ -1,8 +1,5 @@
 package wtf.choco.veinminer.utils;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -17,12 +14,10 @@ import wtf.choco.veinminer.tool.ToolCategory;
  */
 public final class ItemValidator {
 
-    private static final Set<Material> AIR = EnumSet.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
-
     private ItemValidator() { }
 
     /**
-     * Check whether or not the provided item is valid according to the provided category's
+     * Check whether the provided item is valid according to the provided category's
      * available item templates.
      *
      * @param item the item to check
@@ -31,7 +26,7 @@ public final class ItemValidator {
      * @return true if valid, false otherwise
      */
     public static boolean isValid(@Nullable ItemStack item, @NotNull ToolCategory category) {
-        if (item == null || item.getType() == Material.AIR) { // If null, true if HAND, false if another category
+        if (isEmpty(item)) { // If null, true if HAND, false if another category
             return category == ToolCategory.HAND;
         }
 
@@ -39,27 +34,31 @@ public final class ItemValidator {
     }
 
     /**
-     * Check whether or not the provided item is empty. An item is considered empty if it
-     * is either null or one of the three types of air.
+     * Check whether the provided item is empty. An item is considered empty if it
+     * is either null or considered to be air.
+     *
+     * @see org.bukkit.Material#isAir()
      *
      * @param item the item to check
      *
      * @return true if empty or null, false otherwise
      */
     public static boolean isEmpty(@Nullable ItemStack item) {
-        return item == null || AIR.contains(item.getType());
+        return item == null || item.getType().isAir();
     }
 
     /**
-     * Check whether or not the provided material is empty. A material is considered empty
-     * if it is one of the three types of air.
+     * Check whether the provided material is empty. A material is considered empty
+     * if it is null or considered to be air.
+     *
+     * @see org.bukkit.Material#isAir()
      *
      * @param material the material to check
      *
      * @return true if empty or null, false otherwise
      */
     public static boolean isEmpty(@Nullable Material material) {
-        return AIR.contains(material);
+        return material == null || material.isAir();
     }
 
 }
