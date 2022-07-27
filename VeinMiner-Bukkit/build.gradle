@@ -70,6 +70,7 @@ publishing {
 shadowJar {
     relocate 'org.bstats', 'wtf.choco.veinminer.metrics'
     archiveFileName = "VeinMiner-Bukkit-${version}.jar"
+    archiveClassifier = ""
 }
 
 tasks.build.dependsOn tasks.shadowJar
