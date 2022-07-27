@@ -1,0 +1,16 @@
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(16))
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation project(':VeinMiner-Common')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:' + project.property('junit.version')
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + project.property('junit.version')
+}

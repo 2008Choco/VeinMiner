@@ -5,9 +5,12 @@ import java.nio.ByteBuffer;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
+import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
+import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
@@ -45,7 +48,13 @@ public final class BukkitChannelHandler implements ChannelRegistrar {
                     return;
                 }
 
-                message.handle(plugin.getPlayerManager().get(player));
+                PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+                VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
+                if (veinMinerPlayer == null) {
+                    return;
+                }
+
+                message.handle(veinMinerPlayer);
             } catch (IllegalStateException e) {
                 player.kickPlayer("Malformatted or invalid packet (" + channelName + "). Contact an administrator.");
             }

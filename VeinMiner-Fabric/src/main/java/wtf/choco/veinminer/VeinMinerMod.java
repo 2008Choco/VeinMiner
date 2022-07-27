@@ -1,5 +1,10 @@
 package wtf.choco.veinminer;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+
 import java.util.Objects;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -8,22 +13,17 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.hud.HudRenderComponent;
@@ -34,7 +34,6 @@ import wtf.choco.veinminer.network.FabricServerState;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
-import wtf.choco.veinminer.platform.FabricPlatformReconstructor;
 import wtf.choco.veinminer.render.VeinMinerRenderLayer;
 
 /**
@@ -42,9 +41,9 @@ import wtf.choco.veinminer.render.VeinMinerRenderLayer;
  */
 public final class VeinMinerMod implements ClientModInitializer {
 
-    public static final KeyBinding KEY_BINDING_ACTIVATE_VEINMINER = registerKeybind("activate_veinminer", GLFW.GLFW_KEY_GRAVE_ACCENT);
-    public static final KeyBinding KEY_BINDING_NEXT_PATTERN = registerKeybind("next_pattern", GLFW.GLFW_KEY_RIGHT_BRACKET);
-    public static final KeyBinding KEY_BINDING_PREVIOUS_PATTERN = registerKeybind("previous_pattern", GLFW.GLFW_KEY_LEFT_BRACKET);
+    public static final KeyMapping KEY_BINDING_ACTIVATE_VEINMINER = registerKeyMapping("activate_veinminer", InputConstants.KEY_GRAVE);
+    public static final KeyMapping KEY_BINDING_NEXT_PATTERN = registerKeyMapping("next_pattern", InputConstants.KEY_RBRACKET);
+    public static final KeyMapping KEY_BINDING_PREVIOUS_PATTERN = registerKeyMapping("previous_pattern", InputConstants.KEY_LBRACKET);
 
     private static FabricServerState serverState;
 
@@ -58,9 +57,6 @@ public final class VeinMinerMod implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        VeinMiner veinminer = VeinMiner.getInstance();
-        veinminer.setPlatformReconstructor(FabricPlatformReconstructor.INSTANCE);
-
         VeinMiner.PROTOCOL.registerChannels(new FabricChannelRegistrar());
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -71,11 +67,11 @@ public final class VeinMinerMod implements ClientModInitializer {
             ClientConfig config = getServerState().getConfig();
 
             boolean shouldRequestVeinMine = false;
-            boolean active = KEY_BINDING_ACTIVATE_VEINMINER.isPressed();
+            boolean active = KEY_BINDING_ACTIVATE_VEINMINER.isDown();
 
             if (config.isAllowActivationKeybind()) {
                 boolean lastActive = getServerState().isActive();
-                getServerState().setActive(active = KEY_BINDING_ACTIVATE_VEINMINER.isPressed());
+                getServerState().setActive(active = KEY_BINDING_ACTIVATE_VEINMINER.isDown());
 
                 // Activating / deactivating vein miner
                 if (lastActive ^ active) {
@@ -84,11 +80,11 @@ public final class VeinMinerMod implements ClientModInitializer {
                 }
             }
 
-            HitResult result = client.crosshairTarget;
+            HitResult result = client.hitResult;
 
             if (result instanceof BlockHitResult blockResult) {
                 BlockPos position = blockResult.getBlockPos();
-                Direction blockFace = blockResult.getSide();
+                Direction blockFace = blockResult.getDirection();
 
                 // Requesting that the server vein mine at the player's current target block because it's different
                 shouldRequestVeinMine |= (active && config.isAllowActivationKeybind() && (!Objects.equals(getServerState().getLastLookedAtBlockPos(), position) || !Objects.equals(getServerState().getLastLookedAtBlockFace(), blockFace)));
@@ -99,7 +95,7 @@ public final class VeinMinerMod implements ClientModInitializer {
                 }
 
                 // Updating the new last looked at position
-                if (client.player != null && client.player.world != null && !client.player.world.isAir(position)) {
+                if (client.player != null && client.player.level != null && !client.player.level.isEmptyBlock(position)) {
                     getServerState().setLastLookedAt(position, blockFace);
                 } else {
                     getServerState().setLastLookedAt(null, null);
@@ -109,16 +105,16 @@ public final class VeinMinerMod implements ClientModInitializer {
             // Changing patterns
             if (config.isAllowPatternSwitchingKeybind()) {
                 boolean lastChangingPatterns = changingPatterns;
-                this.changingPatterns = (KEY_BINDING_NEXT_PATTERN.isPressed() || KEY_BINDING_PREVIOUS_PATTERN.isPressed());
+                this.changingPatterns = (KEY_BINDING_NEXT_PATTERN.isDown() || KEY_BINDING_PREVIOUS_PATTERN.isDown());
 
                 if (lastChangingPatterns ^ changingPatterns) {
                     boolean next;
 
                     // There has to be a smarter way to write this...
-                    if (KEY_BINDING_NEXT_PATTERN.isPressed()) {
+                    if (KEY_BINDING_NEXT_PATTERN.isDown()) {
                         next = true;
                     }
-                    else if (KEY_BINDING_PREVIOUS_PATTERN.isPressed()) {
+                    else if (KEY_BINDING_PREVIOUS_PATTERN.isDown()) {
                         next = false;
                     }
                     else {
@@ -154,7 +150,7 @@ public final class VeinMinerMod implements ClientModInitializer {
                 return;
             }
 
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
             ClientConfig config = getServerState().getConfig();
 
             for (HudRenderComponent component : hudRenderComponents) {
@@ -186,41 +182,41 @@ public final class VeinMinerMod implements ClientModInitializer {
                 return;
             }
 
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
 
             // Calculate the stack
-            MatrixStack stack = context.matrixStack();
-            Vec3d projectedView = client.getEntityRenderDispatcher().camera.getPos();
+            PoseStack stack = context.matrixStack();
+            Vec3 position = client.getEntityRenderDispatcher().camera.getPosition();
 
-            stack.push();
-            stack.translate(origin.getX() - projectedView.x, origin.getY() - projectedView.y, origin.getZ() - projectedView.z);
+            stack.pushPose();
+            stack.translate(origin.getX() - position.x, origin.getY() - position.y, origin.getZ() - position.z);
 
-            Matrix4f matrix = stack.peek().getPositionMatrix();
+            Matrix4f matrix = stack.last().pose();
 
             // Buffer vertices
-            VertexConsumerProvider.Immediate consumers = client.getBufferBuilders().getEntityVertexConsumers();
+            BufferSource source = client.renderBuffers().bufferSource();
 
             // Full wireframe drawing
-            VertexConsumer buffer = consumers.getBuffer(VeinMinerRenderLayer.getWireframe());
+            VertexConsumer consumer = source.getBuffer(VeinMinerRenderLayer.getWireframe());
 
-            shape.forEachEdge((x1, y1, z1, x2, y2, z2) -> {
-                buffer.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 255).next();
-                buffer.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 255).next();
+            shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
+                consumer.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 255).endVertex();
+                consumer.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 255).endVertex();
             });
 
-            consumers.draw(VeinMinerRenderLayer.getWireframe());
+            source.endBatch(VeinMinerRenderLayer.getWireframe());
 
             // Transparent drawing
-            VertexConsumer bufferTransparent = consumers.getBuffer(VeinMinerRenderLayer.getWireframeTransparent());
+            VertexConsumer bufferTransparent = source.getBuffer(VeinMinerRenderLayer.getWireframeTransparent());
 
-            shape.forEachEdge((x1, y1, z1, x2, y2, z2) -> {
-                bufferTransparent.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 20).next();
-                bufferTransparent.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 20).next();
+            shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
+                bufferTransparent.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 20).endVertex();
+                bufferTransparent.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 20).endVertex();
             });
 
-            consumers.draw(VeinMinerRenderLayer.getWireframeTransparent());
+            source.endBatch(VeinMinerRenderLayer.getWireframeTransparent());
 
-            stack.pop();
+            stack.popPose();
         });
     }
 
@@ -251,10 +247,10 @@ public final class VeinMinerMod implements ClientModInitializer {
         return serverState;
     }
 
-    private static KeyBinding registerKeybind(String id, int key) {
-        return KeyBindingHelper.registerKeyBinding(new KeyBinding(
+    private static KeyMapping registerKeyMapping(String id, int key) {
+        return KeyBindingHelper.registerKeyBinding(new KeyMapping(
             "key.veinminer4bukkit." + id,
-            InputUtil.Type.KEYSYM,
+            InputConstants.Type.KEYSYM,
             key,
             "category.veinminer4bukkit.general"
         ));

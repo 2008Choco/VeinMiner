@@ -12,7 +12,7 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
  * Called when a {@link Player} changes their {@link VeinMiningPattern} either by command
  * or with the client-sided mod.
  */
-public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implements Cancellable {
+public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implements Cancellable, PatternChangeEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
@@ -62,16 +62,18 @@ public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implem
      *
      * @return the new pattern
      */
+    @Override
     @NotNull
     public VeinMiningPattern getNewPattern() {
         return newPattern;
     }
 
     /**
-     * Get the {@link Cause} of this event.
+     * Get the {@link PatternChangeEvent.Cause Cause} of this event.
      *
      * @return the cause
      */
+    @Override
     @NotNull
     public Cause getCause() {
         return cause;
@@ -96,23 +98,6 @@ public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implem
     @NotNull
     public static HandlerList getHandlerList() {
         return HANDLERS;
-    }
-
-    /**
-     * The cause for a {@link PlayerVeinMiningPatternChangeEvent} to be called.
-     */
-    public static enum Cause {
-
-        /**
-         * The pattern was changed as a result of a command.
-         */
-        COMMAND,
-
-        /**
-         * The pattern was changed per request of the client-sided mod using a key bind.
-         */
-        CLIENT;
-
     }
 
 }

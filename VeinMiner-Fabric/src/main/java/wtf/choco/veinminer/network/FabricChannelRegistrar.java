@@ -1,7 +1,7 @@
 package wtf.choco.veinminer.network;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public final class FabricChannelRegistrar implements ChannelRegistrar {
 
     @Override
     public void registerClientboundMessageHandler(@NotNull NamespacedKey channel, @NotNull PluginMessageRegistry<ClientboundPluginMessageListener> registry) {
-        ClientPlayNetworking.registerGlobalReceiver(new Identifier(channel.namespace(), channel.key()), (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation(channel.namespace(), channel.key()), (client, handler, buf, responseSender) -> {
             PluginMessageByteBuffer buffer = new PluginMessageByteBuffer(buf.nioBuffer());
 
             int messageId = buffer.readVarInt();

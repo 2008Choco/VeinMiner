@@ -29,7 +29,7 @@ subprojects {
     checkstyleMain {
         configFile = file("${rootDir}/checkstyle.xml")
     }
-    
+
     checkstyleTest {
         configFile = file("${rootDir}/checkstyle.xml")
     }

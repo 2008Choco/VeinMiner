@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -73,12 +74,11 @@ import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
 import wtf.choco.veinminer.pattern.VeinMiningPatternStaircase;
 import wtf.choco.veinminer.pattern.VeinMiningPatternStaircase.Direction;
 import wtf.choco.veinminer.pattern.VeinMiningPatternTunnel;
-import wtf.choco.veinminer.platform.BukkitPlatformReconstructor;
+import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
 import wtf.choco.veinminer.platform.GameMode;
-import wtf.choco.veinminer.tool.BukkitVeinMinerToolCategory;
-import wtf.choco.veinminer.tool.BukkitVeinMinerToolCategoryHand;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 import wtf.choco.veinminer.util.ConfigWrapper;
 import wtf.choco.veinminer.util.UpdateChecker;
 import wtf.choco.veinminer.util.UpdateChecker.UpdateReason;
@@ -94,24 +94,23 @@ public final class VeinMinerPlugin extends JavaPlugin {
     private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
 
     private final BukkitChannelHandler channelHandler = new BukkitChannelHandler(this);
-    private final VeinMinerManager veinMinerManager = new VeinMinerManager();
     private final VeinMinerPlayerManager playerManager = new VeinMinerPlayerManager();
 
     private EconomyModifier economyModifier;
 
-    private VeinMiningPattern defaultVeinMiningPattern;
     private PersistentDataStorage persistentDataStorage;
 
     private ConfigWrapper categoriesConfig;
 
     @Override
     public void onLoad() {
-        VeinMiner veinMiner = VeinMiner.getInstance();
-        veinMiner.setToolCategoryRegistry(new ToolCategoryRegistry());
-        veinMiner.setPlatformReconstructor(BukkitPlatformReconstructor.INSTANCE);
+        VeinMinerPlugin.instance = this;
+
+        VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+        veinMiner.setPlatform(BukkitVeinMinerPlatform.getInstance());
 
         PatternRegistry patternRegistry = veinMiner.getPatternRegistry();
-        patternRegistry.register(defaultVeinMiningPattern = new VeinMiningPatternDefault());
+        patternRegistry.register(VeinMiningPatternDefault.getInstance());
         patternRegistry.register(new VeinMiningPatternTunnel());
         patternRegistry.register(new VeinMiningPatternStaircase(Direction.UP));
         patternRegistry.register(new VeinMiningPatternStaircase(Direction.DOWN));
@@ -126,8 +125,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        VeinMinerPlugin.instance = this;
-
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
 
@@ -140,10 +137,10 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
 
         // Fetching the default pattern to use for all players that have not yet explicitly set one
-        String defaultVeinMiningPatternId = getConfig().getString(VMConstants.CONFIG_DEFAULT_VEIN_MINING_PATTERN, defaultVeinMiningPattern.getKey().toString());
+        String defaultVeinMiningPatternId = getConfig().getString(VMConstants.CONFIG_DEFAULT_VEIN_MINING_PATTERN, getDefaultVeinMiningPattern().getKey().toString());
         assert defaultVeinMiningPatternId != null;
 
-        this.defaultVeinMiningPattern = getPatternRegistry().getOrDefault(defaultVeinMiningPatternId, defaultVeinMiningPattern);
+        this.setDefaultVeinMiningPattern(getPatternRegistry().getOrDefault(defaultVeinMiningPatternId, getDefaultVeinMiningPattern()));
 
         // Enable anti cheat hooks if required
         PluginManager manager = Bukkit.getPluginManager();
@@ -214,7 +211,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.reloadToolCategoryRegistryConfig();
 
         // Special case for reloads
-        this.persistentDataStorage.load(this, Collections2.transform(Bukkit.getOnlinePlayers(), playerManager::get));
+        this.persistentDataStorage.load(this, Collections2.transform(Bukkit.getOnlinePlayers(), player -> getPlayerManager().get(BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId()))));
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
@@ -241,7 +238,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         this.getLogger().info("Clearing localized data");
-        this.veinMinerManager.clear();
+        this.getVeinMinerManager().clear();
         this.anticheatHooks.clear();
 
         this.getPatternRegistry().unregisterAll();
@@ -267,7 +264,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
      */
     @NotNull
     public VeinMinerManager getVeinMinerManager() {
-        return veinMinerManager;
+        return VeinMinerServer.getInstance().getVeinMinerManager();
     }
 
     /**
@@ -277,7 +274,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
      */
     @NotNull
     public ToolCategoryRegistry getToolCategoryRegistry() {
-        return VeinMiner.getInstance().getToolCategoryRegistry();
+        return VeinMinerServer.getInstance().getToolCategoryRegistry();
     }
 
     /**
@@ -287,7 +284,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
      */
     @NotNull
     public PatternRegistry getPatternRegistry() {
-        return VeinMiner.getInstance().getPatternRegistry();
+        return VeinMinerServer.getInstance().getPatternRegistry();
     }
 
     /**
@@ -301,13 +298,22 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
+     * Set the default {@link VeinMiningPattern} to be used for new players.
+     *
+     * @param pattern the default vein mining pattern
+     */
+    public void setDefaultVeinMiningPattern(@NotNull VeinMiningPattern pattern) {
+        VeinMinerServer.getInstance().setDefaultVeinMiningPattern(pattern);
+    }
+
+    /**
      * Get the default {@link VeinMiningPattern} to be used for new players.
      *
      * @return the default vein mining pattern
      */
     @NotNull
     public VeinMiningPattern getDefaultVeinMiningPattern() {
-        return defaultVeinMiningPattern;
+        return VeinMinerServer.getInstance().getDefaultVeinMiningPattern();
     }
 
     /**
@@ -375,20 +381,20 @@ public final class VeinMinerPlugin extends JavaPlugin {
     public void reloadGeneralConfig() {
         String defaultActivationStrategyString = getConfig().getString(VMConstants.CONFIG_DEFAULT_ACTIVATION_STRATEGY, "SNEAK");
         assert defaultActivationStrategyString != null;
-        VeinMiner.getInstance().setDefaultActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, defaultActivationStrategyString.toUpperCase()).or(ActivationStrategy.SNEAK));
+        VeinMinerServer.getInstance().setDefaultActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, defaultActivationStrategyString.toUpperCase()).or(ActivationStrategy.SNEAK));
     }
 
     /**
      * Reload the {@link VeinMinerManager}'s values from config into memory.
      */
     public void reloadVeinMinerManagerConfig() {
-        this.veinMinerManager.clear();
+        this.getVeinMinerManager().clear();
 
         FileConfiguration config = getConfig();
 
         // Global block list and config
-        this.veinMinerManager.setGlobalBlockList(BlockList.parseBlockList(config.getStringList("BlockList.Global"), getLogger()));
-        this.veinMinerManager.setGlobalConfig(VeinMinerConfig.builder()
+        this.getVeinMinerManager().setGlobalBlockList(BlockList.parseBlockList(config.getStringList("BlockList.Global"), getLogger()));
+        this.getVeinMinerManager().setGlobalConfig(VeinMinerConfig.builder()
                 .repairFriendly(config.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY, false))
                 .maxVeinSize(config.getInt(VMConstants.CONFIG_MAX_VEIN_SIZE, 64))
                 .cost(config.getDouble(VMConstants.CONFIG_COST, 0.0))
@@ -397,7 +403,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         );
 
         // Disabled game modes
-        Set<GameMode> disabledGameModes = EnumSet.noneOf(GameMode.class);
+        Set<GameMode> disabledGameModes = new HashSet<>();
         for (String disabledGameModeString : config.getStringList(VMConstants.CONFIG_DISABLED_GAME_MODES)) {
             GameMode gameMode = GameMode.getById(disabledGameModeString);
 
@@ -409,7 +415,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
             disabledGameModes.add(gameMode);
         }
 
-        this.veinMinerManager.setDisabledGameModes(disabledGameModes);
+        this.getVeinMinerManager().setDisabledGameModes(disabledGameModes);
 
         // Aliases
         int aliasesAdded = 0;
@@ -426,7 +432,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 continue;
             }
 
-            this.veinMinerManager.addAlias(aliasBlockList);
+            this.getVeinMinerManager().addAlias(aliasBlockList);
             aliasesAdded++;
         }
 
@@ -456,7 +462,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
             ConfigurationSection categoryRoot = categoriesConfig.getConfigurationSection(categoryId);
             assert categoryRoot != null;
 
-            VeinMinerConfig globalVeinMinerConfig = veinMinerManager.getGlobalConfig();
+            VeinMinerConfig globalVeinMinerConfig = getVeinMinerManager().getGlobalConfig();
 
             Collection<String> disabledWorlds = categoryRoot.contains(VMConstants.CONFIG_DISABLED_WORLDS) ? categoryRoot.getStringList(VMConstants.CONFIG_DISABLED_WORLDS) : globalVeinMinerConfig.getDisabledWorlds();
             VeinMinerConfig veinMinerConfig = VeinMinerConfig.builder()
@@ -503,12 +509,12 @@ public final class VeinMinerPlugin extends JavaPlugin {
             int priority = categoryRoot.getInt(VMConstants.CONFIG_PRIORITY, 0);
             String nbtValue = categoryRoot.getString(VMConstants.CONFIG_NBT); // Should be allowed to be null
 
-            getToolCategoryRegistry().register(new BukkitVeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, veinMinerConfig, items));
+            getToolCategoryRegistry().register(new VeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, veinMinerConfig, BukkitVeinMinerPlatform.toItemType(items, HashSet::new)));
             this.getLogger().info(String.format("Registered category with id \"%s\" holding %d unique items and %d unique blocks.", categoryId, items.size(), blocklist.size()));
         }
 
         // Also register the hand category (required)
-        getToolCategoryRegistry().register(new BukkitVeinMinerToolCategoryHand(BlockList.parseBlockList(config.getStringList("BlockList.Hand"), getLogger()), veinMinerManager.getGlobalConfig()));
+        getToolCategoryRegistry().register(new VeinMinerToolCategoryHand(BlockList.parseBlockList(config.getStringList("BlockList.Hand"), getLogger()), getVeinMinerManager().getGlobalConfig()));
 
         // Register permissions dynamically
         PluginManager pluginManager = Bukkit.getPluginManager();

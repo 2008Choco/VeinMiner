@@ -18,9 +18,9 @@ import java.util.concurrent.CompletionException;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.ActivationStrategy;
-import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.network.VeinMinerPlayer;
+import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
@@ -193,11 +193,11 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
         String veinMiningPatternId = result.getString("vein_mining_pattern_id");
 
         if (activationStrategyId != null) {
-            player.setActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, activationStrategyId.toUpperCase()).or(VeinMiner.getInstance().getDefaultActivationStrategy()));
+            player.setActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, activationStrategyId.toUpperCase()).or(VeinMinerServer.getInstance().getDefaultActivationStrategy()));
         }
 
         if (disabledCategories != null) {
-            player.enableVeinMiner(); // Ensure that all categories are loaded again
+            player.setVeinMinerEnabled(true); // Ensure that all categories are loaded again
 
             for (String categoryId : disabledCategories.split(",")) {
                 VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(categoryId.toUpperCase());
@@ -206,7 +206,7 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
                     continue;
                 }
 
-                player.disableVeinMiner(category);
+                player.setVeinMinerEnabled(category, false);
             }
         }
 

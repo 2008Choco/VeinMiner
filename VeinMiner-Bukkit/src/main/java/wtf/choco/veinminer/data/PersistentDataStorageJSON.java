@@ -21,9 +21,9 @@ import java.util.concurrent.CompletionException;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.ActivationStrategy;
-import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.network.VeinMinerPlayer;
+import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
@@ -129,11 +129,11 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
             JsonObject root = gson.fromJson(reader, JsonObject.class);
 
             if (root.has("activation_strategy_id")) {
-                player.setActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, root.get("activation_strategy_id").getAsString().toUpperCase()).or(VeinMiner.getInstance().getDefaultActivationStrategy()));
+                player.setActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, root.get("activation_strategy_id").getAsString().toUpperCase()).or(VeinMinerServer.getInstance().getDefaultActivationStrategy()));
             }
 
             if (root.has("disabled_categories")) {
-                player.enableVeinMiner(); // Ensure that all categories are loaded again
+                player.setVeinMinerEnabled(true); // Ensure that all categories are loaded again
 
                 root.getAsJsonArray("disabled_categories").forEach(element -> {
                     if (!element.isJsonPrimitive()) {
@@ -145,7 +145,7 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
                         return;
                     }
 
-                    player.disableVeinMiner(category);
+                    player.setVeinMinerEnabled(category, false);
                 });
             }
 

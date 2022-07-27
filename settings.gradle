@@ -8,4 +8,4 @@ pluginManagement {
 
 rootProject.name = 'VeinMiner'
 
-include ':VeinMiner-Common', ':VeinMiner-Bukkit', ':VeinMiner-Fabric'
+include ':VeinMiner-Common', 'VeinMiner-Server', ':VeinMiner-Bukkit', ':VeinMiner-Fabric'

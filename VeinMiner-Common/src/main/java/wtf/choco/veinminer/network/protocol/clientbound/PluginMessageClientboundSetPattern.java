@@ -7,7 +7,6 @@ import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
-import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
@@ -25,10 +24,10 @@ public final class PluginMessageClientboundSetPattern implements PluginMessage<C
     /**
      * Construct a new {@link PluginMessageClientboundSetPattern}.
      *
-     * @param pattern the pattern to set
+     * @param patternKey the pattern key to set
      */
-    public PluginMessageClientboundSetPattern(@NotNull VeinMiningPattern pattern) {
-        this.patternKey = pattern.getKey();
+    public PluginMessageClientboundSetPattern(@NotNull NamespacedKey patternKey) {
+        this.patternKey = patternKey;
     }
 
     @Internal

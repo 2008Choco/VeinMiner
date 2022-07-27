@@ -7,13 +7,13 @@ import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +35,7 @@ import wtf.choco.veinminer.util.NamespacedKey;
  */
 public final class FabricServerState implements ClientboundPluginMessageListener, MessageReceiver {
 
-    private static final VoxelShape WIDE_CUBE = VoxelShapes.cuboid(-0.005, -0.005, -0.005, 1.005, 1.005, 1.005);
+    private static final VoxelShape WIDE_CUBE = Shapes.box(-0.005, -0.005, -0.005, 1.005, 1.005, 1.005);
 
     private boolean enabledOnServer, active;
     private ClientConfig config = ClientConfig.builder()
@@ -54,11 +54,11 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     /**
      * Construct a new {@link FabricServerState}.
      *
-     * @param client the {@link MinecraftClient} instance
+     * @param client the {@link Minecraft} instance
      */
-    public FabricServerState(@NotNull MinecraftClient client) {
+    public FabricServerState(@NotNull Minecraft client) {
         // We'll enable VeinMiner if we're in single player development mode, just for testing
-        if (client.isInSingleplayer() && FabricLoader.getInstance().isDevelopmentEnvironment()) {
+        if (client.hasSingleplayerServer() && FabricLoader.getInstance().isDevelopmentEnvironment()) {
             this.config = new ClientConfig();
             this.patternKeys = List.of(
                 NamespacedKey.veinminer("default"),
@@ -251,10 +251,10 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     @Override
     public void sendMessage(@NotNull NamespacedKey channel, byte[] message) {
-        PacketByteBuf byteBuf = PacketByteBufs.create();
+        FriendlyByteBuf byteBuf = PacketByteBufs.create();
         byteBuf.writeBytes(message);
 
-        ClientPlayNetworking.send(new Identifier(channel.namespace(), channel.key()), byteBuf);
+        ClientPlayNetworking.send(new ResourceLocation(channel.namespace(), channel.key()), byteBuf);
     }
 
     @Override
@@ -302,13 +302,13 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
             VoxelShape shape = WIDE_CUBE;
             if (offsetX != 0 || offsetY != 0 || offsetZ != 0) {
-                shape = shape.offset(offsetX, offsetY, offsetZ);
+                shape = shape.move(offsetX, offsetY, offsetZ);
             }
 
             shapes[i++] = shape;
         }
 
-        this.veinMineResultShape = VoxelShapes.union(shapes[0], shapes);
+        this.veinMineResultShape = Shapes.or(shapes[0], shapes);
     }
 
     @Override

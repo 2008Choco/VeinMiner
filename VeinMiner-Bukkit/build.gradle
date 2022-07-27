@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.*
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'maven-publish'
 }
 
 java {
@@ -25,6 +26,7 @@ repositories {
 
 dependencies {
     implementation project(':VeinMiner-Common')
+    implementation project(':VeinMiner-Server')
 
     implementation 'org.bstats:bstats-bukkit:2.2.1'
 
@@ -51,6 +53,18 @@ processResources {
     filter ReplaceTokens, tokens: [
         "project.version": version
     ]
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+
+            groupId = "wtf.choco"
+            artifactId = "veinminer-bukkit"
+            version = version
+        }
+    }
 }
 
 shadowJar {

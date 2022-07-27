@@ -27,26 +27,29 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMineEvent;
-import wtf.choco.veinminer.block.BlockAccessor;
 import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.block.BukkitBlockAccessor;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMinerConfig;
 import wtf.choco.veinminer.economy.EconomyModifier;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.metrics.StatTracker;
-import wtf.choco.veinminer.network.VeinMinerPlayer;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
-import wtf.choco.veinminer.platform.BlockState;
-import wtf.choco.veinminer.platform.BukkitBlockState;
-import wtf.choco.veinminer.platform.BukkitItemType;
+import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
 import wtf.choco.veinminer.platform.GameMode;
-import wtf.choco.veinminer.tool.BukkitVeinMinerToolCategoryHand;
+import wtf.choco.veinminer.platform.PlatformPlayer;
+import wtf.choco.veinminer.platform.world.BlockAccessor;
+import wtf.choco.veinminer.platform.world.BlockState;
+import wtf.choco.veinminer.platform.world.BukkitBlockAccessor;
+import wtf.choco.veinminer.platform.world.BukkitBlockState;
+import wtf.choco.veinminer.platform.world.BukkitBlockType;
+import wtf.choco.veinminer.platform.world.BukkitItemType;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.VMConstants;
 import wtf.choco.veinminer.util.VMEventFactory;
@@ -96,11 +99,16 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Invalid player state check
-        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
+        PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
+        if (veinMinerPlayer == null) {
+            return;
+        }
+
         VeinMinerConfig veinMinerConfig = category.getConfig();
 
         if (!veinMinerPlayer.isVeinMinerActive()
-                || veinMinerPlayer.isVeinMinerDisabled(category)
+                || !veinMinerPlayer.isVeinMinerEnabled(category)
                 || veinMinerManager.isDisabledGameMode(GameMode.getByIdOrThrow(player.getGameMode().name()))
                 || veinMinerConfig.isDisabledWorld(origin.getWorld().getName())
                 || !player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(category))) {
@@ -142,7 +150,7 @@ public final class BreakBlockListener implements Listener {
         VeinMiningPattern pattern = veinMinerPlayer.getVeinMiningPattern();
         BlockPosition originPosition = new BlockPosition(origin.getX(), origin.getY(), origin.getZ());
         BlockList aliasBlockList = veinMinerManager.getAlias(originVeinMinerBlock);
-        wtf.choco.veinminer.block.BlockFace vmBlockFace = wtf.choco.veinminer.block.BlockFace.valueOf(targetBlockFace.name());
+        wtf.choco.veinminer.util.BlockFace vmBlockFace = wtf.choco.veinminer.util.BlockFace.valueOf(targetBlockFace.name());
 
         Set<BlockPosition> blockPositions = pattern.allocateBlocks(blockAccessor, originPosition, vmBlockFace, originVeinMinerBlock, veinMinerConfig, aliasBlockList);
         Set<Block> blocks = new HashSet<>();
@@ -190,7 +198,7 @@ public final class BreakBlockListener implements Listener {
         }
 
         hungryMessage = ChatColor.translateAlternateColorCodes('&', hungryMessage);
-        boolean isHandCategory = category instanceof BukkitVeinMinerToolCategoryHand;
+        boolean isHandCategory = category instanceof VeinMinerToolCategoryHand;
 
         for (Block block : blocks) {
             // Apply hunger
@@ -221,7 +229,7 @@ public final class BreakBlockListener implements Listener {
             // Break the block
             Material currentType = block.getType();
             if (block == origin || player.breakBlock(block)) {
-                StatTracker.accumulateVeinMinedMaterial(currentType);
+                StatTracker.accumulateVeinMinedMaterial(BukkitBlockType.of(currentType));
             }
         }
 

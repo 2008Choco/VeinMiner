@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,10 +23,12 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.ActivationStrategy;
+import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
-import wtf.choco.veinminer.network.VeinMinerPlayer;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
+import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.util.NamespacedKey;
 import wtf.choco.veinminer.util.UpdateChecker;
@@ -66,9 +69,9 @@ public final class CommandVeinMiner implements TabExecutor {
 
             // Update configurations for all players
             this.plugin.getPlayerManager().getAll().forEach(veinMinerPlayer -> {
-                Player player = veinMinerPlayer.getPlayer();
+                Player player = Bukkit.getPlayer(veinMinerPlayer.getPlayerUUID());
                 if (player != null) {
-                    veinMinerPlayer.setClientConfig(VeinMinerPlugin.createClientConfig(player));
+                    veinMinerPlayer.setClientConfig(VeinMinerPlugin.createClientConfig(player)); // TODO This can be improved when migrated to server
                 }
             });
 
@@ -102,7 +105,11 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
+            PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+            VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
+            if (veinMinerPlayer == null) {
+                return true;
+            }
 
             // Toggle a specific tool
             if (args.length >= 2) {
@@ -112,11 +119,11 @@ public final class CommandVeinMiner implements TabExecutor {
                     return true;
                 }
 
-                veinMinerPlayer.setVeinMinerEnabled(!veinMinerPlayer.isVeinMinerEnabled(category), category);
+                veinMinerPlayer.setVeinMinerEnabled(category, !veinMinerPlayer.isVeinMinerEnabled(category));
                 player.sendMessage(ChatColor.GRAY + "Vein miner toggled "
-                    + (veinMinerPlayer.isVeinMinerDisabled(category)
-                            ? ChatColor.RED.toString() + ChatColor.BOLD + "OFF"
-                            : ChatColor.GREEN.toString() + ChatColor.BOLD + "ON"
+                    + (veinMinerPlayer.isVeinMinerEnabled(category)
+                            ? ChatColor.GREEN.toString() + ChatColor.BOLD + "ON"
+                            : ChatColor.RED.toString() + ChatColor.BOLD + "OFF"
                     )
                     + ChatColor.GRAY + " for tool " + ChatColor.YELLOW + category.getId().toLowerCase() + ChatColor.GRAY + ".");
             }
@@ -157,7 +164,11 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             ActivationStrategy strategy = strategyOptional.get();
-            VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
+            PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+            VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
+            if (veinMinerPlayer == null) {
+                return true;
+            }
 
             if (strategy == ActivationStrategy.CLIENT && !veinMinerPlayer.isUsingClientMod()) {
                 player.sendMessage(ChatColor.RED + "You do not have VeinMiner4Bukkit installed on your client!");
@@ -220,7 +231,12 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
+            PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+            VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
+            if (veinMinerPlayer == null) {
+                return true;
+            }
+
             PlayerVeinMiningPatternChangeEvent event = VMEventFactory.callPlayerVeinMiningPatternChangeEvent(player, veinMinerPlayer.getVeinMiningPattern(), pattern, PlayerVeinMiningPatternChangeEvent.Cause.COMMAND);
 
             if (event.isCancelled()) {
@@ -269,7 +285,11 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             else if (args[0].equalsIgnoreCase("mode") && sender instanceof Player player) {
-                VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
+                PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+                VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
+                if (veinMinerPlayer == null) {
+                    return Collections.emptyList();
+                }
 
                 for (ActivationStrategy activationStrategy : ActivationStrategy.values()) {
                     if (activationStrategy == ActivationStrategy.CLIENT && !veinMinerPlayer.getClientConfig().isAllowActivationKeybind()) {

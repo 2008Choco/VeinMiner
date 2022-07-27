@@ -6,8 +6,8 @@ import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.network.VeinMinerPlayer;
 
 /**
  * A means of storing persistent {@link VeinMinerPlayer} data.

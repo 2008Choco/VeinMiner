@@ -2,8 +2,6 @@ package wtf.choco.veinminer.util;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.block.BlockFace;
-
 /**
  * Represents a set of x, y, and z coordinates in a world.
  *

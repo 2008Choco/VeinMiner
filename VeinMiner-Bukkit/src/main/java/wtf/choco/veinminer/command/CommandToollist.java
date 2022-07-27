@@ -17,10 +17,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.platform.BukkitItemType;
-import wtf.choco.veinminer.platform.ItemType;
-import wtf.choco.veinminer.tool.BukkitVeinMinerToolCategoryHand;
+import wtf.choco.veinminer.platform.world.BukkitItemType;
+import wtf.choco.veinminer.platform.world.ItemType;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 import wtf.choco.veinminer.util.ConfigWrapper;
 
 public final class CommandToollist implements TabExecutor {
@@ -55,7 +55,7 @@ public final class CommandToollist implements TabExecutor {
                 return false;
             }
 
-            if (category instanceof BukkitVeinMinerToolCategoryHand) {
+            if (category instanceof VeinMinerToolCategoryHand) {
                 sender.sendMessage(ChatColor.RED + "Cannot add tools to the hand category.");
                 return true;
             }
@@ -93,7 +93,7 @@ public final class CommandToollist implements TabExecutor {
                 return false;
             }
 
-            if (category instanceof BukkitVeinMinerToolCategoryHand) {
+            if (category instanceof VeinMinerToolCategoryHand) {
                 sender.sendMessage(ChatColor.RED + "Cannot remove tools from the hand category.");
                 return true;
             }
@@ -157,7 +157,7 @@ public final class CommandToollist implements TabExecutor {
 
             this.plugin.getToolCategoryRegistry().getAll().forEach(category -> {
                 String categoryId = category.getId().toLowerCase();
-                if (categoryId.startsWith(args[0].toLowerCase()) && !(category instanceof BukkitVeinMinerToolCategoryHand)) {
+                if (categoryId.startsWith(args[0].toLowerCase()) && !(category instanceof VeinMinerToolCategoryHand)) {
                     suggestions.add(categoryId);
                 }
             });
@@ -166,7 +166,7 @@ public final class CommandToollist implements TabExecutor {
         }
 
         VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(args[0]);
-        if (category == null || category instanceof BukkitVeinMinerToolCategoryHand) {
+        if (category == null || category instanceof VeinMinerToolCategoryHand) {
             return Collections.emptyList();
         }
 

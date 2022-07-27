@@ -14,15 +14,12 @@ import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerbound
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
-import wtf.choco.veinminer.pattern.PatternRegistry;
-import wtf.choco.veinminer.platform.PlatformReconstructor;
-import wtf.choco.veinminer.tool.ToolCategoryRegistry;
 import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * A class holding VeinMiner's core common functionality.
  */
-public final class VeinMiner {
+public interface VeinMiner {
 
     /**
      * A pattern to match a Minecraft block state. e.g. {@code minecraft:chest[waterlogged=false]}
@@ -31,10 +28,22 @@ public final class VeinMiner {
      *   <li><strong>Group 2</strong>: The block's states (without the [] brackets)
      * </ul>
      */
-    public static final Pattern PATTERN_BLOCK_STATE = Pattern.compile("([a-z0-9:._-]+)(?:\\[(.+=.+)+\\])*");
+    //                                                                    namespace    :key (optional)   [key=value,state=true]
+    public static final Pattern PATTERN_BLOCK_STATE = Pattern.compile("^([a-z0-9._-]+(?::[a-z0-9/._-]+)*)(?:\\[(.+=.+)*\\])*$");
 
-    private static final NamespacedKey PROTOCOL_CHANNEL = NamespacedKey.veinminer("veinminer");
-    private static final int PROTOCOL_VERSION = 1;
+    /**
+     * The {@link NamespacedKey} of the VeinMiner messaging channel.
+     *
+     * @see PluginMessageProtocol#getChannel() VeinMiner.PROTOCOL.getChannel()
+     */
+    public static final NamespacedKey PROTOCOL_CHANNEL = NamespacedKey.veinminer("veinminer");
+
+    /**
+     * The version of the VeinMiner protocol.
+     *
+     * @see PluginMessageProtocol#getVersion() VeinMiner.PROTOCOL.getVersion()
+     */
+    public static final int PROTOCOL_VERSION = 1;
 
     /**
      * VeinMiner's messaging protocol.
@@ -56,114 +65,32 @@ public final class VeinMiner {
                 .registerMessage(PluginMessageClientboundSetPattern.class, PluginMessageClientboundSetPattern::new)
     );
 
-    private static VeinMiner instance;
-
-    private ActivationStrategy defaultActivationStrategy = ActivationStrategy.SNEAK;
-
-    private ToolCategoryRegistry toolCategoryRegistry;
-    private PatternRegistry patternRegistry = new PatternRegistry();
-
-    private PlatformReconstructor platformReconstructor;
-
-    private VeinMiner() { }
-
     /**
-     * Get the default {@link ActivationStrategy} to use for players that have not explicitly
-     * set one.
+     * Get the version of VeinMiner (not to be confused with the protocol version).
      *
-     * @param activationStrategy the activation strategy to set
-     */
-    public void setDefaultActivationStrategy(@NotNull ActivationStrategy activationStrategy) {
-        this.defaultActivationStrategy = activationStrategy;
-    }
-
-    /**
-     * Get the default {@link ActivationStrategy} to use for players that have not explicitly
-     * set one.
-     *
-     * @return the default activation strategy
+     * @return the version
      */
     @NotNull
-    public ActivationStrategy getDefaultActivationStrategy() {
-        return defaultActivationStrategy;
-    }
+    public String getVersion();
 
     /**
-     * Set the {@link ToolCategoryRegistry}.
+     * Check whether or not VeinMiner is running on the server.
      *
-     * @param toolCategoryRegistry the category registry
+     * @return true if running on the server, false if running on the client
      *
-     * @throws IllegalStateException if the registry has already been set
+     * @see #isClient()
      */
-    public void setToolCategoryRegistry(@NotNull ToolCategoryRegistry toolCategoryRegistry) {
-        if (this.toolCategoryRegistry != null) {
-            throw new IllegalStateException("toolCategoryRegistry has already been set");
-        }
-
-        this.toolCategoryRegistry = toolCategoryRegistry;
-    }
+    public boolean isServer();
 
     /**
-     * Get the {@link ToolCategoryRegistry}.
+     * Check whether or not VeinMiner is running on the client.
      *
-     * @return the tool category registry
+     * @return true if running on the client, false if running on the server
+     *
+     * @see #isServer()
      */
-    @NotNull
-    public ToolCategoryRegistry getToolCategoryRegistry() {
-        if (toolCategoryRegistry == null) {
-            throw new IllegalStateException("toolCategoryRegistry has not been set.");
-        }
-
-        return toolCategoryRegistry;
-    }
-
-    /**
-     * Get the {@link PatternRegistry}.
-     *
-     * @return the pattern registry
-     */
-    @NotNull
-    public PatternRegistry getPatternRegistry() {
-        return patternRegistry;
-    }
-
-    /**
-     * Set the implementation of {@link PlatformReconstructor}.
-     *
-     * @param platformReconstructor the instance to set
-     *
-     * @throws IllegalStateException if the PlatformReconstructor has already been set
-     */
-    public void setPlatformReconstructor(@NotNull PlatformReconstructor platformReconstructor) {
-        if (this.platformReconstructor != null) {
-            throw new IllegalStateException("platformReconstructor has already been set");
-        }
-
-        this.platformReconstructor = platformReconstructor;
-    }
-
-    /**
-     * Get the {@link PlatformReconstructor} instance.
-     *
-     * @return the PlatformReconstructor instance
-     */
-    @NotNull
-    public PlatformReconstructor getPlatformReconstructor() {
-        if (toolCategoryRegistry == null) {
-            throw new IllegalStateException("platformReconstructor has not been set.");
-        }
-
-        return platformReconstructor;
-    }
-
-    /**
-     * Get the {@link VeinMiner} instance.
-     *
-     * @return the vein miner instance
-     */
-    @NotNull
-    public static VeinMiner getInstance() {
-        return (instance != null) ? instance : (instance = new VeinMiner());
+    public default boolean isClient() {
+        return !isServer();
     }
 
 }

@@ -27,14 +27,11 @@
     },
 
     "accessWidener" : "veinminer4bukkit.accesswidener",
-    "mixins": [
-        "veinminer4bukkit.mixins.json"
-    ],
 
     "depends": {
         "fabricloader": ">=0.10",
         "fabric": "*",
-        "minecraft": "1.18.x",
+        "minecraft": "1.19.x",
         "java": ">=17"
     }
 }

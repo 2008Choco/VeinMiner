@@ -1,11 +1,11 @@
 package wtf.choco.veinminer.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,10 +25,10 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
     private float remainingMs = -1L;
 
     @Override
-    public void render(@NotNull MinecraftClient client, @NotNull MatrixStack stack, float tickDelta) {
+    public void render(@NotNull Minecraft client, @NotNull PoseStack stack, float tickDelta) {
         client.getProfiler().push("veinminerPatternWheel");
 
-        stack.push();
+        stack.pushPose();
         stack.translate(4, 0, 0);
 
         RenderSystem.enableBlend();
@@ -43,10 +43,10 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
             alphaProgress = (remainingMs / FADE_MS);
         }
 
-        alphaProgress = MathHelper.clamp(alphaProgress, 0.0F, 1.0F);
+        alphaProgress = Mth.clamp(alphaProgress, 0.0F, 1.0F);
 
         // Final colour with alpha included
-        int alpha = (MathHelper.floor(alphaProgress * 255) << 24) & 0xFF000000;
+        int alpha = (Mth.floor(alphaProgress * 255) << 24) & 0xFF000000;
         int colour = 0xFFFFFF | alpha;
 
         FabricServerState serverState = VeinMinerMod.getServerState();
@@ -54,20 +54,20 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
         String selected = serverState.getSelectedPattern().toString();
         String after = serverState.getNextPattern().toString();
 
-        client.textRenderer.drawWithShadow(stack, Text.of(selected), 0, client.textRenderer.fontHeight, colour);
+        client.font.drawShadow(stack, Component.literal(selected), 0, client.font.lineHeight, colour);
 
-        stack.push();
+        stack.pushPose();
         stack.translate(0, 3, 0);
         stack.scale(0.6F, 0.6F, 0.6F);
-        client.textRenderer.drawWithShadow(stack, Text.of(before), 0, 0, colour);
-        client.textRenderer.drawWithShadow(stack, Text.of(after), 0, client.textRenderer.fontHeight * 3, colour);
-        stack.pop();
+        client.font.drawShadow(stack, Component.literal(before), 0, 0, colour);
+        client.font.drawShadow(stack, Component.literal(after), 0, client.font.lineHeight * 3, colour);
+        stack.popPose();
 
         RenderSystem.disableBlend();
 
-        stack.pop();
+        stack.popPose();
 
-        this.remainingMs -= (client.getLastFrameDuration() * 50);
+        this.remainingMs -= (client.getFrameTime() * 50);
 
         client.getProfiler().pop();
     }
