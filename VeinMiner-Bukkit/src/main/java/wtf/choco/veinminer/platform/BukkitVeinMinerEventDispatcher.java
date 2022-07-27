@@ -3,7 +3,6 @@ package wtf.choco.veinminer.platform;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.api.event.player.PatternChangeEvent;
 import wtf.choco.veinminer.api.event.player.PatternChangeEvent.Cause;
 import wtf.choco.veinminer.api.event.player.PlayerClientActivateVeinMinerEvent;
@@ -15,16 +14,16 @@ public final class BukkitVeinMinerEventDispatcher implements VeinMinerEventDispa
     BukkitVeinMinerEventDispatcher() { }
 
     @Override
-    public PatternChangeEvent callPatternChangeEvent(VeinMinerPlayer player, VeinMiningPattern pattern, VeinMiningPattern newPattern, Cause cause) {
-        Player bukkitPlayer = ((BukkitPlatformPlayer) player.getPlayer()).getPlayerOrThrow();
+    public PatternChangeEvent callPatternChangeEvent(PlatformPlayer player, VeinMiningPattern pattern, VeinMiningPattern newPattern, Cause cause) {
+        Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayerOrThrow();
         PlayerVeinMiningPatternChangeEvent event = new PlayerVeinMiningPatternChangeEvent(bukkitPlayer, pattern, newPattern, cause);
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }
 
     @Override
-    public boolean handleClientActivateVeinMinerEvent(VeinMinerPlayer player, boolean activated) {
-        Player bukkitPlayer = ((BukkitPlatformPlayer) player.getPlayer()).getPlayerOrThrow();
+    public boolean handleClientActivateVeinMinerEvent(PlatformPlayer player, boolean activated) {
+        Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayerOrThrow();
         PlayerClientActivateVeinMinerEvent event = new PlayerClientActivateVeinMinerEvent(bukkitPlayer, activated);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled();

@@ -487,7 +487,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         }
 
         VeinMinerEventDispatcher dispatcher = VeinMinerServer.getInstance().getPlatform().getEventDispatcher();
-        if (!dispatcher.handleClientActivateVeinMinerEvent(this, message.isActivated())) {
+        if (!dispatcher.handleClientActivateVeinMinerEvent(player, message.isActivated())) {
             return;
         }
 
@@ -560,7 +560,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         }
 
         VeinMinerEventDispatcher dispatcher = VeinMinerServer.getInstance().getPlatform().getEventDispatcher();
-        PatternChangeEvent event = dispatcher.callPatternChangeEvent(this, getVeinMiningPattern(), pattern, PatternChangeEvent.Cause.CLIENT);
+        PatternChangeEvent event = dispatcher.callPatternChangeEvent(player, getVeinMiningPattern(), pattern, PatternChangeEvent.Cause.CLIENT);
         if (event.isCancelled()) {
             return;
         }

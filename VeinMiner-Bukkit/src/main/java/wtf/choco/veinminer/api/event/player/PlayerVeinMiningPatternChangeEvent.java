@@ -57,22 +57,12 @@ public final class PlayerVeinMiningPatternChangeEvent extends PlayerEvent implem
         this.newPattern = newPattern;
     }
 
-    /**
-     * Get the {@link VeinMiningPattern} to change to.
-     *
-     * @return the new pattern
-     */
     @Override
     @NotNull
     public VeinMiningPattern getNewPattern() {
         return newPattern;
     }
 
-    /**
-     * Get the {@link PatternChangeEvent.Cause Cause} of this event.
-     *
-     * @return the cause
-     */
     @Override
     @NotNull
     public Cause getCause() {

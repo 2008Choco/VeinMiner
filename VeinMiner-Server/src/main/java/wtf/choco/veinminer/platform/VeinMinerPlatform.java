@@ -93,6 +93,12 @@ public interface VeinMinerPlatform {
     @NotNull
     public VeinMinerEventDispatcher getEventDispatcher();
 
+    /**
+     * Run the given {@link Runnable} task the given amount of ticks later.
+     *
+     * @param runnable the task to run
+     * @param ticks the amount of time (in ticks) after which to run the task
+     */
     public void runTaskLater(@NotNull Runnable runnable, int ticks);
 
 }
