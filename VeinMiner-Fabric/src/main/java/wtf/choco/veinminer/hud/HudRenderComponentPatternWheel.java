@@ -67,7 +67,7 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
 
         stack.popPose();
 
-        this.remainingMs -= (client.getFrameTime() * 50);
+        this.remainingMs -= (client.getDeltaFrameTime() * 50);
 
         client.getProfiler().pop();
     }
