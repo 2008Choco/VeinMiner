@@ -72,11 +72,6 @@ public final class BukkitServerPlatform implements ServerPlatform {
         return platformPlayers.computeIfAbsent(playerUUID, BukkitPlatformPlayer::new);
     }
 
-    @Nullable
-    public PlatformPlayer deletePlatformPlayer(@NotNull UUID playerUUID) {
-        return platformPlayers.remove(playerUUID);
-    }
-
     @NotNull
     @Override
     public ServerEventDispatcher getEventDispatcher() {

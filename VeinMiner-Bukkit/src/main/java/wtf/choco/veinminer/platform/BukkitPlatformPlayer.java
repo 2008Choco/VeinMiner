@@ -39,7 +39,8 @@ public final class BukkitPlatformPlayer implements PlatformPlayer {
 
     @Override
     public boolean isOnline() {
-        return getPlayer() != null;
+        Player player = getPlayer();
+        return player != null && player.isOnline();
     }
 
     @NotNull
@@ -151,11 +152,12 @@ public final class BukkitPlatformPlayer implements PlatformPlayer {
 
     @Nullable
     public Player getPlayer() {
-        if (player.get() == null) {
+        Player player = this.player.get();
+        if (player == null || !player.isValid()) {
             this.player = new WeakReference<>(Bukkit.getPlayer(playerUUID));
         }
 
-        return player.get();
+        return this.player.get();
     }
 
     @NotNull

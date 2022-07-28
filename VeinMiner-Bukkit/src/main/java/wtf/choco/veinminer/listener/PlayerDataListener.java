@@ -41,11 +41,7 @@ public final class PlayerDataListener implements Listener {
 
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
-        PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().deletePlatformPlayer(event.getPlayer().getUniqueId());
-        if (platformPlayer == null) {
-            return;
-        }
-
+        PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(event.getPlayer().getUniqueId());
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(platformPlayer);
         if (veinMinerPlayer == null || !veinMinerPlayer.isDirty()) {
             return;
