@@ -1,9 +1,5 @@
 package wtf.choco.veinminer.data;
 
-import com.google.common.base.Enums;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,18 +7,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlayer;
-import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+import wtf.choco.veinminer.util.EnumUtil;
 
 /**
  * A general abstract implementation of SQL-based {@link PersistentDataStorage}.
@@ -52,7 +48,7 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
 
     @NotNull
     @Override
-    public final CompletableFuture<VeinMinerPlayer> save(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
+    public final CompletableFuture<VeinMinerPlayer> save(@NotNull VeinMinerPlayer player) {
         if (!player.isDirty()) {
             return CompletableFuture.completedFuture(player);
         }
@@ -72,8 +68,8 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
 
     @NotNull
     @Override
-    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
-        if (players.isEmpty() || players.stream().allMatch(Predicates.not(VeinMinerPlayer::isDirty))) {
+    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull Collection<? extends VeinMinerPlayer> players) {
+        if (players.isEmpty() || players.stream().allMatch(player -> !player.isDirty())) {
             return CompletableFuture.completedFuture(new ArrayList<>(players));
         }
 
@@ -110,7 +106,7 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
 
     @NotNull
     @Override
-    public final CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
+    public final CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlayer player) {
         return CompletableFuture.supplyAsync(() -> {
             try (Connection connection = openConnection()) {
                 PreparedStatement statement = connection.prepareStatement(getSelectAllPlayerDataQuery());
@@ -118,7 +114,7 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
 
                 ResultSet result = statement.executeQuery();
                 if (result.next()) {
-                    this.handleResultSet(plugin, player, result);
+                    this.handleResultSet(player, result);
                 }
 
                 return player;
@@ -130,7 +126,7 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
 
     @NotNull
     @Override
-    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
+    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull Collection<? extends VeinMinerPlayer> players) {
         if (players.isEmpty()) {
             return CompletableFuture.completedFuture(new ArrayList<>());
         }
@@ -152,7 +148,7 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
                 index = 0;
                 while (resultSet.next()) {
                     VeinMinerPlayer player = result.get(index++);
-                    this.handleResultSet(plugin, player, resultSet);
+                    this.handleResultSet(player, resultSet);
                 }
             } catch (SQLException e) {
                 throw new CompletionException(e);
@@ -182,25 +178,27 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
     private void writeToSaveStatement(PreparedStatement statement, VeinMinerPlayer player) throws SQLException {
         statement.setString(1, player.getPlayerUUID().toString());
         statement.setString(2, player.getActivationStrategy().name());
-        Set<VeinMinerToolCategory> disabledCategories = player.getDisabledCategories();
-        statement.setString(3, disabledCategories.isEmpty() ? null : String.join(",", Collections2.transform(disabledCategories, VeinMinerToolCategory::getId)));
+
+        String disabledCategories = player.getDisabledCategories().stream().map(VeinMinerToolCategory::getId).collect(Collectors.joining(","));
+        statement.setString(3, disabledCategories.isEmpty() ? null : disabledCategories);
+
         statement.setString(4, player.getVeinMiningPattern().getKey().toString());
     }
 
-    private VeinMinerPlayer handleResultSet(VeinMinerPlugin plugin, VeinMinerPlayer player, ResultSet result) throws SQLException {
+    private VeinMinerPlayer handleResultSet(VeinMinerPlayer player, ResultSet result) throws SQLException {
         String activationStrategyId = result.getString("activation_strategy_id");
         String disabledCategories = result.getString("disabled_categories");
         String veinMiningPatternId = result.getString("vein_mining_pattern_id");
 
         if (activationStrategyId != null) {
-            player.setActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, activationStrategyId.toUpperCase()).or(VeinMinerServer.getInstance().getDefaultActivationStrategy()));
+            player.setActivationStrategy(EnumUtil.get(ActivationStrategy.class, activationStrategyId.toUpperCase()).orElse(VeinMinerServer.getInstance().getDefaultActivationStrategy()));
         }
 
         if (disabledCategories != null) {
             player.setVeinMinerEnabled(true); // Ensure that all categories are loaded again
 
             for (String categoryId : disabledCategories.split(",")) {
-                VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(categoryId.toUpperCase());
+                VeinMinerToolCategory category = VeinMinerServer.getInstance().getToolCategoryRegistry().get(categoryId.toUpperCase());
 
                 if (category == null) {
                     continue;
@@ -211,8 +209,9 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
         }
 
         if (veinMiningPatternId != null) {
-            VeinMiningPattern pattern = plugin.getPatternRegistry().get(veinMiningPatternId);
-            player.setVeinMiningPattern(pattern != null ? pattern : plugin.getDefaultVeinMiningPattern(), false);
+            VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+            VeinMiningPattern pattern = veinMiner.getPatternRegistry().get(veinMiningPatternId);
+            player.setVeinMiningPattern(pattern != null ? pattern : veinMiner.getDefaultVeinMiningPattern(), false);
         }
 
         player.setDirty(false); // They are no longer dirty. We just loaded them

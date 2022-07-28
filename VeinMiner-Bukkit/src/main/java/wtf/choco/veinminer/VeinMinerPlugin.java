@@ -211,7 +211,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.reloadToolCategoryRegistryConfig();
 
         // Special case for reloads
-        this.persistentDataStorage.load(this, Collections2.transform(Bukkit.getOnlinePlayers(), player -> getPlayerManager().get(BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId()))));
+        this.persistentDataStorage.load(Collections2.transform(Bukkit.getOnlinePlayers(), player -> getPlayerManager().get(BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId()))));
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
@@ -244,7 +244,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.getPatternRegistry().unregisterAll();
         this.getToolCategoryRegistry().unregisterAll();
 
-        this.persistentDataStorage.save(this, playerManager.getAll());
+        this.persistentDataStorage.save(playerManager.getAll());
     }
 
     /**
@@ -588,7 +588,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
                     File jsonDirectory = new File(".", jsonDirectoryName.replace("%plugin%", "plugins/" + getDataFolder().getName()));
                     yield new PersistentDataStorageJSON(jsonDirectory);
                 }
-                case SQLITE -> new PersistentDataStorageSQLite(this, "veinminer.db");
+                case SQLITE -> new PersistentDataStorageSQLite(getDataFolder().toPath(), "veinminer.db");
                 case MYSQL -> {
                     String host = getConfig().getString(VMConstants.CONFIG_STORAGE_MYSQL_HOST);
                     int port = getConfig().getInt(VMConstants.CONFIG_STORAGE_MYSQL_PORT);

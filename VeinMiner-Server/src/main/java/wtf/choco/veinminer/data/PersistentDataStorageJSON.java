@@ -1,9 +1,5 @@
 package wtf.choco.veinminer.data;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Enums;
-import com.google.common.base.Predicates;
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -12,6 +8,8 @@ import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlayer;
-import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+import wtf.choco.veinminer.util.EnumUtil;
 
 /**
  * An implementation of {@link PersistentDataStorage} for JSON files in a directory.
@@ -59,14 +57,14 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
 
     @NotNull
     @Override
-    public CompletableFuture<VeinMinerPlayer> save(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
+    public CompletableFuture<VeinMinerPlayer> save(@NotNull VeinMinerPlayer player) {
         return CompletableFuture.supplyAsync(() -> savePlayer(player));
     }
 
     @NotNull
     @Override
-    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
-        if (players.isEmpty() || players.stream().allMatch(Predicates.not(VeinMinerPlayer::isDirty))) {
+    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull Collection<? extends VeinMinerPlayer> players) {
+        if (players.isEmpty() || players.stream().allMatch(player -> !player.isDirty())) {
             return CompletableFuture.completedFuture(new ArrayList<>(players));
         }
 
@@ -79,20 +77,20 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
 
     @NotNull
     @Override
-    public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
-        return CompletableFuture.supplyAsync(() -> loadPlayer(plugin, player));
+    public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlayer player) {
+        return CompletableFuture.supplyAsync(() -> loadPlayer(player));
     }
 
     @NotNull
     @Override
-    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
+    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull Collection<? extends VeinMinerPlayer> players) {
         if (players.isEmpty()) {
             return CompletableFuture.completedFuture(new ArrayList<>());
         }
 
         return CompletableFuture.supplyAsync(() -> {
             List<VeinMinerPlayer> result = new ArrayList<>(players.size());
-            players.forEach(player -> result.add(loadPlayer(plugin, player)));
+            players.forEach(player -> result.add(loadPlayer(player)));
             return result;
         });
     }
@@ -110,7 +108,7 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
             player.getDisabledCategories().forEach(category -> disabledCategoriesArray.add(category.getId()));
             root.add("disabled_categories", disabledCategoriesArray);
 
-            Files.write(gson.toJson(root).getBytes(Charsets.UTF_8), playerFile);
+            Files.write(playerFile.toPath(), gson.toJson(root).getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new CompletionException(e);
         }
@@ -118,18 +116,18 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
         return player;
     }
 
-    private VeinMinerPlayer loadPlayer(VeinMinerPlugin plugin, VeinMinerPlayer player) {
+    private VeinMinerPlayer loadPlayer(VeinMinerPlayer player) {
         File playerFile = new File(directory, player.getPlayerUUID().toString() + ".json");
 
         if (!playerFile.exists()) {
             return player;
         }
 
-        try (BufferedReader reader = Files.newReader(playerFile, Charsets.UTF_8)) {
+        try (BufferedReader reader = Files.newBufferedReader(playerFile.toPath(), StandardCharsets.UTF_8)) {
             JsonObject root = gson.fromJson(reader, JsonObject.class);
 
             if (root.has("activation_strategy_id")) {
-                player.setActivationStrategy(Enums.getIfPresent(ActivationStrategy.class, root.get("activation_strategy_id").getAsString().toUpperCase()).or(VeinMinerServer.getInstance().getDefaultActivationStrategy()));
+                player.setActivationStrategy(EnumUtil.get(ActivationStrategy.class, root.get("activation_strategy_id").getAsString().toUpperCase()).orElse(VeinMinerServer.getInstance().getDefaultActivationStrategy()));
             }
 
             if (root.has("disabled_categories")) {
@@ -140,7 +138,7 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
                         return;
                     }
 
-                    VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(element.getAsString().toUpperCase());
+                    VeinMinerToolCategory category = VeinMinerServer.getInstance().getToolCategoryRegistry().get(element.getAsString().toUpperCase());
                     if (category == null) {
                         return;
                     }
@@ -150,7 +148,8 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
             }
 
             if (root.has("vein_mining_pattern_id")) {
-                player.setVeinMiningPattern(plugin.getPatternRegistry().getOrDefault(root.get("vein_mining_pattern_id").getAsString(), plugin.getDefaultVeinMiningPattern()), false);
+                VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+                player.setVeinMiningPattern(veinMiner.getPatternRegistry().getOrDefault(root.get("vein_mining_pattern_id").getAsString(), veinMiner.getDefaultVeinMiningPattern()), false);
             }
         } catch (IOException | JsonSyntaxException e) {
             throw new CompletionException(e);

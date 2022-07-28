@@ -11,8 +11,6 @@ import java.util.function.IntFunction;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMinerPlugin;
-
 /**
  * An implementation of {@link PersistentDataStorage} for SQLite databases.
  */
@@ -50,14 +48,14 @@ public final class PersistentDataStorageSQLite extends PersistentDataStorageSQL 
     /**
      * Construct a new {@link PersistentDataStorageSQLite}.
      *
-     * @param plugin the plugin instance
+     * @param directoryPath the path to the directory in which the database is located
      * @param fileName the name of the file at which the database is located
      *
      * @throws IOException if an exception occurs while creating the database file (if it was
      * not already created)
      */
-    public PersistentDataStorageSQLite(@NotNull VeinMinerPlugin plugin, @NotNull String fileName) throws IOException {
-        Path databaseFilePath = plugin.getDataFolder().toPath().resolve(fileName);
+    public PersistentDataStorageSQLite(@NotNull Path directoryPath, @NotNull String fileName) throws IOException {
+        Path databaseFilePath = directoryPath.resolve(fileName);
         if (Files.notExists(databaseFilePath)) {
             try {
                 Files.createFile(databaseFilePath);
@@ -66,7 +64,7 @@ public final class PersistentDataStorageSQLite extends PersistentDataStorageSQL 
             }
         }
 
-        this.connectionURL = "jdbc:sqlite:plugins/" + plugin.getDataFolder().getName() + "/" + fileName;
+        this.connectionURL = "jdbc:sqlite:" + databaseFilePath.toAbsolutePath();
     }
 
     @NotNull

@@ -8,7 +8,6 @@ import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlayer;
-import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
  * An implementation of {@link PersistentDataStorage} that performs no save or load
@@ -37,25 +36,25 @@ public final class PersistentDataStorageNoOp implements PersistentDataStorage {
 
     @NotNull
     @Override
-    public CompletableFuture<VeinMinerPlayer> save(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
+    public CompletableFuture<VeinMinerPlayer> save(@NotNull VeinMinerPlayer player) {
         return CompletableFuture.completedFuture(player);
     }
 
     @NotNull
     @Override
-    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
+    public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull Collection<? extends VeinMinerPlayer> players) {
         return CompletableFuture.completedFuture(new ArrayList<>(players));
     }
 
     @NotNull
     @Override
-    public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlugin plugin, @NotNull VeinMinerPlayer player) {
+    public CompletableFuture<VeinMinerPlayer> load(@NotNull VeinMinerPlayer player) {
         return CompletableFuture.completedFuture(player);
     }
 
     @NotNull
     @Override
-    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull VeinMinerPlugin plugin, @NotNull Collection<? extends VeinMinerPlayer> players) {
+    public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull Collection<? extends VeinMinerPlayer> players) {
         return CompletableFuture.completedFuture(new ArrayList<>(players));
     }
 

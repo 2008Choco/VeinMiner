@@ -11,6 +11,8 @@ test {
 dependencies {
     implementation project(':VeinMiner-Common')
 
+    compileOnly 'com.google.code.gson:gson:2.8.8'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + project.property('junit.version')
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + project.property('junit.version')
 }

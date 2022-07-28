@@ -28,7 +28,7 @@ public final class PlayerDataListener implements Listener {
         PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(bukkitPlayer.getUniqueId());
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().getOrRegister(platformPlayer, () -> VeinMinerPlugin.createClientConfig(bukkitPlayer));
 
-        this.plugin.getPersistentDataStorage().load(plugin, veinMinerPlayer).whenComplete((player, e) -> {
+        this.plugin.getPersistentDataStorage().load(veinMinerPlayer).whenComplete((player, e) -> {
             if (e != null) {
                 e.printStackTrace();
                 return;
@@ -47,7 +47,7 @@ public final class PlayerDataListener implements Listener {
             return;
         }
 
-        this.plugin.getPersistentDataStorage().save(plugin, veinMinerPlayer).exceptionally(e -> {
+        this.plugin.getPersistentDataStorage().save(veinMinerPlayer).exceptionally(e -> {
             e.printStackTrace();
             return null;
         });
