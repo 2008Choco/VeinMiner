@@ -54,9 +54,7 @@ import wtf.choco.veinminer.data.PersistentDataStorageJSON;
 import wtf.choco.veinminer.data.PersistentDataStorageMySQL;
 import wtf.choco.veinminer.data.PersistentDataStorageNoOp;
 import wtf.choco.veinminer.data.PersistentDataStorageSQLite;
-import wtf.choco.veinminer.economy.EconomyModifier;
-import wtf.choco.veinminer.economy.EmptyEconomyModifier;
-import wtf.choco.veinminer.economy.VaultBasedEconomyModifier;
+import wtf.choco.veinminer.economy.SimpleVaultEconomy;
 import wtf.choco.veinminer.integration.PlaceholderExpansionVeinMiner;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.listener.BreakBlockListener;
@@ -93,13 +91,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
     private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
 
-    private final BukkitChannelHandler channelHandler = new BukkitChannelHandler(this);
-    private final VeinMinerPlayerManager playerManager = new VeinMinerPlayerManager();
-
-    private EconomyModifier economyModifier;
-
-    private PersistentDataStorage persistentDataStorage;
-
     private ConfigWrapper categoriesConfig;
 
     @Override
@@ -115,7 +106,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         patternRegistry.register(new VeinMiningPatternStaircase(Direction.UP));
         patternRegistry.register(new VeinMiningPatternStaircase(Direction.DOWN));
 
-        VeinMiner.PROTOCOL.registerChannels(channelHandler);
+        VeinMiner.PROTOCOL.registerChannels(new BukkitChannelHandler(this));
 
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
             this.getLogger().info("Found WorldGuard. Registering custom region flag.");
@@ -175,6 +166,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
             new PlaceholderExpansionVeinMiner(this).register();
         }
 
+        VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+
         // Register commands
         this.getLogger().info("Registering commands");
 
@@ -184,13 +177,13 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.getLogger().info("Vault found. Attempting to enable economy support...");
-            this.economyModifier = new VaultBasedEconomyModifier();
-            this.getLogger().info(((VaultBasedEconomyModifier) economyModifier).hasEconomyPlugin()
-                    ? "Economy found! Hooked successfully."
-                    : "Cancelled. No economy plugin found.");
+
+            SimpleVaultEconomy economy = new SimpleVaultEconomy();
+            veinMiner.setEconomy(economy);
+
+            this.getLogger().info(economy.hasEconomyPlugin() ? "Economy found! Hooked successfully." : "Cancelled. No economy plugin found.");
         } else {
             this.getLogger().info("Vault not found. Economy support suspended");
-            this.economyModifier = EmptyEconomyModifier.get();
         }
 
         // Metrics
@@ -199,7 +192,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
             Metrics metrics = new Metrics(this, 1938); // https://bstats.org/what-is-my-plugin-id
             metrics.addCustomChart(new AdvancedPie("blocks_veinmined", StatTracker::getVeinMinedCountAsData));
-            metrics.addCustomChart(new SingleLineChart("using_client_mod", playerManager::getPlayerCountUsingClientMod));
+            metrics.addCustomChart(new SingleLineChart("using_client_mod", veinMiner.getPlayerManager()::getPlayerCountUsingClientMod));
             metrics.addCustomChart(new DrilldownPie("installed_anticheats", StatTracker::getInstalledAntiCheatsAsData));
 
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
@@ -211,7 +204,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.reloadToolCategoryRegistryConfig();
 
         // Special case for reloads
-        this.persistentDataStorage.load(Collections2.transform(Bukkit.getOnlinePlayers(), player -> getPlayerManager().get(BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId()))));
+        veinMiner.getPersistentDataStorage().load(Collections2.transform(Bukkit.getOnlinePlayers(), player -> getPlayerManager().get(BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId()))));
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
@@ -244,7 +237,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.getPatternRegistry().unregisterAll();
         this.getToolCategoryRegistry().unregisterAll();
 
-        this.persistentDataStorage.save(playerManager.getAll());
+        VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+        veinMiner.getPersistentDataStorage().save(veinMiner.getPlayerManager().getAll());
     }
 
     /**
@@ -294,7 +288,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
      */
     @NotNull
     public VeinMinerPlayerManager getPlayerManager() {
-        return playerManager;
+        return VeinMinerServer.getInstance().getPlayerManager();
     }
 
     /**
@@ -317,16 +311,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get the {@link PersistentDataStorage} instance used to store player data.
-     *
-     * @return the persistent data storage
-     */
-    @NotNull
-    public PersistentDataStorage getPersistentDataStorage() {
-        return persistentDataStorage;
-    }
-
-    /**
      * Get an instance of the categories configuration file.
      *
      * @return the categories config
@@ -334,16 +318,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @NotNull
     public ConfigWrapper getCategoriesConfig() {
         return categoriesConfig;
-    }
-
-    /**
-     * Get the economy abstraction layer for a Vault economy.
-     *
-     * @return economy abstraction
-     */
-    @NotNull
-    public EconomyModifier getEconomyModifier() {
-        return economyModifier;
     }
 
     /**
@@ -576,7 +550,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         PersistentDataStorage.Type storageType = Enums.getIfPresent(PersistentDataStorage.Type.class, storageTypeId.toUpperCase()).or(PersistentDataStorage.Type.SQLITE);
 
         try {
-            this.persistentDataStorage = switch (storageType) {
+            PersistentDataStorage persistentDataStorage = switch (storageType) {
                 case JSON -> {
                     String jsonDirectoryName = getConfig().getString(VMConstants.CONFIG_STORAGE_JSON_DIRECTORY);
 
@@ -610,7 +584,9 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 }
             };
 
-            this.persistentDataStorage.init().whenComplete((result, e) -> {
+            VeinMinerServer.getInstance().setPersistentDataStorage(persistentDataStorage);
+
+            persistentDataStorage.init().whenComplete((result, e) -> {
                 if (e != null) {
                     e.printStackTrace();
                     return;

@@ -2,7 +2,12 @@ package wtf.choco.veinminer;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.data.PersistentDataStorage;
+import wtf.choco.veinminer.data.PersistentDataStorageNoOp;
+import wtf.choco.veinminer.economy.EmptyEconomy;
+import wtf.choco.veinminer.economy.SimpleEconomy;
 import wtf.choco.veinminer.manager.VeinMinerManager;
+import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
@@ -20,8 +25,13 @@ public final class VeinMinerServer implements VeinMiner {
     private VeinMiningPattern defaultVeinMiningPattern = VeinMiningPatternDefault.getInstance();
 
     private VeinMinerManager veinMinerManager = new VeinMinerManager();
+    private VeinMinerPlayerManager playerManager = new VeinMinerPlayerManager();
     private ToolCategoryRegistry toolCategoryRegistry = new ToolCategoryRegistry();
     private PatternRegistry patternRegistry = new PatternRegistry();
+
+    private PersistentDataStorage persistentDataStorage = PersistentDataStorageNoOp.INSTANCE;
+
+    private SimpleEconomy economy = EmptyEconomy.INSTANCE;
 
     private ServerPlatform platform;
 
@@ -81,6 +91,16 @@ public final class VeinMinerServer implements VeinMiner {
     }
 
     /**
+     * Get the {@link VeinMinerPlayerManager}.
+     *
+     * @return the player manager
+     */
+    @NotNull
+    public VeinMinerPlayerManager getPlayerManager() {
+        return playerManager;
+    }
+
+    /**
      * Get the {@link ToolCategoryRegistry}.
      *
      * @return the tool category registry
@@ -102,6 +122,44 @@ public final class VeinMinerServer implements VeinMiner {
     @NotNull
     public PatternRegistry getPatternRegistry() {
         return patternRegistry;
+    }
+
+    /**
+     * Set the {@link PersistentDataStorage} for the server.
+     *
+     * @param persistentDataStorage the persistent data storage to set
+     */
+    public void setPersistentDataStorage(@NotNull PersistentDataStorage persistentDataStorage) {
+        this.persistentDataStorage = persistentDataStorage;
+    }
+
+    /**
+     * Get the {@link PersistentDataStorage} for the server.
+     *
+     * @return the persistent data storage
+     */
+    @NotNull
+    public PersistentDataStorage getPersistentDataStorage() {
+        return persistentDataStorage;
+    }
+
+    /**
+     * Set the {@link SimpleEconomy} implementation.
+     *
+     * @param economy the economy
+     */
+    public void setEconomy(@NotNull SimpleEconomy economy) {
+        this.economy = economy;
+    }
+
+    /**
+     * Get the {@link SimpleEconomy}.
+     *
+     * @return the economy
+     */
+    @NotNull
+    public SimpleEconomy getEconomy() {
+        return economy;
     }
 
     /**
