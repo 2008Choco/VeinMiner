@@ -35,7 +35,7 @@ import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerbound
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.platform.PlatformPlayer;
-import wtf.choco.veinminer.platform.VeinMinerEventDispatcher;
+import wtf.choco.veinminer.platform.ServerEventDispatcher;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.platform.world.ItemStack;
@@ -368,13 +368,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
      * @return true if active, false otherwise
      */
     public boolean isVeinMinerActive() {
-        return switch (activationStrategy) {
-            case ALWAYS -> true;
-            case CLIENT -> clientKeyPressed;
-            case SNEAK -> player.isSneaking();
-            case STAND -> !player.isSneaking();
-            default -> false;
-        };
+        return activationStrategy.test(this);
     }
 
     /**
@@ -486,7 +480,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             return;
         }
 
-        VeinMinerEventDispatcher dispatcher = VeinMinerServer.getInstance().getPlatform().getEventDispatcher();
+        ServerEventDispatcher dispatcher = VeinMinerServer.getInstance().getPlatform().getEventDispatcher();
         if (!dispatcher.handleClientActivateVeinMinerEvent(player, message.isActivated())) {
             return;
         }
@@ -559,7 +553,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             return;
         }
 
-        VeinMinerEventDispatcher dispatcher = VeinMinerServer.getInstance().getPlatform().getEventDispatcher();
+        ServerEventDispatcher dispatcher = VeinMinerServer.getInstance().getPlatform().getEventDispatcher();
         PatternChangeEvent event = dispatcher.callPatternChangeEvent(player, getVeinMiningPattern(), pattern, PatternChangeEvent.Cause.CLIENT);
         if (event.isCancelled()) {
             return;

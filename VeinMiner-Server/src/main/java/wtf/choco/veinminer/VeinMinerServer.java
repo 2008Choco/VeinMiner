@@ -6,7 +6,7 @@ import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
-import wtf.choco.veinminer.platform.VeinMinerPlatform;
+import wtf.choco.veinminer.platform.ServerPlatform;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
 
 /**
@@ -23,7 +23,7 @@ public final class VeinMinerServer implements VeinMiner {
     private ToolCategoryRegistry toolCategoryRegistry = new ToolCategoryRegistry();
     private PatternRegistry patternRegistry = new PatternRegistry();
 
-    private VeinMinerPlatform platform;
+    private ServerPlatform platform;
 
     private VeinMinerServer() { }
 
@@ -105,13 +105,13 @@ public final class VeinMinerServer implements VeinMiner {
     }
 
     /**
-     * Set the implementation of {@link VeinMinerPlatform}.
+     * Set the implementation of {@link ServerPlatform}.
      *
      * @param platform the instance to set
      *
      * @throws IllegalStateException if the platform has already been set
      */
-    public void setPlatform(@NotNull VeinMinerPlatform platform) {
+    public void setPlatform(@NotNull ServerPlatform platform) {
         if (this.platform != null) {
             throw new IllegalStateException("platform has already been set");
         }
@@ -120,12 +120,12 @@ public final class VeinMinerServer implements VeinMiner {
     }
 
     /**
-     * Get the {@link VeinMinerPlatform} instance.
+     * Get the {@link ServerPlatform} instance.
      *
      * @return the platform instance
      */
     @NotNull
-    public VeinMinerPlatform getPlatform() {
+    public ServerPlatform getPlatform() {
         if (toolCategoryRegistry == null) {
             throw new IllegalStateException("platform has not been set.");
         }
@@ -136,7 +136,7 @@ public final class VeinMinerServer implements VeinMiner {
     @NotNull
     @Override
     public String getVersion() {
-        return getPlatform().getVersion();
+        return getPlatform().getVeinMinerVersion();
     }
 
     @Override

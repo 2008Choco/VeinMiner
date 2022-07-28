@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
+import wtf.choco.veinminer.platform.BukkitServerPlatform;
 import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
@@ -74,7 +74,7 @@ public final class PlaceholderExpansionVeinMiner extends PlaceholderExpansion {
             return "";
         }
 
-        PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+        PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
         if (veinMinerPlayer == null) {
             return "";

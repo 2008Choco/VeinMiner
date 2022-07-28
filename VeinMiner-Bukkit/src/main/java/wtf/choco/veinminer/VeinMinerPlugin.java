@@ -74,7 +74,7 @@ import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
 import wtf.choco.veinminer.pattern.VeinMiningPatternStaircase;
 import wtf.choco.veinminer.pattern.VeinMiningPatternStaircase.Direction;
 import wtf.choco.veinminer.pattern.VeinMiningPatternTunnel;
-import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
+import wtf.choco.veinminer.platform.BukkitServerPlatform;
 import wtf.choco.veinminer.platform.GameMode;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
@@ -107,7 +107,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         VeinMinerPlugin.instance = this;
 
         VeinMinerServer veinMiner = VeinMinerServer.getInstance();
-        veinMiner.setPlatform(BukkitVeinMinerPlatform.getInstance());
+        veinMiner.setPlatform(BukkitServerPlatform.getInstance());
 
         PatternRegistry patternRegistry = veinMiner.getPatternRegistry();
         patternRegistry.register(VeinMiningPatternDefault.getInstance());
@@ -211,7 +211,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.reloadToolCategoryRegistryConfig();
 
         // Special case for reloads
-        this.persistentDataStorage.load(this, Collections2.transform(Bukkit.getOnlinePlayers(), player -> getPlayerManager().get(BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId()))));
+        this.persistentDataStorage.load(this, Collections2.transform(Bukkit.getOnlinePlayers(), player -> getPlayerManager().get(BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId()))));
 
         // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
         UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
@@ -509,7 +509,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
             int priority = categoryRoot.getInt(VMConstants.CONFIG_PRIORITY, 0);
             String nbtValue = categoryRoot.getString(VMConstants.CONFIG_NBT); // Should be allowed to be null
 
-            getToolCategoryRegistry().register(new VeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, veinMinerConfig, BukkitVeinMinerPlatform.toItemType(items, HashSet::new)));
+            getToolCategoryRegistry().register(new VeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, veinMinerConfig, BukkitServerPlatform.toItemType(items, HashSet::new)));
             this.getLogger().info(String.format("Registered category with id \"%s\" holding %d unique items and %d unique blocks.", categoryId, items.size(), blocklist.size()));
         }
 

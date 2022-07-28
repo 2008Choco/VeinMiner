@@ -20,25 +20,25 @@ import wtf.choco.veinminer.platform.world.BukkitItemType;
 import wtf.choco.veinminer.platform.world.ItemType;
 
 /**
- * A Bukkit implementation of {@link VeinMinerPlatform}.
+ * A Bukkit implementation of {@link ServerPlatform}.
  */
-public final class BukkitVeinMinerPlatform implements VeinMinerPlatform {
+public final class BukkitServerPlatform implements ServerPlatform {
 
-    private static VeinMinerPlatform instance;
+    private static BukkitServerPlatform instance;
 
     private final Map<UUID, PlatformPlayer> platformPlayers = new HashMap<>();
 
     private final VeinMinerPlugin plugin;
-    private final VeinMinerEventDispatcher eventDispatcher;
+    private final ServerEventDispatcher eventDispatcher;
 
-    private BukkitVeinMinerPlatform(VeinMinerPlugin plugin) {
+    private BukkitServerPlatform(VeinMinerPlugin plugin) {
         this.plugin = plugin;
-        this.eventDispatcher = new BukkitVeinMinerEventDispatcher();
+        this.eventDispatcher = new BukkitServerEventDispatcher();
     }
 
     @NotNull
     @Override
-    public String getVersion() {
+    public String getVeinMinerVersion() {
         return plugin.getDescription().getVersion();
     }
 
@@ -72,9 +72,14 @@ public final class BukkitVeinMinerPlatform implements VeinMinerPlatform {
         return platformPlayers.computeIfAbsent(playerUUID, BukkitPlatformPlayer::new);
     }
 
+    @Nullable
+    public PlatformPlayer deletePlatformPlayer(@NotNull UUID playerUUID) {
+        return platformPlayers.remove(playerUUID);
+    }
+
     @NotNull
     @Override
-    public VeinMinerEventDispatcher getEventDispatcher() {
+    public ServerEventDispatcher getEventDispatcher() {
         return eventDispatcher;
     }
 
@@ -83,8 +88,8 @@ public final class BukkitVeinMinerPlatform implements VeinMinerPlatform {
         Bukkit.getScheduler().runTaskLater(plugin, runnable, ticks);
     }
 
-    public static VeinMinerPlatform getInstance() {
-        return (instance != null) ? instance : (instance = new BukkitVeinMinerPlatform(VeinMinerPlugin.getInstance()));
+    public static BukkitServerPlatform getInstance() {
+        return (instance != null) ? instance : (instance = new BukkitServerPlatform(VeinMinerPlugin.getInstance()));
     }
 
     public static <C extends Collection<ItemType>> C toItemType(Collection<Material> from, Supplier<C> collectionCreator) {

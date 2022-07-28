@@ -9,7 +9,7 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
  * A platform-independent event dispatcher.
  */
 @Internal
-public interface VeinMinerEventDispatcher {
+public interface ServerEventDispatcher {
 
     /**
      * Call the {@link PatternChangeEvent}.

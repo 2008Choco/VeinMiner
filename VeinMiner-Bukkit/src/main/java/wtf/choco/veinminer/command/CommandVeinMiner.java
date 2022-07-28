@@ -27,7 +27,7 @@ import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
-import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
+import wtf.choco.veinminer.platform.BukkitServerPlatform;
 import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.util.NamespacedKey;
@@ -105,7 +105,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+            PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
             VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
             if (veinMinerPlayer == null) {
                 return true;
@@ -164,7 +164,7 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             ActivationStrategy strategy = strategyOptional.get();
-            PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+            PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
             VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
             if (veinMinerPlayer == null) {
                 return true;
@@ -231,7 +231,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+            PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
             VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
             if (veinMinerPlayer == null) {
                 return true;
@@ -285,7 +285,7 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             else if (args[0].equalsIgnoreCase("mode") && sender instanceof Player player) {
-                PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+                PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
                 VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
                 if (veinMinerPlayer == null) {
                     return Collections.emptyList();

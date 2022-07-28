@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerServer;
-import wtf.choco.veinminer.platform.VeinMinerPlatform;
+import wtf.choco.veinminer.platform.ServerPlatform;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.platform.world.BlockType;
 
@@ -123,7 +123,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
         }
 
         boolean stated = (matcher.group(2) != null);
-        VeinMinerPlatform reconstructor = VeinMinerServer.getInstance().getPlatform();
+        ServerPlatform reconstructor = VeinMinerServer.getInstance().getPlatform();
 
         if (stated) {
             BlockState state = reconstructor.getState(matcher.group());

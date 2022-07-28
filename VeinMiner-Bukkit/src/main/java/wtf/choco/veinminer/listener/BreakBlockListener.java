@@ -39,7 +39,7 @@ import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
-import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
+import wtf.choco.veinminer.platform.BukkitServerPlatform;
 import wtf.choco.veinminer.platform.GameMode;
 import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
@@ -99,7 +99,7 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Invalid player state check
-        PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+        PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
         if (veinMinerPlayer == null) {
             return;

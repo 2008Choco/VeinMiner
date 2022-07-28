@@ -12,7 +12,7 @@ import wtf.choco.veinminer.platform.world.ItemType;
 /**
  * A bridge interface for various implementing platforms.
  */
-public interface VeinMinerPlatform {
+public interface ServerPlatform {
 
     /**
      * Get VeinMiner's version.
@@ -20,7 +20,7 @@ public interface VeinMinerPlatform {
      * @return the vein miner version
      */
     @NotNull
-    public String getVersion();
+    public String getVeinMinerVersion();
 
     /**
      * Construct a new {@link BlockState} from a string.
@@ -86,12 +86,12 @@ public interface VeinMinerPlatform {
     public PlatformPlayer getPlatformPlayer(@NotNull UUID playerUUID);
 
     /**
-     * Get an instance of the {@link VeinMinerEventDispatcher}.
+     * Get an instance of the {@link ServerEventDispatcher}.
      *
      * @return the event dispatcher
      */
     @NotNull
-    public VeinMinerEventDispatcher getEventDispatcher();
+    public ServerEventDispatcher getEventDispatcher();
 
     /**
      * Run the given {@link Runnable} task the given amount of ticks later.

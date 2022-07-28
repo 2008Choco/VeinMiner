@@ -11,7 +11,7 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
-import wtf.choco.veinminer.platform.BukkitVeinMinerPlatform;
+import wtf.choco.veinminer.platform.BukkitServerPlatform;
 import wtf.choco.veinminer.platform.PlatformPlayer;
 
 public final class PlayerDataListener implements Listener {
@@ -25,7 +25,7 @@ public final class PlayerDataListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player bukkitPlayer = event.getPlayer();
-        PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(bukkitPlayer.getUniqueId());
+        PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(bukkitPlayer.getUniqueId());
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().getOrRegister(platformPlayer, () -> VeinMinerPlugin.createClientConfig(bukkitPlayer));
 
         this.plugin.getPersistentDataStorage().load(plugin, veinMinerPlayer).whenComplete((player, e) -> {
@@ -41,7 +41,11 @@ public final class PlayerDataListener implements Listener {
 
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
-        PlatformPlayer platformPlayer = BukkitVeinMinerPlatform.getInstance().getPlatformPlayer(event.getPlayer().getUniqueId());
+        PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().deletePlatformPlayer(event.getPlayer().getUniqueId());
+        if (platformPlayer == null) {
+            return;
+        }
+
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(platformPlayer);
         if (veinMinerPlayer == null || !veinMinerPlayer.isDirty()) {
             return;
