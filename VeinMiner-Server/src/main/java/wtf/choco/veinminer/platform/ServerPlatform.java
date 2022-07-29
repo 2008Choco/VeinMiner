@@ -2,17 +2,20 @@ package wtf.choco.veinminer.platform;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.platform.world.BlockType;
 import wtf.choco.veinminer.platform.world.ItemType;
+import wtf.choco.veinminer.update.UpdateChecker;
 
 /**
  * A bridge interface for various implementing platforms.
@@ -20,12 +23,34 @@ import wtf.choco.veinminer.platform.world.ItemType;
 public interface ServerPlatform {
 
     /**
-     * Get VeinMiner's version.
+     * Represents VeinMiner's details.
      *
-     * @return the vein miner version
+     * @param name the name of the plugin
+     * @param version the plugin's version
+     * @param authors a list of the plugin's authors
+     * @param website the plugin's support website
+     */
+    public static record VeinMinerDetails(@NotNull String name, @NotNull String version, @NotNull @Unmodifiable List<String> authors, @Nullable String website) {
+
+        /**
+         * Get the primary author.
+         *
+         * @return the author
+         */
+        @NotNull
+        public String author() {
+            return authors.get(0);
+        }
+
+    }
+
+    /**
+     * Get the details of the currently installed VeinMiner plugin.
+     *
+     * @return the vein miner details
      */
     @NotNull
-    public String getVeinMinerVersion();
+    public VeinMinerDetails getVeinMinerDetails();
 
     /**
      * Get the {@link File} directory where VeinMiner's files are located.
@@ -105,6 +130,22 @@ public interface ServerPlatform {
     public ItemType getItemType(@NotNull String type);
 
     /**
+     * Get the string representation of keys of all registered blocks on the server.
+     *
+     * @return all block type keys
+     */
+    @NotNull
+    public List<String> getAllBlockTypeKeys();
+
+    /**
+     * Get the string representation of keys of all registered items on the server.
+     *
+     * @return all item type keys
+     */
+    @NotNull
+    public List<String> getAllItemTypeKeys();
+
+    /**
      * Create a {@link PlatformPlayer} instance for the player with the given UUID.
      *
      * @param playerUUID the player UUID
@@ -142,6 +183,22 @@ public interface ServerPlatform {
      */
     @NotNull
     public ServerEventDispatcher getEventDispatcher();
+
+    /**
+     * Get an instance of the {@link ServerCommandRegistry}.
+     *
+     * @return the command registry
+     */
+    @NotNull
+    public ServerCommandRegistry getCommandRegistry();
+
+    /**
+     * Get an instance of the {@link UpdateChecker}.
+     *
+     * @return the update checker
+     */
+    @NotNull
+    public UpdateChecker getUpdateChecker();
 
     /**
      * Run the given {@link Runnable} task the given amount of ticks later.

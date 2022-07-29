@@ -13,9 +13,6 @@ import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -29,9 +26,6 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookLightAntiCheat;
 import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
-import wtf.choco.veinminer.command.CommandBlocklist;
-import wtf.choco.veinminer.command.CommandToollist;
-import wtf.choco.veinminer.command.CommandVeinMiner;
 import wtf.choco.veinminer.economy.SimpleVaultEconomy;
 import wtf.choco.veinminer.integration.PlaceholderExpansionVeinMiner;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
@@ -49,8 +43,6 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.platform.BukkitServerPlatform;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
 import wtf.choco.veinminer.util.ConfigWrapper;
-import wtf.choco.veinminer.util.UpdateChecker;
-import wtf.choco.veinminer.util.UpdateChecker.UpdateReason;
 import wtf.choco.veinminer.util.VMConstants;
 
 /**
@@ -121,13 +113,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         VeinMinerServer veinMiner = VeinMinerServer.getInstance();
 
-        // Register commands
-        this.getLogger().info("Registering commands");
-
-        this.registerCommand("blocklist", new CommandBlocklist(this));
-        this.registerCommand("toollist", new CommandToollist(this));
-        this.registerCommand("veinminer", new CommandVeinMiner(this, getCommandOrThrow("blocklist"), getCommandOrThrow("toollist")));
-
+        // Vault integration
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.getLogger().info("Vault found. Attempting to enable economy support...");
 
@@ -149,27 +135,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
             metrics.addCustomChart(new DrilldownPie("installed_anticheats", StatTracker::getInstalledAntiCheatsAsData));
 
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
-        }
-
-        // Update check (https://www.spigotmc.org/resources/veinminer.12038/)
-        UpdateChecker updateChecker = UpdateChecker.init(this, 12038);
-        if (getConfig().getBoolean(VMConstants.CONFIG_PERFORM_UPDATE_CHECKS, true)) {
-            this.getLogger().info("Performing an update check!");
-            updateChecker.requestUpdateCheck().whenComplete((result, exception) -> {
-                if (result.isUpdateAvailable()) {
-                    this.getLogger().info(String.format("An update is available! VeinMiner %s may be downloaded on SpigotMC", result.getNewestVersion()));
-                    return;
-                }
-
-                UpdateReason reason = result.getReason();
-                if (reason == UpdateReason.UP_TO_DATE) {
-                    this.getLogger().info(String.format("Your version of VeinMiner (%s) is up to date!", result.getNewestVersion()));
-                } else if (reason == UpdateReason.UNRELEASED_VERSION) {
-                    this.getLogger().info(String.format("Your version of VeinMiner (%s) is more recent than the one publicly available. Are you on a development build?", result.getNewestVersion()));
-                } else {
-                    this.getLogger().warning("Could not check for a new version of VeinMiner. Reason: " + reason);
-                }
-            });
         }
     }
 
@@ -311,29 +276,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
         if (antiCheatPlugin != null) {
             StatTracker.recognizeInstalledAntiCheat(new AntiCheat(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
         }
-    }
-
-    private void registerCommand(@NotNull String commandName, @NotNull CommandExecutor executor) {
-        PluginCommand command = getCommand(commandName);
-        if (command == null) {
-            return;
-        }
-
-        command.setExecutor(executor);
-
-        if (executor instanceof TabCompleter tabCompleter) {
-            command.setTabCompleter(tabCompleter);
-        }
-    }
-
-    private PluginCommand getCommandOrThrow(@NotNull String commandName) {
-        PluginCommand command = getCommand(commandName);
-
-        if (command == null) {
-            throw new IllegalStateException("Missing command: " + commandName);
-        }
-
-        return command;
     }
 
 }

@@ -12,7 +12,7 @@ import wtf.choco.veinminer.util.NamespacedKey;
 /**
  * Represents a platform-independent player.
  */
-public interface PlatformPlayer {
+public interface PlatformPlayer extends PlatformCommandSender {
 
     /**
      * Check whether or not this player is online the server.
@@ -20,14 +20,6 @@ public interface PlatformPlayer {
      * @return true if online, false if offline
      */
     public boolean isOnline();
-
-    /**
-     * Get the name of this player.
-     *
-     * @return the name
-     */
-    @NotNull
-    public String getName();
 
     /**
      * Get the {@link UUID} of this player.
@@ -63,22 +55,6 @@ public interface PlatformPlayer {
      */
     @NotNull
     public RayTraceResult getTargetBlock(int distance);
-
-    /**
-     * Send the player the given chat message.
-     *
-     * @param message the message to send
-     */
-    public void sendMessage(@NotNull String message);
-
-    /**
-     * Check whether or not this player has the given permission node.
-     *
-     * @param permission the permission to check
-     *
-     * @return true if this player has permission, false otherwise
-     */
-    public boolean hasPermission(@NotNull String permission);
 
     /**
      * Get the {@link GameMode} of this player.

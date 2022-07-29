@@ -5,10 +5,15 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.block.BlockList;
+import wtf.choco.veinminer.command.CommandBlocklist;
+import wtf.choco.veinminer.command.CommandExecutor;
+import wtf.choco.veinminer.command.CommandToollist;
+import wtf.choco.veinminer.command.CommandVeinMiner;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.config.VeinMiningConfig;
@@ -30,11 +35,14 @@ import wtf.choco.veinminer.pattern.VeinMiningPatternTunnel;
 import wtf.choco.veinminer.platform.GameMode;
 import wtf.choco.veinminer.platform.PlatformPermission;
 import wtf.choco.veinminer.platform.PlatformPlayer;
+import wtf.choco.veinminer.platform.ServerCommandRegistry;
 import wtf.choco.veinminer.platform.ServerPlatform;
 import wtf.choco.veinminer.platform.world.ItemType;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
+import wtf.choco.veinminer.update.StandardVersionSchemes;
+import wtf.choco.veinminer.update.UpdateChecker;
 
 /**
  * A class holding VeinMiner's core common functionality.
@@ -88,8 +96,39 @@ public final class VeinMinerServer implements VeinMiner {
         this.reloadVeinMinerManagerConfig();
         this.reloadToolCategoryRegistryConfig();
 
+        // Register commands
+        this.platform.getLogger().info("Registering commands");
+        ServerCommandRegistry commandRegistry = platform.getCommandRegistry();
+
+        CommandExecutor blocklistCommand = new CommandBlocklist(this), toollistCommand = new CommandToollist(this);
+        commandRegistry.registerCommand("blocklist", blocklistCommand);
+        commandRegistry.registerCommand("toollist", toollistCommand);
+        commandRegistry.registerCommand("veinminer", new CommandVeinMiner(instance, blocklistCommand, toollistCommand));
+
         // Special case for server reloads
         this.persistentDataStorage.load(platform.getOnlinePlayers().stream().map(playerManager::get).toList());
+
+        // Update check
+        UpdateChecker updateChecker = platform.getUpdateChecker();
+        if (platform.getConfig().shouldCheckForUpdates()) {
+            Logger logger = platform.getLogger();
+            logger.info("Performing an update check!");
+
+            updateChecker.checkForUpdates(StandardVersionSchemes.DECIMAL).thenAccept(result -> {
+                result.getException().ifPresentOrElse(
+                    e -> {
+                        logger.info("Could not check for an update. Reason: ".formatted(e.getMessage()));
+                    },
+                    () -> {
+                        if (result.isUpdateAvailable()) {
+                            logger.info("Your version of VeinMiner is out of date. Version %s is available for download.".formatted(result.getNewestVersion()));
+                        } else {
+                            logger.info("You are on the latest version of VeinMiner.");
+                        }
+                    }
+                );
+            });
+        }
     }
 
     /**
@@ -247,7 +286,7 @@ public final class VeinMinerServer implements VeinMiner {
     @NotNull
     @Override
     public String getVersion() {
-        return getPlatform().getVeinMinerVersion();
+        return getPlatform().getVeinMinerDetails().version();
     }
 
     @Override

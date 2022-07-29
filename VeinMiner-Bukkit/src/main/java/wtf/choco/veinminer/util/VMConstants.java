@@ -54,13 +54,6 @@ public final class VMConstants {
 
 
     // Permission nodes
-    public static final String PERMISSION_COMMAND_RELOAD = "veinminer.command.reload";
-    public static final String PERMISSION_COMMAND_BLOCKLIST = "veinminer.command.blocklist";
-    public static final String PERMISSION_COMMAND_TOOLLIST = "veinminer.command.toollist";
-    public static final String PERMISSION_COMMAND_TOGGLE = "veinminer.command.toggle";
-    public static final String PERMISSION_COMMAND_MODE = "veinminer.command.mode";
-    public static final String PERMISSION_COMMAND_PATTERN = "veinminer.command.pattern";
-
     public static final String PERMISSION_FREE_ECONOMY = "veinminer.free.economy";
     public static final String PERMISSION_FREE_HUNGER = "veinminer.free.hunger";
 

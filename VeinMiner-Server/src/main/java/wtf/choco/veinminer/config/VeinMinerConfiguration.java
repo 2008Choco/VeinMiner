@@ -27,6 +27,13 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 public interface VeinMinerConfiguration {
 
     /**
+     * Get whether or not VeinMiner should check for updates using the update checker.
+     *
+     * @return true if should check for updates, false otherwise
+     */
+    public boolean shouldCheckForUpdates();
+
+    /**
      * Get a list of block state strings for the global {@link BlockList}.
      *
      * @return the global block list
@@ -330,6 +337,22 @@ public interface VeinMinerConfiguration {
      */
     @NotNull
     public List<String> getCategoryItemList(@NotNull String categoryId);
+
+    /**
+     * Write to the configuration file to update the block list of the given category id with the
+     * provided {@link BlockList}.
+     *
+     * @param categoryId the category id to update
+     * @param blockList the block list to set
+     */
+    public void updateBlockList(@NotNull String categoryId, @NotNull BlockList blockList);
+
+    /**
+     * Write to the configuration file to update the item list of the given category.
+     *
+     * @param category the category to update
+     */
+    public void updateToolList(@NotNull VeinMinerToolCategory category);
 
     /**
      * Save the default values of this configuration to disk.

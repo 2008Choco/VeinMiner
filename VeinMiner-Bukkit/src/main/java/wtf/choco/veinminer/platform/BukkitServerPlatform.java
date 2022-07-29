@@ -3,8 +3,11 @@ package wtf.choco.veinminer.platform;
 import com.google.common.collect.Collections2;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -14,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +31,8 @@ import wtf.choco.veinminer.platform.world.BukkitBlockState;
 import wtf.choco.veinminer.platform.world.BukkitBlockType;
 import wtf.choco.veinminer.platform.world.BukkitItemType;
 import wtf.choco.veinminer.platform.world.ItemType;
+import wtf.choco.veinminer.update.SpigotMCUpdateChecker;
+import wtf.choco.veinminer.update.UpdateChecker;
 
 /**
  * A Bukkit implementation of {@link ServerPlatform}.
@@ -40,17 +46,26 @@ public final class BukkitServerPlatform implements ServerPlatform {
     private final VeinMinerPlugin plugin;
     private final VeinMinerConfiguration config;
     private final ServerEventDispatcher eventDispatcher;
+    private final ServerCommandRegistry commandRegistry;
+    private final UpdateChecker updateChecker;
+
+    private final VeinMinerDetails details;
 
     private BukkitServerPlatform(VeinMinerPlugin plugin) {
         this.plugin = plugin;
         this.config = new BukkitVeinMinerConfiguration(plugin);
         this.eventDispatcher = new BukkitServerEventDispatcher();
+        this.updateChecker = new SpigotMCUpdateChecker(plugin, 12038);
+        this.commandRegistry = new BukkitServerCommandRegistry(plugin);
+
+        PluginDescriptionFile description = plugin.getDescription();
+        this.details = new VeinMinerDetails(description.getName(), description.getVersion(), Collections.unmodifiableList(description.getAuthors()), description.getWebsite());
     }
 
     @NotNull
     @Override
-    public String getVeinMinerVersion() {
-        return plugin.getDescription().getVersion();
+    public VeinMinerDetails getVeinMinerDetails() {
+        return details;
     }
 
     @NotNull
@@ -85,14 +100,26 @@ public final class BukkitServerPlatform implements ServerPlatform {
     @Override
     public BlockType getBlockType(@NotNull String type) {
         Material material = Material.matchMaterial(type);
-        return (material != null) ? BukkitBlockType.of(material) : null;
+        return (material != null && material.isBlock()) ? BukkitBlockType.of(material) : null;
     }
 
     @Nullable
     @Override
     public ItemType getItemType(@NotNull String type) {
         Material material = Material.matchMaterial(type);
-        return (material != null) ? BukkitItemType.of(material) : null;
+        return (material != null && material.isItem()) ? BukkitItemType.of(material) : null;
+    }
+
+    @NotNull
+    @Override
+    public List<String> getAllBlockTypeKeys() {
+        return Arrays.stream(Material.values()).filter(Material::isBlock).map(material -> material.getKey().toString()).toList();
+    }
+
+    @NotNull
+    @Override
+    public List<String> getAllItemTypeKeys() {
+        return Arrays.stream(Material.values()).filter(Material::isItem).map(material -> material.getKey().toString()).toList();
     }
 
     @NotNull
@@ -126,6 +153,18 @@ public final class BukkitServerPlatform implements ServerPlatform {
     @Override
     public ServerEventDispatcher getEventDispatcher() {
         return eventDispatcher;
+    }
+
+    @NotNull
+    @Override
+    public ServerCommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+
+    @NotNull
+    @Override
+    public UpdateChecker getUpdateChecker() {
+        return updateChecker;
     }
 
     @Override

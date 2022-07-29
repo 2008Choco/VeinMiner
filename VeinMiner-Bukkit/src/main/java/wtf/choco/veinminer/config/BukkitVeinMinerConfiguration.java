@@ -15,8 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.VeinMinerServer;
+import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.util.VMConstants;
 
 public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguration {
@@ -25,6 +27,11 @@ public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguratio
 
     public BukkitVeinMinerConfiguration(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    @Override
+    public boolean shouldCheckForUpdates() {
+        return plugin.getConfig().getBoolean(VMConstants.CONFIG_PERFORM_UPDATE_CHECKS, true);
     }
 
     @NotNull
@@ -248,6 +255,26 @@ public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguratio
     @Override
     public List<String> getCategoryItemList(@NotNull String categoryId) {
         return plugin.getCategoriesConfig().asRawConfig().getStringList(categoryId + ".Items");
+    }
+
+    @Override
+    public void updateBlockList(@NotNull String categoryId, @NotNull BlockList blockList) {
+        List<String> blockListStrings = blockList.asList().stream()
+                .map(block -> block.getType().getKey().toString())
+                .sorted().toList();
+
+        this.plugin.getConfig().set("BlockList." + categoryId, blockListStrings);
+        this.plugin.saveConfig();
+    }
+
+    @Override
+    public void updateToolList(@NotNull VeinMinerToolCategory category) {
+        List<String> itemListStrings = category.getItems().stream()
+                .map(item -> item.getKey().toString())
+                .sorted().toList();
+
+        this.plugin.getCategoriesConfig().asRawConfig().set(category.getId() + ".Items", itemListStrings);
+        this.plugin.getCategoriesConfig().save();
     }
 
     @Override
