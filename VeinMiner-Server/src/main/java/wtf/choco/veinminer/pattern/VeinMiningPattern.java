@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
-import wtf.choco.veinminer.config.VeinMinerConfig;
+import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
@@ -39,7 +39,7 @@ public interface VeinMiningPattern {
      * @return the allocated block positions
      */
     @NotNull
-    public Set<BlockPosition> allocateBlocks(@NotNull BlockAccessor blockAccessor, @NotNull BlockPosition origin, @NotNull BlockFace destroyedFace, @NotNull VeinMinerBlock block, @NotNull VeinMinerConfig config, @Nullable BlockList aliasList);
+    public Set<BlockPosition> allocateBlocks(@NotNull BlockAccessor blockAccessor, @NotNull BlockPosition origin, @NotNull BlockFace destroyedFace, @NotNull VeinMinerBlock block, @NotNull VeinMiningConfig config, @Nullable BlockList aliasList);
 
     /**
      * Allocate all {@link BlockPosition BlockPositions} that should be mined according to the input values.
@@ -53,7 +53,7 @@ public interface VeinMiningPattern {
      * @return the allocated block positions
      */
     @NotNull
-    public default Set<BlockPosition> allocateBlocks(@NotNull BlockAccessor blockAccessor, @NotNull BlockPosition origin, @NotNull BlockFace destroyedFace, @NotNull VeinMinerBlock block, @NotNull VeinMinerConfig config) {
+    public default Set<BlockPosition> allocateBlocks(@NotNull BlockAccessor blockAccessor, @NotNull BlockPosition origin, @NotNull BlockFace destroyedFace, @NotNull VeinMinerBlock block, @NotNull VeinMiningConfig config) {
         return allocateBlocks(blockAccessor, origin, destroyedFace, block, config, null);
     }
 

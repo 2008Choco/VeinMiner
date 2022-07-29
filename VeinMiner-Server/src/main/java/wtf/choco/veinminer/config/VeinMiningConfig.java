@@ -12,7 +12,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 /**
  * Represents VeinMiner's configuration for vein mining operations.
  */
-public final class VeinMinerConfig implements Cloneable {
+public final class VeinMiningConfig implements Cloneable {
 
     private boolean repairFriendly = false;
     private int maxVeinSize = 64;
@@ -21,7 +21,7 @@ public final class VeinMinerConfig implements Cloneable {
     private Set<String> disabledWorlds = new HashSet<>();
 
     // Reserved for cloning
-    private VeinMinerConfig(@NotNull VeinMinerConfig config) {
+    private VeinMiningConfig(@NotNull VeinMiningConfig config) {
         this.repairFriendly = config.repairFriendly;
         this.maxVeinSize = config.maxVeinSize;
         this.cost = config.cost;
@@ -29,11 +29,11 @@ public final class VeinMinerConfig implements Cloneable {
     }
 
     /**
-     * Construct a new default {@link VeinMinerConfig}.
+     * Construct a new default {@link VeinMiningConfig}.
      *
      * @see #builder()
      */
-    public VeinMinerConfig() { }
+    public VeinMiningConfig() { }
 
     /**
      * Check whether or not repair friendly is enabled.
@@ -96,7 +96,7 @@ public final class VeinMinerConfig implements Cloneable {
     }
 
     /**
-     * Edit this {@link VeinMinerConfig} with the given {@link Consumer} and return a new
+     * Edit this {@link VeinMiningConfig} with the given {@link Consumer} and return a new
      * instance of the config with all edited values. This operation is immutable and will
      * not modify this instance of the config.
      *
@@ -105,28 +105,28 @@ public final class VeinMinerConfig implements Cloneable {
      * @return the newly edited VeinMinerConfig instance
      */
     @NotNull
-    public VeinMinerConfig edit(@NotNull Consumer<VeinMinerConfig.Builder> editor) {
-        VeinMinerConfig.Builder builder = new VeinMinerConfig.Builder(this);
+    public VeinMiningConfig edit(@NotNull Consumer<VeinMiningConfig.Builder> editor) {
+        VeinMiningConfig.Builder builder = new VeinMiningConfig.Builder(this);
         editor.accept(builder);
         return builder.build();
     }
 
     /**
-     * Get a new builder for a {@link VeinMinerConfig}.
+     * Get a new builder for a {@link VeinMiningConfig}.
      *
      * @return a builder
      *
-     * @see VeinMinerConfig.Builder
+     * @see VeinMiningConfig.Builder
      */
     @NotNull
-    public static VeinMinerConfig.Builder builder() {
-        return new VeinMinerConfig.Builder();
+    public static VeinMiningConfig.Builder builder() {
+        return new VeinMiningConfig.Builder();
     }
 
     @NotNull
     @Override
-    public VeinMinerConfig clone() {
-        return new VeinMinerConfig(this);
+    public VeinMiningConfig clone() {
+        return new VeinMiningConfig(this);
     }
 
     @Override
@@ -140,7 +140,7 @@ public final class VeinMinerConfig implements Cloneable {
             return true;
         }
 
-        if (!(object instanceof VeinMinerConfig other)) {
+        if (!(object instanceof VeinMiningConfig other)) {
             return false;
         }
 
@@ -151,18 +151,18 @@ public final class VeinMinerConfig implements Cloneable {
     }
 
     /**
-     * A builder for a {@link VeinMinerConfig}.
+     * A builder for a {@link VeinMiningConfig}.
      */
     public static final class Builder {
 
-        private final VeinMinerConfig config;
+        private final VeinMiningConfig config;
 
-        private Builder(@NotNull VeinMinerConfig config) {
+        private Builder(@NotNull VeinMiningConfig config) {
             this.config = config.clone();
         }
 
         private Builder() {
-            this(new VeinMinerConfig());
+            this(new VeinMiningConfig());
         }
 
         /**
@@ -172,7 +172,7 @@ public final class VeinMinerConfig implements Cloneable {
          *
          * @return this instance. Allows for chained method calls
          *
-         * @see VeinMinerConfig#isRepairFriendly()
+         * @see VeinMiningConfig#isRepairFriendly()
          */
         @NotNull
         public Builder repairFriendly(boolean repairFriendly) {
@@ -187,7 +187,7 @@ public final class VeinMinerConfig implements Cloneable {
          *
          * @return this instance. Allows for chained method calls
          *
-         * @see VeinMinerConfig#getMaxVeinSize()
+         * @see VeinMiningConfig#getMaxVeinSize()
          */
         @NotNull
         public Builder maxVeinSize(int maxVeinSize) {
@@ -202,7 +202,7 @@ public final class VeinMinerConfig implements Cloneable {
          *
          * @return this instance. Allows for chained method calls
          *
-         * @see VeinMinerConfig#getCost()
+         * @see VeinMiningConfig#getCost()
          */
         @NotNull
         public Builder cost(double cost) {
@@ -217,7 +217,7 @@ public final class VeinMinerConfig implements Cloneable {
          *
          * @return this instance. Allows for chained method calls
          *
-         * @see VeinMinerConfig#isDisabledWorld(String)
+         * @see VeinMiningConfig#isDisabledWorld(String)
          */
         @NotNull
         public Builder disableWorld(@NotNull String worldName) {
@@ -232,7 +232,7 @@ public final class VeinMinerConfig implements Cloneable {
          *
          * @return this instance. Allows for chained method calls
          *
-         * @see VeinMinerConfig#isDisabledWorld(String)
+         * @see VeinMiningConfig#isDisabledWorld(String)
          */
         @NotNull
         public Builder disableWorlds(@NotNull Iterable<String> worldNames) {
@@ -247,7 +247,7 @@ public final class VeinMinerConfig implements Cloneable {
          *
          * @return this instance. Allows for chained method calls
          *
-         * @see VeinMinerConfig#isDisabledWorld(String)
+         * @see VeinMiningConfig#isDisabledWorld(String)
          */
         @NotNull
         public Builder undisableWorld(@NotNull String worldName) {
@@ -260,7 +260,7 @@ public final class VeinMinerConfig implements Cloneable {
          *
          * @return this instance. Allows for chained method calls
          *
-         * @see VeinMinerConfig#isDisabledWorld(String)
+         * @see VeinMiningConfig#isDisabledWorld(String)
          */
         @NotNull
         public Builder clearDisabledWorlds() {
@@ -269,12 +269,12 @@ public final class VeinMinerConfig implements Cloneable {
         }
 
         /**
-         * Build and return the {@link VeinMinerConfig}.
+         * Build and return the {@link VeinMiningConfig}.
          *
          * @return the config
          */
         @NotNull
-        public VeinMinerConfig build() {
+        public VeinMiningConfig build() {
             return config;
         }
 

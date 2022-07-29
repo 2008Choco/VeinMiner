@@ -5,7 +5,7 @@ import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.config.VeinMinerConfig;
+import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.platform.world.ItemType;
 
 /**
@@ -20,7 +20,7 @@ public final class VeinMinerToolCategoryHand extends VeinMinerToolCategory {
      * @param blockList the category block list
      * @param config the category config
      */
-    public VeinMinerToolCategoryHand(@NotNull BlockList blockList, @NotNull VeinMinerConfig config) {
+    public VeinMinerToolCategoryHand(@NotNull BlockList blockList, @NotNull VeinMiningConfig config) {
         super("Hand", Integer.MAX_VALUE, null, blockList, config, Collections.emptySet());
     }
 

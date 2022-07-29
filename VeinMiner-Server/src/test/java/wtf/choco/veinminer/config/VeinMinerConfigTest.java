@@ -10,7 +10,7 @@ class VeinMinerConfigTest {
 
     @Test
     void testIsDisabledWorld() {
-        VeinMinerConfig config = VeinMinerConfig.builder()
+        VeinMiningConfig config = VeinMiningConfig.builder()
                 .disableWorld("world")
                 .disableWorld("other_world")
                 .build();
@@ -22,7 +22,7 @@ class VeinMinerConfigTest {
 
     @Test
     void testGetDisabledWorlds() {
-        VeinMinerConfig config = VeinMinerConfig.builder()
+        VeinMiningConfig config = VeinMiningConfig.builder()
                 .disableWorld("world")
                 .disableWorld("other_world")
                 .build();
@@ -36,7 +36,7 @@ class VeinMinerConfigTest {
 
     @Test
     void testEdit() {
-        VeinMinerConfig config = VeinMinerConfig.builder()
+        VeinMiningConfig config = VeinMiningConfig.builder()
                 .repairFriendly(true)
                 .maxVeinSize(64)
                 .cost(100.0)
@@ -44,7 +44,7 @@ class VeinMinerConfigTest {
                 .disableWorld("other_world")
                 .build();
 
-        VeinMinerConfig edited = config.edit(builder -> builder
+        VeinMiningConfig edited = config.edit(builder -> builder
                 .repairFriendly(false)
                 .maxVeinSize(32)
                 .cost(50.0)
@@ -62,7 +62,7 @@ class VeinMinerConfigTest {
 
     @Test
     void testClone() {
-        VeinMinerConfig config = VeinMinerConfig.builder()
+        VeinMiningConfig config = VeinMiningConfig.builder()
                 .repairFriendly(true)
                 .maxVeinSize(64)
                 .cost(100.0)

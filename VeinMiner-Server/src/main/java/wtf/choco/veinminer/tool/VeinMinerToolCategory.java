@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.config.VeinMinerConfig;
+import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.platform.world.ItemType;
 
 /**
@@ -23,7 +23,7 @@ public class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> 
     private final int priority;
     private final String nbtValue;
     private final BlockList blockList;
-    private final VeinMinerConfig config;
+    private final VeinMiningConfig config;
     private final Set<ItemType> items;
 
     /**
@@ -36,7 +36,7 @@ public class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> 
      * @param config the category config
      * @param items the items in this category
      */
-    public VeinMinerToolCategory(@NotNull String id, int priority, @Nullable String nbtValue, @NotNull BlockList blockList, @NotNull VeinMinerConfig config, @NotNull Set<ItemType> items) {
+    public VeinMinerToolCategory(@NotNull String id, int priority, @Nullable String nbtValue, @NotNull BlockList blockList, @NotNull VeinMiningConfig config, @NotNull Set<ItemType> items) {
         this.id = id;
         this.priority = priority;
         this.nbtValue = nbtValue;
@@ -95,12 +95,12 @@ public class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> 
     }
 
     /**
-     * Get the {@link VeinMinerConfig} for this tool category.
+     * Get the {@link VeinMiningConfig} for this tool category.
      *
      * @return the config
      */
     @NotNull
-    public VeinMinerConfig getConfig() {
+    public VeinMiningConfig getConfig() {
         return config;
     }
 

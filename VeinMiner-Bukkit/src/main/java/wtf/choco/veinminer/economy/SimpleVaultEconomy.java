@@ -2,8 +2,6 @@ package wtf.choco.veinminer.economy;
 
 import com.google.common.base.Preconditions;
 
-import java.util.UUID;
-
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -11,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.platform.BukkitPlatformPlayer;
+import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.util.VMConstants;
 
 /**
@@ -27,39 +27,34 @@ public class SimpleVaultEconomy implements SimpleEconomy {
     public SimpleVaultEconomy() {
         Preconditions.checkArgument(Bukkit.getPluginManager().getPlugin("Vault") != null, "Vault must be loaded in order to use a SimpleVaultEconomy");
 
-        RegisteredServiceProvider<@NotNull Economy> serviceProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> serviceProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
         this.economy = (serviceProvider != null) ? serviceProvider.getProvider() : null;
     }
 
     @Override
-    public boolean shouldCharge(@NotNull UUID playerUUID) {
-        if (!hasEconomyPlugin()) {
-            return false;
-        }
-
-        Player player = Bukkit.getPlayer(playerUUID);
-        return player != null && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
+    public boolean shouldCharge(@NotNull PlatformPlayer player) {
+        return hasEconomyPlugin() && player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
     }
 
     @Override
-    public boolean hasSufficientBalance(@NotNull UUID playerUUID, double amount) {
+    public boolean hasSufficientBalance(@NotNull PlatformPlayer player, double amount) {
         if (!hasEconomyPlugin()) {
             return true;
         }
 
-        Player player = Bukkit.getPlayer(playerUUID);
-        return player != null && economy.has(player, amount);
+        Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayer();
+        return bukkitPlayer != null && economy.has(bukkitPlayer, amount);
     }
 
     @Override
-    public void withdraw(@NotNull UUID playerUUID, double amount) {
-        Preconditions.checkArgument(playerUUID != null, "playerUUID must not be null");
-
-        Player player = Bukkit.getPlayer(playerUUID);
-        Preconditions.checkState(player != null, "cannot charge offline player");
+    public void withdraw(@NotNull PlatformPlayer player, double amount) {
+        Preconditions.checkArgument(!player.isOnline(), "cannot charge offline player");
 
         if (hasEconomyPlugin()) {
-            this.economy.withdrawPlayer(player, amount);
+            Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayer();
+            if (bukkitPlayer != null) {
+                this.economy.withdrawPlayer(bukkitPlayer, amount);
+            }
         }
     }
 

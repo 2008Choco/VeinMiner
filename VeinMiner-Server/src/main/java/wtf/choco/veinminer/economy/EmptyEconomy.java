@@ -1,8 +1,8 @@
 package wtf.choco.veinminer.economy;
 
-import java.util.UUID;
-
 import org.jetbrains.annotations.NotNull;
+
+import wtf.choco.veinminer.platform.PlatformPlayer;
 
 /**
  * An implementation of {@link SimpleEconomy} with no affect on the player.
@@ -15,16 +15,16 @@ public final class EmptyEconomy implements SimpleEconomy {
     private EmptyEconomy() { }
 
     @Override
-    public boolean shouldCharge(@NotNull UUID playerUUID) {
+    public boolean shouldCharge(@NotNull PlatformPlayer player) {
         return false;
     }
 
     @Override
-    public boolean hasSufficientBalance(@NotNull UUID playerUUID, double amount) {
+    public boolean hasSufficientBalance(@NotNull PlatformPlayer player, double amount) {
         return true;
     }
 
     @Override
-    public void withdraw(@NotNull UUID playerUUID, double amount) { }
+    public void withdraw(@NotNull PlatformPlayer player, double amount) { }
 
 }

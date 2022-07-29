@@ -3,7 +3,6 @@ package wtf.choco.veinminer.listener;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,7 +34,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMineEvent;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
-import wtf.choco.veinminer.config.VeinMinerConfig;
+import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.economy.SimpleEconomy;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.manager.VeinMinerManager;
@@ -107,7 +106,7 @@ public final class BreakBlockListener implements Listener {
             return;
         }
 
-        VeinMinerConfig veinMinerConfig = category.getConfig();
+        VeinMiningConfig veinMinerConfig = category.getConfig();
 
         if (!veinMinerPlayer.isVeinMinerActive()
                 || !veinMinerPlayer.isVeinMinerEnabled(category)
@@ -125,15 +124,14 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Economy check
-        UUID playerUUID = player.getUniqueId();
         SimpleEconomy economy = VeinMinerServer.getInstance().getEconomy();
-        if (economy.shouldCharge(playerUUID)) {
-            if (!economy.hasSufficientBalance(playerUUID, veinMinerConfig.getCost())) {
+        if (economy.shouldCharge(platformPlayer)) {
+            if (!economy.hasSufficientBalance(platformPlayer, veinMinerConfig.getCost())) {
                 player.sendMessage(ChatColor.GRAY + "You have insufficient funds to vein mine (Required: " + ChatColor.YELLOW + veinMinerConfig.getCost() + ChatColor.GRAY + ")");
                 return;
             }
 
-            economy.withdraw(playerUUID, veinMinerConfig.getCost());
+            economy.withdraw(platformPlayer, veinMinerConfig.getCost());
         }
 
         // Fetch the target block face

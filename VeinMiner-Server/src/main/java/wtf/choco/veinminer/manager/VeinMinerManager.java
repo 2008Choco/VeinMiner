@@ -15,7 +15,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
-import wtf.choco.veinminer.config.VeinMinerConfig;
+import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.platform.GameMode;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.platform.world.BlockType;
@@ -27,7 +27,7 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 public final class VeinMinerManager {
 
     private BlockList globalBlockList = new BlockList();
-    private VeinMinerConfig globalConfig = new VeinMinerConfig();
+    private VeinMiningConfig globalConfig = new VeinMiningConfig();
     private List<BlockList> aliases = new ArrayList<>(); // There has to be a better way to implement aliases... I just can't think of one
 
     private final Set<GameMode> disabledGameModes = EnumSet.noneOf(GameMode.class);
@@ -56,25 +56,25 @@ public final class VeinMinerManager {
     }
 
     /**
-     * Set the global {@link VeinMinerConfig}.
+     * Set the global {@link VeinMiningConfig}.
      * <p>
      * Values in this config should be used as the default unless otherwise specified.
      *
      * @param config the config to set
      */
-    public void setGlobalConfig(@NotNull VeinMinerConfig config) {
+    public void setGlobalConfig(@NotNull VeinMiningConfig config) {
         this.globalConfig = config;
     }
 
     /**
-     * Get the global {@link VeinMinerConfig}.
+     * Get the global {@link VeinMiningConfig}.
      * <p>
      * Values in this config should be used as the default unless otherwise specified.
      *
      * @return the global config
      */
     @NotNull
-    public VeinMinerConfig getGlobalConfig() {
+    public VeinMiningConfig getGlobalConfig() {
         return globalConfig;
     }
 

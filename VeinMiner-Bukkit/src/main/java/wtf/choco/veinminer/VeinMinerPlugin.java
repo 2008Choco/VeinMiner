@@ -48,7 +48,7 @@ import wtf.choco.veinminer.command.CommandBlocklist;
 import wtf.choco.veinminer.command.CommandToollist;
 import wtf.choco.veinminer.command.CommandVeinMiner;
 import wtf.choco.veinminer.config.ClientConfig;
-import wtf.choco.veinminer.config.VeinMinerConfig;
+import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.data.PersistentDataStorageJSON;
 import wtf.choco.veinminer.data.PersistentDataStorageMySQL;
@@ -368,7 +368,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         // Global block list and config
         this.getVeinMinerManager().setGlobalBlockList(BlockList.parseBlockList(config.getStringList("BlockList.Global"), getLogger()));
-        this.getVeinMinerManager().setGlobalConfig(VeinMinerConfig.builder()
+        this.getVeinMinerManager().setGlobalConfig(VeinMiningConfig.builder()
                 .repairFriendly(config.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY, false))
                 .maxVeinSize(config.getInt(VMConstants.CONFIG_MAX_VEIN_SIZE, 64))
                 .cost(config.getDouble(VMConstants.CONFIG_COST, 0.0))
@@ -436,10 +436,10 @@ public final class VeinMinerPlugin extends JavaPlugin {
             ConfigurationSection categoryRoot = categoriesConfig.getConfigurationSection(categoryId);
             assert categoryRoot != null;
 
-            VeinMinerConfig globalVeinMinerConfig = getVeinMinerManager().getGlobalConfig();
+            VeinMiningConfig globalVeinMinerConfig = getVeinMinerManager().getGlobalConfig();
 
             Collection<String> disabledWorlds = categoryRoot.contains(VMConstants.CONFIG_DISABLED_WORLDS) ? categoryRoot.getStringList(VMConstants.CONFIG_DISABLED_WORLDS) : globalVeinMinerConfig.getDisabledWorlds();
-            VeinMinerConfig veinMinerConfig = VeinMinerConfig.builder()
+            VeinMiningConfig veinMinerConfig = VeinMiningConfig.builder()
                     .repairFriendly(categoryRoot.getBoolean(VMConstants.CONFIG_REPAIR_FRIENDLY, globalVeinMinerConfig.isRepairFriendly()))
                     .maxVeinSize(categoryRoot.getInt(VMConstants.CONFIG_MAX_VEIN_SIZE, globalVeinMinerConfig.getMaxVeinSize()))
                     .cost(categoryRoot.getDouble(VMConstants.CONFIG_COST, globalVeinMinerConfig.getCost()))
