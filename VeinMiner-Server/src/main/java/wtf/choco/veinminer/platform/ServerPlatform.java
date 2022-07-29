@@ -1,10 +1,15 @@
 package wtf.choco.veinminer.platform;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.platform.world.BlockType;
 import wtf.choco.veinminer.platform.world.ItemType;
@@ -21,6 +26,30 @@ public interface ServerPlatform {
      */
     @NotNull
     public String getVeinMinerVersion();
+
+    /**
+     * Get the {@link File} directory where VeinMiner's files are located.
+     *
+     * @return VeinMiner's plugin directory
+     */
+    @NotNull
+    public File getVeinMinerPluginDirectory();
+
+    /**
+     * Get VeinMiner's {@link Logger}.
+     *
+     * @return the logger
+     */
+    @NotNull
+    public Logger getLogger();
+
+    /**
+     * Get the {@link VeinMinerConfiguration} instance for this server platform.
+     *
+     * @return the config
+     */
+    @NotNull
+    public VeinMinerConfiguration getConfig();
 
     /**
      * Construct a new {@link BlockState} from a string.
@@ -84,6 +113,27 @@ public interface ServerPlatform {
      */
     @NotNull
     public PlatformPlayer getPlatformPlayer(@NotNull UUID playerUUID);
+
+    /**
+     * Get all online players.
+     *
+     * @return all online players
+     */
+    @NotNull
+    public Collection<? extends PlatformPlayer> getOnlinePlayers();
+
+    /**
+     * Get the {@link PlatformPermission} with the given name, or register it with the given description
+     * and default value if it does not exist.
+     *
+     * @param permission the permission name to get (or register)
+     * @param description a description provider if the permission does not exist and needs to be registered
+     * @param permissionDefault the default permission value
+     *
+     * @return the permission
+     */
+    @NotNull
+    public PlatformPermission getOrRegisterPermission(String permission, Supplier<String> description, PlatformPermission.Default permissionDefault);
 
     /**
      * Get an instance of the {@link ServerEventDispatcher}.

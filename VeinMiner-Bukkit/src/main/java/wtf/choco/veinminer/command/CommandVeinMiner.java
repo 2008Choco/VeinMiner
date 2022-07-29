@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.platform.BukkitServerPlatform;
@@ -60,19 +60,15 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            this.plugin.reloadConfig();
-            this.plugin.getCategoriesConfig().reload();
+            VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+            veinMiner.getPlatform().getConfig().reload();
 
-            this.plugin.reloadGeneralConfig();
-            this.plugin.reloadVeinMinerManagerConfig();
-            this.plugin.reloadToolCategoryRegistryConfig();
+            veinMiner.reloadVeinMinerManagerConfig();
+            veinMiner.reloadToolCategoryRegistryConfig();
 
             // Update configurations for all players
             this.plugin.getPlayerManager().getAll().forEach(veinMinerPlayer -> {
-                Player player = Bukkit.getPlayer(veinMinerPlayer.getPlayerUUID());
-                if (player != null) {
-                    veinMinerPlayer.setClientConfig(VeinMinerPlugin.createClientConfig(player)); // TODO This can be improved when migrated to server
-                }
+                veinMinerPlayer.setClientConfig(veinMiner.createClientConfig(veinMinerPlayer.getPlayer()));
             });
 
             sender.sendMessage(ChatColor.GREEN + "VeinMiner configuration successfully reloaded.");

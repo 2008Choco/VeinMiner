@@ -28,6 +28,17 @@ import wtf.choco.veinminer.util.EnumUtil;
  */
 public abstract class PersistentDataStorageSQL implements PersistentDataStorage { // Java 17: Sealed classes
 
+    private final VeinMinerServer veinMiner;
+
+    /**
+     * Construct a new {@link PersistentDataStorageSQL}.
+     *
+     * @param veinMiner the vein miner server
+     */
+    public PersistentDataStorageSQL(@NotNull VeinMinerServer veinMiner) {
+        this.veinMiner = veinMiner;
+    }
+
     @NotNull
     @Override
     public final CompletableFuture<Void> init() {
@@ -191,14 +202,14 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
         String veinMiningPatternId = result.getString("vein_mining_pattern_id");
 
         if (activationStrategyId != null) {
-            player.setActivationStrategy(EnumUtil.get(ActivationStrategy.class, activationStrategyId.toUpperCase()).orElse(VeinMinerServer.getInstance().getDefaultActivationStrategy()));
+            player.setActivationStrategy(EnumUtil.get(ActivationStrategy.class, activationStrategyId.toUpperCase()).orElse(veinMiner.getDefaultActivationStrategy()));
         }
 
         if (disabledCategories != null) {
             player.setVeinMinerEnabled(true); // Ensure that all categories are loaded again
 
             for (String categoryId : disabledCategories.split(",")) {
-                VeinMinerToolCategory category = VeinMinerServer.getInstance().getToolCategoryRegistry().get(categoryId.toUpperCase());
+                VeinMinerToolCategory category = veinMiner.getToolCategoryRegistry().get(categoryId.toUpperCase());
 
                 if (category == null) {
                     continue;
@@ -209,7 +220,6 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
         }
 
         if (veinMiningPatternId != null) {
-            VeinMinerServer veinMiner = VeinMinerServer.getInstance();
             VeinMiningPattern pattern = veinMiner.getPatternRegistry().get(veinMiningPatternId);
             player.setVeinMiningPattern(pattern != null ? pattern : veinMiner.getDefaultVeinMiningPattern(), false);
         }

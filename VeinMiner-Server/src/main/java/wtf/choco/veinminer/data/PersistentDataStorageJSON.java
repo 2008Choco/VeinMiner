@@ -29,15 +29,18 @@ import wtf.choco.veinminer.util.EnumUtil;
  */
 public final class PersistentDataStorageJSON implements PersistentDataStorage {
 
+    private final VeinMinerServer veinMiner;
     private final File directory;
     private final Gson gson;
 
     /**
      * Construct a new {@link PersistentDataStorageJSON}.
      *
+     * @param veinMiner the vein miner server instance
      * @param directory the directory where all JSON files are held
      */
-    public PersistentDataStorageJSON(@NotNull File directory) {
+    public PersistentDataStorageJSON(@NotNull VeinMinerServer veinMiner, @NotNull File directory) {
+        this.veinMiner = veinMiner;
         this.directory = directory;
         this.gson = new Gson();
     }
@@ -127,7 +130,7 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
             JsonObject root = gson.fromJson(reader, JsonObject.class);
 
             if (root.has("activation_strategy_id")) {
-                player.setActivationStrategy(EnumUtil.get(ActivationStrategy.class, root.get("activation_strategy_id").getAsString().toUpperCase()).orElse(VeinMinerServer.getInstance().getDefaultActivationStrategy()));
+                player.setActivationStrategy(EnumUtil.get(ActivationStrategy.class, root.get("activation_strategy_id").getAsString().toUpperCase()).orElse(veinMiner.getDefaultActivationStrategy()));
             }
 
             if (root.has("disabled_categories")) {
@@ -138,7 +141,7 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
                         return;
                     }
 
-                    VeinMinerToolCategory category = VeinMinerServer.getInstance().getToolCategoryRegistry().get(element.getAsString().toUpperCase());
+                    VeinMinerToolCategory category = veinMiner.getToolCategoryRegistry().get(element.getAsString().toUpperCase());
                     if (category == null) {
                         return;
                     }
@@ -148,7 +151,6 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
             }
 
             if (root.has("vein_mining_pattern_id")) {
-                VeinMinerServer veinMiner = VeinMinerServer.getInstance();
                 player.setVeinMiningPattern(veinMiner.getPatternRegistry().getOrDefault(root.get("vein_mining_pattern_id").getAsString(), veinMiner.getDefaultVeinMiningPattern()), false);
             }
         } catch (IOException | JsonSyntaxException e) {

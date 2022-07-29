@@ -434,15 +434,16 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
          * Let the client know whether or not the client is even allowed.
          * We send this one tick later so we know that the player's connection has been initialized
          */
-        VeinMinerServer.getInstance().getPlatform().runTaskLater(() -> {
+        VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+        veinMiner.getPlatform().runTaskLater(() -> {
             VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundHandshakeResponse());
 
             // Synchronize all registered patterns to the client
-            PatternRegistry patternRegistry = VeinMinerServer.getInstance().getPatternRegistry();
+            PatternRegistry patternRegistry = veinMiner.getPatternRegistry();
 
             List<NamespacedKey> patternKeys = new ArrayList<>();
             patternRegistry.getPatterns().forEach(pattern -> patternKeys.add(pattern.getKey()));
-            VeinMiningPattern defaultPattern = VeinMinerServer.getInstance().getDefaultVeinMiningPattern();
+            VeinMiningPattern defaultPattern = veinMiner.getDefaultVeinMiningPattern();
 
             // Move the default pattern to the start if it wasn't already there
             if (patternKeys.size() > 1 && patternKeys.remove(defaultPattern.getKey())) {
@@ -492,7 +493,8 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     @Override
     public void handleRequestVeinMine(@NotNull PluginMessageServerboundRequestVeinMine message) {
         ItemStack itemStack = player.getItemInMainHand();
-        VeinMinerToolCategory category = VeinMinerServer.getInstance().getToolCategoryRegistry().get(itemStack.getType());
+        VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+        VeinMinerToolCategory category = veinMiner.getToolCategoryRegistry().get(itemStack.getType());
 
         if (category == null) {
             VeinMiner.PROTOCOL.sendMessageToClient(this, new PluginMessageClientboundVeinMineResults());
@@ -525,7 +527,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         BlockAccessor blockAccessor = player.getWorld();
         BlockState targetBlockState = blockAccessor.getState(targetBlock);
 
-        VeinMinerManager veinMinerManager = VeinMinerServer.getInstance().getVeinMinerManager();
+        VeinMinerManager veinMinerManager = veinMiner.getVeinMinerManager();
         VeinMinerBlock block = veinMinerManager.getVeinMinerBlock(targetBlockState, category);
 
         if (block == null) {
@@ -546,14 +548,15 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
             return;
         }
 
-        VeinMiningPattern pattern = VeinMinerServer.getInstance().getPatternRegistry().getOrDefault(message.getPatternKey(), VeinMinerServer.getInstance().getDefaultVeinMiningPattern());
+        VeinMinerServer veinMiner = VeinMinerServer.getInstance();
+        VeinMiningPattern pattern = veinMiner.getPatternRegistry().getOrDefault(message.getPatternKey(), veinMiner.getDefaultVeinMiningPattern());
         String patternPermission = pattern.getPermission();
 
         if (patternPermission != null && !player.hasPermission(patternPermission)) {
             return;
         }
 
-        ServerEventDispatcher dispatcher = VeinMinerServer.getInstance().getPlatform().getEventDispatcher();
+        ServerEventDispatcher dispatcher = veinMiner.getPlatform().getEventDispatcher();
         PatternChangeEvent event = dispatcher.callPatternChangeEvent(player, getVeinMiningPattern(), pattern, PatternChangeEvent.Cause.CLIENT);
         if (event.isCancelled()) {
             return;

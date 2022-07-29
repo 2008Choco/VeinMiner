@@ -32,6 +32,17 @@ public final class VeinMinerManager {
 
     private final Set<GameMode> disabledGameModes = EnumSet.noneOf(GameMode.class);
 
+    private final VeinMinerServer veinMiner;
+
+    /**
+     * Construct a new {@link VeinMinerManager}.
+     *
+     * @param veinMiner the vein miner server instance
+     */
+    public VeinMinerManager(@NotNull VeinMinerServer veinMiner) {
+        this.veinMiner = veinMiner;
+    }
+
     /**
      * Set the global {@link BlockList}.
      * <p>
@@ -120,7 +131,7 @@ public final class VeinMinerManager {
     public BlockList getAllVeinMineableBlocks() {
         BlockList blockList = globalBlockList.clone();
 
-        VeinMinerServer.getInstance().getToolCategoryRegistry().getAll().forEach(category -> {
+        this.veinMiner.getToolCategoryRegistry().getAll().forEach(category -> {
             blockList.addAll(category.getBlockList());
         });
 
@@ -175,7 +186,7 @@ public final class VeinMinerManager {
             return true;
         }
 
-        for (VeinMinerToolCategory category : VeinMinerServer.getInstance().getToolCategoryRegistry().getAll()) {
+        for (VeinMinerToolCategory category : veinMiner.getToolCategoryRegistry().getAll()) {
             if (category.getBlockList().containsState(state)) {
                 return true;
             }
@@ -200,7 +211,7 @@ public final class VeinMinerManager {
             return true;
         }
 
-        for (VeinMinerToolCategory category : VeinMinerServer.getInstance().getToolCategoryRegistry().getAll()) {
+        for (VeinMinerToolCategory category : veinMiner.getToolCategoryRegistry().getAll()) {
             if (category.getBlockList().containsType(type)) {
                 return true;
             }

@@ -123,14 +123,14 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
         }
 
         boolean stated = (matcher.group(2) != null);
-        ServerPlatform reconstructor = VeinMinerServer.getInstance().getPlatform();
+        ServerPlatform platform = VeinMinerServer.getInstance().getPlatform();
 
         if (stated) {
-            BlockState state = reconstructor.getState(matcher.group());
+            BlockState state = platform.getState(matcher.group());
             return (state != null) ? new VeinMinerBlockState(state) : null;
         }
         else {
-            BlockType type = reconstructor.getBlockType(matcher.group(1));
+            BlockType type = platform.getBlockType(matcher.group(1));
             return (type != null) ? new VeinMinerBlockType(type) : null;
         }
     }

@@ -8,6 +8,8 @@ import java.util.function.IntFunction;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.VeinMinerServer;
+
 /**
  * An implementation of {@link PersistentDataStorage} for MySQL servers.
  */
@@ -51,6 +53,7 @@ public final class PersistentDataStorageMySQL extends PersistentDataStorageSQL {
     /**
      * Construct a new {@link PersistentDataStorageMySQL}.
      *
+     * @param veinMiner the vein miner server
      * @param host the server host
      * @param port the server port
      * @param username the username
@@ -58,7 +61,9 @@ public final class PersistentDataStorageMySQL extends PersistentDataStorageSQL {
      * @param database the database to use
      * @param tablePrefix the prefix for all tables created by this implementation
      */
-    public PersistentDataStorageMySQL(@NotNull String host, int port, @NotNull String username, @NotNull String password, @NotNull String database, @NotNull String tablePrefix) {
+    public PersistentDataStorageMySQL(@NotNull VeinMinerServer veinMiner, @NotNull String host, int port, @NotNull String username, @NotNull String password, @NotNull String database, @NotNull String tablePrefix) {
+        super(veinMiner);
+
         this.connectionURL = String.format("jdbc:mysql://%s:%d/%s", host, port, database);
         this.username = username;
         this.password = password;
