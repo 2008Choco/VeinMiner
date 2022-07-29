@@ -5,6 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.metadata.LazyMetadataValue;
+import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMiner;
@@ -14,6 +16,7 @@ import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
 import wtf.choco.veinminer.platform.BukkitServerPlatform;
 import wtf.choco.veinminer.platform.PlatformPlayer;
+import wtf.choco.veinminer.util.VMConstants;
 
 public final class PlayerDataListener implements Listener {
 
@@ -34,6 +37,9 @@ public final class PlayerDataListener implements Listener {
                 e.printStackTrace();
                 return;
             }
+
+            bukkitPlayer.setMetadata(VMConstants.METADATA_KEY_VEIN_MINER_ACTIVE, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, player::isVeinMinerActive));
+            bukkitPlayer.setMetadata(VMConstants.METADATA_KEY_VEINMINING, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, player::isVeinMining));
 
             // Update the selected pattern on the client
             player.executeWhenClientIsReady(() -> VeinMiner.PROTOCOL.sendMessageToClient(player, new PluginMessageClientboundSetPattern(player.getVeinMiningPattern().getKey())));

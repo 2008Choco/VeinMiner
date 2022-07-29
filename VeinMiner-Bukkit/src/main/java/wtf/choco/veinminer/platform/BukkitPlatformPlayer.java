@@ -33,8 +33,6 @@ public final class BukkitPlatformPlayer implements PlatformPlayer {
     BukkitPlatformPlayer(@NotNull UUID playerUUID) {
         this.playerUUID = playerUUID;
         this.player = new WeakReference<>(Bukkit.getPlayer(playerUUID));
-
-        // TODO: Attach metadata to this player
     }
 
     @Override
