@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +75,12 @@ public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguratio
 
     @Override
     public boolean isRepairFriendly(@NotNull String categoryId) {
-        return plugin.getCategoriesConfig().asRawConfig().getBoolean(categoryId + "." + VMConstants.CONFIG_REPAIR_FRIENDLY, false);
+        return isRepairFriendly(categoryId, false);
+    }
+
+    @Override
+    public boolean isRepairFriendly(@NotNull String categoryId, boolean defaultValue) {
+        return plugin.getCategoriesConfig().asRawConfig().getBoolean(categoryId + "." + VMConstants.CONFIG_REPAIR_FRIENDLY, defaultValue);
     }
 
     @Override
@@ -84,7 +90,12 @@ public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguratio
 
     @Override
     public int getMaxVeinSize(@NotNull String categoryId) {
-        return plugin.getCategoriesConfig().asRawConfig().getInt(categoryId + "." + VMConstants.CONFIG_MAX_VEIN_SIZE, 64);
+        return getMaxVeinSize(categoryId, 64);
+    }
+
+    @Override
+    public int getMaxVeinSize(@NotNull String categoryId, int defaultValue) {
+        return plugin.getCategoriesConfig().asRawConfig().getInt(categoryId + "." + VMConstants.CONFIG_MAX_VEIN_SIZE, defaultValue);
     }
 
     @Override
@@ -94,7 +105,12 @@ public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguratio
 
     @Override
     public double getCost(@NotNull String categoryId) {
-        return plugin.getCategoriesConfig().asRawConfig().getDouble(categoryId + "." + VMConstants.CONFIG_COST, 0.0);
+        return getCost(categoryId, 0.0);
+    }
+
+    @Override
+    public double getCost(@NotNull String categoryId, double defaultValue) {
+        return plugin.getCategoriesConfig().asRawConfig().getDouble(categoryId + "." + VMConstants.CONFIG_COST, defaultValue);
     }
 
     @Override
@@ -124,6 +140,15 @@ public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguratio
     @Override
     public Set<String> getDisabledWorlds(@NotNull String categoryId) {
         return new HashSet<>(plugin.getCategoriesConfig().asRawConfig().getStringList(categoryId + "." + VMConstants.CONFIG_DISABLED_WORLDS));
+    }
+
+    @NotNull
+    @Override
+    public Set<String> getDisabledWorlds(@NotNull String categoryId, Supplier<Set<String>> defaultValues) {
+        String key = categoryId + "." + VMConstants.CONFIG_DISABLED_WORLDS;
+        FileConfiguration config = plugin.getCategoriesConfig().asRawConfig();
+
+        return config.contains(key, true) ? new HashSet<>(config.getStringList(key)) : defaultValues.get();
     }
 
     @Override

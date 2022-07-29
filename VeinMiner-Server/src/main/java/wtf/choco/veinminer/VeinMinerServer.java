@@ -348,11 +348,12 @@ public final class VeinMinerServer implements VeinMiner {
                 continue;
             }
 
+            VeinMiningConfig globalConfig = veinMinerManager.getGlobalConfig();
             VeinMiningConfig veinMinerConfig = VeinMiningConfig.builder()
-                    .repairFriendly(config.isRepairFriendly(categoryId))
-                    .maxVeinSize(config.getMaxVeinSize(categoryId))
-                    .cost(config.getCost(categoryId))
-                    .disableWorlds(config.getDisabledWorlds(categoryId))
+                    .repairFriendly(config.isRepairFriendly(categoryId, globalConfig.isRepairFriendly()))
+                    .maxVeinSize(config.getMaxVeinSize(categoryId, globalConfig.getMaxVeinSize()))
+                    .cost(config.getCost(categoryId, globalConfig.getCost()))
+                    .disableWorlds(config.getDisabledWorlds(categoryId, () -> globalConfig.getDisabledWorlds()))
                     .build();
 
             Set<ItemType> items = new HashSet<>();

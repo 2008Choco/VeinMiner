@@ -6,7 +6,6 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.platform.BukkitPlatformPlayer;
@@ -19,21 +18,11 @@ import wtf.choco.veinminer.util.VMConstants;
  */
 public class SimpleVaultEconomy implements SimpleEconomy {
 
-    private final Economy economy;
-
-    /**
-     * Construct a new {@link SimpleVaultEconomy}.
-     */
-    public SimpleVaultEconomy() {
-        Preconditions.checkArgument(Bukkit.getPluginManager().getPlugin("Vault") != null, "Vault must be loaded in order to use a SimpleVaultEconomy");
-
-        RegisteredServiceProvider<Economy> serviceProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
-        this.economy = (serviceProvider != null) ? serviceProvider.getProvider() : null;
-    }
+    private Economy economy;
 
     @Override
     public boolean shouldCharge(@NotNull PlatformPlayer player) {
-        return hasEconomyPlugin() && player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
+        return hasEconomyPlugin() && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
     }
 
     @Override
@@ -48,7 +37,7 @@ public class SimpleVaultEconomy implements SimpleEconomy {
 
     @Override
     public void withdraw(@NotNull PlatformPlayer player, double amount) {
-        Preconditions.checkArgument(!player.isOnline(), "cannot charge offline player");
+        Preconditions.checkArgument(player.isOnline(), "cannot charge offline player");
 
         if (hasEconomyPlugin()) {
             Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayer();
@@ -64,6 +53,10 @@ public class SimpleVaultEconomy implements SimpleEconomy {
      * @return true if economy is enabled, false otherwise
      */
     public boolean hasEconomyPlugin() {
+        if (economy == null) {
+            this.economy = Bukkit.getServicesManager().load(Economy.class);
+        }
+
         return economy != null;
     }
 
