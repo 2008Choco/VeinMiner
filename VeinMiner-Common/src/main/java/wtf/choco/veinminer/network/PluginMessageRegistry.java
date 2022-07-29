@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.network;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /**
  * Represents an internal registry mapping plugin messages to ids and constructors.
@@ -80,6 +82,12 @@ public final class PluginMessageRegistry<T extends PluginMessageListener> {
     public PluginMessage<T> createPluginMessage(int messageId, @NotNull PluginMessageByteBuffer buffer) {
         Function<PluginMessageByteBuffer, ? extends PluginMessage<T>> messageConstructor = messageConstructors.get(messageId);
         return (messageConstructor != null) ? messageConstructor.apply(buffer) : null;
+    }
+
+    @NotNull
+    @VisibleForTesting
+    public Map<Class<? extends PluginMessage<T>>, Integer> getRegisteredMessages() {
+        return new HashMap<>(messageIds);
     }
 
 }

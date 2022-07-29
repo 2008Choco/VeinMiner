@@ -6,6 +6,9 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.documentation.Documentation;
+import wtf.choco.veinminer.documentation.MessageField;
+import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
@@ -63,6 +66,16 @@ public final class PluginMessageClientboundSyncRegisteredPatterns implements Plu
     @Override
     public void handle(@NotNull ClientboundPluginMessageListener listener) {
         listener.handleSyncRegisteredPatterns(this);
+    }
+
+    @Documentation
+    private static void document(ProtocolMessageDocumentation.Builder documentation) {
+        documentation.name("Sync Registered Patterns")
+            .description("""
+                    Sent by the server after the client has successfully shaken hands and has been sent the handshake response. Synchronizes the server's registered pattern keys with the client so that it may switch between patterns using a key bind.
+                    """)
+            .field(MessageField.TYPE_VARINT, "Size", "The amount of patterns being sent to the client")
+            .field(MessageField.TYPE_ARRAY_OF.apply(MessageField.TYPE_NAMESPACED_KEY), "Pattern Keys", "An array containing the namespaced keys of all vein mining patterns registered on the server");
     }
 
 }

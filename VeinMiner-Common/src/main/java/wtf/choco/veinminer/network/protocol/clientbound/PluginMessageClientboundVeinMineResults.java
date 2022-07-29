@@ -9,6 +9,9 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.documentation.Documentation;
+import wtf.choco.veinminer.documentation.MessageField;
+import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
@@ -73,6 +76,16 @@ public final class PluginMessageClientboundVeinMineResults implements PluginMess
     @Override
     public void handle(@NotNull ClientboundPluginMessageListener listener) {
         listener.handleVeinMineResults(this);
+    }
+
+    @Documentation
+    private static void document(ProtocolMessageDocumentation.Builder documentation) {
+        documentation.name("Vein Mine Results")
+            .description("""
+                    Sent in response to a client's Request Vein Mine including all block positions as a result of a vein mine at the client's target block and currently active tool category (according to the tool in the player's hand at the time the message was received by the server).
+                    """)
+            .field(MessageField.TYPE_VARINT, "Size", "The amount of block positions that were included in the resulting vein mine")
+            .field(MessageField.TYPE_ARRAY_OF.apply(MessageField.TYPE_BLOCK_POSITION), "Positions", "An array containing all block positions that would be vein mined by the server");
     }
 
 }

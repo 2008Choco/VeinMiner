@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
@@ -128,6 +129,12 @@ public final class PluginMessageProtocol {
     public void registerChannels(@NotNull ChannelRegistrar registrar) {
         registrar.registerServerboundMessageHandler(channel, (PluginMessageRegistry<ServerboundPluginMessageListener>) registries.get(MessageDirection.SERVERBOUND));
         registrar.registerClientboundMessageHandler(channel, (PluginMessageRegistry<ClientboundPluginMessageListener>) registries.get(MessageDirection.CLIENTBOUND));
+    }
+
+    @NotNull
+    @VisibleForTesting
+    public PluginMessageRegistry<?> getPacketRegistry(@NotNull MessageDirection direction) {
+        return registries.get(direction);
     }
 
 }

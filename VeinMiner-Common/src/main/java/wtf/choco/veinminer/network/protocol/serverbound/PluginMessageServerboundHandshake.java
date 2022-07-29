@@ -3,6 +3,9 @@ package wtf.choco.veinminer.network.protocol.serverbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.documentation.Documentation;
+import wtf.choco.veinminer.documentation.MessageField;
+import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
@@ -49,6 +52,15 @@ public final class PluginMessageServerboundHandshake implements PluginMessage<Se
     @Override
     public void handle(@NotNull ServerboundPluginMessageListener listener) {
         listener.handleHandshake(this);
+    }
+
+    @Documentation
+    private static void document(ProtocolMessageDocumentation.Builder documentation) {
+        documentation.name("Handshake (serverbound)")
+            .description("""
+                    Sent by the client when logging in to inform the server that the client has the VeinMiner client-sided mod installed. The server is expected to respond promptly with a Handshake Response. Upon receiving this message, the server will automatically set the player's activation mode to CLIENT.
+                    """)
+            .field(MessageField.TYPE_VARINT, "Protocol Version", "The client's protocol version");
     }
 
 }

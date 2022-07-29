@@ -3,6 +3,9 @@ package wtf.choco.veinminer.network.protocol.serverbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.documentation.Documentation;
+import wtf.choco.veinminer.documentation.MessageField;
+import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
@@ -49,6 +52,15 @@ public final class PluginMessageServerboundToggleVeinMiner implements PluginMess
     @Override
     public void handle(@NotNull ServerboundPluginMessageListener listener) {
         listener.handleToggleVeinMiner(this);
+    }
+
+    @Documentation
+    private static void document(ProtocolMessageDocumentation.Builder documentation) {
+        documentation.name("Toggle Vein Miner")
+            .description("""
+                    Sent by the client to inform the server that it has activated or deactivated its vein miner keybind.
+                    """)
+            .field(MessageField.TYPE_BOOLEAN, "State", "The new state of the vein miner activation");
     }
 
 }

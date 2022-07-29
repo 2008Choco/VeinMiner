@@ -3,6 +3,8 @@ package wtf.choco.veinminer.network.protocol.clientbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.documentation.Documentation;
+import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
 import wtf.choco.veinminer.network.PluginMessage;
 import wtf.choco.veinminer.network.PluginMessageByteBuffer;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
@@ -35,6 +37,14 @@ public final class PluginMessageClientboundHandshakeResponse implements PluginMe
     @Override
     public void handle(@NotNull ClientboundPluginMessageListener listener) {
         listener.handleHandshakeResponse(this);
+    }
+
+    @Documentation
+    private static void document(ProtocolMessageDocumentation.Builder documentation) {
+        documentation.name("Handshake Response")
+            .description("""
+                    Sent in response to a client's Handshake. This message contains no additional data (yet) and acts primarily as a server acknowledgement of the client mod.
+                    """);
     }
 
 }

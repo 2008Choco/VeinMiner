@@ -28,27 +28,27 @@ These are messages sent from the client to the server.
 
 ### Handshake (serverbound)
 
-Sent by the client when logging in to inform the server that the client has the VeinMiner client-sided mod installed. The server is expected to respond promptly with a Handshake Response. Upon receiving this message, the server will automatically set the player's activation mode to `CLIENT`.
+Sent by the client when logging in to inform the server that the client has the VeinMiner client-sided mod installed. The server is expected to respond promptly with a Handshake Response. Upon receiving this message, the server will automatically set the player's activation mode to CLIENT.
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>0x00</td>
-            <td>Server</td>
-            <td>Protocol Version</td>
-            <td><a href="https://wiki.vg/Protocol#VarInt_and_VarLong">VarInt</href></td>
-            <td>The client's protocol version</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>0x0</td>
+        <td>Server</td>
+        <td>Protocol Version</td>
+        <td>VarInt</td>
+        <td>The client's protocol version</td>
+    </tr>
+</tbody>
 </table>
 
 ### Toggle Vein Miner
@@ -56,51 +56,51 @@ Sent by the client when logging in to inform the server that the client has the 
 Sent by the client to inform the server that it has activated or deactivated its vein miner keybind.
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>0x01</td>
-            <td>Server</td>
-            <td>State</td>
-            <td>Boolean</td>
-            <td>The new state of the vein miner activation</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>0x1</td>
+        <td>Server</td>
+        <td>State</td>
+        <td>Boolean</td>
+        <td>The new state of the vein miner activation</td>
+    </tr>
+</tbody>
 </table>
 
 ### Request Vein Mine
 
 Sent by the client to request the server to perform a no-op vein mine on the block at which the player is currently looking. The player's active tool category, and all other vein miner required information is calculated on the server, not by the client, exception to the provided origin position.
 
-Note that if the player's target block is also calculated on the server but the server will make use of the position sent by the client such that it is within 2 blocks of  the server calculated block position. If the position sent to the server exceeds the 2 block distance limit, the server will respond with an empty vein mine result.
+Note that if the player's target block is also calculated on the server but the server will make use of the position sent by the client such that it is within 2 blocks of the server calculated block position. If the position sent to the server exceeds the 2 block distance limit, the server will respond with an empty vein mine result.
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=1>0x02</td>
-            <td rowspan=1>Server</td>
-            <td>Origin</td>
-            <td>BlockPosition</td>
-            <td>The position at which to initiate vein miner</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>0x2</td>
+        <td>Server</td>
+        <td>Origin</td>
+        <td>BlockPosition</td>
+        <td>The position at which to initiate vein miner</td>
+    </tr>
+</tbody>
 </table>
 
 ### Select Pattern
@@ -108,53 +108,47 @@ Note that if the player's target block is also calculated on the server but the 
 Sent by the client when it wants to change vein mining patterns as a result of a key press. The server is expected to respond with a Set Pattern message to confirm that the requested pattern is to be set on the client, however the server is not guaranteed to respond in the event that the request was unsuccessful.
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=1>0x03</td>
-            <td rowspan=1>Server</td>
-            <td>Pattern Key</td>
-            <td>NamespacedKey</td>
-            <td>The key of the pattern to request to be set</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>0x3</td>
+        <td>Server</td>
+        <td>Pattern Key</td>
+        <td>NamespacedKey</td>
+        <td>The key of the pattern to request to be set</td>
+    </tr>
+</tbody>
 </table>
 
 ## Clientbound
 
-These are messages sent by the server to the client
+These are messages sent by the server to the client.
 
 ### Handshake Response
 
 Sent in response to a client's Handshake. This message contains no additional data (yet) and acts primarily as a server acknowledgement of the client mod.
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=0>0x00</td>
-            <td rowspan=0>Client</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>0x0</td>
+        <td>Client</td>
+    </tr>
+</tbody>
 </table>
 
 ### Sync Registered Patterns
@@ -162,29 +156,29 @@ Sent in response to a client's Handshake. This message contains no additional da
 Sent by the server after the client has successfully shaken hands and has been sent the handshake response. Synchronizes the server's registered pattern keys with the client so that it may switch between patterns using a key bind.
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=2>0x01</td>
-            <td rowspan=2>Client</td>
-            <td>Size</td>
-            <td>VarInt</td>
-            <td>The amount of pattern keys being sent to the client</td>
-        </tr>
-        <tr>
-            <td>Pattern Keys</td>
-            <td>Array of NamespacedKey</td>
-            <td>An array containing the namespaced keys of all vein mining patterns registered on the server</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td rowspan=2>0x1</td>
+        <td rowspan=2>Client</td>
+        <td>Size</td>
+        <td>VarInt</td>
+        <td>The amount of patterns being sent to the client</td>
+    </tr>
+    <tr>
+        <td>Pattern Keys</td>
+        <td>Array of NamespacedKey</td>
+        <td>An array containing the namespaced keys of all vein mining patterns registered on the server</td>
+    </tr>
+</tbody>
 </table>
 
 ### Set Config
@@ -192,43 +186,43 @@ Sent by the server after the client has successfully shaken hands and has been s
 Sent by the server after the client's handshake, or when the server reloads its configuration, to set the client's capabilities. The client is expected to respect these values to avoid network overhead, but the server performs additional checks and will not respond to incoming messages if a specific feature is disabled by the server.
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=1>0x02</td>
-            <td rowspan=1>Client</td>
-            <td>Config Bitmask</td>
-            <td><table>
-                <thead>
-                    <th>Byte</th>
-                    <th>Meaning</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>0x01</td>
-                        <td>If the activation keybind is allowed</td>
-                    </tr>
-                    <tr>
-                        <td>0x02</td>
-                        <td>If the pattern switching keybinds are allowed</td>
-                    </tr>
-                    <tr>
-                        <td>0x04</td>
-                        <td>If the client is allowed to render a wireframe around vein mine results</td>
-                    </tr>
-                </tbody>
-            </table></td>
-            <td>A bitmask of configured values.</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>0x2</td>
+        <td>Client</td>
+        <td>Config Bitmask</td>
+        <td><table>
+<thead>
+    <th>Byte</th>
+    <th>Meaning</th>
+</thead>
+<tbody>
+    <tr>
+        <td>0x1</td>
+        <td>If the activation keybind is allowed</td>
+    </tr>
+    <tr>
+        <td>0x2</td>
+        <td>If the pattern switching keybinds are allowed</td>
+    </tr>
+    <tr>
+        <td>0x4</td>
+        <td>If the client is allowed to render a wireframe around vein mine results</td>
+    </tr>
+</tbody>
+</table></td>
+        <td>A bitmask of configured values</td>
+    </tr>
+</tbody>
 </table>
 
 ### Vein Mine Results
@@ -236,29 +230,29 @@ Sent by the server after the client's handshake, or when the server reloads its 
 Sent in response to a client's Request Vein Mine including all block positions as a result of a vein mine at the client's target block and currently active tool category (according to the tool in the player's hand at the time the message was received by the server).
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=2>0x03</td>
-            <td rowspan=2>Client</td>
-            <td>Size</td>
-            <td><a href="https://wiki.vg/Protocol#VarInt_and_VarLong">VarInt</href></td>
-            <td>The amount of block positions that were included in the resulting vein mine</td>
-        </tr>
-        <tr>
-            <td>Positions</td>
-            <td>Array of <a href="https://wiki.vg/Protocol#Position">BlockPosition</a></td>
-            <td>An array containing all block positions that would be vein mined by the server.</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td rowspan=2>0x3</td>
+        <td rowspan=2>Client</td>
+        <td>Size</td>
+        <td>VarInt</td>
+        <td>The amount of block positions that were included in the resulting vein mine</td>
+    </tr>
+    <tr>
+        <td>Positions</td>
+        <td>Array of BlockPosition</td>
+        <td>An array containing all block positions that would be vein mined by the server</td>
+    </tr>
+</tbody>
 </table>
 
 ### Set Pattern
@@ -266,22 +260,22 @@ Sent in response to a client's Request Vein Mine including all block positions a
 Sets the selected pattern on the client. Sent in response to a server-bound Select Pattern message from the client, or when set by the server manually. If the client does not recognize this pattern key, the client should fall back to the pattern at index 0 of the patterns that were sent by the Sync Registered Patterns message.
 
 <table>
-    <thead>
-        <tr>
-            <th>Packet ID</th>
-            <th>Bound To</th>
-            <th>Field Name</th>
-            <th>Field Type</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=1>0x04</td>
-            <td rowspan=1>Client</td>
-            <td>Pattern Key</td>
-            <td>NamespacedKey</td>
-            <td>The pattern key to set on the client.</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th>Packet ID</th>
+        <th>Bound To</th>
+        <th>Field Name</th>
+        <th>Field Type</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>0x4</td>
+        <td>Client</td>
+        <td>Pattern Key</td>
+        <td>NamespacedKey</td>
+        <td>The pattern key to set on the client</td>
+    </tr>
+</tbody>
 </table>
