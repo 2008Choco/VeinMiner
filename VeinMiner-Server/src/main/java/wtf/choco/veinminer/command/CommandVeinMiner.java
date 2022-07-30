@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -139,7 +141,8 @@ public final class CommandVeinMiner implements CommandExecutor {
             }
 
             if (args.length < 2) {
-                return false;
+                player.sendMessage("/" + label + " mode <" + Stream.of(ActivationStrategy.values()).map(strategy -> strategy.name().toLowerCase()).collect(Collectors.joining("|")) + ">");
+                return true;
             }
 
             Optional<ActivationStrategy> strategyOptional = EnumUtil.get(ActivationStrategy.class, args[1].toUpperCase());
@@ -173,12 +176,12 @@ public final class CommandVeinMiner implements CommandExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("blocklist")) {
-            this.commandBlocklist.execute(sender, args[0], Arrays.copyOfRange(args, 1, args.length));
+            this.commandBlocklist.execute(sender, label + " " + args[0], Arrays.copyOfRange(args, 1, args.length));
             return true;
         }
 
         else if (args[0].equalsIgnoreCase("toollist")) {
-            this.commandToollist.execute(sender, args[0], Arrays.copyOfRange(args, 1, args.length));
+            this.commandToollist.execute(sender, label + " " + args[0], Arrays.copyOfRange(args, 1, args.length));
             return true;
         }
 
@@ -194,7 +197,8 @@ public final class CommandVeinMiner implements CommandExecutor {
             }
 
             if (args.length < 2) {
-                return false;
+                sender.sendMessage("/" + label + " pattern <pattern>");
+                return true;
             }
 
             NamespacedKey patternKey = NamespacedKey.fromString(args[1], "veinminer");
@@ -247,11 +251,11 @@ public final class CommandVeinMiner implements CommandExecutor {
         }
 
         if (args[0].equalsIgnoreCase("blocklist")) {
-            return commandBlocklist.tabComplete(sender, label, Arrays.copyOfRange(args, 1, args.length));
+            return commandBlocklist.tabComplete(sender, label + " " + args[0], Arrays.copyOfRange(args, 1, args.length));
         }
 
         else if (args[0].equalsIgnoreCase("toollist")) {
-            return commandToollist.tabComplete(sender, label, Arrays.copyOfRange(args, 1, args.length));
+            return commandToollist.tabComplete(sender, label + " " + args[0], Arrays.copyOfRange(args, 1, args.length));
         }
 
         else if (args.length == 2) {

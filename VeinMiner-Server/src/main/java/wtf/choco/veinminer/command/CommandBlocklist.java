@@ -29,7 +29,8 @@ public final class CommandBlocklist implements CommandExecutor {
     @Override
     public boolean execute(@NotNull PlatformCommandSender sender, @NotNull String label, String @NotNull [] args) {
         if (args.length < 1) {
-            return false;
+            sender.sendMessage("/" + label + " <category> <add|remove|list>");
+            return true;
         }
 
         VeinMinerToolCategory category = veinMiner.getToolCategoryRegistry().get(args[0]);
@@ -39,12 +40,14 @@ public final class CommandBlocklist implements CommandExecutor {
         }
 
         if (args.length < 2) {
-            return false;
+            sender.sendMessage("/" + label + " " + args[0] + " <add|remove|list>");
+            return true;
         }
 
         if (args[1].equalsIgnoreCase("add")) {
             if (args.length < 3) {
-                return false;
+                sender.sendMessage("/" + label + " " + args[0] + " " + args[1] + " <block>");
+                return true;
             }
 
             BlockList blockList = category.getBlockList();
@@ -70,7 +73,8 @@ public final class CommandBlocklist implements CommandExecutor {
 
         else if (args[1].equalsIgnoreCase("remove")) {
             if (args.length < 3) {
-                return false;
+                sender.sendMessage("/" + label + " " + args[0] + " " + args[1] + " <block>");
+                return true;
             }
 
             BlockList blockList = category.getBlockList();
