@@ -66,6 +66,22 @@ public interface VeinMiner {
     );
 
     /**
+     * The legacy protocol for versions before VeinMiner 2.0.0. This protocol is not to be used
+     * under any circumstances.
+     *
+     * @see #PROTOCOL modern protocol
+     *
+     * @deprecated legacy
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static final PluginMessageProtocol PROTOCOL_LEGACY = new PluginMessageProtocol(NamespacedKey.veinminer("activation"), 1,
+            serverboundRegistry -> serverboundRegistry
+                .registerMessage(PluginMessageServerboundHandshake.class, PluginMessageServerboundHandshake::new)
+                .registerMessage(PluginMessageServerboundToggleVeinMiner.class, PluginMessageServerboundToggleVeinMiner::new),
+            clientboundRegistry -> { } // No client-bound messages
+    );
+
+    /**
      * Get the version of VeinMiner (not to be confused with the protocol version).
      *
      * @return the version

@@ -37,9 +37,9 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     private static final VoxelShape WIDE_CUBE = Shapes.box(-0.005, -0.005, -0.005, 1.005, 1.005, 1.005);
 
-    private boolean enabledOnServer, active;
+    private boolean enabledOnServer = true /* TODO: Set to "false" once VeinMiner.PROTOCOL_LEGACY is removed */, active;
     private ClientConfig config = ClientConfig.builder()
-            .allowActivationKeybind(false)
+            .allowActivationKeybind(true) // Only set to true for legacy reasons. TODO: Set to "false" once VeinMiner.PROTOCOL_LEGACY is removed
             .allowPatternSwitchingKeybind(false)
             .allowWireframeRendering(false)
             .build();
@@ -259,7 +259,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     @Override
     public void handleHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message) {
-        this.enabledOnServer = true;
+        // this.enabledOnServer = true; TODO: Re-enable when PROTOCOL_LEGACY is removed
     }
 
     @Override

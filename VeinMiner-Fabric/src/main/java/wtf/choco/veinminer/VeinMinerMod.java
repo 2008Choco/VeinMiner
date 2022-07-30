@@ -55,9 +55,12 @@ public final class VeinMinerMod implements ClientModInitializer {
 
     private boolean changingPatterns = false;
 
+    @SuppressWarnings("removal") // VeinMiner.PROTOCOL_LEGACY
     @Override
     public void onInitializeClient() {
-        VeinMiner.PROTOCOL.registerChannels(new FabricChannelRegistrar());
+        FabricChannelRegistrar channelRegistrar = new FabricChannelRegistrar();
+        VeinMiner.PROTOCOL.registerChannels(channelRegistrar);
+        VeinMiner.PROTOCOL_LEGACY.registerChannels(channelRegistrar);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!hasServerState() || !getServerState().isEnabledOnServer()) {
@@ -75,7 +78,11 @@ public final class VeinMinerMod implements ClientModInitializer {
 
                 // Activating / deactivating vein miner
                 if (lastActive ^ active) {
-                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundToggleVeinMiner(active));
+                    PluginMessageServerboundToggleVeinMiner message = new PluginMessageServerboundToggleVeinMiner(active);
+
+                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, message);
+                    VeinMiner.PROTOCOL_LEGACY.sendMessageToServer(serverState, message); // LEGACY
+
                     shouldRequestVeinMine = active;
                 }
             }
@@ -143,6 +150,7 @@ public final class VeinMinerMod implements ClientModInitializer {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
             VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
+            VeinMiner.PROTOCOL_LEGACY.sendMessageToServer(serverState, new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL_LEGACY.getVersion())); // LEGACY
         });
 
         HudRenderCallback.EVENT.register((stack, tickDelta) -> {
