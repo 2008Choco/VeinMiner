@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +19,8 @@ import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.api.event.player.PatternChangeEvent;
+import wtf.choco.veinminer.data.LegacyImportTask;
+import wtf.choco.veinminer.data.PersistentDataStorageSQL;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.platform.PlatformCommandSender;
 import wtf.choco.veinminer.platform.PlatformPlayer;
@@ -29,6 +34,10 @@ import wtf.choco.veinminer.util.StringUtils;
 import wtf.choco.veinminer.util.VeinMinerConstants;
 
 public final class CommandVeinMiner implements CommandExecutor {
+
+    private static final long IMPORT_CONFIRMATION_TIME_MILLIS = TimeUnit.SECONDS.toMillis(20);
+
+    private final Map<PlatformCommandSender, Long> requiresConfirmation = new HashMap<>();
 
     private final VeinMinerServer veinMiner;
     private final CommandExecutor commandBlocklist;
@@ -231,6 +240,35 @@ public final class CommandVeinMiner implements CommandExecutor {
             return true;
         }
 
+        else if (args[0].equalsIgnoreCase("import")) {
+            if (!(veinMiner.getPersistentDataStorage() instanceof PersistentDataStorageSQL dataStorage)) {
+                sender.sendMessage(ChatFormat.RED + "You are not using MySQL or SQLite storage. You do not need to import data.");
+                return true;
+            }
+
+            if (System.currentTimeMillis() - requiresConfirmation.getOrDefault(sender, 0L) > IMPORT_CONFIRMATION_TIME_MILLIS) {
+                sender.sendMessage(ChatFormat.RED.toString() + ChatFormat.BOLD + "WARNING!");
+                sender.sendMessage(ChatFormat.DARK_RED.toString() + ChatFormat.ITALIC + "This is a destructive operation");
+                sender.sendMessage("");
+                sender.sendMessage("""
+                        The import command is meant to import data from JSON storage from before the 2.0.0 update.
+                        This includes only the player's preferred activation strategy and their disabled categories.
+                        If a JSON file represents the data of a player already in the new VeinMiner database, it will overwrite what is in the database.
+                        Depending on the amount of unique players on your server, this process may take time.
+
+                        You only need to do this import once.
+                        You have 20 seconds to run "/veinminer import" to confirm.
+                        """);
+
+                this.requiresConfirmation.put(sender, System.currentTimeMillis());
+                return true;
+            }
+
+            this.requiresConfirmation.remove(sender);
+            this.veinMiner.getPlatform().runTaskAsynchronously(new LegacyImportTask(veinMiner, sender, dataStorage));
+            return true;
+        }
+
         return false;
     }
 
@@ -246,6 +284,7 @@ public final class CommandVeinMiner implements CommandExecutor {
             this.addConditionally(suggestions, "toggle", () -> sender.hasPermission(VeinMinerConstants.PERMISSION_COMMAND_TOGGLE));
             this.addConditionally(suggestions, "mode", () -> sender.hasPermission(VeinMinerConstants.PERMISSION_COMMAND_MODE));
             this.addConditionally(suggestions, "pattern", () -> sender.hasPermission(VeinMinerConstants.PERMISSION_COMMAND_PATTERN));
+            this.addConditionally(suggestions, "import", () -> sender.hasPermission(VeinMinerConstants.PERMISSION_COMMAND_IMPORT));
 
             return StringUtils.copyPartialMatches(args[0], suggestions, new ArrayList<>());
         }

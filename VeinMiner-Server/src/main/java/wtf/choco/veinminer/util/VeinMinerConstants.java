@@ -18,6 +18,7 @@ public final class VeinMinerConstants {
     public static final String PERMISSION_COMMAND_TOGGLE = "veinminer.command.toggle";
     public static final String PERMISSION_COMMAND_MODE = "veinminer.command.mode";
     public static final String PERMISSION_COMMAND_PATTERN = "veinminer.command.pattern";
+    public static final String PERMISSION_COMMAND_IMPORT = "veinminer.command.import";
 
     // Dynamic permission nodes
     public static final Function<VeinMinerToolCategory, String> PERMISSION_VEINMINE = category -> "veinminer.veinmine." + category.getId().toLowerCase();

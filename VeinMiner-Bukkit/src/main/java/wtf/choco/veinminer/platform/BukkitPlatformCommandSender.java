@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.platform;
 
+import java.util.Objects;
+
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +27,16 @@ public class BukkitPlatformCommandSender implements PlatformCommandSender {
     @Override
     public boolean hasPermission(@NotNull String permission) {
         return sender.hasPermission(permission);
+    }
+
+    @Override
+    public int hashCode() {
+        return sender.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || (obj instanceof BukkitPlatformCommandSender other && Objects.equals(sender, other.sender));
     }
 
 }

@@ -172,6 +172,11 @@ public final class BukkitServerPlatform implements ServerPlatform {
         Bukkit.getScheduler().runTaskLater(plugin, runnable, ticks);
     }
 
+    @Override
+    public void runTaskAsynchronously(@NotNull Runnable runnable) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+    }
+
     public static BukkitServerPlatform getInstance() {
         return (instance != null) ? instance : (instance = new BukkitServerPlatform(VeinMinerPlugin.getInstance()));
     }

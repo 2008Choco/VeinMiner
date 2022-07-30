@@ -94,3 +94,6 @@ permissions:
   veinminer.command.pattern:
     description: Allow the use of the '/veinminer pattern' subcommand
     default: true
+  veinminer.command.import:
+    description: Allow the use of the '/veinminer import' subcommand
+    default: op

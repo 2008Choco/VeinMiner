@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
@@ -169,6 +170,47 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
         });
     }
 
+    /**
+     * Import legacy data into the SQL database. This makes no attempt at preserving existing
+     * entries in the database.
+     *
+     * @param data the data to import
+     *
+     * @return a completable future, completed when the import has finished
+     */
+    @NotNull
+    public CompletableFuture<Integer> importLegacyData(@NotNull List<LegacyPlayerData> data) {
+        if (data.isEmpty()) {
+            return CompletableFuture.completedFuture(0);
+        }
+
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = openConnection()) {
+                PreparedStatement statement = connection.prepareStatement(getInsertPlayerDataStatement());
+
+                int dispatched = 0;
+                for (LegacyPlayerData playerData : data) {
+                    this.writeToImportSaveStatement(statement, playerData);
+                    statement.addBatch();
+
+                    // If we reach over 100 updates to perform, send off a batch to start processing while we finish off the rest
+                    if (++dispatched % 100 == 0) {
+                        statement.executeBatch();
+                        dispatched = 0;
+                    }
+                }
+
+                if (dispatched > 0) {
+                    statement.executeBatch();
+                }
+            } catch (SQLException e) {
+                throw new CompletionException(e);
+            }
+
+            return data.size();
+        });
+    }
+
     protected abstract void initDriver() throws ClassNotFoundException;
 
     @NotNull
@@ -186,14 +228,22 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
     @NotNull
     protected abstract String getSelectAllPlayerDataBatchQuery(int count);
 
+    private void writeToSaveStatement(PreparedStatement statement, UUID playerUUID, ActivationStrategy activationStrategy, Collection<VeinMinerToolCategory> disabledCategories, VeinMiningPattern pattern) throws SQLException {
+        statement.setString(1, playerUUID.toString());
+        statement.setString(2, activationStrategy.name());
+
+        String disabledCategoriesString = (disabledCategories != null) ? disabledCategories.stream().map(VeinMinerToolCategory::getId).collect(Collectors.joining(",")) : null;
+        statement.setString(3, disabledCategories == null || disabledCategories.isEmpty() ? null : disabledCategoriesString);
+
+        statement.setString(4, (pattern != null) ? pattern.getKey().toString() : null);
+    }
+
     private void writeToSaveStatement(PreparedStatement statement, VeinMinerPlayer player) throws SQLException {
-        statement.setString(1, player.getPlayerUUID().toString());
-        statement.setString(2, player.getActivationStrategy().name());
+        this.writeToSaveStatement(statement, player.getPlayerUUID(), player.getActivationStrategy(), player.getDisabledCategories(), player.getVeinMiningPattern());
+    }
 
-        String disabledCategories = player.getDisabledCategories().stream().map(VeinMinerToolCategory::getId).collect(Collectors.joining(","));
-        statement.setString(3, disabledCategories.isEmpty() ? null : disabledCategories);
-
-        statement.setString(4, player.getVeinMiningPattern().getKey().toString());
+    private void writeToImportSaveStatement(PreparedStatement statement, LegacyPlayerData data) throws SQLException {
+        this.writeToSaveStatement(statement, data.playerUUID(), data.activationStrategy(), data.disabledCategories(), null);
     }
 
     private VeinMinerPlayer handleResultSet(VeinMinerPlayer player, ResultSet result) throws SQLException {

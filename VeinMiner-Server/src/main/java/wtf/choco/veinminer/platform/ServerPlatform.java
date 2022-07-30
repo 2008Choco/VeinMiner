@@ -208,4 +208,11 @@ public interface ServerPlatform {
      */
     public void runTaskLater(@NotNull Runnable runnable, int ticks);
 
+    /**
+     * Run the given {@link Runnable} task asynchronously.
+     *
+     * @param runnable the task to run
+     */
+    public void runTaskAsynchronously(@NotNull Runnable runnable);
+
 }
