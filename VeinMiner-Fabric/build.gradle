@@ -22,7 +22,7 @@ dependencies {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/veinminer4bukkit.accesswidener")
+    accessWidenerPath = file("src/main/resources/veinminer_companion.accesswidener")
 }
 
 processResources {

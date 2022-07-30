@@ -257,10 +257,10 @@ public final class VeinMinerMod implements ClientModInitializer {
 
     private static KeyMapping registerKeyMapping(String id, int key) {
         return KeyBindingHelper.registerKeyBinding(new KeyMapping(
-            "key.veinminer4bukkit." + id,
+            "key.veinminer_companion." + id,
             InputConstants.Type.KEYSYM,
             key,
-            "category.veinminer4bukkit.general"
+            "category.veinminer_companion.general"
         ));
     }
 

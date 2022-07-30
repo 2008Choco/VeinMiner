@@ -1,10 +1,10 @@
 {
     "schemaVersion": 1,
-    "id": "veinminer4bukkit",
+    "id": "veinminer_companion",
     "version": "${version}",
 
-    "name": "VeinMiner 4 Bukkit",
-    "description": "Integrates VeinMiner for Bukkit servers to allow for activation with custom keybinds.",
+    "name": "VeinMiner Companion Mod",
+    "description": "Integrates VeinMiner with servers running the server-sided VeinMiner plugin.",
     "authors": [
         "Choco"
     ],
@@ -17,7 +17,7 @@
     },
 
     "license": "GPLv3",
-    "icon": "assets/veinminer4bukkit/icon.png",
+    "icon": "assets/veinminer_companion/icon.png",
 
     "environment": "client",
     "entrypoints": {
@@ -26,7 +26,7 @@
         ]
     },
 
-    "accessWidener" : "veinminer4bukkit.accesswidener",
+    "accessWidener" : "veinminer_companion.accesswidener",
 
     "depends": {
         "fabricloader": ">=0.10",

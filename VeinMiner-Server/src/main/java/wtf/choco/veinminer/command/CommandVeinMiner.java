@@ -158,12 +158,12 @@ public final class CommandVeinMiner implements CommandExecutor {
             }
 
             if (strategy == ActivationStrategy.CLIENT && !veinMinerPlayer.isUsingClientMod()) {
-                player.sendMessage(ChatFormat.RED + "You do not have VeinMiner4Bukkit installed on your client!");
+                player.sendMessage(ChatFormat.RED + "You do not have the VeinMiner Companion mod installed on your client!");
 
                 // Let them know where to install VeinMiner on the client (if it's allowed)
                 if (veinMinerPlayer.getClientConfig().isAllowActivationKeybind()) {
                     player.sendMessage("In order to use client activation, you must install a client-sided mod.");
-                    player.sendMessage("https://www.curseforge.com/minecraft/mc-mods/veinminer4bukkit");
+                    player.sendMessage("https://www.curseforge.com/minecraft/mc-mods/veinminer-companion");
                     player.sendMessage("Supports " + ChatFormat.GRAY + "Fabric" + ChatFormat.RESET + " (support for " + ChatFormat.GRAY + "Forge" + ChatFormat.RESET + " Soon™)");
                 }
 
