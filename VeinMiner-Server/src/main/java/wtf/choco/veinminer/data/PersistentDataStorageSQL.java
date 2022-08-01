@@ -89,25 +89,17 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
             List<VeinMinerPlayer> result = new ArrayList<>();
 
             try (Connection connection = openConnection()) {
+                connection.setAutoCommit(false);
                 PreparedStatement statement = connection.prepareStatement(getInsertPlayerDataStatement());
 
-                int dispatched = 0;
                 for (VeinMinerPlayer player : players) {
                     this.writeToSaveStatement(statement, player);
-                    statement.addBatch();
-
-                    // If we reach over 100 updates to perform, send off a batch to start processing while we finish off the rest
-                    if (++dispatched % 100 == 0) {
-                        statement.executeBatch();
-                        dispatched = 0;
-                    }
+                    statement.execute();
 
                     result.add(player);
                 }
 
-                if (dispatched > 0) {
-                    statement.executeBatch();
-                }
+                connection.commit();
             } catch (SQLException e) {
                 throw new CompletionException(e);
             }
@@ -186,23 +178,15 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
 
         return CompletableFuture.supplyAsync(() -> {
             try (Connection connection = openConnection()) {
+                connection.setAutoCommit(false);
                 PreparedStatement statement = connection.prepareStatement(getInsertPlayerDataStatement());
 
-                int dispatched = 0;
                 for (LegacyPlayerData playerData : data) {
                     this.writeToImportSaveStatement(statement, playerData);
-                    statement.addBatch();
-
-                    // If we reach over 100 updates to perform, send off a batch to start processing while we finish off the rest
-                    if (++dispatched % 100 == 0) {
-                        statement.executeBatch();
-                        dispatched = 0;
-                    }
+                    statement.execute();
                 }
 
-                if (dispatched > 0) {
-                    statement.executeBatch();
-                }
+                connection.commit();
             } catch (SQLException e) {
                 throw new CompletionException(e);
             }
