@@ -4,8 +4,21 @@ version: '@project.version@'
 description: Mine multiple blocks of the same type in quick succession.
 author: Choco
 website: https://www.spigotmc.org/resources/12038
-softdepend: [ AAC5, AntiAura, LightAntiCheat, Matrix, NoCheatPlus, Spartan, Vault, WorldGuard, mcMMO, PlaceholderAPI ]
 api-version: 1.17
+softdepend:
+# anti cheats
+- AAC5
+- AntiAura
+- GrimAC
+- LightAntiCheat
+- Matrix
+- NoCheatPlus
+- Spartan
+# others
+- mcMMO
+- PlaceholderAPI
+- Vault
+- WorldGuard
 
 commands:
   veinminer:
