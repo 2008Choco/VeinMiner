@@ -10,6 +10,7 @@ import java.util.List;
 
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.network.MessageDirection;
+import wtf.choco.veinminer.network.PluginMessageProtocol;
 
 /**
  * A program that will generate documentation in markdown format (and HTML tables) for VeinMiner's
@@ -18,23 +19,17 @@ import wtf.choco.veinminer.network.MessageDirection;
  */
 public final class Main {
 
+    @SuppressWarnings("removal")
     public static void main(String[] args) throws Exception {
         StringBuilder buffer = new StringBuilder();
 
-        var serverboundDocumentation = generateProtocolTables(MessageDirection.SERVERBOUND);
-        var clientboundDocumentation = generateProtocolTables(MessageDirection.CLIENTBOUND);
+        PluginMessageProtocol protocol = VeinMiner.PROTOCOL;
+        if (args.length >= 1 && args[0].equalsIgnoreCase("legacy")) {
+            protocol = VeinMiner.PROTOCOL_LEGACY;
+        }
 
-        buffer.append("""
-                # Messaging Protocol
-
-                VeinMiner takes advantage of Minecraft's [custom payload packet](https://wiki.vg/Protocol#Plugin_Message_.28clientbound.29) to send messages to and from the client to interact with an optional cient sided mod. To do this, VeinMiner makes use of a specific sequence of bytes to identify specific messages and the data they contain. The following outlines the communications between client and server for VeinMiner's payloads. Every message is prefixed with a series of bytes representing a [VarInt](https://wiki.vg/Protocol#VarInt_and_VarLong) (as per Minecraft's protocol specification) identifying the message's id, followed by the data displayed in the tables below.
-
-                The messages are sent along the `veinminer:veinminer` channel under current protocol version `%protocol_version%`.
-
-                VeinMiner does take advantage of types similar to that of Minecraft's default protocol which you may read about [here](https://wiki.vg/Protocol#Data_types).
-
-                """
-                .replace("%protocol_version%", String.valueOf(VeinMiner.PROTOCOL_VERSION)));
+        var serverboundDocumentation = generateProtocolTables(protocol, MessageDirection.SERVERBOUND);
+        var clientboundDocumentation = generateProtocolTables(protocol, MessageDirection.CLIENTBOUND);
 
         buffer.append("""
                 ## Serverbound
@@ -68,10 +63,10 @@ public final class Main {
         }
     }
 
-    private static List<ProtocolMessageDocumentation> generateProtocolTables(MessageDirection direction) {
+    private static List<ProtocolMessageDocumentation> generateProtocolTables(PluginMessageProtocol protocol, MessageDirection direction) {
         List<ProtocolMessageDocumentation> documentation = new ArrayList<>();
 
-        VeinMiner.PROTOCOL.getPacketRegistry(direction).getRegisteredMessages().forEach((messageClass, messageId) -> {
+        protocol.getPacketRegistry(direction).getRegisteredMessages().forEach((messageClass, messageId) -> {
             ProtocolMessageDocumentation.Builder documentationNodeBuilder = ProtocolMessageDocumentation.builder(direction, messageId);
 
             for (Method method : messageClass.getDeclaredMethods()) {
