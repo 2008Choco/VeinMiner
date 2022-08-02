@@ -200,10 +200,11 @@ public final class BreakBlockListener implements Listener {
 
         hungryMessage = ChatColor.translateAlternateColorCodes('&', hungryMessage);
         boolean isHandCategory = category instanceof VeinMinerToolCategoryHand;
+        boolean shouldApplyHunger = !player.hasPermission(VMConstants.PERMISSION_FREE_HUNGER);
 
         for (Block block : blocks) {
             // Apply hunger
-            if (hungerModifier != 0.0 && !player.hasPermission(VMConstants.PERMISSION_FREE_HUNGER)) {
+            if (hungerModifier != 0.0 && shouldApplyHunger) {
                 this.applyHungerDebuff(player, hungerModifier);
 
                 if (player.getFoodLevel() <= minimumFoodLevel) {
