@@ -66,6 +66,14 @@ shadowJar {
 
 tasks.build.dependsOn tasks.shadowJar
 
+/*
+ * Shadow plugin is stupid and automatically configures the publish plugin to publish a shadowed .jar
+ * We don't want that... so we're gonna skip it
+ */
+components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
+    skip()
+}
+
 publishing {
     publications {
         bukkit(MavenPublication) {
