@@ -24,5 +24,11 @@ jobs:
       run: chmod +x gradlew
     - name: Build VeinMiner-Bukkit with Gradle
       run: ./gradlew :VeinMiner-Bukkit:build
+      env:
+        ORG_GRADLE_PROJECT_mavenUsername: ${{ secrets.REPOSITORY_USERNAME }}
+        ORG_GRADLE_PROJECT_mavenAccessToken: ${{ secrets.REPOSITORY_TOKEN }}
     - name: Check(style) VeinMiner-Fabric with Gradle
       run: ./gradlew :VeinMiner-Fabric:check
+      env:
+        ORG_GRADLE_PROJECT_mavenUsername: ${{ secrets.REPOSITORY_USERNAME }}
+        ORG_GRADLE_PROJECT_mavenAccessToken: ${{ secrets.REPOSITORY_TOKEN }}
