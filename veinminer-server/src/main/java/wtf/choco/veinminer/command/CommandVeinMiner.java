@@ -184,12 +184,12 @@ public final class CommandVeinMiner implements CommandExecutor {
             return true;
         }
 
-        else if (args[0].equalsIgnoreCase("blocklist")) {
+        else if (args[0].equalsIgnoreCase("blocklist") && sender.hasPermission(VeinMinerConstants.PERMISSION_COMMAND_BLOCKLIST)) {
             this.commandBlocklist.execute(sender, label + " " + args[0], Arrays.copyOfRange(args, 1, args.length));
             return true;
         }
 
-        else if (args[0].equalsIgnoreCase("toollist")) {
+        else if (args[0].equalsIgnoreCase("toollist") && sender.hasPermission(VeinMinerConstants.PERMISSION_COMMAND_TOOLLIST)) {
             this.commandToollist.execute(sender, label + " " + args[0], Arrays.copyOfRange(args, 1, args.length));
             return true;
         }
