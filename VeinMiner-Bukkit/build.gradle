@@ -66,6 +66,20 @@ publishing {
             version = version
         }
     }
+
+    repositories {
+        maven {
+            allowInsecureProtocol = true // I'll fix this once I get an SSL cert for my repository :)
+
+            def repository = version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'
+            url = "http://repo.choco.wtf/$repository"
+
+            credentials {
+                username property('mavenUsername')
+                password property('mavenAccessToken')
+            }
+        }
+    }
 }
 
 shadowJar {
