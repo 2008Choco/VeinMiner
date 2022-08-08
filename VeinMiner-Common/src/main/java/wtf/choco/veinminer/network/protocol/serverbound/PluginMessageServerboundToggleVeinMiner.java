@@ -30,6 +30,11 @@ public final class PluginMessageServerboundToggleVeinMiner implements PluginMess
         this.activated = activated;
     }
 
+    /**
+     * Construct a new {@link PluginMessageServerboundToggleVeinMiner} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
     public PluginMessageServerboundToggleVeinMiner(@NotNull PluginMessageByteBuffer buffer) {
         this.activated = buffer.readBoolean();

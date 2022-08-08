@@ -30,6 +30,11 @@ public final class PluginMessageServerboundHandshake implements PluginMessage<Se
         this.protocolVersion = protocolVersion;
     }
 
+    /**
+     * Construct a new {@link PluginMessageServerboundHandshake} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
     public PluginMessageServerboundHandshake(@NotNull PluginMessageByteBuffer buffer) {
         this.protocolVersion = buffer.readVarInt();

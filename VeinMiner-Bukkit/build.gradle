@@ -2,13 +2,16 @@ import org.apache.tools.ant.filters.*
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'maven-publish'
 }
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(16))
     }
+}
+
+javadoc {
+    exclude "wtf/choco/veinminer/listener/**"
 }
 
 repositories {
@@ -25,8 +28,8 @@ repositories {
 }
 
 dependencies {
-    implementation project(':VeinMiner-Common')
-    implementation project(':VeinMiner-Server')
+    implementation project(':veinminer-common')
+    implementation project(':veinminer-server')
 
     implementation 'org.bstats:bstats-bukkit:2.2.1'
 
@@ -55,37 +58,19 @@ processResources {
         "project.version": version
     ]
 }
-
-publishing {
-    publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
-
-            groupId = "wtf.choco"
-            artifactId = "veinminer-bukkit"
-            version = version
-        }
-    }
-
-    repositories {
-        maven {
-            allowInsecureProtocol = true // I'll fix this once I get an SSL cert for my repository :)
-
-            def repository = version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'
-            url = "http://repo.choco.wtf/$repository"
-
-            credentials {
-                username property('mavenUsername')
-                password property('mavenAccessToken')
-            }
-        }
-    }
-}
-
+    
 shadowJar {
     relocate 'org.bstats', 'wtf.choco.veinminer.metrics'
     archiveFileName = "VeinMiner-Bukkit-${version}.jar"
-    archiveClassifier = ""
 }
 
 tasks.build.dependsOn tasks.shadowJar
+
+publishing {
+    publications {
+        bukkit(MavenPublication) {
+            from components.java
+            artifactId = project.name
+        }
+    }
+}

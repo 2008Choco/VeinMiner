@@ -37,6 +37,11 @@ public final class PluginMessageClientboundSyncRegisteredPatterns implements Plu
         this.keys = keys;
     }
 
+    /**
+     * Construct a new {@link PluginMessageClientboundSyncRegisteredPatterns} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
     public PluginMessageClientboundSyncRegisteredPatterns(@NotNull PluginMessageByteBuffer buffer) {
         int size = buffer.readVarInt();

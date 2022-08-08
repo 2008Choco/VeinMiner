@@ -4,15 +4,29 @@ java {
     }
 }
 
+javadoc {
+    exclude "wtf/choco/veinminer/command/**"
+}
+
 test {
     useJUnitPlatform()
 }
 
 dependencies {
-    implementation project(':VeinMiner-Common')
+    implementation project(':veinminer-common')
 
     compileOnly 'com.google.code.gson:gson:2.8.8'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + project.property('junit.version')
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + project.property('junit.version')
+}
+
+
+publishing {
+    publications {
+        server(MavenPublication) {
+            from components.java
+            artifactId = project.name
+        }
+    }
 }

@@ -11,7 +11,10 @@ import net.minecraft.client.renderer.RenderType.CompositeState;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class VeinMinerRenderLayer extends RenderStateShard { // extending RenderStateShard grants us access to its protected constants
+/**
+ * A container class for {@link RenderType RenderTypes} used by VeinMiner.
+ */
+public final class VeinMinerRenderType extends RenderStateShard { // extending RenderStateShard grants us access to its protected constants
 
     private static final RenderType WIREFRAME = RenderType.create("veinminer_wireframe", DefaultVertexFormat.POSITION_COLOR, Mode.DEBUG_LINES, 256, CompositeState.builder()
             .setLineState(new LineStateShard(OptionalDouble.empty()))
@@ -33,15 +36,25 @@ public final class VeinMinerRenderLayer extends RenderStateShard { // extending 
             .createCompositeState(false));
 
     // Exists just to satisfy the compiler
-    private VeinMinerRenderLayer(String string, Runnable runnable, Runnable runnable2) {
+    private VeinMinerRenderType(String string, Runnable runnable, Runnable runnable2) {
         super(string, runnable, runnable2);
     }
 
+    /**
+     * Get the wireframe {@link RenderType}.
+     *
+     * @return the wireframe render type
+     */
     @NotNull
     public static RenderType getWireframe() {
         return WIREFRAME;
     }
 
+    /**
+     * Get the transparent wireframe {@link RenderType}.
+     *
+     * @return the transparent wireframe render type
+     */
     @NotNull
     public static RenderType getWireframeTransparent() {
         return WIREFRAME_TRANSPARENT;

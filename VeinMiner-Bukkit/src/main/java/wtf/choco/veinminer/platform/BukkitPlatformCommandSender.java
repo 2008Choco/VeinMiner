@@ -5,10 +5,18 @@ import java.util.Objects;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Bukkit implementation of {@link PlatformCommandSender}.
+ */
 public class BukkitPlatformCommandSender implements PlatformCommandSender {
 
     private final CommandSender sender;
 
+    /**
+     * Construct a new {@link BukkitPlatformCommandSender}.
+     *
+     * @param sender the bukkit {@link CommandSender}
+     */
     public BukkitPlatformCommandSender(@NotNull CommandSender sender) {
         this.sender = sender;
     }

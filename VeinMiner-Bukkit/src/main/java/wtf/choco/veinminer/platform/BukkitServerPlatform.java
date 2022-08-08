@@ -177,18 +177,13 @@ public final class BukkitServerPlatform implements ServerPlatform {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
     }
 
+    /**
+     * Get the {@link BukkitServerPlatform} singleton instance.
+     *
+     * @return the instance
+     */
     public static BukkitServerPlatform getInstance() {
         return (instance != null) ? instance : (instance = new BukkitServerPlatform(VeinMinerPlugin.getInstance()));
-    }
-
-    public static <C extends Collection<ItemType>> C toItemType(Collection<Material> from, Supplier<C> collectionCreator) {
-        C collection = collectionCreator.get();
-
-        for (Material material : from) {
-            collection.add(BukkitItemType.of(material));
-        }
-
-        return collection;
     }
 
 }

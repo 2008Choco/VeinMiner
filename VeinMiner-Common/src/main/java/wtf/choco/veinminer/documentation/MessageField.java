@@ -11,13 +11,31 @@ import java.util.function.Function;
  */
 public record MessageField(String expectedType, String name, String description) {
 
+    /**
+     * Boolean type.
+     */
     public static final String TYPE_BOOLEAN = "Boolean";
+    /**
+     * Byte type.
+     */
     public static final String TYPE_BYTE = "Byte";
+    /**
+     * VarInt type.
+     */
     public static final String TYPE_VARINT = "VarInt";
 
+    /**
+     * BlockPosition type.
+     */
     public static final String TYPE_BLOCK_POSITION = "BlockPosition";
+    /**
+     * NamespacedKey type.
+     */
     public static final String TYPE_NAMESPACED_KEY = "NamespacedKey";
 
+    /**
+     * A {@link Function} that creates a new type prefixed with "Array of".
+     */
     public static final Function<String, String> TYPE_ARRAY_OF = value -> "Array of " + value;
 
     /**
@@ -33,6 +51,7 @@ public record MessageField(String expectedType, String name, String description)
      * );
      * </pre>
      * will generate the table below:
+     * <pre>{@literal
      * <table>
      * <thead>
      *     <th>Byte</th>
@@ -56,7 +75,8 @@ public record MessageField(String expectedType, String name, String description)
      *         <td>The final, most significant bit in the field</td>
      *     </tr>
      * </tbody>
-     * </table>
+     * </table>}
+     * </pre>
      *
      * @param descriptions the descriptions in order of least significant bit to
      * most significant bit

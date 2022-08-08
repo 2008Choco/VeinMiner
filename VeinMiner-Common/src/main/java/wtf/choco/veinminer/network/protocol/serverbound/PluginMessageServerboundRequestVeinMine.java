@@ -42,6 +42,11 @@ public final class PluginMessageServerboundRequestVeinMine implements PluginMess
         this(new BlockPosition(x, y, z));
     }
 
+    /**
+     * Construct a new {@link PluginMessageServerboundRequestVeinMine} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
     public PluginMessageServerboundRequestVeinMine(@NotNull PluginMessageByteBuffer buffer) {
         this.position = buffer.readBlockPosition();

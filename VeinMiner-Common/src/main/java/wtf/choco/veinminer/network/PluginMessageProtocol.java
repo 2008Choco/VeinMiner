@@ -131,6 +131,15 @@ public final class PluginMessageProtocol {
         registrar.registerClientboundMessageHandler(channel, (PluginMessageRegistry<ClientboundPluginMessageListener>) registries.get(MessageDirection.CLIENTBOUND));
     }
 
+    /**
+     * Get the {@link PluginMessageRegistry} for the given {@link MessageDirection}.
+     *
+     * @param direction the direction
+     *
+     * @return the registry
+     *
+     * @apiNote <strong>THIS IS NOT API AND IS ONLY VISIBLE FOR DOCUMENTATION PURPOSES</strong>
+     */
     @NotNull
     @VisibleForTesting
     public PluginMessageRegistry<?> getPacketRegistry(@NotNull MessageDirection direction) {

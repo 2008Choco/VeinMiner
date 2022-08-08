@@ -28,8 +28,13 @@ public final class PluginMessageClientboundHandshakeResponse implements PluginMe
      */
     public PluginMessageClientboundHandshakeResponse() { }
 
+    /**
+     * Construct a new {@link PluginMessageClientboundHandshakeResponse} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
-    public PluginMessageClientboundHandshakeResponse(@SuppressWarnings("unused") @NotNull PluginMessageByteBuffer buffer) { }
+    public PluginMessageClientboundHandshakeResponse(@NotNull PluginMessageByteBuffer buffer) { }
 
     @Override
     public void write(@NotNull PluginMessageByteBuffer buffer) { }

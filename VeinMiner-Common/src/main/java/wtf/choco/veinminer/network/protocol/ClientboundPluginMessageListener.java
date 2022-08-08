@@ -16,14 +16,39 @@ import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientbound
  */
 public interface ClientboundPluginMessageListener extends PluginMessageListener {
 
+    /**
+     * Handles the {@link PluginMessageClientboundHandshakeResponse} message.
+     *
+     * @param message the message
+     */
     public void handleHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message);
 
+    /**
+     * Handles the {@link PluginMessageClientboundSyncRegisteredPatterns} message.
+     *
+     * @param message the message
+     */
     public void handleSyncRegisteredPatterns(@NotNull PluginMessageClientboundSyncRegisteredPatterns message);
 
+    /**
+     * Handles the {@link PluginMessageClientboundSetConfig} message.
+     *
+     * @param message the message
+     */
     public void handleSetConfig(@NotNull PluginMessageClientboundSetConfig message);
 
+    /**
+     * Handles the {@link PluginMessageClientboundVeinMineResults} message.
+     *
+     * @param message the message
+     */
     public void handleVeinMineResults(@NotNull PluginMessageClientboundVeinMineResults message);
 
+    /**
+     * Handles the {@link PluginMessageClientboundSetPattern} message.
+     *
+     * @param message the message
+     */
     public void handleSetPattern(@NotNull PluginMessageClientboundSetPattern message);
 
 }

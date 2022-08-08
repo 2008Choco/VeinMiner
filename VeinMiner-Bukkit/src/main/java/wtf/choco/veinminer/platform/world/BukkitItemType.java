@@ -33,6 +33,11 @@ public final class BukkitItemType implements ItemType {
         return key;
     }
 
+    /**
+     * Get the Bukkit {@link Material} represented by this {@link BukkitItemType}.
+     *
+     * @return the material
+     */
     @NotNull
     public Material getMaterial() {
         return material;

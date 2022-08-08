@@ -195,20 +195,56 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
         });
     }
 
+    /**
+     * Initialize the SQL driver required for this implementation.
+     *
+     * @throws ClassNotFoundException if the driver class could not be found
+     *
+     * @implSpec this should load and initialize the driver with a class load if necessary
+     */
     protected abstract void initDriver() throws ClassNotFoundException;
 
+    /**
+     * Open a new {@link Connection} to the database.
+     *
+     * @return a new connection
+     *
+     * @throws SQLException if an SQL exception occurred while opening the connection
+     */
     @NotNull
     protected abstract Connection openConnection() throws SQLException;
 
+    /**
+     * Get the statement used to create the players table.
+     *
+     * @return the create table statement
+     */
     @NotNull
     protected abstract String getCreatePlayersTableStatement();
 
+    /**
+     * Get the statement used to insert a player's data into the players table.
+     *
+     * @return the insert player data statement
+     */
     @NotNull
     protected abstract String getInsertPlayerDataStatement();
 
+    /**
+     * Get the statement used to select all of a player's data from the players table.
+     *
+     * @return the select player data statement
+     */
     @NotNull
     protected abstract String getSelectAllPlayerDataQuery();
 
+    /**
+     * Get the statement used to select multiple players' data from the players table.
+     *
+     * @param count the amount of players that need selecting
+     *
+     * @return the select player data statement
+     */
     @NotNull
     protected abstract String getSelectAllPlayerDataBatchQuery(int count);
 

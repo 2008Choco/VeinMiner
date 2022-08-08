@@ -7,25 +7,79 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum BlockFace {
 
+    /**
+     * North (z -1).
+     */
     NORTH(0, 0, -1),
+    /**
+     * East (x +1).
+     */
     EAST(1, 0, 0),
+    /**
+     * South (z +1).
+     */
     SOUTH(0, 0, 1),
+    /**
+     * West (x -1).
+     */
     WEST(-1, 0, 0),
+    /**
+     * Up (y +1).
+     */
     UP(0, 1, 0),
+    /**
+     * Down (y -1).
+     */
     DOWN(0, -1, 0),
 
+    /**
+     * North east (x +1, z -1).
+     */
     NORTH_EAST(1, 0, -1),
+    /**
+     * North west (x -1, z -1).
+     */
     NORTH_WEST(-1, 0, -1),
+    /**
+     * South east (x +1, z +1).
+     */
     SOUTH_EAST(1, 0, 1),
+    /**
+     * South west (x -1, z +1).
+     */
     SOUTH_WEST(-1, 0, 1),
 
+    /**
+     * North up (y +1, z -1).
+     */
     NORTH_UP(0, 1, -1),
+    /**
+     * East up (x +1, y +1).
+     */
     EAST_UP(1, 1, 0),
+    /**
+     * South up (y +1, z +1).
+     */
     SOUTH_UP(0, 1, 1),
+    /**
+     * West up (x -1, y +1).
+     */
     WEST_UP(-1, 1, 0),
+    /**
+     * North down (y -1, z -1).
+     */
     NORTH_DOWN(0, -1, -1),
+    /**
+     * East down (x +1, y -1).
+     */
     EAST_DOWN(1, -1, 0),
+    /**
+     * South down (y -1, z +1).
+     */
     SOUTH_DOWN(0, -1, 1),
+    /**
+     * West down (x -1, y -1).
+     */
     WEST_DOWN(-1, -1, 0);
 
     private final int xOffset, yOffset, zOffset;

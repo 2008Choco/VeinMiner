@@ -33,6 +33,11 @@ public final class PluginMessageClientboundSetPattern implements PluginMessage<C
         this.patternKey = patternKey;
     }
 
+    /**
+     * Construct a new {@link PluginMessageClientboundSetPattern} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
     public PluginMessageClientboundSetPattern(@NotNull PluginMessageByteBuffer buffer) {
         this.patternKey = buffer.readNamespacedKey();

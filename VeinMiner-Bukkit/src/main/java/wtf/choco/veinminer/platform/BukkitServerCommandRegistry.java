@@ -8,10 +8,18 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.command.CommandExecutor;
 
+/**
+ * Bukkit implementation of {@link ServerCommandRegistry}.
+ */
 public final class BukkitServerCommandRegistry implements ServerCommandRegistry {
 
     private final JavaPlugin plugin;
 
+    /**
+     * Construct a new {@link BukkitServerCommandRegistry}.
+     *
+     * @param plugin the plugin instance
+     */
     public BukkitServerCommandRegistry(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
     }

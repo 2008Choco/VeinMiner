@@ -10,6 +10,9 @@ import wtf.choco.veinminer.platform.PlatformPlayer;
  */
 public final class EmptyEconomy implements SimpleEconomy {
 
+    /**
+     * The singleton instance of the {@link EmptyEconomy}.
+     */
     public static final SimpleEconomy INSTANCE = new EmptyEconomy();
 
     private EmptyEconomy() { }

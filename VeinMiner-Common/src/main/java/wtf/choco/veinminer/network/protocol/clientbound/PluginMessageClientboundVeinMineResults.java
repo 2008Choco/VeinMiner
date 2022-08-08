@@ -46,6 +46,11 @@ public final class PluginMessageClientboundVeinMineResults implements PluginMess
         this(Collections.emptyList());
     }
 
+    /**
+     * Construct a new {@link PluginMessageClientboundVeinMineResults} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
     public PluginMessageClientboundVeinMineResults(@NotNull PluginMessageByteBuffer buffer) {
         BlockPosition[] blockPositions = new BlockPosition[buffer.readVarInt()];

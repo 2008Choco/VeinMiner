@@ -9,6 +9,9 @@ import wtf.choco.veinminer.api.event.player.PlayerClientActivateVeinMinerEvent;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 
+/**
+ * Bukkit implementation of {@link ServerEventDispatcher}.
+ */
 public final class BukkitServerEventDispatcher implements ServerEventDispatcher {
 
     BukkitServerEventDispatcher() { }

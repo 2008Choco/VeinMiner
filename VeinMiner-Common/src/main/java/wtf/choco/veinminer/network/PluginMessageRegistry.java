@@ -84,6 +84,13 @@ public final class PluginMessageRegistry<T extends PluginMessageListener> {
         return (messageConstructor != null) ? messageConstructor.apply(buffer) : null;
     }
 
+    /**
+     * Get a {@link Map} containing all registered messages to their internal protocol ids.
+     *
+     * @return all registered messages
+     *
+     * @apiNote <strong>THIS IS NOT API AND IS ONLY VISIBLE FOR DOCUMENTATION PURPOSES</strong>
+     */
     @NotNull
     @VisibleForTesting
     public Map<Class<? extends PluginMessage<T>>, Integer> getRegisteredMessages() {

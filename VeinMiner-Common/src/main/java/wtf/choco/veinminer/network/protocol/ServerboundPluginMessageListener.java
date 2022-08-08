@@ -15,12 +15,32 @@ import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerbound
  */
 public interface ServerboundPluginMessageListener extends PluginMessageListener {
 
+    /**
+     * Handles the {@link PluginMessageServerboundHandshake} message.
+     *
+     * @param message the message
+     */
     public void handleHandshake(@NotNull PluginMessageServerboundHandshake message);
 
+    /**
+     * Handles the {@link PluginMessageServerboundToggleVeinMiner} message.
+     *
+     * @param message the message
+     */
     public void handleToggleVeinMiner(@NotNull PluginMessageServerboundToggleVeinMiner message);
 
+    /**
+     * Handles the {@link PluginMessageServerboundRequestVeinMine} message.
+     *
+     * @param message the message
+     */
     public void handleRequestVeinMine(@NotNull PluginMessageServerboundRequestVeinMine message);
 
+    /**
+     * Handles the {@link PluginMessageServerboundSelectPattern} message.
+     *
+     * @param message the message
+     */
     public void handleSelectPattern(@NotNull PluginMessageServerboundSelectPattern message);
 
 }

@@ -21,6 +21,9 @@ import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
 
+/**
+ * Bukkit implementation of {@link PlatformPlayer}.
+ */
 public final class BukkitPlatformPlayer implements PlatformPlayer {
 
     private Reference<Player> player;
@@ -148,6 +151,12 @@ public final class BukkitPlatformPlayer implements PlatformPlayer {
         player.kickPlayer(message);
     }
 
+    /**
+     * Get the Bukkit {@link Player} represented by this {@link BukkitPlatformPlayer}, or null
+     * if the player is not online.
+     *
+     * @return the player, or null
+     */
     @Nullable
     public Player getPlayer() {
         Player player = this.player.get();
@@ -158,6 +167,12 @@ public final class BukkitPlatformPlayer implements PlatformPlayer {
         return this.player.get();
     }
 
+    /**
+     * Get the Bukkit {@link Player} represented by this {@link BukkitPlatformPlayer}, or throw
+     * an {@link IllegalStateException} if the player is not online.
+     *
+     * @return the player
+     */
     @NotNull
     public Player getPlayerOrThrow() {
         Player player = getPlayer();

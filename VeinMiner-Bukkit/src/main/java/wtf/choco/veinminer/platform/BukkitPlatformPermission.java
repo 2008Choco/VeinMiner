@@ -2,6 +2,9 @@ package wtf.choco.veinminer.platform;
 
 import org.bukkit.permissions.Permission;
 
+/**
+ * Bukkit implementation of {@link PlatformPermission}.
+ */
 public final class BukkitPlatformPermission implements PlatformPermission {
 
     private final Permission permission;

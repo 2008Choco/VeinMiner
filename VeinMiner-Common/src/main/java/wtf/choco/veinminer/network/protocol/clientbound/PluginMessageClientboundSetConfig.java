@@ -23,15 +23,30 @@ public final class PluginMessageClientboundSetConfig implements PluginMessage<Cl
 
     private final ClientConfig config;
 
+    /**
+     * Construct a new {@link PluginMessageClientboundSetConfig}.
+     *
+     * @param config the config to send
+     */
     public PluginMessageClientboundSetConfig(@NotNull ClientConfig config) {
         this.config = config;
     }
 
+    /**
+     * Construct a new {@link PluginMessageClientboundSetConfig} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
     public PluginMessageClientboundSetConfig(@NotNull PluginMessageByteBuffer buffer) {
         this.config = ClientConfig.builder().applyBitmask(buffer.readByte()).build();
     }
 
+    /**
+     * Get the {@link ClientConfig} that was sent.
+     *
+     * @return the client config
+     */
     @NotNull
     public ClientConfig getConfig() {
         return config;

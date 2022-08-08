@@ -12,3 +12,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + project.property('junit.version')
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + project.property('junit.version')
 }
+
+publishing {
+    publications {
+        common(MavenPublication) {
+            from components.java
+            artifactId = project.name
+        }
+    }
+}

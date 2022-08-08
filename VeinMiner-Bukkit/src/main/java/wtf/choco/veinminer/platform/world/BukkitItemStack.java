@@ -7,10 +7,18 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.util.VMConstants;
 
+/**
+ * A Bukkit implementation of {@link ItemStack}.
+ */
 public final class BukkitItemStack implements ItemStack {
 
     private final org.bukkit.inventory.ItemStack itemStack;
 
+    /**
+     * Construct a new {@link BukkitItemStack}.
+     *
+     * @param itemStack the bukkit item stack to wrap
+     */
     public BukkitItemStack(org.bukkit.inventory.ItemStack itemStack) {
         this.itemStack = itemStack;
     }

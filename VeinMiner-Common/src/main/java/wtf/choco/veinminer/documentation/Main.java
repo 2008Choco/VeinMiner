@@ -19,6 +19,22 @@ import wtf.choco.veinminer.network.PluginMessageProtocol;
  */
 public final class Main {
 
+    /**
+     * The entry point of the program.
+     * <p>
+     * Generates a Markdown-formatted string documenting VeinMiner's protocol. Documentation for each
+     * individual packet is determined by the {@link Documentation} annotation (see the annotation docs
+     * for more information).
+     * <p>
+     * Optional arguments:
+     * <ul>
+     *   <li>[0] = "legacy" - Documents the legacy protocol
+     * </ul>
+     *
+     * @param args arguments
+     *
+     * @throws Exception if an exception occurs
+     */
     @SuppressWarnings("removal")
     public static void main(String[] args) throws Exception {
         StringBuilder buffer = new StringBuilder();

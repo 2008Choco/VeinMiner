@@ -11,9 +11,21 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum GameMode {
 
+    /**
+     * Survival mode.
+     */
     SURVIVAL("survival"),
+    /**
+     * Creative mode.
+     */
     CREATIVE("creative"),
+    /**
+     * Adventure mode.
+     */
     ADVENTURE("adventure"),
+    /**
+     * Spectator mode.
+     */
     SPECTATOR("spectator");
 
     private static final Map<String, GameMode> BY_ID = new HashMap<>();

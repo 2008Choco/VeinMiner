@@ -31,6 +31,11 @@ public final class PluginMessageServerboundSelectPattern implements PluginMessag
         this.patternKey = patternKey;
     }
 
+    /**
+     * Construct a new {@link PluginMessageServerboundSelectPattern} with input.
+     *
+     * @param buffer the input buffer
+     */
     @Internal
     public PluginMessageServerboundSelectPattern(@NotNull PluginMessageByteBuffer buffer) {
         this.patternKey = buffer.readNamespacedKey();

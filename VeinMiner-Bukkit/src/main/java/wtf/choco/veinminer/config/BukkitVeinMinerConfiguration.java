@@ -21,10 +21,18 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.util.VMConstants;
 
+/**
+ * Bukkit implementation of {@link VeinMinerConfiguration}.
+ */
 public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguration {
 
     private final VeinMinerPlugin plugin;
 
+    /**
+     * Construct a new {@link BukkitVeinMinerConfiguration}.
+     *
+     * @param plugin the plugin instance
+     */
     public BukkitVeinMinerConfiguration(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }

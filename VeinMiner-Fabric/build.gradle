@@ -11,8 +11,8 @@ java {
 }
 
 dependencies {
-    implementation project(':VeinMiner-Common')
-    include project(':VeinMiner-Common') // include provided by Fabric to create a dummy mod
+    implementation project(':veinminer-common')
+    include project(':veinminer-common') // include provided by Fabric to create a dummy mod
 
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()
@@ -34,5 +34,14 @@ processResources {
 jar {
     from('LICENSE') {
         rename { '${it}_${project.name}' }
+    }
+}
+
+publishing {
+    publications {
+        fabric(MavenPublication) {
+            from components.java
+            artifactId = project.name
+        }
     }
 }

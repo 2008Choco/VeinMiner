@@ -39,6 +39,11 @@ public final class BukkitBlockType implements BlockType {
         return BukkitBlockState.of(material.createBlockData(states));
     }
 
+    /**
+     * Get the Bukkit {@link Material} represented by this {@link BukkitBlockType}.
+     *
+     * @return the material
+     */
     @NotNull
     public Material getMaterial() {
         return material;

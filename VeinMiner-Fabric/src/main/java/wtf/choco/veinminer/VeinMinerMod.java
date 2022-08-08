@@ -34,16 +34,25 @@ import wtf.choco.veinminer.network.FabricServerState;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
-import wtf.choco.veinminer.render.VeinMinerRenderLayer;
+import wtf.choco.veinminer.render.VeinMinerRenderType;
 
 /**
  * The Fabric VeinMiner mod entry class.
  */
 public final class VeinMinerMod implements ClientModInitializer {
 
-    public static final KeyMapping KEY_BINDING_ACTIVATE_VEINMINER = registerKeyMapping("activate_veinminer", InputConstants.KEY_GRAVE);
-    public static final KeyMapping KEY_BINDING_NEXT_PATTERN = registerKeyMapping("next_pattern", InputConstants.KEY_RBRACKET);
-    public static final KeyMapping KEY_BINDING_PREVIOUS_PATTERN = registerKeyMapping("previous_pattern", InputConstants.KEY_LBRACKET);
+    /**
+     * The "activate veinminer" key mapping. Defaults to ~
+     */
+    public static final KeyMapping KEY_MAPPING_ACTIVATE_VEINMINER = registerKeyMapping("activate_veinminer", InputConstants.KEY_GRAVE);
+    /**
+     * The "next pattern" key mapping. Defaults to ]
+     */
+    public static final KeyMapping KEY_MAPPING_NEXT_PATTERN = registerKeyMapping("next_pattern", InputConstants.KEY_RBRACKET);
+    /**
+     * The "previous pattern" key mapping. Defaults to [
+     */
+    public static final KeyMapping KEY_MAPPING_PREVIOUS_PATTERN = registerKeyMapping("previous_pattern", InputConstants.KEY_LBRACKET);
 
     private static FabricServerState serverState;
 
@@ -70,11 +79,11 @@ public final class VeinMinerMod implements ClientModInitializer {
             ClientConfig config = getServerState().getConfig();
 
             boolean shouldRequestVeinMine = false;
-            boolean active = KEY_BINDING_ACTIVATE_VEINMINER.isDown();
+            boolean active = KEY_MAPPING_ACTIVATE_VEINMINER.isDown();
 
             if (config.isAllowActivationKeybind()) {
                 boolean lastActive = getServerState().isActive();
-                getServerState().setActive(active = KEY_BINDING_ACTIVATE_VEINMINER.isDown());
+                getServerState().setActive(active = KEY_MAPPING_ACTIVATE_VEINMINER.isDown());
 
                 // Activating / deactivating vein miner
                 if (lastActive ^ active) {
@@ -112,16 +121,16 @@ public final class VeinMinerMod implements ClientModInitializer {
             // Changing patterns
             if (config.isAllowPatternSwitchingKeybind()) {
                 boolean lastChangingPatterns = changingPatterns;
-                this.changingPatterns = (KEY_BINDING_NEXT_PATTERN.isDown() || KEY_BINDING_PREVIOUS_PATTERN.isDown());
+                this.changingPatterns = (KEY_MAPPING_NEXT_PATTERN.isDown() || KEY_MAPPING_PREVIOUS_PATTERN.isDown());
 
                 if (lastChangingPatterns ^ changingPatterns) {
                     boolean next;
 
                     // There has to be a smarter way to write this...
-                    if (KEY_BINDING_NEXT_PATTERN.isDown()) {
+                    if (KEY_MAPPING_NEXT_PATTERN.isDown()) {
                         next = true;
                     }
-                    else if (KEY_BINDING_PREVIOUS_PATTERN.isDown()) {
+                    else if (KEY_MAPPING_PREVIOUS_PATTERN.isDown()) {
                         next = false;
                     }
                     else {
@@ -205,24 +214,24 @@ public final class VeinMinerMod implements ClientModInitializer {
             BufferSource source = client.renderBuffers().bufferSource();
 
             // Full wireframe drawing
-            VertexConsumer consumer = source.getBuffer(VeinMinerRenderLayer.getWireframe());
+            VertexConsumer consumer = source.getBuffer(VeinMinerRenderType.getWireframe());
 
             shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
                 consumer.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 255).endVertex();
                 consumer.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 255).endVertex();
             });
 
-            source.endBatch(VeinMinerRenderLayer.getWireframe());
+            source.endBatch(VeinMinerRenderType.getWireframe());
 
             // Transparent drawing
-            VertexConsumer bufferTransparent = source.getBuffer(VeinMinerRenderLayer.getWireframeTransparent());
+            VertexConsumer bufferTransparent = source.getBuffer(VeinMinerRenderType.getWireframeTransparent());
 
             shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
                 bufferTransparent.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 20).endVertex();
                 bufferTransparent.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 20).endVertex();
             });
 
-            source.endBatch(VeinMinerRenderLayer.getWireframeTransparent());
+            source.endBatch(VeinMinerRenderType.getWireframeTransparent());
 
             stack.popPose();
         });
