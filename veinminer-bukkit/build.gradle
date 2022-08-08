@@ -1,0 +1,84 @@
+import org.apache.tools.ant.filters.*
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(16))
+    }
+}
+
+javadoc {
+    exclude "wtf/choco/veinminer/listener/**"
+}
+
+repositories {
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://repo.codemc.org/repository/maven-public/' }
+
+    maven { url 'https://nexus.hc.to/content/repositories/pub_releases/' }
+    maven { url 'https://maven.enginehub.org/repo/' }
+
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.md-5.net/content/repositories/snapshots/' }
+    maven { url 'https://repo.janmm14.de/repository/public/' }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+}
+
+dependencies {
+    implementation project(':veinminer-common')
+    implementation project(':veinminer-server')
+
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
+
+    // Using Spigot as the Bukkit API is not published to the Spigot Nexus after 1.15.2
+    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
+
+    compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
+
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.3'
+    // GitHub master, version 2.1.175-SNAPSHOT
+    // https://github.com/mcMMO-Dev/mcMMO/commit/085c8dbf68b8503f84b92c8adbde94631707effe
+    compileOnly 'com.github.mcMMO-Dev:mcMMO:085c8db'
+
+    // Anti-cheats
+    compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
+    compileOnly 'de.janmm14:aac-api:5.0.0'
+    compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
+    compileOnly 'com.github.MWHunter:GrimAPI:4c8e414fdf'
+
+    // placeholderapi
+    compileOnly 'me.clip:placeholderapi:2.10.10'
+}
+
+processResources {
+    filter ReplaceTokens, tokens: [
+        "project.version": version
+    ]
+}
+    
+shadowJar {
+    relocate 'org.bstats', 'wtf.choco.veinminer.metrics'
+    archiveFileName = "VeinMiner-Bukkit-${version}.jar"
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+/*
+ * Shadow plugin is stupid and automatically configures the publish plugin to publish a shadowed .jar
+ * We don't want that... so we're gonna skip it
+ */
+components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
+    skip()
+}
+
+publishing {
+    publications {
+        bukkit(MavenPublication) {
+            from components.java
+            artifactId = project.name
+        }
+    }
+}

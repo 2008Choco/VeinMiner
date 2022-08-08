@@ -1,0 +1,76 @@
+# All tool categories and their item lists are defined here.
+#
+# Each category may define any of the following options:
+# "RepairFriendly", "MaxVeinSize", "Cost", and "DisabledWorlds"
+# If NOT defined, the global value (the one in the config.yml) will be used instead.
+# Everything except for 'Items' is OPTIONAL. They are not required to be set.
+#
+# Additionally, 'Priority' may be set to an integer which determines a category's
+# priority over another category in the case that they both declare the same item.
+# For instance, if two categories have the minecraft:diamond_pickaxe item, the category
+# with the highest priority will be selected.
+# Please avoid situations where multiple categories have the same item, but if absolutely
+# required (e.g. for a permission/hierarchical structure), give each category a priority.
+#
+# Furthermore, 'NBT' may be set to a string which MUST be on an item under the NBT key
+# "PublicBukkitValues": { "veinminer:veinminer": "the_value" }
+# For example, a category that defines NBT: "MyValue" must also have the NBT key
+# "PublicBukkitValues": { "veinminer:veinminer": "MyValue" }
+# If not set, no NBT value is required.
+#
+# ExampleCategory:
+#   RepairFriendly: true
+#   MaxVeinSize: 32
+#   Cost: 100.0
+#   DisabledWorlds:
+#   - 'world_name'
+#   - 'other_world_name'
+#   Priority: 10 # This is optional and defaults to 0
+#   NBT: "ExampleValue" # This is optional and defaults to no required NBT
+#   Items:
+#   - 'minecraft:wooden_sword'
+#   - 'minecraft:stone_sword'
+#   - 'minecraft:golden_sword'
+#   - 'minecraft:iron_sword'
+#   - 'minecraft:diamond_sword'
+#   - 'minecraft:netherite_sword'
+
+Axe:
+  Items:
+  - 'minecraft:wooden_axe'
+  - 'minecraft:stone_axe'
+  - 'minecraft:golden_axe'
+  - 'minecraft:iron_axe'
+  - 'minecraft:diamond_axe'
+  - 'minecraft:netherite_axe'
+
+Hoe:
+  Items:
+  - 'minecraft:wooden_hoe'
+  - 'minecraft:stone_hoe'
+  - 'minecraft:golden_hoe'
+  - 'minecraft:iron_hoe'
+  - 'minecraft:diamond_hoe'
+  - 'minecraft:netherite_hoe'
+
+Pickaxe:
+  Items:
+  - 'minecraft:wooden_pickaxe'
+  - 'minecraft:stone_pickaxe'
+  - 'minecraft:golden_pickaxe'
+  - 'minecraft:iron_pickaxe'
+  - 'minecraft:diamond_pickaxe'
+  - 'minecraft:netherite_pickaxe'
+
+Shears:
+  Items:
+  - 'minecraft:shears'
+
+Shovel:
+  Items:
+  - 'minecraft:wooden_shovel'
+  - 'minecraft:stone_shovel'
+  - 'minecraft:golden_shovel'
+  - 'minecraft:iron_shovel'
+  - 'minecraft:diamond_shovel'
+  - 'minecraft:netherite_shovel'

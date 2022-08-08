@@ -1,0 +1,112 @@
+name: VeinMiner
+main: wtf.choco.veinminer.VeinMinerPlugin
+version: '@project.version@'
+description: Mine multiple blocks of the same type in quick succession.
+author: Choco
+website: https://www.spigotmc.org/resources/12038
+api-version: 1.17
+softdepend:
+# anti cheats
+- AAC5
+- AntiAura
+- GrimAC
+- LightAntiCheat
+- Matrix
+- NoCheatPlus
+- Spartan
+# others
+- mcMMO
+- PlaceholderAPI
+- Vault
+- WorldGuard
+
+commands:
+  veinminer:
+    description: The main command for VeinMiner
+    usage: /<command> <version|reload|blocklist|toollist|toggle|pattern|mode>
+    aliases: [vm]
+  blocklist:
+    description: Edit the block lists of vein mining categories
+    permission: veinminer.command.blocklist
+    usage: /<command> <category> <add|remove|list> [state]
+  toollist:
+    description: Edit the tool lists of vein mining categories
+    permission: veinminer.command.toollist
+    usage: /<command> <category> <add|remove|list> [item]
+
+permissions:
+  veinminer.veinmine.*:
+    description: Allow the use of vein miner for all tool categories
+    default: true
+  veinminer.free.*:
+    description: Grants a bypass to all VeinMiner debuffs and costs
+    default: false
+    children:
+      veinminer.free.economy: true
+      veinminer.free.hunger: true
+
+  veinminer.free.economy:
+    description: Grants a bypass to the vein miner cost. Only used if a Vault-supported economy is installed and the cost is greater than 0
+    default: false
+  veinminer.free.hunger:
+    description: Grants a bypass to the vein miner hunger debuff. Only used if hunger modifier is greater than 0
+    default: false
+
+  veinminer.client.*:
+    description: Allows players to use all client mod features. Features must be set to true in the config as well
+    default: true
+    children:
+      veinminer.client.activation: true
+      veinminer.client.patterns: true
+      veinminer.client.wireframe: true
+
+  veinminer.client.activation:
+    description: Allows players to use key bind activation on the client. Must also be true in the configuration
+  veinminer.client.patterns:
+    description: Allows players to use key binds to switch patterns on the client. Must also be true in the configuration
+  veinminer.client.wireframe:
+    description: Allows players to render a wireframe around blocks to be mined. Must also be true in the configuration
+
+  veinminer.pattern.*:
+    description: Grants access to all vein mining patterns
+    default: true
+    children:
+      veinminer.pattern.default: true
+      veinminer.pattern.tunnel: true
+      veinminer.pattern.staircase_up: true
+      veinminer.pattern.staircase_down: true
+
+  veinminer.pattern.default:
+    description: Grants access to the veinminer:default pattern
+    default: true
+  veinminer.pattern.tunnel:
+    description: Grants access to the veinminer:tunnel pattern
+    default: true
+  veinminer.pattern.staircase_up:
+    description: Grants access to the veinminer:staircase_up pattern
+    default: true
+  veinminer.pattern.staircase_down:
+    description: Grants access to the veinminer:staircase_down pattern
+    default: true
+
+  veinminer.command.reload:
+    description: Allow the use of the '/veinminer reload' subcommand
+    default: op
+  veinminer.command.blocklist:
+    description: Allow the use of the '/blocklist' command
+    default: op
+  veinminer.command.toollist:
+    description: Allow the use of the '/toollist' command
+    default: op
+  veinminer.command.toggle:
+    description: Allow the use of the '/veinminer toggle' subcommand
+    default: true
+  veinminer.command.mode:
+    description: Allow the use of the '/veinminer mode' subcommand
+    default: true
+  veinminer.command.pattern:
+    description: Allow the use of the '/veinminer pattern' subcommand
+    default: true
+  veinminer.command.import:
+    description: Allow the use of the '/veinminer import' subcommand
+    default: op
