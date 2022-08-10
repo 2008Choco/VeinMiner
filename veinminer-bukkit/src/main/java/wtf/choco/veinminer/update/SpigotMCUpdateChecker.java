@@ -75,7 +75,7 @@ public final class SpigotMCUpdateChecker implements UpdateChecker {
             String returnedVersion = object.get("current_version").getAsString();
             String latestVersion = versionScheme.compareVersions(currentVersion, returnedVersion);
 
-            UpdateResult result = new UpdateResult(currentVersion, latestVersion, versionScheme, returnedVersion.equals(latestVersion));
+            UpdateResult result = new UpdateResult(currentVersion, latestVersion, versionScheme, !returnedVersion.equals(latestVersion));
             this.lastResult = result;
             return result;
         }).exceptionally(e -> new UpdateResult(currentVersion, versionScheme, e));
