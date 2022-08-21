@@ -2,6 +2,7 @@ plugins {
     id 'base'
     id 'eclipse'
     id 'maven-publish'
+    id "io.freefair.aggregate-javadoc" version "6.5.0.3"
 }
 
 allprojects {
@@ -32,7 +33,7 @@ subprojects {
         withSourcesJar()
     }
 
-    javadoc {
+    def javadocConfig = {
         options {
             links(
                 'https://docs.oracle.com/en/java/javase/17/docs/api/',
@@ -46,6 +47,9 @@ subprojects {
             )
         }
     }
+
+    javadoc { configure javadocConfig }
+    aggregateJavadoc { configure javadocConfig }
 
     checkstyleMain {
         configFile = file("${rootDir}/checkstyle.xml")
