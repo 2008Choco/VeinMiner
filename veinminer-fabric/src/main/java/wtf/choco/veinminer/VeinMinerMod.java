@@ -3,7 +3,6 @@ package wtf.choco.veinminer;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 
 import java.util.Objects;
 
@@ -24,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.hud.HudRenderComponent;
