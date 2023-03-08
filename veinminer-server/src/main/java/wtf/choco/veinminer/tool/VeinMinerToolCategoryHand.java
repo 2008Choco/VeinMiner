@@ -36,7 +36,7 @@ public final class VeinMinerToolCategoryHand extends VeinMinerToolCategory {
 
     @Override
     public boolean containsItem(@NotNull ItemType item) {
-        return item.getKey().toString().equals("minecraft:air"); // Hand category activates only if the type is air
+        return item.isAir(); // Hand category activates only if the type is air
     }
 
 }

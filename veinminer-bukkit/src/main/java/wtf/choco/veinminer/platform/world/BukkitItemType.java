@@ -33,6 +33,11 @@ public final class BukkitItemType implements ItemType {
         return key;
     }
 
+    @Override
+    public boolean isAir() {
+        return material.isAir();
+    }
+
     /**
      * Get the Bukkit {@link Material} represented by this {@link BukkitItemType}.
      *

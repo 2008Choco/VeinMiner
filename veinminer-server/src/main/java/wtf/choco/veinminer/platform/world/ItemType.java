@@ -17,4 +17,11 @@ public interface ItemType {
     @NotNull
     public NamespacedKey getKey();
 
+    /**
+     * Check whether or not this item is air.
+     *
+     * @return true if air, false otherwise
+     */
+    public boolean isAir();
+
 }
