@@ -33,17 +33,17 @@ import wtf.choco.veinminer.util.NamespacedKey;
 import wtf.choco.veinminer.util.StringUtils;
 import wtf.choco.veinminer.util.VeinMinerConstants;
 
-public final class CommandVeinMiner implements CommandExecutor {
+public final class CommandVeinMiner implements Command {
 
     private static final long IMPORT_CONFIRMATION_TIME_MILLIS = TimeUnit.SECONDS.toMillis(20);
 
     private final Map<PlatformCommandSender, Long> requiresConfirmation = new HashMap<>();
 
     private final VeinMinerServer veinMiner;
-    private final CommandExecutor commandBlocklist;
-    private final CommandExecutor commandToollist;
+    private final Command commandBlocklist;
+    private final Command commandToollist;
 
-    public CommandVeinMiner(@NotNull VeinMinerServer veinMiner, @NotNull CommandExecutor commandBlocklist, @NotNull CommandExecutor commandToollist) {
+    public CommandVeinMiner(@NotNull VeinMinerServer veinMiner, @NotNull Command commandBlocklist, @NotNull Command commandToollist) {
         this.veinMiner = veinMiner;
         this.commandBlocklist = commandBlocklist;
         this.commandToollist = commandToollist;

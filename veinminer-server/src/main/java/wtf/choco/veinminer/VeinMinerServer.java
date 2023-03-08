@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.block.BlockList;
+import wtf.choco.veinminer.command.Command;
 import wtf.choco.veinminer.command.CommandBlocklist;
-import wtf.choco.veinminer.command.CommandExecutor;
 import wtf.choco.veinminer.command.CommandToollist;
 import wtf.choco.veinminer.command.CommandVeinMiner;
 import wtf.choco.veinminer.config.ClientConfig;
@@ -35,7 +35,6 @@ import wtf.choco.veinminer.pattern.VeinMiningPatternTunnel;
 import wtf.choco.veinminer.platform.GameMode;
 import wtf.choco.veinminer.platform.PlatformPermission;
 import wtf.choco.veinminer.platform.PlatformPlayer;
-import wtf.choco.veinminer.platform.ServerCommandRegistry;
 import wtf.choco.veinminer.platform.ServerPlatform;
 import wtf.choco.veinminer.platform.world.ItemType;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
@@ -98,12 +97,11 @@ public final class VeinMinerServer implements VeinMiner {
 
         // Register commands
         this.platform.getLogger().info("Registering commands");
-        ServerCommandRegistry commandRegistry = platform.getCommandRegistry();
 
-        CommandExecutor blocklistCommand = new CommandBlocklist(this), toollistCommand = new CommandToollist(this);
-        commandRegistry.registerCommand("blocklist", blocklistCommand);
-        commandRegistry.registerCommand("toollist", toollistCommand);
-        commandRegistry.registerCommand("veinminer", new CommandVeinMiner(instance, blocklistCommand, toollistCommand));
+        Command blocklistCommand = new CommandBlocklist(this), toollistCommand = new CommandToollist(this);
+        this.platform.registerCommand("blocklist", blocklistCommand);
+        this.platform.registerCommand("toollist", toollistCommand);
+        this.platform.registerCommand("veinminer", new CommandVeinMiner(instance, blocklistCommand, toollistCommand));
 
         // Special case for server reloads
         this.persistentDataStorage.load(platform.getOnlinePlayers().stream().map(playerManager::get).toList());

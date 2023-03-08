@@ -10,7 +10,7 @@ import wtf.choco.veinminer.platform.PlatformCommandSender;
 /**
  * Represents a command that can be executed and provide tab completion.
  */
-public interface CommandExecutor {
+public interface Command {
 
     /**
      * Execute this command.

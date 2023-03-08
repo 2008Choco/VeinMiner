@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import wtf.choco.veinminer.command.Command;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.platform.world.BlockType;
@@ -185,12 +186,12 @@ public interface ServerPlatform {
     public ServerEventDispatcher getEventDispatcher();
 
     /**
-     * Get an instance of the {@link ServerCommandRegistry}.
+     * Register a command with the given name to the provided {@link Command}.
      *
-     * @return the command registry
+     * @param name the name of the command to register
+     * @param command the executable to call when the command is run
      */
-    @NotNull
-    public ServerCommandRegistry getCommandRegistry();
+    public void registerCommand(@NotNull String name, @NotNull Command command);
 
     /**
      * Get an instance of the {@link UpdateChecker}.

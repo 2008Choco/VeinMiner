@@ -15,6 +15,9 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -23,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.command.Command;
 import wtf.choco.veinminer.config.BukkitVeinMinerConfiguration;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.platform.world.BlockState;
@@ -46,7 +50,6 @@ public final class BukkitServerPlatform implements ServerPlatform {
     private final VeinMinerPlugin plugin;
     private final VeinMinerConfiguration config;
     private final ServerEventDispatcher eventDispatcher;
-    private final ServerCommandRegistry commandRegistry;
     private final UpdateChecker updateChecker;
 
     private final VeinMinerDetails details;
@@ -56,7 +59,6 @@ public final class BukkitServerPlatform implements ServerPlatform {
         this.config = new BukkitVeinMinerConfiguration(plugin);
         this.eventDispatcher = new BukkitServerEventDispatcher();
         this.updateChecker = new SpigotMCUpdateChecker(plugin, 12038);
-        this.commandRegistry = new BukkitServerCommandRegistry(plugin);
 
         PluginDescriptionFile description = plugin.getDescription();
         this.details = new VeinMinerDetails(description.getName(), description.getVersion(), Collections.unmodifiableList(description.getAuthors()), description.getWebsite());
@@ -155,10 +157,24 @@ public final class BukkitServerPlatform implements ServerPlatform {
         return eventDispatcher;
     }
 
-    @NotNull
     @Override
-    public ServerCommandRegistry getCommandRegistry() {
-        return commandRegistry;
+    public void registerCommand(@NotNull String name, @NotNull Command command) {
+        PluginCommand pluginCommand = plugin.getCommand(name);
+
+        if (pluginCommand == null) {
+            return;
+        }
+
+        pluginCommand.setExecutor((sender, bukkitCommand, label, args) -> command.execute(wrap(sender), label, args));
+        pluginCommand.setTabCompleter((sender, bukkitCommand, alias, args) -> command.tabComplete(wrap(sender), alias, args));
+    }
+
+    private PlatformCommandSender wrap(CommandSender sender) {
+        if (sender instanceof Player player) {
+            return BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+        }
+
+        return new BukkitPlatformCommandSender(sender);
     }
 
     @NotNull

@@ -15,7 +15,7 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.util.ChatFormat;
 import wtf.choco.veinminer.util.StringUtils;
 
-public final class CommandBlocklist implements CommandExecutor {
+public final class CommandBlocklist implements Command {
 
     private static final List<String> BLOCK_KEYS = VeinMinerServer.getInstance().getPlatform().getAllBlockTypeKeys();
     private static final List<String> ARGUMENTS_1 = List.of("add", "remove", "list");
