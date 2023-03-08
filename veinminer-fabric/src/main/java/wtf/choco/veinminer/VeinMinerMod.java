@@ -64,12 +64,9 @@ public final class VeinMinerMod implements ClientModInitializer {
 
     private boolean changingPatterns = false;
 
-    @SuppressWarnings("removal") // VeinMiner.PROTOCOL_LEGACY
     @Override
     public void onInitializeClient() {
-        FabricChannelRegistrar channelRegistrar = new FabricChannelRegistrar();
-        VeinMiner.PROTOCOL.registerChannels(channelRegistrar);
-        VeinMiner.PROTOCOL_LEGACY.registerChannels(channelRegistrar);
+        VeinMiner.PROTOCOL.registerChannels(new FabricChannelRegistrar());
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!hasServerState() || !getServerState().isEnabledOnServer()) {
@@ -87,11 +84,7 @@ public final class VeinMinerMod implements ClientModInitializer {
 
                 // Activating / deactivating vein miner
                 if (lastActive ^ active) {
-                    PluginMessageServerboundToggleVeinMiner message = new PluginMessageServerboundToggleVeinMiner(active);
-
-                    serverState.sendMessage(message);
-                    VeinMiner.PROTOCOL_LEGACY.sendMessageToServer(serverState, message); // LEGACY
-
+                    serverState.sendMessage(new PluginMessageServerboundToggleVeinMiner(active));
                     shouldRequestVeinMine = active;
                 }
             }
@@ -159,7 +152,6 @@ public final class VeinMinerMod implements ClientModInitializer {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
             serverState.sendMessage(new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
-            VeinMiner.PROTOCOL_LEGACY.sendMessageToServer(serverState, new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL_LEGACY.getVersion())); // LEGACY
         });
 
         HudRenderCallback.EVENT.register((stack, tickDelta) -> {
