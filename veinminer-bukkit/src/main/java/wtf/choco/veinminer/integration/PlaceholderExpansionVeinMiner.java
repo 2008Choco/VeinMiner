@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.integration;
 
+import java.util.List;
+
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 import org.bukkit.entity.Player;
@@ -28,6 +30,16 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
  * </ul>
  */
 public final class PlaceholderExpansionVeinMiner extends PlaceholderExpansion {
+
+    private static final List<String> PLACEHOLDERS = List.of(
+        "veinminer_enabled",
+        "veinminer_enabled_tool",
+        "veinminer_active",
+        "veinminer_vein_mining",
+        "veinminer_using_client_mod",
+        "veinminer_selected_pattern",
+        "veinminer_activation_strategy"
+    );
 
     private final VeinMinerPlugin plugin;
 
@@ -66,6 +78,12 @@ public final class PlaceholderExpansionVeinMiner extends PlaceholderExpansion {
     @Override
     public String getVersion() {
         return VeinMinerPlugin.getInstance().getDescription().getVersion();
+    }
+
+    @NotNull
+    @Override
+    public List<String> getPlaceholders() {
+        return PLACEHOLDERS;
     }
 
     @Override
