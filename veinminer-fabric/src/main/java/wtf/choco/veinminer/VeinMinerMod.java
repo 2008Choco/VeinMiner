@@ -89,7 +89,7 @@ public final class VeinMinerMod implements ClientModInitializer {
                 if (lastActive ^ active) {
                     PluginMessageServerboundToggleVeinMiner message = new PluginMessageServerboundToggleVeinMiner(active);
 
-                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, message);
+                    serverState.sendMessage(message);
                     VeinMiner.PROTOCOL_LEGACY.sendMessageToServer(serverState, message); // LEGACY
 
                     shouldRequestVeinMine = active;
@@ -107,7 +107,7 @@ public final class VeinMinerMod implements ClientModInitializer {
 
                 if (shouldRequestVeinMine) {
                     getServerState().resetShape();
-                    VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundRequestVeinMine(position.getX(), position.getY(), position.getZ()));
+                    serverState.sendMessage(new PluginMessageServerboundRequestVeinMine(position.getX(), position.getY(), position.getZ()));
                 }
 
                 // Updating the new last looked at position
@@ -158,7 +158,7 @@ public final class VeinMinerMod implements ClientModInitializer {
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
-            VeinMiner.PROTOCOL.sendMessageToServer(serverState, new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
+            serverState.sendMessage(new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
             VeinMiner.PROTOCOL_LEGACY.sendMessageToServer(serverState, new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL_LEGACY.getVersion())); // LEGACY
         });
 

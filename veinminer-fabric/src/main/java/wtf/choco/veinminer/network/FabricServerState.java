@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
+import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetConfig;
 import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
@@ -171,8 +172,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
             this.selectedPatternIndex = patternKeys.size() + selectedPatternIndex;
         }
 
-        VeinMiner.PROTOCOL.sendMessageToServer(this, new PluginMessageServerboundSelectPattern(patternKeys.get(selectedPatternIndex)));
-
+        this.sendMessage(new PluginMessageServerboundSelectPattern(patternKeys.get(selectedPatternIndex)));
         return true;
     }
 
@@ -255,6 +255,16 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         byteBuf.writeBytes(message);
 
         ClientPlayNetworking.send(new ResourceLocation(channel.namespace(), channel.key()), byteBuf);
+    }
+
+    /**
+     * Send a {@link PluginMessage} to this {@link FabricServerState} across the
+     * {@link VeinMiner#PROTOCOL VeinMiner protocol}.
+     *
+     * @param message the message to send
+     */
+    public void sendMessage(@NotNull PluginMessage<ServerboundPluginMessageListener> message) {
+        VeinMiner.PROTOCOL.sendMessageToServer(this, message);
     }
 
     @Override
