@@ -22,22 +22,19 @@ repositories {
     maven { url 'https://maven.enginehub.org/repo/' }
 
     maven { url 'https://jitpack.io' }
-    maven { url 'https://repo.md-5.net/content/repositories/snapshots/' }
     maven { url 'https://repo.janmm14.de/repository/public/' }
     maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
 dependencies {
-    implementation project(':veinminer-common')
     implementation project(':veinminer-server')
 
-    implementation 'org.bstats:bstats-bukkit:2.2.1'
+    implementation 'org.bstats:bstats-bukkit:3.0.0'
 
-    // Using Spigot as the Bukkit API is not published to the Spigot Nexus after 1.15.2
     compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
 
+    compileOnly 'me.clip:placeholderapi:2.11.2'
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
-
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.3'
     // GitHub master, version 2.1.175-SNAPSHOT
     // https://github.com/mcMMO-Dev/mcMMO/commit/085c8dbf68b8503f84b92c8adbde94631707effe
@@ -48,9 +45,6 @@ dependencies {
     compileOnly 'de.janmm14:aac-api:5.0.0'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
     compileOnly 'com.github.MWHunter:GrimAPI:add576ba8b'
-
-    // placeholderapi
-    compileOnly 'me.clip:placeholderapi:2.10.10'
 }
 
 processResources {
