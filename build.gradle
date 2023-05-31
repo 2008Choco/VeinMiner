@@ -19,9 +19,7 @@ subprojects {
     apply plugin: 'checkstyle'
 
     repositories { // Repos applied to all sub projects
-        mavenLocal()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
