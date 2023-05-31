@@ -4,12 +4,6 @@ plugins {
     id 'fabric-loom' version '1.2-SNAPSHOT'
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 dependencies {
     implementation project(':veinminer-common')
     include project(':veinminer-common') // include provided by Fabric to create a dummy mod

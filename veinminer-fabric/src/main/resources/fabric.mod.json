@@ -29,7 +29,7 @@
     "accessWidener" : "veinminer_companion.accesswidener",
 
     "depends": {
-        "fabricloader": ">=0.10",
+        "fabricloader": ">=0.10", 
         "fabric": "*",
         "minecraft": ">=1.19.3",
         "java": ">=17"
