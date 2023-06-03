@@ -7,10 +7,10 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockType;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -218,7 +219,7 @@ public final class BreakBlockListener implements Listener {
 
             // Check for tool damage
             if (maxDurability > 0 && !isHandCategory) {
-                if (item == null || item.getType().isAir()) {
+                if (item == null || item.getType() == ItemType.AIR) {
                     break;
                 }
 
@@ -229,7 +230,7 @@ public final class BreakBlockListener implements Listener {
             }
 
             // Break the block
-            Material currentType = block.getType();
+            BlockType<?> currentType = block.getType();
             if (block == origin || player.breakBlock(block)) {
                 StatTracker.accumulateVeinMinedMaterial(BukkitBlockType.of(currentType));
             }

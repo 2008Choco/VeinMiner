@@ -23,7 +23,7 @@ public final class BukkitBlockState implements BlockState {
     @NotNull
     @Override
     public BlockType getType() {
-        return BukkitBlockType.of(blockData.getMaterial());
+        return BukkitBlockType.of(blockData.getBlockType());
     }
 
     @NotNull

@@ -1,11 +1,8 @@
 package wtf.choco.veinminer.platform.world;
 
-import com.google.common.base.Preconditions;
-
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.util.NamespacedKey;
@@ -15,13 +12,13 @@ import wtf.choco.veinminer.util.NamespacedKey;
  */
 public final class BukkitItemType implements ItemType {
 
-    private static final Map<Material, ItemType> CACHE = new EnumMap<>(Material.class);
+    private static final Map<org.bukkit.inventory.ItemType, ItemType> CACHE = new HashMap<>();
 
-    private final Material material;
+    private final org.bukkit.inventory.ItemType bukkit;
     private final NamespacedKey key;
 
-    private BukkitItemType(@NotNull Material material) {
-        this.material = material;
+    private BukkitItemType(@NotNull org.bukkit.inventory.ItemType material) {
+        this.bukkit = material;
 
         org.bukkit.NamespacedKey key = material.getKey();
         this.key = new NamespacedKey(key.getNamespace(), key.getKey());
@@ -35,45 +32,44 @@ public final class BukkitItemType implements ItemType {
 
     @Override
     public boolean isAir() {
-        return material.isAir();
+        return bukkit == org.bukkit.inventory.ItemType.AIR;
     }
 
     /**
-     * Get the Bukkit {@link Material} represented by this {@link BukkitItemType}.
+     * Get the Bukkit {@link org.bukkit.inventory.ItemType ItemType} represented by this {@link BukkitItemType}.
      *
      * @return the material
      */
     @NotNull
-    public Material getMaterial() {
-        return material;
+    public org.bukkit.inventory.ItemType getBukkit() {
+        return bukkit;
     }
 
     /**
-     * Get an {@link ItemType} for the given {@link Material}.
+     * Get a VeinMiner {@link ItemType} for the given Bukkit {@link org.bukkit.inventory.ItemType ItemType}.
      *
-     * @param material the material
+     * @param bukkitItemType the item type
      *
      * @return the item type
      */
     @NotNull
-    public static ItemType of(@NotNull Material material) {
-        Preconditions.checkArgument(material.isItem(), "material is not an item");
-        return CACHE.computeIfAbsent(material, BukkitItemType::new);
+    public static ItemType of(@NotNull org.bukkit.inventory.ItemType bukkitItemType) {
+        return CACHE.computeIfAbsent(bukkitItemType, BukkitItemType::new);
     }
 
     @Override
     public int hashCode() {
-        return material.hashCode();
+        return bukkit.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this || (obj instanceof BukkitItemType other && material == other.material);
+        return obj == this || (obj instanceof BukkitItemType other && bukkit == other.bukkit);
     }
 
     @Override
     public String toString() {
-        return material.toString();
+        return String.format("BukkitItemType[key=%s]", bukkit.getKey());
     }
 
 }

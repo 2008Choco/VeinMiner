@@ -1,11 +1,8 @@
 package wtf.choco.veinminer.platform.world;
 
-import com.google.common.base.Preconditions;
-
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.util.NamespacedKey;
@@ -15,13 +12,13 @@ import wtf.choco.veinminer.util.NamespacedKey;
  */
 public final class BukkitBlockType implements BlockType {
 
-    private static final Map<Material, BlockType> CACHE = new EnumMap<>(Material.class);
+    private static final Map<org.bukkit.block.BlockType<?>, BlockType> CACHE = new HashMap<>();
 
-    private final Material material;
+    private final org.bukkit.block.BlockType<?> bukkit;
     private final NamespacedKey key;
 
-    private BukkitBlockType(@NotNull Material material) {
-        this.material = material;
+    private BukkitBlockType(@NotNull org.bukkit.block.BlockType<?> material) {
+        this.bukkit = material;
 
         org.bukkit.NamespacedKey key = material.getKey();
         this.key = new NamespacedKey(key.getNamespace(), key.getKey());
@@ -36,45 +33,44 @@ public final class BukkitBlockType implements BlockType {
     @NotNull
     @Override
     public BlockState createBlockState(@NotNull String states) {
-        return BukkitBlockState.of(material.createBlockData(states));
+        return BukkitBlockState.of(bukkit.createBlockData(states));
     }
 
     /**
-     * Get the Bukkit {@link Material} represented by this {@link BukkitBlockType}.
-     *
-     * @return the material
-     */
-    @NotNull
-    public Material getMaterial() {
-        return material;
-    }
-
-    /**
-     * Get a {@link BlockType} for the given {@link Material}.
-     *
-     * @param material the material
+     * Get the Bukkit {@link org.bukkit.block.BlockType BlockType} represented by this {@link BukkitBlockType}.
      *
      * @return the block type
      */
     @NotNull
-    public static BlockType of(@NotNull Material material) {
-        Preconditions.checkArgument(material.isBlock(), "material is not a block");
-        return CACHE.computeIfAbsent(material, BukkitBlockType::new);
+    public org.bukkit.block.BlockType<?> getBukkit() {
+        return bukkit;
+    }
+
+    /**
+     * Get a VeinMiner {@link BlockType} for the given Bukkit {@link org.bukkit.block.BlockType BlockType}.
+     *
+     * @param bukkitBlockType the block type
+     *
+     * @return the block type
+     */
+    @NotNull
+    public static BlockType of(@NotNull org.bukkit.block.BlockType<?> bukkitBlockType) {
+        return CACHE.computeIfAbsent(bukkitBlockType, BukkitBlockType::new);
     }
 
     @Override
     public int hashCode() {
-        return material.hashCode();
+        return bukkit.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this || (obj instanceof BukkitBlockType other && material == other.material);
+        return obj == this || (obj instanceof BukkitBlockType other && bukkit == other.bukkit);
     }
 
     @Override
     public String toString() {
-        return material.toString();
+        return String.format("BukkitBlockType[key=%s]", bukkit.getKey());
     }
 
 }

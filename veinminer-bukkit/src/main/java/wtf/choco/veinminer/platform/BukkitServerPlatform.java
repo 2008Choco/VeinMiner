@@ -1,9 +1,9 @@
 package wtf.choco.veinminer.platform;
 
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,7 +14,8 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.Keyed;
+import org.bukkit.Registry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
@@ -44,6 +45,8 @@ import wtf.choco.veinminer.update.UpdateChecker;
 public final class BukkitServerPlatform implements ServerPlatform {
 
     private static BukkitServerPlatform instance;
+
+    private List<String> blockTypeKeys, itemTypeKeys;
 
     private final Map<UUID, PlatformPlayer> platformPlayers = new HashMap<>();
 
@@ -101,27 +104,33 @@ public final class BukkitServerPlatform implements ServerPlatform {
     @Nullable
     @Override
     public BlockType getBlockType(@NotNull String type) {
-        Material material = Material.matchMaterial(type);
-        return (material != null && material.isBlock()) ? BukkitBlockType.of(material) : null;
+        org.bukkit.block.BlockType<?> bukkitBlockType = Registry.BLOCK.match(type);
+        return (bukkitBlockType != null) ? BukkitBlockType.of(bukkitBlockType) : null;
     }
 
     @Nullable
     @Override
     public ItemType getItemType(@NotNull String type) {
-        Material material = Material.matchMaterial(type);
-        return (material != null && material.isItem()) ? BukkitItemType.of(material) : null;
+        org.bukkit.inventory.ItemType bukkitItemType = Registry.ITEM.match(type);
+        return (bukkitItemType != null) ? BukkitItemType.of(bukkitItemType) : null;
     }
 
     @NotNull
     @Override
     public List<String> getAllBlockTypeKeys() {
-        return Arrays.stream(Material.values()).filter(Material::isBlock).map(material -> material.getKey().toString()).toList();
+        return (blockTypeKeys != null) ? blockTypeKeys : (blockTypeKeys = createRegistryKeyList(Registry.BLOCK));
     }
 
     @NotNull
     @Override
     public List<String> getAllItemTypeKeys() {
-        return Arrays.stream(Material.values()).filter(Material::isItem).map(material -> material.getKey().toString()).toList();
+        return (itemTypeKeys != null) ? itemTypeKeys : (itemTypeKeys = createRegistryKeyList(Registry.ITEM));
+    }
+
+    private List<String> createRegistryKeyList(Registry<? extends Keyed> registry) {
+        ImmutableList.Builder<String> list = ImmutableList.builder();
+        registry.forEach(entry -> list.add(entry.getKey().toString()));
+        return list.build();
     }
 
     @NotNull
