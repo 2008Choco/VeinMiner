@@ -3,6 +3,7 @@ package wtf.choco.veinminer.hud;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,10 +18,10 @@ public interface HudRenderComponent {
      * Render the component to the given {@link PoseStack}.
      *
      * @param client the client instance
-     * @param stack the stack to which the hud is being rendered
+     * @param graphics the gui graphics
      * @param tickDelta tick delta time
      */
-    public void render(@NotNull Minecraft client, @NotNull PoseStack stack, float tickDelta);
+    public void render(@NotNull Minecraft client, @NotNull GuiGraphics graphics, float tickDelta);
 
     /**
      * Check whether or not this component should be rendered to the screen.

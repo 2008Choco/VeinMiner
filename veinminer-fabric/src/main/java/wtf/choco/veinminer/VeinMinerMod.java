@@ -104,7 +104,7 @@ public final class VeinMinerMod implements ClientModInitializer {
                 }
 
                 // Updating the new last looked at position
-                if (client.player != null && client.player.level != null && !client.player.level.isEmptyBlock(position)) {
+                if (client.player != null && client.player.level() != null && !client.player.level().isEmptyBlock(position)) {
                     getServerState().setLastLookedAt(position, blockFace);
                 } else {
                     getServerState().setLastLookedAt(null, null);
@@ -154,7 +154,7 @@ public final class VeinMinerMod implements ClientModInitializer {
             serverState.sendMessage(new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
         });
 
-        HudRenderCallback.EVENT.register((stack, tickDelta) -> {
+        HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             if (!hasServerState() || !getServerState().isEnabledOnServer()) {
                 return;
             }
@@ -167,7 +167,7 @@ public final class VeinMinerMod implements ClientModInitializer {
                     continue;
                 }
 
-                component.render(client, stack, tickDelta);
+                component.render(client, graphics, tickDelta);
             }
         });
 

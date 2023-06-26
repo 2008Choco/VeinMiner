@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -25,9 +26,10 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
     private float remainingMs = -1L;
 
     @Override
-    public void render(@NotNull Minecraft client, @NotNull PoseStack stack, float tickDelta) {
+    public void render(@NotNull Minecraft client, @NotNull GuiGraphics graphics, float tickDelta) {
         client.getProfiler().push("veinminerPatternWheel");
 
+        PoseStack stack = graphics.pose();
         stack.pushPose();
         stack.translate(4, 0, 0);
 
@@ -54,13 +56,13 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
         String selected = serverState.getSelectedPattern().toString();
         String after = serverState.getNextPattern().toString();
 
-        client.font.drawShadow(stack, Component.literal(selected), 0, client.font.lineHeight, colour);
+        graphics.drawString(client.font, Component.literal(selected), 0, client.font.lineHeight, colour);
 
         stack.pushPose();
         stack.translate(0, 3, 0);
         stack.scale(0.6F, 0.6F, 0.6F);
-        client.font.drawShadow(stack, Component.literal(before), 0, 0, colour);
-        client.font.drawShadow(stack, Component.literal(after), 0, client.font.lineHeight * 3, colour);
+        graphics.drawString(client.font, Component.literal(before), 0, 0, colour);
+        graphics.drawString(client.font, Component.literal(after), 0, client.font.lineHeight * 3, colour);
         stack.popPose();
 
         RenderSystem.disableBlend();
