@@ -15,7 +15,7 @@ import wtf.choco.veinminer.util.NamespacedKey;
  */
 public final class BukkitItemType implements ItemType {
 
-    private static final Map<Material, ItemType> CACHE = new EnumMap<>(Material.class);
+    private static final Map<Material, BukkitItemType> CACHE = new EnumMap<>(Material.class);
 
     private final Material material;
     private final NamespacedKey key;
@@ -44,19 +44,19 @@ public final class BukkitItemType implements ItemType {
      * @return the material
      */
     @NotNull
-    public Material getMaterial() {
+    public Material getBukkitMaterial() {
         return material;
     }
 
     /**
-     * Get an {@link ItemType} for the given {@link Material}.
+     * Get an {@link BukkitItemType} for the given {@link Material}.
      *
      * @param material the material
      *
      * @return the item type
      */
     @NotNull
-    public static ItemType of(@NotNull Material material) {
+    public static BukkitItemType of(@NotNull Material material) {
         Preconditions.checkArgument(material.isItem(), "material is not an item");
         return CACHE.computeIfAbsent(material, BukkitItemType::new);
     }

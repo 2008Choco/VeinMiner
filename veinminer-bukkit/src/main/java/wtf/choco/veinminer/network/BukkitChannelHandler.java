@@ -9,7 +9,7 @@ import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
 import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
-import wtf.choco.veinminer.platform.BukkitServerPlatform;
+import wtf.choco.veinminer.platform.BukkitAdapter;
 import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.util.NamespacedKey;
 
@@ -48,7 +48,7 @@ public final class BukkitChannelHandler implements ChannelRegistrar {
                     return;
                 }
 
-                PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+                PlatformPlayer platformPlayer = BukkitAdapter.adapt(player);
                 VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
                 if (veinMinerPlayer == null) {
                     return;

@@ -7,12 +7,14 @@ import java.util.Objects;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.platform.BukkitAdapter;
+
 /**
  * A Bukkit implementation of {@link BlockState}.
  */
 public final class BukkitBlockState implements BlockState {
 
-    private static final Map<BlockData, BlockState> CACHE = new HashMap<>();
+    private static final Map<BlockData, BukkitBlockState> CACHE = new HashMap<>();
 
     private final BlockData blockData;
 
@@ -23,7 +25,7 @@ public final class BukkitBlockState implements BlockState {
     @NotNull
     @Override
     public BlockType getType() {
-        return BukkitBlockType.of(blockData.getMaterial());
+        return BukkitAdapter.adaptBlock(blockData.getMaterial());
     }
 
     @NotNull
@@ -37,15 +39,20 @@ public final class BukkitBlockState implements BlockState {
         return (state instanceof BukkitBlockState other) && blockData.matches(other.blockData);
     }
 
+    @NotNull
+    public BlockData getBukkitBlockData() {
+        return blockData;
+    }
+
     /**
-     * Get a {@link BlockState} for the given {@link BlockData}.
+     * Get a {@link BukkitBlockState} for the given {@link BlockData}.
      *
      * @param blockData the block data
      *
      * @return the BlockState
      */
     @NotNull
-    public static BlockState of(@NotNull BlockData blockData) {
+    public static BukkitBlockState of(@NotNull BlockData blockData) {
         return CACHE.computeIfAbsent(blockData, BukkitBlockState::new);
     }
 

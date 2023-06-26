@@ -7,7 +7,6 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -40,15 +39,10 @@ import wtf.choco.veinminer.integration.WorldGuardIntegration;
 import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
-import wtf.choco.veinminer.platform.BukkitServerPlatform;
-import wtf.choco.veinminer.platform.GameMode;
+import wtf.choco.veinminer.platform.BukkitAdapter;
 import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.platform.world.BlockState;
-import wtf.choco.veinminer.platform.world.BukkitBlockAccessor;
-import wtf.choco.veinminer.platform.world.BukkitBlockState;
-import wtf.choco.veinminer.platform.world.BukkitBlockType;
-import wtf.choco.veinminer.platform.world.BukkitItemType;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 import wtf.choco.veinminer.util.BlockPosition;
@@ -77,7 +71,7 @@ public final class BreakBlockListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(BukkitItemType.of(item.getType()), cat -> player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(cat)));
+        VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(BukkitAdapter.adaptItem(item.getType()), cat -> player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(cat)));
         if (category == null) {
             return;
         }
@@ -93,14 +87,14 @@ public final class BreakBlockListener implements Listener {
 
         VeinMinerManager veinMinerManager = plugin.getVeinMinerManager();
         BlockData originBlockData = origin.getBlockData();
-        BlockState originBlockState = BukkitBlockState.of(originBlockData);
+        BlockState originBlockState = BukkitAdapter.adapt(originBlockData);
 
         if (!veinMinerManager.isVeinMineable(originBlockState, category)) {
             return;
         }
 
         // Invalid player state check
-        PlatformPlayer platformPlayer = BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
+        PlatformPlayer platformPlayer = BukkitAdapter.adapt(player);
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(platformPlayer);
         if (veinMinerPlayer == null) {
             return;
@@ -110,7 +104,7 @@ public final class BreakBlockListener implements Listener {
 
         if (!veinMinerPlayer.isVeinMinerActive()
                 || !veinMinerPlayer.isVeinMinerEnabled(category)
-                || veinMinerManager.isDisabledGameMode(GameMode.getByIdOrThrow(player.getGameMode().name()))
+                || veinMinerManager.isDisabledGameMode(BukkitAdapter.adapt(player.getGameMode()))
                 || veinMinerConfig.isDisabledWorld(origin.getWorld().getName())
                 || !player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(category))) {
             return;
@@ -147,11 +141,11 @@ public final class BreakBlockListener implements Listener {
         assert originVeinMinerBlock != null; // If this is null, something is broken internally
 
         World world = origin.getWorld();
-        BlockAccessor blockAccessor = BukkitBlockAccessor.forWorld(world);
+        BlockAccessor blockAccessor = BukkitAdapter.adapt(world);
         VeinMiningPattern pattern = veinMinerPlayer.getVeinMiningPattern();
         BlockPosition originPosition = new BlockPosition(origin.getX(), origin.getY(), origin.getZ());
         BlockList aliasBlockList = veinMinerManager.getAlias(originVeinMinerBlock);
-        wtf.choco.veinminer.util.BlockFace vmBlockFace = wtf.choco.veinminer.util.BlockFace.valueOf(targetBlockFace.name());
+        wtf.choco.veinminer.util.BlockFace vmBlockFace = BukkitAdapter.adapt(targetBlockFace);
 
         Set<BlockPosition> blockPositions = pattern.allocateBlocks(blockAccessor, originPosition, vmBlockFace, originVeinMinerBlock, veinMinerConfig, aliasBlockList);
         Set<Block> blocks = new HashSet<>();
@@ -229,9 +223,8 @@ public final class BreakBlockListener implements Listener {
             }
 
             // Break the block
-            Material currentType = block.getType();
             if (block == origin || player.breakBlock(block)) {
-                StatTracker.accumulateVeinMinedMaterial(BukkitBlockType.of(currentType));
+                StatTracker.accumulateVeinMinedMaterial(BukkitAdapter.adaptBlock(block.getType()));
             }
         }
 

@@ -36,4 +36,9 @@ public final class BukkitItemStack implements ItemStack {
         return meta != null ? meta.getPersistentDataContainer().get(VMConstants.getVeinMinerNBTKey(), PersistentDataType.STRING) : null;
     }
 
+    @NotNull
+    public org.bukkit.inventory.ItemStack getBukkitItemStack() {
+        return itemStack;
+    }
+
 }

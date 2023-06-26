@@ -31,9 +31,6 @@ import wtf.choco.veinminer.config.BukkitVeinMinerConfiguration;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.platform.world.BlockType;
-import wtf.choco.veinminer.platform.world.BukkitBlockState;
-import wtf.choco.veinminer.platform.world.BukkitBlockType;
-import wtf.choco.veinminer.platform.world.BukkitItemType;
 import wtf.choco.veinminer.platform.world.ItemType;
 import wtf.choco.veinminer.update.SpigotMCUpdateChecker;
 import wtf.choco.veinminer.update.UpdateChecker;
@@ -92,7 +89,7 @@ public final class BukkitServerPlatform implements ServerPlatform {
     @Override
     public BlockState getState(@NotNull String state) {
         try {
-            return BukkitBlockState.of(Bukkit.createBlockData(state));
+            return BukkitAdapter.adapt(Bukkit.createBlockData(state));
         } catch (IllegalArgumentException e) {
             return null;
         }
@@ -102,14 +99,14 @@ public final class BukkitServerPlatform implements ServerPlatform {
     @Override
     public BlockType getBlockType(@NotNull String type) {
         Material material = Material.matchMaterial(type);
-        return (material != null && material.isBlock()) ? BukkitBlockType.of(material) : null;
+        return (material != null && material.isBlock()) ? BukkitAdapter.adaptBlock(material) : null;
     }
 
     @Nullable
     @Override
     public ItemType getItemType(@NotNull String type) {
         Material material = Material.matchMaterial(type);
-        return (material != null && material.isItem()) ? BukkitItemType.of(material) : null;
+        return (material != null && material.isItem()) ? BukkitAdapter.adaptItem(material) : null;
     }
 
     @NotNull
@@ -170,11 +167,7 @@ public final class BukkitServerPlatform implements ServerPlatform {
     }
 
     private PlatformCommandSender wrap(CommandSender sender) {
-        if (sender instanceof Player player) {
-            return BukkitServerPlatform.getInstance().getPlatformPlayer(player.getUniqueId());
-        }
-
-        return new BukkitPlatformCommandSender(sender);
+        return (sender instanceof Player player) ? BukkitAdapter.adapt(player) : new BukkitPlatformCommandSender(sender);
     }
 
     @NotNull

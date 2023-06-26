@@ -13,11 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
-import wtf.choco.veinminer.platform.world.BukkitBlockAccessor;
-import wtf.choco.veinminer.platform.world.BukkitItemStack;
 import wtf.choco.veinminer.platform.world.ItemStack;
 import wtf.choco.veinminer.platform.world.RayTraceResult;
-import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
 
@@ -61,14 +58,14 @@ public final class BukkitPlatformPlayer implements PlatformPlayer {
     @Override
     public BlockAccessor getWorld() {
         Player player = getPlayerOrThrow();
-        return BukkitBlockAccessor.forWorld(player.getWorld());
+        return BukkitAdapter.adapt(player.getWorld());
     }
 
     @NotNull
     @Override
     public ItemStack getItemInMainHand() {
         Player player = getPlayerOrThrow();
-        return new BukkitItemStack(player.getInventory().getItemInMainHand());
+        return BukkitAdapter.adapt(player.getInventory().getItemInMainHand());
     }
 
     @NotNull
@@ -84,7 +81,7 @@ public final class BukkitPlatformPlayer implements PlatformPlayer {
             return new RayTraceResult();
         }
 
-        return new RayTraceResult(new BlockPosition(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()), BlockFace.valueOf(targetBlockFace.name()));
+        return new RayTraceResult(new BlockPosition(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ()), BukkitAdapter.adapt(targetBlockFace));
     }
 
     @NotNull
@@ -117,11 +114,7 @@ public final class BukkitPlatformPlayer implements PlatformPlayer {
             return lastKnownGameMode;
         }
 
-        GameMode gameMode = GameMode.getById(player.getGameMode().name());
-        if (gameMode == null) {
-            throw new IllegalStateException("Unknown game mode \"" + player.getGameMode() + "\". This is a bug.");
-        }
-
+        GameMode gameMode = BukkitAdapter.adapt(player.getGameMode());
         return (lastKnownGameMode = gameMode);
     }
 

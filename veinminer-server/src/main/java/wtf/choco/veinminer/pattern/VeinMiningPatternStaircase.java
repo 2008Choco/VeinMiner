@@ -97,7 +97,13 @@ public final class VeinMiningPatternStaircase implements VeinMiningPattern {
      */
     public static enum Direction {
 
+        /**
+         * Upwards staircase.
+         */
         UP(1),
+        /**
+         * Downwards staircase.
+         */
         DOWN(-1);
 
         private final int modY;

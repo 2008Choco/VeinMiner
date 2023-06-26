@@ -1,8 +1,5 @@
 package wtf.choco.veinminer.platform;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,14 +24,6 @@ public enum GameMode {
      * Spectator mode.
      */
     SPECTATOR("spectator");
-
-    private static final Map<String, GameMode> BY_ID = new HashMap<>();
-
-    static {
-        for (GameMode gameMode : GameMode.values()) {
-            BY_ID.put(gameMode.getId(), gameMode);
-        }
-    }
 
     private final String id;
 
@@ -61,7 +50,13 @@ public enum GameMode {
      */
     @Nullable
     public static GameMode getById(@NotNull String id) {
-        return BY_ID.get(id.toLowerCase());
+        for (GameMode gameMode : values()) {
+            if (gameMode.getId().equalsIgnoreCase(id)) {
+                return gameMode;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -18,7 +18,7 @@ public final class BukkitServerEventDispatcher implements ServerEventDispatcher 
 
     @Override
     public PatternChangeEvent callPatternChangeEvent(PlatformPlayer player, VeinMiningPattern pattern, VeinMiningPattern newPattern, Cause cause) {
-        Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayerOrThrow();
+        Player bukkitPlayer = BukkitAdapter.adapt(player);
         PlayerVeinMiningPatternChangeEvent event = new PlayerVeinMiningPatternChangeEvent(bukkitPlayer, pattern, newPattern, cause);
         Bukkit.getPluginManager().callEvent(event);
         return event;
@@ -26,7 +26,7 @@ public final class BukkitServerEventDispatcher implements ServerEventDispatcher 
 
     @Override
     public boolean handleClientActivateVeinMinerEvent(PlatformPlayer player, boolean activated) {
-        Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayerOrThrow();
+        Player bukkitPlayer = BukkitAdapter.adapt(player);
         PlayerClientActivateVeinMinerEvent event = new PlayerClientActivateVeinMinerEvent(bukkitPlayer, activated);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled();
