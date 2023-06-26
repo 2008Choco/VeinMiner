@@ -30,7 +30,7 @@ public final class BukkitAdapter {
     private static final BiMap<org.bukkit.GameMode, GameMode> GAME_MODE_MAP = ImmutableBiMap.<org.bukkit.GameMode, GameMode>builder()
             .put(org.bukkit.GameMode.SURVIVAL, GameMode.SURVIVAL)
             .put(org.bukkit.GameMode.CREATIVE, GameMode.CREATIVE)
-            .put(org.bukkit.GameMode.SPECTATOR, GameMode.SPECTATOR)
+            .put(org.bukkit.GameMode.ADVENTURE, GameMode.ADVENTURE)
             .put(org.bukkit.GameMode.SPECTATOR, GameMode.SPECTATOR)
             .build();
 
