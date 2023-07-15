@@ -57,8 +57,11 @@ public final class WorldGuardIntegration {
 
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regionManager = regionContainer.get(localPlayer.getWorld());
-        ApplicableRegionSet regionSet = regionManager.getApplicableRegions(BlockVector3.at(block.getX(), block.getY(), block.getZ()));
+        if (regionManager == null) {
+            return true;
+        }
 
+        ApplicableRegionSet regionSet = regionManager.getApplicableRegions(BlockVector3.at(block.getX(), block.getY(), block.getZ()));
         return regionSet.testState(localPlayer, flag);
     }
 
