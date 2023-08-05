@@ -43,6 +43,7 @@ import wtf.choco.veinminer.platform.BukkitAdapter;
 import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.platform.world.BlockState;
+import wtf.choco.veinminer.platform.world.BlockType;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 import wtf.choco.veinminer.util.BlockPosition;
@@ -223,8 +224,9 @@ public final class BreakBlockListener implements Listener {
             }
 
             // Break the block
+            BlockType blockType = BukkitAdapter.adaptBlock(block.getType());
             if (block == origin || player.breakBlock(block)) {
-                StatTracker.accumulateVeinMinedMaterial(BukkitAdapter.adaptBlock(block.getType()));
+                StatTracker.accumulateVeinMinedMaterial(blockType);
             }
         }
 
