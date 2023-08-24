@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import wtf.choco.veinminer.platform.world.ItemStack;
 import wtf.choco.veinminer.platform.world.ItemType;
 
 /**
@@ -42,24 +43,11 @@ public final class ToolCategoryRegistry {
         return categories.get(id.toLowerCase());
     }
 
-    /**
-     * Get the {@link VeinMinerToolCategory} that contains the given {@link ItemType} and matches
-     * the given {@link Predicate}. There is no guarantee as to which category will be returned if
-     * more than one category contains the provided ItemType.
-     *
-     * @param itemType the item type
-     * @param categoryPredicate a predicate to apply on top of the item condition. If the predicate
-     * returns false for any given category, it will not be returned by this method. Useful for an
-     * additional permission check on a category
-     *
-     * @return the corresponding tool category, or null if no category contains the item
-     */
     @Nullable
-    public VeinMinerToolCategory get(@NotNull ItemType itemType, @NotNull Predicate<VeinMinerToolCategory> categoryPredicate) {
+    private VeinMinerToolCategory get(@NotNull ItemType itemType, @Nullable String itemNbtValue, @NotNull Predicate<VeinMinerToolCategory> categoryPredicate) {
         VeinMinerToolCategory resultCategory = null;
-
         for (VeinMinerToolCategory category : categories.values()) {
-            if (category.containsItem(itemType) && (resultCategory == null || category.compareTo(resultCategory) > 1) && categoryPredicate.test(category)) {
+            if (category.containsItem(itemType) && (category.getNBTValue() == null || category.getNBTValue().equals(itemNbtValue)) && (resultCategory == null || category.compareTo(resultCategory) > 1) && categoryPredicate.test(category)) {
                 resultCategory = category;
             }
         }
@@ -75,10 +63,66 @@ public final class ToolCategoryRegistry {
      * @param itemType the item type
      *
      * @return the corresponding tool category, or null if no category contains the item
+     *
+     * @deprecated Using this leads to incorrect behaviour when an NBT tag is set
+     * in config. Pass ItemStack instead of ItemType.
      */
+    @Deprecated
     @Nullable
     public VeinMinerToolCategory get(@NotNull ItemType itemType) {
-        return get(itemType, PREDICATE_ALWAYS_TRUE);
+        return get(itemType, null, PREDICATE_ALWAYS_TRUE);
+    }
+
+    /**
+     * Get the {@link VeinMinerToolCategory} that contains the given {@link ItemType}. There is
+     * no guarantee as to which category will be returned if more than one category contains the
+     * provided ItemType.
+     *
+     * @param itemType the item type
+     * @param categoryPredicate a predicate to apply on top of the item condition. If the predicate
+     * returns false for any given category, it will not be returned by this method. Useful for an
+     * additional permission check on a category
+     *
+     * @return the corresponding tool category, or null if no category contains the item
+     *
+     * @deprecated Using this leads to incorrect behaviour when an NBT tag is set
+     * in config. Pass ItemStack instead of ItemType.
+     */
+    @Deprecated
+    @Nullable
+    public VeinMinerToolCategory get(@NotNull ItemType itemType, @NotNull Predicate<VeinMinerToolCategory> categoryPredicate) {
+        return get(itemType, null, categoryPredicate);
+    }
+
+    /**
+     * Get the {@link VeinMinerToolCategory} that contains the given {@link ItemType}. There is
+     * no guarantee as to which category will be returned if more than one category contains the
+     * provided ItemType.
+     *
+     * @param itemStack the item
+     *
+     * @return the corresponding tool category, or null if no category contains the item
+     */
+    @Nullable
+    public VeinMinerToolCategory get(@NotNull ItemStack itemStack) {
+        return get(itemStack.getType(), itemStack.getVeinMinerNBTValue(), PREDICATE_ALWAYS_TRUE);
+    }
+
+    /**
+     * Get the {@link VeinMinerToolCategory} that contains the given {@link ItemType}. There is
+     * no guarantee as to which category will be returned if more than one category contains the
+     * provided ItemType.
+     *
+     * @param itemStack the item
+     * @param categoryPredicate a predicate to apply on top of the item condition. If the predicate
+     * returns false for any given category, it will not be returned by this method. Useful for an
+     * additional permission check on a category
+     *
+     * @return the corresponding tool category, or null if no category contains the item
+     */
+    @Nullable
+    public VeinMinerToolCategory get(@NotNull ItemStack itemStack, @NotNull Predicate<VeinMinerToolCategory> categoryPredicate) {
+        return get(itemStack.getType(), itemStack.getVeinMinerNBTValue(), categoryPredicate);
     }
 
     /**
