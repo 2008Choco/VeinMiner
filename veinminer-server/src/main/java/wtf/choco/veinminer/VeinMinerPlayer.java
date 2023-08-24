@@ -504,16 +504,10 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     public void handleRequestVeinMine(@NotNull PluginMessageServerboundRequestVeinMine message) {
         ItemStack itemStack = player.getItemInMainHand();
         VeinMinerServer veinMiner = VeinMinerServer.getInstance();
-        VeinMinerToolCategory category = veinMiner.getToolCategoryRegistry().get(itemStack.getType());
+        VeinMinerToolCategory category = veinMiner.getToolCategoryRegistry().get(itemStack);
 
         if (category == null) {
             this.sendMessage(new PluginMessageClientboundVeinMineResults());
-            return;
-        }
-
-        // Check for the NBT value is one is present
-        String nbtValue = category.getNBTValue();
-        if (nbtValue != null && !nbtValue.equals(itemStack.getVeinMinerNBTValue())) {
             return;
         }
 
