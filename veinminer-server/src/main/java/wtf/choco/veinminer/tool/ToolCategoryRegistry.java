@@ -47,7 +47,8 @@ public final class ToolCategoryRegistry {
     private VeinMinerToolCategory get(@NotNull ItemType itemType, @Nullable String itemNbtValue, @NotNull Predicate<VeinMinerToolCategory> categoryPredicate) {
         VeinMinerToolCategory resultCategory = null;
         for (VeinMinerToolCategory category : categories.values()) {
-            if (category.containsItem(itemType) && (category.getNBTValue() == null || category.getNBTValue().equals(itemNbtValue)) && (resultCategory == null || category.compareTo(resultCategory) > 1) && categoryPredicate.test(category)) {
+            String nbtValue = category.getNBTValue();
+            if (category.containsItem(itemType) && (nbtValue == null || nbtValue.equals(itemNbtValue)) && (resultCategory == null || category.compareTo(resultCategory) > 1) && categoryPredicate.test(category)) {
                 resultCategory = category;
             }
         }
