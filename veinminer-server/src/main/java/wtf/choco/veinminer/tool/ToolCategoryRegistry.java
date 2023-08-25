@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,8 +48,21 @@ public final class ToolCategoryRegistry {
     private VeinMinerToolCategory get(@NotNull ItemType itemType, @Nullable String itemNbtValue, @NotNull Predicate<VeinMinerToolCategory> categoryPredicate) {
         VeinMinerToolCategory resultCategory = null;
         for (VeinMinerToolCategory category : categories.values()) {
+            if (!category.containsItem(itemType)) {
+                continue;
+            }
+
             String nbtValue = category.getNBTValue();
-            if (category.containsItem(itemType) && (nbtValue == null || nbtValue.equals(itemNbtValue)) && (resultCategory == null || category.compareTo(resultCategory) > 1) && categoryPredicate.test(category)) {
+            if (!Objects.equals(nbtValue, itemNbtValue)) {
+                continue;
+            }
+
+            // If the category's priority is lower than the currently returnable category, ignore it
+            if (resultCategory != null && category.compareTo(category) <= 0) {
+                continue;
+            }
+
+            if (categoryPredicate.test(category)) {
                 resultCategory = category;
             }
         }
