@@ -16,6 +16,7 @@ import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.block.BlockList;
+import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
@@ -268,7 +269,7 @@ public final class BukkitVeinMinerConfiguration implements VeinMinerConfiguratio
     @Override
     public void updateBlockList(@NotNull String categoryId, @NotNull BlockList blockList) {
         List<String> blockListStrings = blockList.asList().stream()
-                .map(block -> block.getType().getKey().toString())
+                .map(VeinMinerBlock::toStateString)
                 .sorted().toList();
 
         this.plugin.getConfig().set("BlockList." + categoryId, blockListStrings);
