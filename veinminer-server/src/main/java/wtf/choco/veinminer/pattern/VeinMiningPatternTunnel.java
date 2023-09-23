@@ -10,6 +10,7 @@ import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
+import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
@@ -75,8 +76,9 @@ public final class VeinMiningPatternTunnel implements VeinMiningPattern {
          */
         int blocksPerSquare = (int) Math.pow((radius * 2) + 1, 2);
         int maxTunnelDepth = (int) Math.ceil(((double) maxVeinSize) / blocksPerSquare);
+        BlockState originState = blockAccessor.getState(origin);
 
-        while (maxTunnelDepth-- > 0 && calculateSquare(positions, blockAccessor, currentCenter, block, aliasList, maxVeinSize, relativeGetter)) {
+        while (maxTunnelDepth-- > 0 && calculateSquare(positions, blockAccessor, originState, currentCenter, block, aliasList, maxVeinSize, relativeGetter)) {
             currentCenter = currentCenter.getRelative(tunnelDirection);
         }
 
@@ -89,14 +91,14 @@ public final class VeinMiningPatternTunnel implements VeinMiningPattern {
         return "veinminer.pattern.tunnel";
     }
 
-    private boolean calculateSquare(Set<BlockPosition> positions, BlockAccessor blockAccessor, BlockPosition center, VeinMinerBlock block, BlockList aliasList, int maxVeinSize, BiAxisRelativeGetter relativeGetter) {
+    private boolean calculateSquare(Set<BlockPosition> positions, BlockAccessor blockAccessor, BlockState originState, BlockPosition center, VeinMinerBlock block, BlockList aliasList, int maxVeinSize, BiAxisRelativeGetter relativeGetter) {
         boolean changed = false;
 
         // Get the possible mod values for that axis which should be -1, 0, and 1. Or just 0 for the axis that is ignored (set to 0 above)
         for (int i = -radius; i <= radius; i++) {
             for (int j = -radius; j <= radius; j++) {
                 BlockPosition relative = relativeGetter.apply(center, i, j);
-                if (positions.contains(relative) || !PatternUtils.typeMatches(block, aliasList, blockAccessor.getState(relative))) {
+                if (positions.contains(relative) || !PatternUtils.typeMatches(block, aliasList, originState, blockAccessor.getState(relative))) {
                     continue;
                 }
 

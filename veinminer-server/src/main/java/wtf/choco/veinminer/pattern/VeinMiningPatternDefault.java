@@ -12,6 +12,7 @@ import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
+import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.NamespacedKey;
@@ -44,13 +45,14 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
         this.recent.add(origin); // For first iteration
 
         int maxVeinSize = config.getMaxVeinSize();
+        BlockState originState = blockAccessor.getState(origin);
 
         while (positions.size() < maxVeinSize) {
             recentSearch:
             for (BlockPosition current : recent) {
                 for (BlockFace face : BlockFace.values()) {
                     BlockPosition relative = face.getRelative(current);
-                    if (positions.contains(relative) || !PatternUtils.typeMatches(block, aliasList, blockAccessor.getState(relative))) {
+                    if (positions.contains(relative) || !PatternUtils.typeMatches(block, aliasList, originState, blockAccessor.getState(relative))) {
                         continue;
                     }
 
