@@ -34,7 +34,7 @@ subprojects {
         }
     }
 
-    aggregateJavadoc {
+    def javadocConfig = {
         options.links(
             'https://docs.oracle.com/en/java/javase/17/docs/api/',
             'https://hub.spigotmc.org/javadocs/spigot/'
@@ -45,6 +45,14 @@ subprojects {
             "implSpec:a:Implementation Specification:",
             "implNote:a:Implementation Note:"
         )
+    }
+
+    javadoc {
+        configure javadocConfig
+    }
+
+    aggregateJavadoc {
+        configure javadocConfig
     }
 
     tasks.withType(Checkstyle) {
