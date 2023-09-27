@@ -1,13 +1,12 @@
 plugins {
-    id 'base'
     id 'eclipse'
     id 'maven-publish'
     id "io.freefair.aggregate-javadoc" version "6.5.0.3"
 }
 
 allprojects {
-    group 'wtf.choco' // Group for each version
-    version '2.2.0' // Global version applied to all projects
+    group 'wtf.choco'
+    version '2.2.0'
 
     tasks.withType(JavaCompile) {
         options.encoding 'UTF-8'
@@ -15,10 +14,10 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'java-library'
+    apply plugin: 'java'
     apply plugin: 'checkstyle'
 
-    repositories { // Repos applied to all sub projects
+    repositories {
         mavenCentral()
     }
 
@@ -29,31 +28,26 @@ subprojects {
     java {
         withJavadocJar()
         withSourcesJar()
-    }
 
-    def javadocConfig = {
-        options {
-            links(
-                'https://docs.oracle.com/en/java/javase/17/docs/api/',
-                'https://hub.spigotmc.org/javadocs/spigot/'
-            )
-
-            tags(
-                "apiNote:a:API Note:",
-                "implSpec:a:Implementation Specification:",
-                "implNote:a:Implementation Note:"
-            )
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
         }
     }
 
-    javadoc { configure javadocConfig }
-    aggregateJavadoc { configure javadocConfig }
+    aggregateJavadoc {
+        options.links(
+            'https://docs.oracle.com/en/java/javase/17/docs/api/',
+            'https://hub.spigotmc.org/javadocs/spigot/'
+        )
 
-    checkstyleMain {
-        configFile = file("${rootDir}/checkstyle.xml")
+        options.tags(
+            "apiNote:a:API Note:",
+            "implSpec:a:Implementation Specification:",
+            "implNote:a:Implementation Note:"
+        )
     }
 
-    checkstyleTest {
+    tasks.withType(Checkstyle) {
         configFile = file("${rootDir}/checkstyle.xml")
     }
 }
