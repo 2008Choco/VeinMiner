@@ -51,6 +51,8 @@ import wtf.choco.veinminer.util.VMEventFactory;
 
 public final class BreakBlockListener implements Listener {
 
+    private static final String METADATA_KEY_BLOCKBREAKEVENT_IGNORE = "blockbreakevent-ignore";
+
     private final VeinMinerPlugin plugin;
 
     public BreakBlockListener(@NotNull VeinMinerPlugin plugin) {
@@ -64,7 +66,7 @@ public final class BreakBlockListener implements Listener {
         }
 
         Block origin = event.getBlock();
-        if (origin.hasMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED)) {
+        if (origin.hasMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED) || origin.hasMetadata(METADATA_KEY_BLOCKBREAKEVENT_IGNORE)) {
             return;
         }
 
