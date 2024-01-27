@@ -324,6 +324,10 @@ public final class FabricServerState implements ClientboundPluginMessageListener
 
     @Override
     public void handleSetPattern(@NotNull PluginMessageClientboundSetPattern message) {
+        if (patternKeys == null) {
+            return;
+        }
+
         this.selectedPatternIndex = Math.max(patternKeys.indexOf(message.getPatternKey()), 0);
     }
 
