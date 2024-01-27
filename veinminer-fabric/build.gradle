@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.*
 
 plugins {
-    id 'fabric-loom' version '1.2-SNAPSHOT'
+    id 'fabric-loom' version '1.5-SNAPSHOT'
 }
 
 dependencies {
