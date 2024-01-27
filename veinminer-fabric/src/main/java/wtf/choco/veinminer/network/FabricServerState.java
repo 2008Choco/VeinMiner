@@ -61,6 +61,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
         // We'll enable VeinMiner if we're in single player development mode, just for testing
         if (client.hasSingleplayerServer() && FabricLoader.getInstance().isDevelopmentEnvironment()) {
             this.config = new ClientConfig();
+            this.enabledOnServer = true;
             this.patternKeys = List.of(
                 NamespacedKey.veinminer("default"),
                 NamespacedKey.veinminer("tunnel"),
