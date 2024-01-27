@@ -5,16 +5,18 @@ import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
 import java.util.OptionalDouble;
 
-import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderStateShard.LineStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType.CompositeState;
 
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.client.renderer.RenderStateShard.*;
+
 /**
  * A container class for {@link RenderType RenderTypes} used by VeinMiner.
  */
-public final class VeinMinerRenderType extends RenderStateShard { // extending RenderStateShard grants us access to its protected constants
+public final class VeinMinerRenderType {
 
     private static final RenderType WIREFRAME = RenderType.create("veinminer_wireframe", DefaultVertexFormat.POSITION_COLOR, Mode.DEBUG_LINES, 256, CompositeState.builder()
             .setLineState(new LineStateShard(OptionalDouble.empty()))
@@ -34,11 +36,6 @@ public final class VeinMinerRenderType extends RenderStateShard { // extending R
             .setDepthTestState(NO_DEPTH_TEST)
             .setShaderState(POSITION_COLOR_SHADER)
             .createCompositeState(false));
-
-    // Exists just to satisfy the compiler
-    private VeinMinerRenderType(String string, Runnable runnable, Runnable runnable2) {
-        super(string, runnable, runnable2);
-    }
 
     /**
      * Get the wireframe {@link RenderType}.
