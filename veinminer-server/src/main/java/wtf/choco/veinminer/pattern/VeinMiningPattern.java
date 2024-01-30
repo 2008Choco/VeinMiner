@@ -5,13 +5,13 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfig;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
-import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * Represents a pattern used to allocate blocks for vein mining.

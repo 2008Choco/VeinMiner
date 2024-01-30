@@ -2,6 +2,9 @@ package wtf.choco.veinminer.util;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.MessageByteBuffer;
+import wtf.choco.network.data.ProtocolData;
+
 /**
  * Represents a set of x, y, and z coordinates in a world.
  *
@@ -9,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @param y the y coordinate
  * @param z the z coordinate
  */
-public record BlockPosition(int x, int y, int z) {
+public record BlockPosition(int x, int y, int z) implements ProtocolData {
 
     private static final double MAXIMUM_UPPER_BOUND = Math.pow(2, 25), NEGATIVE_UPPER_BOUND = Math.pow(2, 26);
     private static final double MAXIMUM_UPPER_BOUND_Y = Math.pow(2, 11), NEGATIVE_UPPER_BOUND_Y = Math.pow(2, 12);
@@ -77,6 +80,10 @@ public record BlockPosition(int x, int y, int z) {
      */
     public long pack() {
         return pack(x, y, z);
+    }
+
+    public static BlockPosition read(MessageByteBuffer buffer) {
+        return unpack(buffer.readLong());
     }
 
     /**
@@ -169,6 +176,11 @@ public record BlockPosition(int x, int y, int z) {
         }
 
         return value;
+    }
+
+    @Override
+    public void write(@NotNull MessageByteBuffer buffer) {
+        buffer.writeLong(pack());
     }
 
 }

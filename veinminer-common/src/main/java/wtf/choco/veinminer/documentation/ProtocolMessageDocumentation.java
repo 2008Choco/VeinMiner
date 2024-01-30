@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import wtf.choco.veinminer.network.MessageDirection;
+import wtf.choco.network.MessageDirection;
 
 /**
  * Represents documentation for a protocol message.

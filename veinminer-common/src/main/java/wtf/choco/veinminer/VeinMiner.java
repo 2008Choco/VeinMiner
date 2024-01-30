@@ -2,19 +2,20 @@ package wtf.choco.veinminer;
 
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.network.PluginMessageProtocol;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetConfig;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
-import wtf.choco.veinminer.util.NamespacedKey;
+import wtf.choco.network.MessageProtocol;
+import wtf.choco.network.data.NamespacedKey;
+import wtf.choco.veinminer.network.VeinMinerProtocolConfiguration;
+import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
+import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetConfig;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetPattern;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSyncRegisteredPatterns;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundVeinMineResults;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundSelectPattern;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMiner;
 
 /**
  * A class holding VeinMiner's core common functionality.
@@ -34,63 +35,35 @@ public interface VeinMiner {
     /**
      * The {@link NamespacedKey} of the VeinMiner messaging channel.
      *
-     * @see PluginMessageProtocol#getChannel() VeinMiner.PROTOCOL.getChannel()
+     * @see MessageProtocol#getChannel() VeinMiner.PROTOCOL.getChannel()
      */
-    public static final NamespacedKey PROTOCOL_CHANNEL = NamespacedKey.veinminer("veinminer");
+    public static final NamespacedKey PROTOCOL_CHANNEL = NamespacedKey.of("veinminer", "veinminer");
 
     /**
      * The version of the VeinMiner protocol.
      *
-     * @see PluginMessageProtocol#getVersion() VeinMiner.PROTOCOL.getVersion()
+     * @see MessageProtocol#getVersion() VeinMiner.PROTOCOL.getVersion()
      */
     public static final int PROTOCOL_VERSION = 1;
 
     /**
      * VeinMiner's messaging protocol.
      *
-     * @see PluginMessageProtocol
+     * @see MessageProtocol
      */
-    public static final PluginMessageProtocol PROTOCOL = new PluginMessageProtocol(PROTOCOL_CHANNEL, PROTOCOL_VERSION,
+    public static final MessageProtocol<VeinMinerServerboundMessageListener, VeinMinerClientboundMessageListener> PROTOCOL = new MessageProtocol<VeinMinerServerboundMessageListener, VeinMinerClientboundMessageListener>(
+            PROTOCOL_CHANNEL, PROTOCOL_VERSION,
             serverboundRegistry -> serverboundRegistry
-                .registerMessage(PluginMessageServerboundHandshake.class, PluginMessageServerboundHandshake::new)
-                .registerMessage(PluginMessageServerboundToggleVeinMiner.class, PluginMessageServerboundToggleVeinMiner::new)
-                .registerMessage(PluginMessageServerboundRequestVeinMine.class, PluginMessageServerboundRequestVeinMine::new)
-                .registerMessage(PluginMessageServerboundSelectPattern.class, PluginMessageServerboundSelectPattern::new),
-
+                .registerMessage(ServerboundHandshake.class, ServerboundHandshake::new)
+                .registerMessage(ServerboundToggleVeinMiner.class, ServerboundToggleVeinMiner::new)
+                .registerMessage(ServerboundRequestVeinMine.class, ServerboundRequestVeinMine::new)
+                .registerMessage(ServerboundSelectPattern.class, ServerboundSelectPattern::new),
             clientboundRegistry -> clientboundRegistry
-                .registerMessage(PluginMessageClientboundHandshakeResponse.class, PluginMessageClientboundHandshakeResponse::new)
-                .registerMessage(PluginMessageClientboundSyncRegisteredPatterns.class, PluginMessageClientboundSyncRegisteredPatterns::new)
-                .registerMessage(PluginMessageClientboundSetConfig.class, PluginMessageClientboundSetConfig::new)
-                .registerMessage(PluginMessageClientboundVeinMineResults.class, PluginMessageClientboundVeinMineResults::new)
-                .registerMessage(PluginMessageClientboundSetPattern.class, PluginMessageClientboundSetPattern::new)
-    );
-
-    /**
-     * Get the version of VeinMiner (not to be confused with the protocol version).
-     *
-     * @return the version
-     */
-    @NotNull
-    public String getVersion();
-
-    /**
-     * Check whether or not VeinMiner is running on the server.
-     *
-     * @return true if running on the server, false if running on the client
-     *
-     * @see #isClient()
-     */
-    public boolean isServer();
-
-    /**
-     * Check whether or not VeinMiner is running on the client.
-     *
-     * @return true if running on the client, false if running on the server
-     *
-     * @see #isServer()
-     */
-    public default boolean isClient() {
-        return !isServer();
-    }
+                .registerMessage(ClientboundHandshakeResponse.class, ClientboundHandshakeResponse::new)
+                .registerMessage(ClientboundSyncRegisteredPatterns.class, ClientboundSyncRegisteredPatterns::new)
+                .registerMessage(ClientboundSetConfig.class, ClientboundSetConfig::new)
+                .registerMessage(ClientboundVeinMineResults.class, ClientboundVeinMineResults::new)
+                .registerMessage(ClientboundSetPattern.class, ClientboundSetPattern::new)
+    ).configure(new VeinMinerProtocolConfiguration());
 
 }

@@ -19,6 +19,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.bukkit.BukkitProtocolConfiguration;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
@@ -38,7 +39,7 @@ import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
 import wtf.choco.veinminer.metrics.AntiCheat;
 import wtf.choco.veinminer.metrics.StatTracker;
-import wtf.choco.veinminer.network.BukkitChannelHandler;
+import wtf.choco.veinminer.network.VeinMinerBukkitChannelRegistrar;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.platform.BukkitServerPlatform;
@@ -62,7 +63,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
         instance = this;
 
         VeinMinerServer.getInstance().onLoad(BukkitServerPlatform.getInstance());
-        VeinMiner.PROTOCOL.registerChannels(new BukkitChannelHandler(this));
+        VeinMiner.PROTOCOL.registerChannels(new VeinMinerBukkitChannelRegistrar(this));
+        VeinMiner.PROTOCOL.configure(new BukkitProtocolConfiguration(this));
 
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
             this.getLogger().info("Found WorldGuard. Registering custom region flag.");

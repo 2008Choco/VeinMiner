@@ -3,19 +3,19 @@ package wtf.choco.veinminer.network.protocol.clientbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.MessageByteBuffer;
 import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
+import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
 
 /**
- * A client bound {@link PluginMessage} with no data.
+ * A client bound {@link Message} with no data.
  * <p>
- * Sent in response to the client sending the {@link PluginMessageServerboundHandshake} message.
+ * Sent in response to the client sending the {@link ServerboundHandshake} message.
  */
-public final class PluginMessageClientboundHandshakeResponse implements PluginMessage<ClientboundPluginMessageListener> {
+public final class ClientboundHandshakeResponse implements Message<VeinMinerClientboundMessageListener> {
 
     /*
      * At the moment, this message serves no purpose other than to inform the client that
@@ -24,23 +24,23 @@ public final class PluginMessageClientboundHandshakeResponse implements PluginMe
      */
 
     /**
-     * Construct a new {@link PluginMessageClientboundHandshakeResponse}.
+     * Construct a new {@link ClientboundHandshakeResponse}.
      */
-    public PluginMessageClientboundHandshakeResponse() { }
+    public ClientboundHandshakeResponse() { }
 
     /**
-     * Construct a new {@link PluginMessageClientboundHandshakeResponse} with input.
+     * Construct a new {@link ClientboundHandshakeResponse} with input.
      *
      * @param buffer the input buffer
      */
     @Internal
-    public PluginMessageClientboundHandshakeResponse(@NotNull PluginMessageByteBuffer buffer) { }
+    public ClientboundHandshakeResponse(@NotNull MessageByteBuffer buffer) { }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) { }
+    public void write(@NotNull MessageByteBuffer buffer) { }
 
     @Override
-    public void handle(@NotNull ClientboundPluginMessageListener listener) {
+    public void handle(@NotNull VeinMinerClientboundMessageListener listener) {
         listener.handleHandshakeResponse(this);
     }
 

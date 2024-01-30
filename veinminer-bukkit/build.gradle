@@ -21,12 +21,13 @@ repositories {
 }
 
 dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
+
     implementation project(':veinminer-common')
     implementation project(':veinminer-server')
 
     implementation 'org.bstats:bstats-bukkit:3.0.0'
-
-    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
+    implementation 'wtf.choco:networking-bukkit:0.0.1-SNAPSHOT'
 
     compileOnly 'me.clip:placeholderapi:2.11.2'
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
@@ -47,10 +48,19 @@ processResources {
         "project.version": version
     ]
 }
-    
+
 shadowJar {
     relocate 'org.bstats', 'wtf.choco.veinminer.metrics'
     archiveFileName = "VeinMiner-Bukkit-${version}.jar"
+
+    dependencies {
+        include(project(':veinminer-common'))
+        include(project(':veinminer-server'))
+        include(dependency('org.bstats:bstats-base:3.0.0'))
+        include(dependency('org.bstats:bstats-bukkit:3.0.0'))
+        include(dependency('wtf.choco:networking-common:0.0.1-SNAPSHOT'))
+        include(dependency('wtf.choco:networking-bukkit:0.0.1-SNAPSHOT'))
+    }
 }
 
 tasks.build.dependsOn tasks.shadowJar

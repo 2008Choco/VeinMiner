@@ -3,42 +3,42 @@ package wtf.choco.veinminer.network.protocol.clientbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.MessageByteBuffer;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.MessageField;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
+import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
 
 /**
- * A client bound {@link PluginMessage} including the following data:
+ * A client bound {@link Message} including the following data:
  * <ol>
  *   <li><strong>byte</strong>: A bitmask containing 3 booleans determining the client configuration
  * </ol>
  * Sent after the server has responded to the client's handshake, or when the server's configuration
  * has been reloaded.
  */
-public final class PluginMessageClientboundSetConfig implements PluginMessage<ClientboundPluginMessageListener> {
+public final class ClientboundSetConfig implements Message<VeinMinerClientboundMessageListener> {
 
     private final ClientConfig config;
 
     /**
-     * Construct a new {@link PluginMessageClientboundSetConfig}.
+     * Construct a new {@link ClientboundSetConfig}.
      *
      * @param config the config to send
      */
-    public PluginMessageClientboundSetConfig(@NotNull ClientConfig config) {
+    public ClientboundSetConfig(@NotNull ClientConfig config) {
         this.config = config;
     }
 
     /**
-     * Construct a new {@link PluginMessageClientboundSetConfig} with input.
+     * Construct a new {@link ClientboundSetConfig} with input.
      *
      * @param buffer the input buffer
      */
     @Internal
-    public PluginMessageClientboundSetConfig(@NotNull PluginMessageByteBuffer buffer) {
+    public ClientboundSetConfig(@NotNull MessageByteBuffer buffer) {
         this.config = ClientConfig.builder().applyBitmask(buffer.readByte()).build();
     }
 
@@ -53,12 +53,12 @@ public final class PluginMessageClientboundSetConfig implements PluginMessage<Cl
     }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) {
+    public void write(@NotNull MessageByteBuffer buffer) {
         buffer.writeByte(config.getBooleanValuesAsBitmask());
     }
 
     @Override
-    public void handle(@NotNull ClientboundPluginMessageListener listener) {
+    public void handle(@NotNull VeinMinerClientboundMessageListener listener) {
         listener.handleSetConfig(this);
     }
 

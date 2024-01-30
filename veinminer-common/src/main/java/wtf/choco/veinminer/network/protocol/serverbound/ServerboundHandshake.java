@@ -3,40 +3,40 @@ package wtf.choco.veinminer.network.protocol.serverbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.MessageByteBuffer;
 import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.MessageField;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
+import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
 
 /**
- * A server bound {@link PluginMessage} including the following data:
+ * A server bound {@link Message} including the following data:
  * <ol>
  *   <li><strong>VarInt</strong>: protocol version
  * </ol>
  * Sent when a client joins the server.
  */
-public final class PluginMessageServerboundHandshake implements PluginMessage<ServerboundPluginMessageListener> {
+public final class ServerboundHandshake implements Message<VeinMinerServerboundMessageListener> {
 
     private final int protocolVersion;
 
     /**
-     * Construct a new {@link PluginMessageServerboundHandshake}.
+     * Construct a new {@link ServerboundHandshake}.
      *
      * @param protocolVersion the client's VeinMiner protocol version
      */
-    public PluginMessageServerboundHandshake(int protocolVersion) {
+    public ServerboundHandshake(int protocolVersion) {
         this.protocolVersion = protocolVersion;
     }
 
     /**
-     * Construct a new {@link PluginMessageServerboundHandshake} with input.
+     * Construct a new {@link ServerboundHandshake} with input.
      *
      * @param buffer the input buffer
      */
     @Internal
-    public PluginMessageServerboundHandshake(@NotNull PluginMessageByteBuffer buffer) {
+    public ServerboundHandshake(@NotNull MessageByteBuffer buffer) {
         this.protocolVersion = buffer.readVarInt();
     }
 
@@ -50,12 +50,12 @@ public final class PluginMessageServerboundHandshake implements PluginMessage<Se
     }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) {
+    public void write(@NotNull MessageByteBuffer buffer) {
         buffer.writeVarInt(protocolVersion);
     }
 
     @Override
-    public void handle(@NotNull ServerboundPluginMessageListener listener) {
+    public void handle(@NotNull VeinMinerServerboundMessageListener listener) {
         listener.handleHandshake(this);
     }
 

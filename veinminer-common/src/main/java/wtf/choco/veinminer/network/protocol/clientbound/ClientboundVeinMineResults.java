@@ -9,54 +9,54 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.MessageByteBuffer;
 import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.MessageField;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
+import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
 import wtf.choco.veinminer.util.BlockPosition;
 
 /**
- * A client bound {@link PluginMessage} including the following data:
+ * A client bound {@link Message} including the following data:
  * <ol>
  *   <li><strong>VarInt</strong>: The amount of block keys
  *   <li><strong>Array of BlockPosition</strong>: The block positions that were vein mined
  * </ol>
- * Sent in response to the client sending a {@link PluginMessageServerboundRequestVeinMine}.
+ * Sent in response to the client sending a {@link ServerboundRequestVeinMine}.
  */
-public final class PluginMessageClientboundVeinMineResults implements PluginMessage<ClientboundPluginMessageListener> {
+public final class ClientboundVeinMineResults implements Message<VeinMinerClientboundMessageListener> {
 
     private final List<BlockPosition> blockPositions;
 
     /**
-     * Construct a new {@link PluginMessageClientboundVeinMineResults}.
+     * Construct a new {@link ClientboundVeinMineResults}.
      *
      * @param blockPositions the calculated {@link BlockPosition BlockPositions}
      */
-    public PluginMessageClientboundVeinMineResults(@NotNull Collection<BlockPosition> blockPositions) {
+    public ClientboundVeinMineResults(@NotNull Collection<BlockPosition> blockPositions) {
         this.blockPositions = new ArrayList<>(blockPositions);
     }
 
     /**
-     * Construct a new {@link PluginMessageClientboundVeinMineResults} with no positions.
+     * Construct a new {@link ClientboundVeinMineResults} with no positions.
      */
-    public PluginMessageClientboundVeinMineResults() {
+    public ClientboundVeinMineResults() {
         this(Collections.emptyList());
     }
 
     /**
-     * Construct a new {@link PluginMessageClientboundVeinMineResults} with input.
+     * Construct a new {@link ClientboundVeinMineResults} with input.
      *
      * @param buffer the input buffer
      */
     @Internal
-    public PluginMessageClientboundVeinMineResults(@NotNull PluginMessageByteBuffer buffer) {
+    public ClientboundVeinMineResults(@NotNull MessageByteBuffer buffer) {
         BlockPosition[] blockPositions = new BlockPosition[buffer.readVarInt()];
 
         for (int i = 0; i < blockPositions.length; i++) {
-            blockPositions[i] = buffer.readBlockPosition();
+            blockPositions[i] = buffer.read(BlockPosition.class);
         }
 
         this.blockPositions = Arrays.asList(blockPositions);
@@ -73,13 +73,13 @@ public final class PluginMessageClientboundVeinMineResults implements PluginMess
     }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) {
+    public void write(@NotNull MessageByteBuffer buffer) {
         buffer.writeVarInt(blockPositions.size());
-        this.blockPositions.forEach(buffer::writeBlockPosition);
+        this.blockPositions.forEach(buffer::write);
     }
 
     @Override
-    public void handle(@NotNull ClientboundPluginMessageListener listener) {
+    public void handle(@NotNull VeinMinerClientboundMessageListener listener) {
         listener.handleVeinMineResults(this);
     }
 

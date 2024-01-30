@@ -8,7 +8,7 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.util.NamespacedKey;
+import wtf.choco.network.data.NamespacedKey;
 
 /**
  * A Bukkit implementation of {@link BlockType}.

@@ -281,17 +281,6 @@ public final class VeinMinerServer implements VeinMiner {
         return platform;
     }
 
-    @NotNull
-    @Override
-    public String getVersion() {
-        return getPlatform().getVeinMinerDetails().version();
-    }
-
-    @Override
-    public boolean isServer() {
-        return true;
-    }
-
     /**
      * Create a {@link VeinMiningConfig} with values supplied by the plugin's config.
      *

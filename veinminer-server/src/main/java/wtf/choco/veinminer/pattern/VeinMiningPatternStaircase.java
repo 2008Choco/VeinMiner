@@ -6,6 +6,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfig;
@@ -13,7 +14,6 @@ import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
-import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * A staircase {@link VeinMiningPattern} that digs a 1x3 column either upwards or downwards.
@@ -33,7 +33,7 @@ public final class VeinMiningPatternStaircase implements VeinMiningPattern {
         String nameLowercase = direction.name().toLowerCase();
 
         this.direction = direction;
-        this.key = NamespacedKey.veinminer("staircase_" + nameLowercase);
+        this.key = NamespacedKey.of("veinminer", "staircase_" + nameLowercase);
         this.permission = "veinminer.pattern.staircase_" + nameLowercase;
     }
 

@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerServer;
@@ -29,7 +30,6 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.update.UpdateResult;
 import wtf.choco.veinminer.util.ChatFormat;
 import wtf.choco.veinminer.util.EnumUtil;
-import wtf.choco.veinminer.util.NamespacedKey;
 import wtf.choco.veinminer.util.StringUtils;
 import wtf.choco.veinminer.util.VeinMinerConstants;
 

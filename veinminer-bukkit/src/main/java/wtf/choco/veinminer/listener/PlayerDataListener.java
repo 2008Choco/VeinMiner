@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.VeinMinerServer;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetPattern;
 import wtf.choco.veinminer.platform.BukkitAdapter;
 import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.util.VMConstants;
@@ -41,7 +41,7 @@ public final class PlayerDataListener implements Listener {
             bukkitPlayer.setMetadata(VMConstants.METADATA_KEY_VEINMINING, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, player::isVeinMining));
 
             // Update the selected pattern on the client
-            player.executeWhenClientIsReady(() -> player.sendMessage(new PluginMessageClientboundSetPattern(player.getVeinMiningPattern().getKey())));
+            player.executeWhenClientIsReady(() -> player.sendMessage(new ClientboundSetPattern(player.getVeinMiningPattern().getKey())));
         });
     }
 

@@ -15,25 +15,26 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.data.NamespacedKey;
+import wtf.choco.network.receiver.MessageReceiver;
 import wtf.choco.veinminer.api.event.player.PatternChangeEvent;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.manager.VeinMinerPlayerManager;
-import wtf.choco.veinminer.network.MessageReceiver;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
-import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetConfig;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
+import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
+import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetConfig;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetPattern;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSyncRegisteredPatterns;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundVeinMineResults;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundSelectPattern;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMiner;
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.platform.PlatformPlayer;
@@ -45,13 +46,12 @@ import wtf.choco.veinminer.platform.world.RayTraceResult;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
-import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * A player wrapper containing player-related data for VeinMiner, as well as a network
  * handler for vein miner protocol messages.
  */
-public final class VeinMinerPlayer implements MessageReceiver, ServerboundPluginMessageListener {
+public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerboundMessageListener {
 
     private ActivationStrategy activationStrategy = VeinMinerServer.getInstance().getDefaultActivationStrategy();
     private final Set<VeinMinerToolCategory> disabledCategories = new HashSet<>();
@@ -238,7 +238,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         this.veinMiningPattern = veinMiningPattern;
 
         if (changed && updateClient) {
-            this.sendMessage(new PluginMessageClientboundSetPattern(veinMiningPattern.getKey()));
+            this.sendMessage(new ClientboundSetPattern(veinMiningPattern.getKey()));
         }
     }
 
@@ -343,7 +343,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         this.clientConfig = clientConfig;
 
         if (usingClientMod) {
-            this.sendMessage(new PluginMessageClientboundSetConfig(clientConfig));
+            this.sendMessage(new ClientboundSetConfig(clientConfig));
         }
     }
 
@@ -419,17 +419,17 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
     }
 
     /**
-     * Send a {@link PluginMessage} to this player across the {@link VeinMiner#PROTOCOL VeinMiner protocol}.
+     * Send a {@link Message} to this player across the {@link VeinMiner#PROTOCOL VeinMiner protocol}.
      *
      * @param message the message to send
      */
-    public void sendMessage(@NotNull PluginMessage<ClientboundPluginMessageListener> message) {
+    public void sendMessage(@NotNull Message<VeinMinerClientboundMessageListener> message) {
         VeinMiner.PROTOCOL.sendMessageToClient(this, message);
     }
 
     @Internal
     @Override
-    public void handleHandshake(@NotNull PluginMessageServerboundHandshake message) {
+    public void handleHandshake(@NotNull ServerboundHandshake message) {
         int serverProtocolVersion = VeinMiner.PROTOCOL.getVersion();
         if (serverProtocolVersion != message.getProtocolVersion()) {
             this.player.kick("Your client-side version of VeinMiner (for Bukkit) is " + (serverProtocolVersion > message.getProtocolVersion() ? "out of date. Please update." : "too new. Please downgrade."));
@@ -446,7 +446,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
          */
         VeinMinerServer veinMiner = VeinMinerServer.getInstance();
         veinMiner.getPlatform().runTaskLater(() -> {
-            this.sendMessage(new PluginMessageClientboundHandshakeResponse());
+            this.sendMessage(new ClientboundHandshakeResponse());
 
             // Synchronize all registered patterns to the client
             PatternRegistry patternRegistry = veinMiner.getPatternRegistry();
@@ -471,8 +471,8 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
                 return permission != null && !player.hasPermission(permission);
             });
 
-            this.sendMessage(new PluginMessageClientboundSyncRegisteredPatterns(patternKeys));
-            this.sendMessage(new PluginMessageClientboundSetConfig(clientConfig));
+            this.sendMessage(new ClientboundSyncRegisteredPatterns(patternKeys));
+            this.sendMessage(new ClientboundSetConfig(clientConfig));
 
             // The client is ready, accept post-client init tasks now
             this.clientReady = true;
@@ -486,7 +486,7 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
     @Internal
     @Override
-    public void handleToggleVeinMiner(@NotNull PluginMessageServerboundToggleVeinMiner message) {
+    public void handleToggleVeinMiner(@NotNull ServerboundToggleVeinMiner message) {
         if (!clientConfig.isAllowActivationKeybind()) {
             return;
         }
@@ -501,13 +501,13 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
 
     @Internal
     @Override
-    public void handleRequestVeinMine(@NotNull PluginMessageServerboundRequestVeinMine message) {
+    public void handleRequestVeinMine(@NotNull ServerboundRequestVeinMine message) {
         ItemStack itemStack = player.getItemInMainHand();
         VeinMinerServer veinMiner = VeinMinerServer.getInstance();
         VeinMinerToolCategory category = veinMiner.getToolCategoryRegistry().get(itemStack);
 
         if (category == null) {
-            this.sendMessage(new PluginMessageClientboundVeinMineResults());
+            this.sendMessage(new ClientboundVeinMineResults());
             return;
         }
 
@@ -516,14 +516,14 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         BlockFace targetBlockFace = rayTraceResult.getHitBlockFace();
 
         if (targetBlock == null || targetBlockFace == null) {
-            this.sendMessage(new PluginMessageClientboundVeinMineResults());
+            this.sendMessage(new ClientboundVeinMineResults());
             return;
         }
 
         // Validate the client's target block against the server's client block. It should be within 2 blocks of the client's target
         BlockPosition clientTargetBlock = message.getPosition();
         if (clientTargetBlock.distanceSquared(targetBlock.x(), targetBlock.y(), targetBlock.z()) >= 4) {
-            this.sendMessage(new PluginMessageClientboundVeinMineResults());
+            this.sendMessage(new ClientboundVeinMineResults());
             return;
         }
 
@@ -535,19 +535,19 @@ public final class VeinMinerPlayer implements MessageReceiver, ServerboundPlugin
         VeinMinerBlock block = veinMinerManager.getVeinMinerBlock(targetBlockState, category);
 
         if (block == null) {
-            this.sendMessage(new PluginMessageClientboundVeinMineResults());
+            this.sendMessage(new ClientboundVeinMineResults());
             return;
         }
 
         BlockList aliasBlockList = veinMinerManager.getAlias(block);
         Set<BlockPosition> blocks = getVeinMiningPattern().allocateBlocks(blockAccessor, targetBlock, targetBlockFace, block, category.getConfig(), aliasBlockList);
 
-        this.sendMessage(new PluginMessageClientboundVeinMineResults(blocks));
+        this.sendMessage(new ClientboundVeinMineResults(blocks));
     }
 
     @Internal
     @Override
-    public void handleSelectPattern(@NotNull PluginMessageServerboundSelectPattern message) {
+    public void handleSelectPattern(@NotNull ServerboundSelectPattern message) {
         if (!clientConfig.isAllowPatternSwitchingKeybind()) {
             return;
         }

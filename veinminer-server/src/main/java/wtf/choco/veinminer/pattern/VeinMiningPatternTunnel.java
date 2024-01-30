@@ -6,6 +6,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfig;
@@ -13,14 +14,13 @@ import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
-import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * A tunnel {@link VeinMiningPattern} that mines a square tunnel in a direction.
  */
 public final class VeinMiningPatternTunnel implements VeinMiningPattern {
 
-    private static final NamespacedKey KEY = NamespacedKey.veinminer("tunnel");
+    private static final NamespacedKey KEY = NamespacedKey.of("veinminer", "tunnel");
 
     private static final int DEFAULT_TUNNEL_RADIUS = 1;
 

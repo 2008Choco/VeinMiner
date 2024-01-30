@@ -3,44 +3,44 @@ package wtf.choco.veinminer.network.protocol.clientbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.MessageByteBuffer;
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.MessageField;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
-import wtf.choco.veinminer.util.NamespacedKey;
+import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundSelectPattern;
 
 /**
- * A client bound {@link PluginMessage} including the following data:
+ * A client bound {@link Message} including the following data:
  * <ol>
  *   <li><strong>NamespacedKey</strong>: The key of the pattern to set on the client
  * </ol>
- * Sent in response to the client sending the {@link PluginMessageServerboundSelectPattern} message,
+ * Sent in response to the client sending the {@link ServerboundSelectPattern} message,
  * or if the server chooses to change the client's pattern.
  */
-public final class PluginMessageClientboundSetPattern implements PluginMessage<ClientboundPluginMessageListener> {
+public final class ClientboundSetPattern implements Message<VeinMinerClientboundMessageListener> {
 
     private final NamespacedKey patternKey;
 
     /**
-     * Construct a new {@link PluginMessageClientboundSetPattern}.
+     * Construct a new {@link ClientboundSetPattern}.
      *
      * @param patternKey the pattern key to set
      */
-    public PluginMessageClientboundSetPattern(@NotNull NamespacedKey patternKey) {
+    public ClientboundSetPattern(@NotNull NamespacedKey patternKey) {
         this.patternKey = patternKey;
     }
 
     /**
-     * Construct a new {@link PluginMessageClientboundSetPattern} with input.
+     * Construct a new {@link ClientboundSetPattern} with input.
      *
      * @param buffer the input buffer
      */
     @Internal
-    public PluginMessageClientboundSetPattern(@NotNull PluginMessageByteBuffer buffer) {
-        this.patternKey = buffer.readNamespacedKey();
+    public ClientboundSetPattern(@NotNull MessageByteBuffer buffer) {
+        this.patternKey = buffer.read(NamespacedKey.class);
     }
 
     /**
@@ -53,12 +53,12 @@ public final class PluginMessageClientboundSetPattern implements PluginMessage<C
     }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) {
-        buffer.writeNamespacedKey(patternKey);
+    public void write(@NotNull MessageByteBuffer buffer) {
+        buffer.write(patternKey);
     }
 
     @Override
-    public void handle(@NotNull ClientboundPluginMessageListener listener) {
+    public void handle(@NotNull VeinMinerClientboundMessageListener listener) {
         listener.handleSetPattern(this);
     }
 

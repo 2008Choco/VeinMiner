@@ -31,9 +31,9 @@ import wtf.choco.veinminer.hud.HudRenderComponentPatternWheel;
 import wtf.choco.veinminer.hud.HudRenderComponentVeinMiningIcon;
 import wtf.choco.veinminer.network.FabricChannelRegistrar;
 import wtf.choco.veinminer.network.FabricServerState;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundHandshake;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundRequestVeinMine;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundToggleVeinMiner;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMiner;
 import wtf.choco.veinminer.render.VeinMinerRenderType;
 
 /**
@@ -84,7 +84,7 @@ public final class VeinMinerMod implements ClientModInitializer {
 
                 // Activating / deactivating vein miner
                 if (lastActive ^ active) {
-                    serverState.sendMessage(new PluginMessageServerboundToggleVeinMiner(active));
+                    serverState.sendMessage(new ServerboundToggleVeinMiner(active));
                     shouldRequestVeinMine = active;
                 }
             }
@@ -100,7 +100,7 @@ public final class VeinMinerMod implements ClientModInitializer {
 
                 if (shouldRequestVeinMine) {
                     getServerState().resetShape();
-                    serverState.sendMessage(new PluginMessageServerboundRequestVeinMine(position.getX(), position.getY(), position.getZ()));
+                    serverState.sendMessage(new ServerboundRequestVeinMine(position.getX(), position.getY(), position.getZ()));
                 }
 
                 // Updating the new last looked at position
@@ -151,7 +151,7 @@ public final class VeinMinerMod implements ClientModInitializer {
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
-            serverState.sendMessage(new PluginMessageServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
+            serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
         });
 
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {

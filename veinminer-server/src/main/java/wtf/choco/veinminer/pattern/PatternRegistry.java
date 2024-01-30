@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.veinminer.util.NamespacedKey;
+import wtf.choco.network.data.NamespacedKey;
 
 /**
  * A registry to which {@link VeinMiningPattern VeinMiningPatterns} may be registered.

@@ -4,10 +4,10 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.platform.world.ItemStack;
 import wtf.choco.veinminer.platform.world.RayTraceResult;
-import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * Represents a platform-independent player.

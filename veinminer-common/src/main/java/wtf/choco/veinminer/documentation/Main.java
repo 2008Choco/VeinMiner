@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import wtf.choco.network.MessageDirection;
+import wtf.choco.network.MessageProtocol;
 import wtf.choco.veinminer.VeinMiner;
-import wtf.choco.veinminer.network.MessageDirection;
-import wtf.choco.veinminer.network.PluginMessageProtocol;
 
 /**
  * A program that will generate documentation in markdown format (and HTML tables) for VeinMiner's
@@ -33,7 +33,7 @@ public final class Main {
     public static void main(String[] args) throws Exception {
         StringBuilder buffer = new StringBuilder();
 
-        PluginMessageProtocol protocol = VeinMiner.PROTOCOL;
+        MessageProtocol<?, ?> protocol = VeinMiner.PROTOCOL;
 
         var serverboundDocumentation = generateProtocolTables(protocol, MessageDirection.SERVERBOUND);
         var clientboundDocumentation = generateProtocolTables(protocol, MessageDirection.CLIENTBOUND);
@@ -70,7 +70,7 @@ public final class Main {
         }
     }
 
-    private static List<ProtocolMessageDocumentation> generateProtocolTables(PluginMessageProtocol protocol, MessageDirection direction) {
+    private static List<ProtocolMessageDocumentation> generateProtocolTables(MessageProtocol<?, ?> protocol, MessageDirection direction) {
         List<ProtocolMessageDocumentation> documentation = new ArrayList<>();
 
         protocol.getPacketRegistry(direction).getRegisteredMessages().forEach((messageClass, messageId) -> {
