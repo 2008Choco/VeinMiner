@@ -116,4 +116,5 @@
 
         <!-- See http://checkstyle.sourceforge.net/config_design.html -->
         <module name="FinalClass"/>
+    </module>
 </module>
