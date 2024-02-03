@@ -4,10 +4,6 @@ plugins {
     id 'fabric-loom' version '1.5-SNAPSHOT'
 }
 
-repositories {
-    mavenLocal() // TODO: REMOVE. TEMPORARY
-}
-
 dependencies {
     implementation project(':veinminer-common')
     include project(':veinminer-common') // include provided by Fabric to create a dummy mod
