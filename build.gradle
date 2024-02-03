@@ -19,10 +19,12 @@ subprojects {
 
     repositories {
         mavenCentral()
+        maven { url = 'http://repo.choco.wtf/snapshots'; allowInsecureProtocol = true }
     }
 
     dependencies {
         compileOnly 'org.jetbrains:annotations:23.0.0'
+        implementation 'wtf.choco:networking-common:0.0.1-SNAPSHOT'
     }
 
     java {

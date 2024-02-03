@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.platform.world.ItemStack;
 import wtf.choco.veinminer.platform.world.RayTraceResult;
 import wtf.choco.veinminer.util.BlockPosition;
-import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * Bukkit implementation of {@link PlatformPlayer}.

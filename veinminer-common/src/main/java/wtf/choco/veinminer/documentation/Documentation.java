@@ -6,14 +6,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import wtf.choco.veinminer.network.PluginMessage;
+import wtf.choco.network.Message;
 
 /**
  * A method annotation to denote the documentation method of a plugin message.
  * <p>
- * Every registered implementation of {@link PluginMessage} should have a static annotated
- * method that accepts a {@link ProtocolMessageDocumentation.Builder} argument. The method may
- * be private, but it <strong>must</strong> be static.
+ * Every registered implementation of {@link Message} should have a static annotated method
+ * that accepts a {@link ProtocolMessageDocumentation.Builder} argument. The method may be
+ * private, but it <strong>must</strong> be static.
  * <p>
  * It is expected for these methods to edit the builder to contain information pertaining to
  * the enclosing class' responsibility in the protocol.

@@ -3,40 +3,40 @@ package wtf.choco.veinminer.network.protocol.serverbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.MessageByteBuffer;
 import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.MessageField;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
+import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
 
 /**
- * A server bound {@link PluginMessage} including the following data:
+ * A server bound {@link Message} including the following data:
  * <ol>
  *   <li><strong>boolean</strong>: whether or not vein miner is active
  * </ol>
  * Sent when a client presses or releases the vein miner activation key bind.
  */
-public final class PluginMessageServerboundToggleVeinMiner implements PluginMessage<ServerboundPluginMessageListener> {
+public final class ServerboundToggleVeinMiner implements Message<VeinMinerServerboundMessageListener> {
 
     private final boolean activated;
 
     /**
-     * Construct a new {@link PluginMessageServerboundToggleVeinMiner}.
+     * Construct a new {@link ServerboundToggleVeinMiner}.
      *
      * @param activated whether or not vein miner has been activated
      */
-    public PluginMessageServerboundToggleVeinMiner(boolean activated) {
+    public ServerboundToggleVeinMiner(boolean activated) {
         this.activated = activated;
     }
 
     /**
-     * Construct a new {@link PluginMessageServerboundToggleVeinMiner} with input.
+     * Construct a new {@link ServerboundToggleVeinMiner} with input.
      *
      * @param buffer the input buffer
      */
     @Internal
-    public PluginMessageServerboundToggleVeinMiner(@NotNull PluginMessageByteBuffer buffer) {
+    public ServerboundToggleVeinMiner(@NotNull MessageByteBuffer buffer) {
         this.activated = buffer.readBoolean();
     }
 
@@ -50,12 +50,12 @@ public final class PluginMessageServerboundToggleVeinMiner implements PluginMess
     }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) {
+    public void write(@NotNull MessageByteBuffer buffer) {
         buffer.writeBoolean(activated);
     }
 
     @Override
-    public void handle(@NotNull ServerboundPluginMessageListener listener) {
+    public void handle(@NotNull VeinMinerServerboundMessageListener listener) {
         listener.handleToggleVeinMiner(this);
     }
 

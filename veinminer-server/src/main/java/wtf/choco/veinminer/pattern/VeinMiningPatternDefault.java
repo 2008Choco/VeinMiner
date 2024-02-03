@@ -8,6 +8,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfig;
@@ -15,7 +16,6 @@ import wtf.choco.veinminer.platform.world.BlockAccessor;
 import wtf.choco.veinminer.platform.world.BlockState;
 import wtf.choco.veinminer.util.BlockFace;
 import wtf.choco.veinminer.util.BlockPosition;
-import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * The default {@link VeinMiningPattern} that mines as many blocks in an arbitrary pattern
@@ -25,7 +25,7 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
 
     private static final VeinMiningPattern INSTANCE = new VeinMiningPatternDefault();
 
-    private static final NamespacedKey KEY = NamespacedKey.veinminer("default");
+    private static final NamespacedKey KEY = NamespacedKey.of("veinminer", "default");
 
     private final List<BlockPosition> buffer = new ArrayList<>(32), recent = new ArrayList<>(32);
 

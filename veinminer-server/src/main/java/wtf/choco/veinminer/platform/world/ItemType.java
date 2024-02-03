@@ -2,7 +2,7 @@ package wtf.choco.veinminer.platform.world;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.util.NamespacedKey;
+import wtf.choco.network.data.NamespacedKey;
 
 /**
  * Represents a type of item.

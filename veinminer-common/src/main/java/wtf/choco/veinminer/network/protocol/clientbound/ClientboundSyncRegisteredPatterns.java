@@ -6,16 +6,16 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.MessageByteBuffer;
+import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.MessageField;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
-import wtf.choco.veinminer.util.NamespacedKey;
+import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
 
 /**
- * A client bound {@link PluginMessage} including the following data:
+ * A client bound {@link Message} including the following data:
  * <ol>
  *   <li><strong>VarInt</strong>: The amount of registered keys
  *   <li><strong>Array of NamespacedKey</strong>: The registered keys
@@ -24,31 +24,31 @@ import wtf.choco.veinminer.util.NamespacedKey;
  * the server. The server is expected to send this message after the client has successfully
  * shaken hands with the server.
  */
-public final class PluginMessageClientboundSyncRegisteredPatterns implements PluginMessage<ClientboundPluginMessageListener> {
+public final class ClientboundSyncRegisteredPatterns implements Message<VeinMinerClientboundMessageListener> {
 
     private final List<NamespacedKey> keys;
 
     /**
-     * Construct a new {@link PluginMessageClientboundSyncRegisteredPatterns}.
+     * Construct a new {@link ClientboundSyncRegisteredPatterns}.
      *
      * @param keys the registered keys
      */
-    public PluginMessageClientboundSyncRegisteredPatterns(@NotNull List<NamespacedKey> keys) {
+    public ClientboundSyncRegisteredPatterns(@NotNull List<NamespacedKey> keys) {
         this.keys = keys;
     }
 
     /**
-     * Construct a new {@link PluginMessageClientboundSyncRegisteredPatterns} with input.
+     * Construct a new {@link ClientboundSyncRegisteredPatterns} with input.
      *
      * @param buffer the input buffer
      */
     @Internal
-    public PluginMessageClientboundSyncRegisteredPatterns(@NotNull PluginMessageByteBuffer buffer) {
+    public ClientboundSyncRegisteredPatterns(@NotNull MessageByteBuffer buffer) {
         int size = buffer.readVarInt();
         this.keys = new ArrayList<>(size);
 
         for (int i = 0; i < size; i++) {
-            NamespacedKey key = buffer.readNamespacedKey();
+            NamespacedKey key = buffer.read(NamespacedKey.class);
             this.keys.add(key);
         }
     }
@@ -63,13 +63,13 @@ public final class PluginMessageClientboundSyncRegisteredPatterns implements Plu
     }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) {
+    public void write(@NotNull MessageByteBuffer buffer) {
         buffer.writeVarInt(keys.size());
-        this.keys.forEach(buffer::writeNamespacedKey);
+        this.keys.forEach(buffer::write);
     }
 
     @Override
-    public void handle(@NotNull ClientboundPluginMessageListener listener) {
+    public void handle(@NotNull VeinMinerClientboundMessageListener listener) {
         listener.handleSyncRegisteredPatterns(this);
     }
 

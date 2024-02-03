@@ -18,23 +18,25 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.data.NamespacedKey;
+import wtf.choco.network.receiver.MessageReceiver;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.config.ClientConfig;
-import wtf.choco.veinminer.network.protocol.ClientboundPluginMessageListener;
-import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundHandshakeResponse;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetConfig;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSetPattern;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundSyncRegisteredPatterns;
-import wtf.choco.veinminer.network.protocol.clientbound.PluginMessageClientboundVeinMineResults;
-import wtf.choco.veinminer.network.protocol.serverbound.PluginMessageServerboundSelectPattern;
+import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
+import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundHandshakeResponse;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetConfig;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetPattern;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSyncRegisteredPatterns;
+import wtf.choco.veinminer.network.protocol.clientbound.ClientboundVeinMineResults;
+import wtf.choco.veinminer.network.protocol.serverbound.ServerboundSelectPattern;
 import wtf.choco.veinminer.util.BlockPosition;
-import wtf.choco.veinminer.util.NamespacedKey;
 
 /**
  * The client's state on a connected server.
  */
-public final class FabricServerState implements ClientboundPluginMessageListener, MessageReceiver {
+public final class FabricServerState implements MessageReceiver, VeinMinerClientboundMessageListener {
 
     private static final VoxelShape WIDE_CUBE = Shapes.box(-0.005, -0.005, -0.005, 1.005, 1.005, 1.005);
 
@@ -63,10 +65,10 @@ public final class FabricServerState implements ClientboundPluginMessageListener
             this.config = new ClientConfig();
             this.enabledOnServer = true;
             this.patternKeys = List.of(
-                NamespacedKey.veinminer("default"),
-                NamespacedKey.veinminer("tunnel"),
-                NamespacedKey.veinminer("staircase_up"),
-                NamespacedKey.veinminer("staircase_down")
+                NamespacedKey.of("veinminer", "default"),
+                NamespacedKey.of("veinminer", "tunnel"),
+                NamespacedKey.of("veinminer", "staircase_up"),
+                NamespacedKey.of("veinminer", "staircase_down")
             );
         }
     }
@@ -173,7 +175,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
             this.selectedPatternIndex = patternKeys.size() + selectedPatternIndex;
         }
 
-        this.sendMessage(new PluginMessageServerboundSelectPattern(patternKeys.get(selectedPatternIndex)));
+        this.sendMessage(new ServerboundSelectPattern(patternKeys.get(selectedPatternIndex)));
         return true;
     }
 
@@ -259,22 +261,22 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     }
 
     /**
-     * Send a {@link PluginMessage} to this {@link FabricServerState} across the
+     * Send a {@link Message} to this {@link FabricServerState} across the
      * {@link VeinMiner#PROTOCOL VeinMiner protocol}.
      *
      * @param message the message to send
      */
-    public void sendMessage(@NotNull PluginMessage<ServerboundPluginMessageListener> message) {
+    public void sendMessage(@NotNull Message<VeinMinerServerboundMessageListener> message) {
         VeinMiner.PROTOCOL.sendMessageToServer(this, message);
     }
 
     @Override
-    public void handleHandshakeResponse(@NotNull PluginMessageClientboundHandshakeResponse message) {
+    public void handleHandshakeResponse(@NotNull ClientboundHandshakeResponse message) {
         this.enabledOnServer = true;
     }
 
     @Override
-    public void handleSyncRegisteredPatterns(@NotNull PluginMessageClientboundSyncRegisteredPatterns message) {
+    public void handleSyncRegisteredPatterns(@NotNull ClientboundSyncRegisteredPatterns message) {
         boolean firstSync = (patternKeys == null);
         NamespacedKey previouslySelectedPatternKey = (!firstSync && selectedPatternIndex < patternKeys.size()) ? patternKeys.get(selectedPatternIndex) : null;
 
@@ -287,12 +289,12 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     }
 
     @Override
-    public void handleSetConfig(@NotNull PluginMessageClientboundSetConfig message) {
+    public void handleSetConfig(@NotNull ClientboundSetConfig message) {
         this.config = message.getConfig();
     }
 
     @Override
-    public void handleVeinMineResults(@NotNull PluginMessageClientboundVeinMineResults message) {
+    public void handleVeinMineResults(@NotNull ClientboundVeinMineResults message) {
         this.resetShape();
 
         BlockPos origin = lastLookedAtBlockPos;
@@ -323,7 +325,7 @@ public final class FabricServerState implements ClientboundPluginMessageListener
     }
 
     @Override
-    public void handleSetPattern(@NotNull PluginMessageClientboundSetPattern message) {
+    public void handleSetPattern(@NotNull ClientboundSetPattern message) {
         if (patternKeys == null) {
             return;
         }

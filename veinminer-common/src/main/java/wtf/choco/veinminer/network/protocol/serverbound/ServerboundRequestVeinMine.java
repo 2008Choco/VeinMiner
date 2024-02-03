@@ -3,53 +3,53 @@ package wtf.choco.veinminer.network.protocol.serverbound;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.network.Message;
+import wtf.choco.network.MessageByteBuffer;
 import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.MessageField;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
-import wtf.choco.veinminer.network.PluginMessage;
-import wtf.choco.veinminer.network.PluginMessageByteBuffer;
-import wtf.choco.veinminer.network.protocol.ServerboundPluginMessageListener;
+import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
 import wtf.choco.veinminer.util.BlockPosition;
 
 /**
- * A server bound {@link PluginMessage} including the following data:
+ * A server bound {@link Message} including the following data:
  * <ol>
  *   <li><strong>BlockPosition</strong>: the block position at which to vein mine
  * </ol>
  * Sent by the client to request a vein mine at the player's target block position.
  */
-public final class PluginMessageServerboundRequestVeinMine implements PluginMessage<ServerboundPluginMessageListener> {
+public final class ServerboundRequestVeinMine implements Message<VeinMinerServerboundMessageListener> {
 
     private final BlockPosition position;
 
     /**
-     * Construct a new {@link PluginMessageServerboundRequestVeinMine}.
+     * Construct a new {@link ServerboundRequestVeinMine}.
      *
      * @param position the origin
      */
-    public PluginMessageServerboundRequestVeinMine(@NotNull BlockPosition position) {
+    public ServerboundRequestVeinMine(@NotNull BlockPosition position) {
         this.position = position;
     }
 
     /**
-     * Construct a new {@link PluginMessageServerboundRequestVeinMine}.
+     * Construct a new {@link ServerboundRequestVeinMine}.
      *
      * @param x the x coordinate of the origin
      * @param y the y coordinate of the origin
      * @param z the z coordinate of the origin
      */
-    public PluginMessageServerboundRequestVeinMine(int x, int y, int z) {
+    public ServerboundRequestVeinMine(int x, int y, int z) {
         this(new BlockPosition(x, y, z));
     }
 
     /**
-     * Construct a new {@link PluginMessageServerboundRequestVeinMine} with input.
+     * Construct a new {@link ServerboundRequestVeinMine} with input.
      *
      * @param buffer the input buffer
      */
     @Internal
-    public PluginMessageServerboundRequestVeinMine(@NotNull PluginMessageByteBuffer buffer) {
-        this.position = buffer.readBlockPosition();
+    public ServerboundRequestVeinMine(@NotNull MessageByteBuffer buffer) {
+        this.position = buffer.read(BlockPosition.class);
     }
 
     /**
@@ -63,12 +63,12 @@ public final class PluginMessageServerboundRequestVeinMine implements PluginMess
     }
 
     @Override
-    public void write(@NotNull PluginMessageByteBuffer buffer) {
-        buffer.writeBlockPosition(position);
+    public void write(@NotNull MessageByteBuffer buffer) {
+        buffer.write(position);
     }
 
     @Override
-    public void handle(@NotNull ServerboundPluginMessageListener listener) {
+    public void handle(@NotNull VeinMinerServerboundMessageListener listener) {
         listener.handleRequestVeinMine(this);
     }
 
