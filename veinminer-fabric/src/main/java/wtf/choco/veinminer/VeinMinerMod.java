@@ -24,13 +24,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import wtf.choco.network.fabric.FabricProtocolConfiguration;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.hud.HudRenderComponent;
 import wtf.choco.veinminer.hud.HudRenderComponentPatternWheel;
 import wtf.choco.veinminer.hud.HudRenderComponentVeinMiningIcon;
-import wtf.choco.veinminer.network.FabricChannelRegistrar;
 import wtf.choco.veinminer.network.FabricServerState;
+import wtf.choco.veinminer.network.VeinMinerFabricChannelRegistrar;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMiner;
@@ -54,6 +57,8 @@ public final class VeinMinerMod implements ClientModInitializer {
      */
     public static final KeyMapping KEY_MAPPING_PREVIOUS_PATTERN = registerKeyMapping("previous_pattern", InputConstants.KEY_LBRACKET);
 
+    private static final Logger LOGGER = LoggerFactory.getLogger("veinminer_companion");
+
     private static FabricServerState serverState;
 
     private final HudRenderComponentPatternWheel patternWheelRenderComponent = new HudRenderComponentPatternWheel();
@@ -66,7 +71,8 @@ public final class VeinMinerMod implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        VeinMiner.PROTOCOL.registerChannels(new FabricChannelRegistrar());
+        VeinMiner.PROTOCOL.registerChannels(new VeinMinerFabricChannelRegistrar(LOGGER));
+        VeinMiner.PROTOCOL.configure(new FabricProtocolConfiguration(true));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!hasServerState() || !getServerState().isEnabledOnServer()) {

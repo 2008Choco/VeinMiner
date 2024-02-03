@@ -4,6 +4,10 @@ plugins {
     id 'fabric-loom' version '1.5-SNAPSHOT'
 }
 
+repositories {
+    mavenLocal() // TODO: REMOVE. TEMPORARY
+}
+
 dependencies {
     implementation project(':veinminer-common')
     include project(':veinminer-common') // include provided by Fabric to create a dummy mod
@@ -13,6 +17,10 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation "wtf.choco:networking-fabric:0.0.1-SNAPSHOT"
+
+    include("wtf.choco:networking-common:0.0.1-SNAPSHOT")
+    include("wtf.choco:networking-fabric:0.0.1-SNAPSHOT")
 }
 
 loom {
