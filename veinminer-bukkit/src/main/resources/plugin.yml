@@ -1,6 +1,6 @@
 name: VeinMiner
 main: wtf.choco.veinminer.VeinMinerPlugin
-version: '@project.version@'
+version: "${version}"
 description: Mine multiple blocks of the same type in quick succession.
 author: Choco
 website: https://www.spigotmc.org/resources/12038
