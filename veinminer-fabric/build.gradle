@@ -1,22 +1,22 @@
 import org.apache.tools.ant.filters.*
 
 plugins {
-    id 'fabric-loom' version '1.5-SNAPSHOT'
+    alias libs.plugins.fabric.loom
 }
 
 dependencies {
     implementation project(':veinminer-common')
     include project(':veinminer-common') // include provided by Fabric to create a dummy mod
 
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    minecraft libs.minecraft.get()
     mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation libs.fabric.loader
 
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "wtf.choco:networking-fabric:0.0.1"
+    modImplementation libs.fabric.api
+    modImplementation libs.choco.networking.fabric
 
-    include("wtf.choco:networking-common:0.0.1")
-    include("wtf.choco:networking-fabric:0.0.1")
+    include(libs.choco.networking.common)
+    include(libs.choco.networking.fabric)
 }
 
 loom {

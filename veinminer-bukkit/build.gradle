@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.*
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    alias libs.plugins.shadow
 }
 
 javadoc {
@@ -21,26 +21,24 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
+    compileOnly libs.spigot.api
 
     implementation project(':veinminer-common')
     implementation project(':veinminer-server')
 
-    implementation 'org.bstats:bstats-bukkit:3.0.0'
-    implementation 'wtf.choco:networking-bukkit:0.0.1'
+    implementation libs.bstats.bukkit
+    implementation libs.choco.networking.bukkit
 
-    compileOnly 'me.clip:placeholderapi:2.11.2'
-    compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
-    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.3'
-    // GitHub master, version 2.1.175-SNAPSHOT
-    // https://github.com/mcMMO-Dev/mcMMO/commit/085c8dbf68b8503f84b92c8adbde94631707effe
-    compileOnly 'com.github.mcMMO-Dev:mcMMO:085c8db'
+    compileOnly libs.placeholder.api
+    compileOnly libs.vault.api
+    compileOnly libs.worldguard
+    compileOnly libs.mcmmo
 
     // Anti-cheats
-    compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
-    compileOnly 'de.janmm14:aac-api:5.0.0'
-    compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
-    compileOnly 'com.github.MWHunter:GrimAPI:add576ba8b'
+    compileOnly libs.anticheat.aac
+    compileOnly libs.anticheat.grim
+    compileOnly libs.anticheat.matrix
+    compileOnly libs.anticheat.nocheatplus
 }
 
 processResources {
@@ -56,10 +54,10 @@ shadowJar {
     dependencies {
         include(project(':veinminer-common'))
         include(project(':veinminer-server'))
-        include(dependency('org.bstats:bstats-base:3.0.0'))
-        include(dependency('org.bstats:bstats-bukkit:3.0.0'))
-        include(dependency('wtf.choco:networking-common:0.0.1'))
-        include(dependency('wtf.choco:networking-bukkit:0.0.1'))
+        include(dependency(libs.bstats.base.get()))
+        include(dependency(libs.bstats.bukkit.get()))
+        include(dependency(libs.choco.networking.common.get()))
+        include(dependency(libs.choco.networking.bukkit.get()))
     }
 }
 

@@ -1,0 +1,61 @@
+[versions]
+# (common)
+choco-networking = "0.0.1"
+gson = "2.8.8" # keep in line with Minecraft and/or Bukkit
+jetbrains-annotations = "23.0.0"
+junit = "5.8.2"
+
+# (bukkit)
+anticheat-aac = "5.0.0"
+anticheat-grim = "add576ba8b"
+anticheat-matrix = "317d4635fd"
+anticheat-nocheatplus = "3.16.1-SNAPSHOT"
+bstats = "3.0.0"
+mcmmo = "085c8db" # https://github.com/mcMMO-Dev/mcMMO/commit/085c8dbf68b8503f84b92c8adbde94631707effe (2.1.175-SNAPSHOT)
+placeholder-api = "2.11.2"
+spigot-api = "1.17.1-R0.1-SNAPSHOT"
+vault-api = "1.7"
+worldguard = "7.0.3"
+
+# (fabric)
+fabric-api = "0.84.0+1.20.1"
+fabric-loader = "0.14.21"
+minecraft = "1.20.1"
+
+# plugins
+aggregate-javadoc = "6.5.0.3"
+fabric-loom = "1.5-SNAPSHOT"
+shadow = "8.1.1"
+
+[libraries]
+# (common)
+choco-networking-common = { module = "wtf.choco:networking-common", version.ref = "choco-networking" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+
+# (bukkit)
+anticheat-aac = { module = "de.janmm14:aac-api", version.ref = "anticheat-aac" }
+anticheat-grim = { module = "com.github.MWHunter:GrimAPI", version.ref = "anticheat-grim" }
+anticheat-matrix = { module = "com.github.jiangdashao:matrix-api-repo", version.ref = "anticheat-matrix" }
+anticheat-nocheatplus = { module = "fr.neatmonster:nocheatplus", version.ref = "anticheat-nocheatplus" }
+bstats-base = { module = "org.bstats:bstats-base", version.ref = "bstats" }
+bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
+choco-networking-bukkit = { module = "wtf.choco:networking-bukkit", version.ref = "choco-networking" }
+mcmmo = { module = "com.github.mcMMO-Dev:mcMMO", version.ref = "mcmmo" }
+placeholder-api = { module = "me.clip:placeholderapi", version.ref = "placeholder-api" }
+spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot-api" }
+vault-api = { module = "net.milkbowl.vault:VaultAPI", version.ref = "vault-api" }
+worldguard = { module = "com.sk89q.worldguard:worldguard-bukkit", version.ref = "worldguard" }
+
+# (fabric)
+choco-networking-fabric = { module = "wtf.choco:networking-fabric", version.ref = "choco-networking" }
+fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+
+[plugins]
+aggregate-javadoc = { id = "io.freefair.aggregate-javadoc", version.ref = "aggregate-javadoc" }
+fabric-loom = { id = "fabric-loom", version.ref = "fabric-loom" }
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }

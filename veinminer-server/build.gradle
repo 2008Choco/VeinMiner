@@ -9,10 +9,10 @@ test {
 dependencies {
     implementation project(':veinminer-common')
 
-    compileOnly 'com.google.code.gson:gson:2.8.8'
+    compileOnly libs.gson
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:' + project.property('junit.version')
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + project.property('junit.version')
+    testImplementation libs.junit.jupiter.api
+    testRuntimeOnly libs.junit.jupiter.engine
 }
 
 

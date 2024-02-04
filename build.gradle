@@ -1,7 +1,7 @@
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id "io.freefair.aggregate-javadoc" version "6.5.0.3"
+    alias libs.plugins.aggregate.javadoc
 }
 
 allprojects {
@@ -23,8 +23,8 @@ subprojects {
     }
 
     dependencies {
-        compileOnly 'org.jetbrains:annotations:23.0.0'
-        implementation 'wtf.choco:networking-common:0.0.1'
+        compileOnly rootProject.libs.jetbrains.annotations
+        implementation rootProject.libs.choco.networking.common
     }
 
     java {
