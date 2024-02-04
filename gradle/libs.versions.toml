@@ -1,26 +1,26 @@
 [versions]
 # (common)
 choco-networking = "0.0.1"
-gson = "2.8.8" # keep in line with Minecraft and/or Bukkit
-jetbrains-annotations = "23.0.0"
-junit = "5.8.2"
+gson = "2.10.1" # keep in line with Minecraft and/or Bukkit
+jetbrains-annotations = "24.1.0"
+junit = "5.10.2"
 
 # (bukkit)
 anticheat-aac = "5.0.0"
-anticheat-grim = "add576ba8b"
-anticheat-matrix = "317d4635fd"
+anticheat-grim = "add576ba8b" # https://github.com/GrimAnticheat/GrimAPI/commit/add576ba8bba1f725cbc72671b6d373c922a2345
+anticheat-matrix = "317d4635fd" # This repository is dead now, but we're going to keep using it because it exists on JitPack :)
 anticheat-nocheatplus = "3.16.1-SNAPSHOT"
 anticheat-spartan = "1.0"
-bstats = "3.0.0"
+bstats = "3.0.2"
 mcmmo = "085c8db" # https://github.com/mcMMO-Dev/mcMMO/commit/085c8dbf68b8503f84b92c8adbde94631707effe (2.1.175-SNAPSHOT)
-placeholder-api = "2.11.2"
+placeholder-api = "2.11.5"
 spigot-api = "1.17.1-R0.1-SNAPSHOT"
 vault-api = "1.7"
-worldguard = "7.0.3"
+worldguard = "7.0.9"
 
 # (fabric)
-fabric-api = "0.84.0+1.20.1"
-fabric-loader = "0.14.21"
+fabric-api = "0.91.0+1.20.1"
+fabric-loader = "0.15.6"
 minecraft = "1.20.1"
 
 # plugins
@@ -38,7 +38,7 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 
 # (bukkit)
 anticheat-aac = { module = "de.janmm14:aac-api", version.ref = "anticheat-aac" }
-anticheat-grim = { module = "com.github.MWHunter:GrimAPI", version.ref = "anticheat-grim" }
+anticheat-grim = { module = "com.github.GrimAnticheat:GrimAPI", version.ref = "anticheat-grim" }
 anticheat-matrix = { module = "com.github.jiangdashao:matrix-api-repo", version.ref = "anticheat-matrix" }
 anticheat-nocheatplus = { module = "fr.neatmonster:nocheatplus", version.ref = "anticheat-nocheatplus" }
 anticheat-spartan = { module = "me.vagdedes:SpartanAPI", version.ref = "anticheat-spartan" }
