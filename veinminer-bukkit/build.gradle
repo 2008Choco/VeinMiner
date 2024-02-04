@@ -39,6 +39,7 @@ dependencies {
     compileOnly libs.anticheat.grim
     compileOnly libs.anticheat.matrix
     compileOnly libs.anticheat.nocheatplus
+    compileOnly libs.anticheat.spartan
 }
 
 processResources {

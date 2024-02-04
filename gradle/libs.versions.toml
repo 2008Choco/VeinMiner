@@ -10,6 +10,7 @@ anticheat-aac = "5.0.0"
 anticheat-grim = "add576ba8b"
 anticheat-matrix = "317d4635fd"
 anticheat-nocheatplus = "3.16.1-SNAPSHOT"
+anticheat-spartan = "1.0"
 bstats = "3.0.0"
 mcmmo = "085c8db" # https://github.com/mcMMO-Dev/mcMMO/commit/085c8dbf68b8503f84b92c8adbde94631707effe (2.1.175-SNAPSHOT)
 placeholder-api = "2.11.2"
@@ -40,6 +41,7 @@ anticheat-aac = { module = "de.janmm14:aac-api", version.ref = "anticheat-aac" }
 anticheat-grim = { module = "com.github.MWHunter:GrimAPI", version.ref = "anticheat-grim" }
 anticheat-matrix = { module = "com.github.jiangdashao:matrix-api-repo", version.ref = "anticheat-matrix" }
 anticheat-nocheatplus = { module = "fr.neatmonster:nocheatplus", version.ref = "anticheat-nocheatplus" }
+anticheat-spartan = { module = "me.vagdedes:SpartanAPI", version.ref = "anticheat-spartan" }
 bstats-base = { module = "org.bstats:bstats-base", version.ref = "bstats" }
 bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
 choco-networking-bukkit = { module = "wtf.choco:networking-bukkit", version.ref = "choco-networking" }
