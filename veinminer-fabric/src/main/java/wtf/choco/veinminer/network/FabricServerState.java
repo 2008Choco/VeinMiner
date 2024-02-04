@@ -253,7 +253,7 @@ public final class FabricServerState implements MessageReceiver, VeinMinerClient
     }
 
     @Override
-    public void sendMessage(@NotNull NamespacedKey channel, byte[] message) {
+    public void sendMessage(@NotNull NamespacedKey channel, byte @NotNull [] message) {
         FriendlyByteBuf byteBuf = PacketByteBufs.create();
         byteBuf.writeBytes(message);
 

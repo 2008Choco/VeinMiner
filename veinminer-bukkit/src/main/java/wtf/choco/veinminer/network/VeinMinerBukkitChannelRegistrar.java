@@ -28,7 +28,7 @@ public final class VeinMinerBukkitChannelRegistrar extends BukkitChannelRegistra
     }
 
     @Override
-    protected VeinMinerServerboundMessageListener onSuccessfulMessage(Player player, String channel, Message<VeinMinerServerboundMessageListener> message) {
+    protected VeinMinerServerboundMessageListener onSuccessfulMessage(@NotNull Player player, @NotNull String channel, @NotNull Message<VeinMinerServerboundMessageListener> message) {
         PlatformPlayer platformPlayer = BukkitAdapter.adapt(player);
         return plugin.getPlayerManager().get(platformPlayer);
     }

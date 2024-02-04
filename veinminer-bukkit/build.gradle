@@ -27,7 +27,7 @@ dependencies {
     implementation project(':veinminer-server')
 
     implementation 'org.bstats:bstats-bukkit:3.0.0'
-    implementation 'wtf.choco:networking-bukkit:0.0.1-SNAPSHOT'
+    implementation 'wtf.choco:networking-bukkit:0.0.1'
 
     compileOnly 'me.clip:placeholderapi:2.11.2'
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
@@ -58,8 +58,8 @@ shadowJar {
         include(project(':veinminer-server'))
         include(dependency('org.bstats:bstats-base:3.0.0'))
         include(dependency('org.bstats:bstats-bukkit:3.0.0'))
-        include(dependency('wtf.choco:networking-common:0.0.1-SNAPSHOT'))
-        include(dependency('wtf.choco:networking-bukkit:0.0.1-SNAPSHOT'))
+        include(dependency('wtf.choco:networking-common:0.0.1'))
+        include(dependency('wtf.choco:networking-bukkit:0.0.1'))
     }
 }
 

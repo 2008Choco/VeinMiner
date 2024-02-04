@@ -414,7 +414,7 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
 
     @Internal
     @Override
-    public void sendMessage(@NotNull NamespacedKey channel, byte[] message) {
+    public void sendMessage(@NotNull NamespacedKey channel, byte @NotNull [] message) {
         this.player.sendPluginMessage(channel, message);
     }
 
