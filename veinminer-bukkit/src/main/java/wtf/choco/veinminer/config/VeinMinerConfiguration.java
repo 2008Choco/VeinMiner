@@ -153,8 +153,8 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
     /**
      * Create a {@link ClientConfig} using the values specified in this configuration as well as the
      * permissions calculated by the given {@link Permissible} object. If any individual option is
-     * {@code true}, it will be &&'d with whether or not {@link Permissible#hasPermission(String)} for
-     * the permission associated with each value.
+     * {@code true}, it will be {@literal &&}'d with whether or not {@link Permissible#hasPermission(String)}
+     * for the permission associated with each value.
      *
      * @param permissible the permissible object
      *
