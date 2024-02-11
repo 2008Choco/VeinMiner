@@ -102,4 +102,14 @@ public final class ConfigWrapper {
         this.config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defaultConfigStream, Charsets.UTF_8)));
     }
 
+    @Override
+    public int hashCode() {
+        return file.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || (obj instanceof ConfigWrapper other && file.equals(other.file));
+    }
+
 }

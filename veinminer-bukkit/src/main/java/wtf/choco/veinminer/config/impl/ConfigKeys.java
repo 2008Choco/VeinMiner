@@ -1,7 +1,5 @@
 package wtf.choco.veinminer.config.impl;
 
-import org.jetbrains.annotations.NotNull;
-
 final class ConfigKeys {
 
     // VeinMinerConfiguration
@@ -26,18 +24,13 @@ final class ConfigKeys {
     static final String KEY_STORAGE_MYSQL_PASSWORD = "Storage.MySQL.Password";
     static final String KEY_STORAGE_MYSQL_DATABASE = "Storage.MySQL.Database";
     static final String KEY_STORAGE_MYSQL_TABLE_PREFIX = "Storage.MySQL.TablePrefix";
-    static final String KEY_BLOCKLIST = "BlockList";
-    static final String KEY_BLOCKLIST_ALL = KEY_BLOCKLIST + ".All";
     static final String KEY_ALIASES = "Aliases";
-
-    static String keyBlockList(@NotNull String categoryId) {
-        return KEY_BLOCKLIST + "." + categoryId;
-    }
 
     // ToolCategoryConfiguration
     static final String KEY_PRIORITY = "Priority";
     static final String KEY_NBT = "NBT";
     static final String KEY_ITEMS = "Items";
+    static final String KEY_BLOCK_LIST = "BlockList";
 
     // VeinMiningConfiguration
     static final String KEY_REPAIR_FRIENDLY = "RepairFriendly";

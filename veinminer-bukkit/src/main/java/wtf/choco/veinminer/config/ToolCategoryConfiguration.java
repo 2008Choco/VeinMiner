@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import wtf.choco.veinminer.block.BlockList;
+
 public interface ToolCategoryConfiguration extends VeinMiningConfiguration {
 
     public int getPriority();
@@ -20,5 +22,11 @@ public interface ToolCategoryConfiguration extends VeinMiningConfiguration {
     @NotNull
     @Unmodifiable
     public Collection<String> getItemKeys();
+
+    public void setBlockListKeys(@NotNull BlockList blockList);
+
+    @NotNull
+    @Unmodifiable
+    public Collection<String> getBlockListKeys();
 
 }

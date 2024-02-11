@@ -10,10 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import wtf.choco.veinminer.ActivationStrategy;
-import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
-import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
  * Represents a configuration contract for VeinMiner.
@@ -90,27 +88,17 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
 
     @NotNull
     @Unmodifiable
-    public Collection<String> getGlobalBlockListKeys();
-
-    public void setBlockListKeys(@NotNull String categoryId, @NotNull BlockList blockList);
-
-    public default void setBlockListKeys(@NotNull VeinMinerToolCategory category, @NotNull BlockList blockList) {
-        this.setBlockListKeys(category.getId(), blockList);
-    }
-
-    @NotNull
-    @Unmodifiable
-    public Collection<String> getBlockListKeys(@NotNull String categoryId);
-
-    @NotNull
-    @Unmodifiable
     public Collection<String> getAliasStrings();
+
+    @NotNull
+    @Unmodifiable
+    public Collection<String> getGlobalBlockListKeys();
 
     @NotNull
     @Unmodifiable
     public Collection<String> getDefinedCategoryIds();
 
-    @Nullable
+    @NotNull
     public ToolCategoryConfiguration getToolCategoryConfiguration(@NotNull String categoryId);
 
 }

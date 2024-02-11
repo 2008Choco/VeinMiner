@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.config.VeinMiningConfiguration;
+import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 
 /**
  * A more specific type of {@link VeinMinerToolCategory} whereby the hand category
@@ -20,7 +20,7 @@ public final class VeinMinerToolCategoryHand extends VeinMinerToolCategory {
      * @param blockList the category block list
      * @param config the category config
      */
-    public VeinMinerToolCategoryHand(@NotNull BlockList blockList, @NotNull VeinMiningConfiguration config) {
+    public VeinMinerToolCategoryHand(@NotNull BlockList blockList, @NotNull ToolCategoryConfiguration config) {
         super("Hand", Integer.MAX_VALUE, null, blockList, config, Collections.emptySet());
     }
 

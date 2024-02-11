@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 import wtf.choco.veinminer.util.StringUtils;
@@ -74,10 +73,7 @@ public final class CommandToollist implements TabExecutor {
             }
 
             // Update configuration
-            ToolCategoryConfiguration config = plugin.getConfiguration().getToolCategoryConfiguration(category.getId());
-            if (config != null) {
-                config.setItems(new ArrayList<>(category.getItems()));
-            }
+            category.getConfig().setItems(new ArrayList<>(category.getItems()));
 
             sender.sendMessage(ChatColor.YELLOW + material.getKey().toString() + ChatColor.GRAY + " successfully added to the tool list.");
             return true;
@@ -113,10 +109,7 @@ public final class CommandToollist implements TabExecutor {
             }
 
             // Update configuration
-            ToolCategoryConfiguration config = plugin.getConfiguration().getToolCategoryConfiguration(category.getId());
-            if (config != null) {
-                config.setItems(new ArrayList<>(category.getItems()));
-            }
+            category.getConfig().setItems(new ArrayList<>(category.getItems()));
 
             sender.sendMessage(ChatColor.YELLOW + material.getKey().toString() + ChatColor.GRAY + " successfully removed from the tool list.");
             return true;

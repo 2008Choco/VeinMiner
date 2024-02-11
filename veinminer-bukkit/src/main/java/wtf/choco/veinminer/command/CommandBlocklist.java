@@ -69,7 +69,7 @@ public final class CommandBlocklist implements TabExecutor {
             }
 
             // Update configuration
-            this.plugin.getConfiguration().setBlockListKeys(category, blockList);
+            category.getConfig().setBlockListKeys(blockList);
 
             sender.sendMessage(formatBlockData(block.toStateString()) + ChatColor.GRAY + " successfully added to the block list.");
             return true;
@@ -96,7 +96,7 @@ public final class CommandBlocklist implements TabExecutor {
             }
 
             // Update configuration
-            this.plugin.getConfiguration().setBlockListKeys(category, blockList);
+            category.getConfig().setBlockListKeys(blockList);
 
             sender.sendMessage(formatBlockData(block.toStateString()) + ChatColor.GRAY + " successfully removed from the block list.");
             return true;

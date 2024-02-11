@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import wtf.choco.veinminer.block.BlockList;
+import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.ConfigWrapper;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
@@ -88,6 +90,24 @@ public final class StandardToolCategoryConfiguration implements ToolCategoryConf
     @Override
     public Collection<String> getItemKeys() {
         return ImmutableList.copyOf(getCategoryConfig().getStringList(KEY_ITEMS));
+    }
+
+
+    @Override
+    public void setBlockListKeys(@NotNull BlockList blockList) {
+        List<String> blockListStrings = blockList.asList().stream()
+                .map(VeinMinerBlock::toStateString)
+                .sorted().toList();
+
+        this.getCategoryConfig().set(KEY_BLOCK_LIST, blockListStrings);
+        this.categoriesConfig.save();
+    }
+
+    @NotNull
+    @Unmodifiable
+    @Override
+    public Collection<String> getBlockListKeys() {
+        return ImmutableList.copyOf(getCategoryConfig().getStringList(KEY_BLOCK_LIST));
     }
 
     @NotNull

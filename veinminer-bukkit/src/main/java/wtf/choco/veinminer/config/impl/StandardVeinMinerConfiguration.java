@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableSet;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.GameMode;
@@ -17,8 +16,6 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.config.ConfigWrapper;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
@@ -217,30 +214,6 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
     @NotNull
     @Unmodifiable
     @Override
-    public Collection<String> getGlobalBlockListKeys() {
-        return ImmutableList.copyOf(plugin.getConfig().getStringList(KEY_BLOCKLIST_ALL));
-    }
-
-    @Override
-    public void setBlockListKeys(@NotNull String categoryId, @NotNull BlockList blockList) {
-        List<String> blockListStrings = blockList.asList().stream()
-                .map(VeinMinerBlock::toStateString)
-                .sorted().toList();
-
-        this.plugin.getConfig().set(keyBlockList(categoryId), blockListStrings);
-        this.plugin.saveConfig();
-    }
-
-    @NotNull
-    @Unmodifiable
-    @Override
-    public Collection<String> getBlockListKeys(@NotNull String categoryId) {
-        return ImmutableList.copyOf(plugin.getConfig().getStringList(keyBlockList(categoryId)));
-    }
-
-    @NotNull
-    @Unmodifiable
-    @Override
     public Collection<String> getAliasStrings() {
         return ImmutableList.copyOf(plugin.getConfig().getStringList(KEY_ALIASES));
     }
@@ -248,18 +221,23 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
     @NotNull
     @Unmodifiable
     @Override
-    public Collection<String> getDefinedCategoryIds() {
-        return plugin.getCategoriesConfig().asRawConfig().getKeys(false);
+    public Collection<String> getGlobalBlockListKeys() {
+        return ImmutableList.copyOf(plugin.getCategoriesConfig().asRawConfig().getStringList("All." + KEY_BLOCK_LIST));
     }
 
-    @Nullable
+    @NotNull
+    @Unmodifiable
+    @Override
+    public Collection<String> getDefinedCategoryIds() {
+        Set<String> keys = plugin.getCategoriesConfig().asRawConfig().getKeys(false);
+        keys.remove("All");
+        return keys;
+    }
+
+    @NotNull
     @Override
     public ToolCategoryConfiguration getToolCategoryConfiguration(@NotNull String categoryId) {
         ConfigWrapper categoriesConfig = this.plugin.getCategoriesConfig();
-        if (!categoriesConfig.asRawConfig().contains(categoryId)) {
-            return null;
-        }
-
         return new StandardToolCategoryConfiguration(categoryId, categoriesConfig, this);
     }
 

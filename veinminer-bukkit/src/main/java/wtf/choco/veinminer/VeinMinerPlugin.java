@@ -49,6 +49,8 @@ import wtf.choco.veinminer.config.ConfigWrapper;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.config.impl.StandardVeinMinerConfiguration;
+import wtf.choco.veinminer.config.migrator.ConfigMigrator;
+import wtf.choco.veinminer.config.migrator.MigrationStep;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.data.PersistentDataStorageJSON;
 import wtf.choco.veinminer.data.PersistentDataStorageMySQL;
@@ -126,6 +128,13 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
 
         this.saveDefaultConfig();
+
+        ConfigMigrator configMigrator = new ConfigMigrator(this);
+        configMigrator.addStep(MigrationStep.blockListsToCategoriesFile());
+        int configMigrations = configMigrator.migrate();
+        if (configMigrations > 0) {
+            this.getLogger().info("Successfully ran " + configMigrations + " configuration migrations! Your configuration files are now up to date with the latest version of " + getName());
+        }
 
         // Persistent storage
         this.setupPersistentStorage();
@@ -483,16 +492,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 continue;
             }
 
-            if (categoryId.equalsIgnoreCase("Hand")) {
-                this.getLogger().warning("Redefinition of the Hand category is not legal. Ignoring.");
-                continue;
-            }
-
             ToolCategoryConfiguration config = getConfiguration().getToolCategoryConfiguration(categoryId);
-            if (config == null) {
-                // Should be impossible, but we'll double check
-                continue;
-            }
+            boolean hand = (categoryId.equalsIgnoreCase("Hand"));
 
             Set<Material> items = new HashSet<>();
             for (String itemTypeString : config.getItemKeys()) {
@@ -506,12 +507,12 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 items.add(material);
             }
 
-            if (items.isEmpty()) {
+            if (!hand && items.isEmpty()) {
                 this.getLogger().info(String.format("Category with id \"%s\" has no items. Ignoring registration.", categoryId));
                 continue;
             }
 
-            Collection<String> blockStateStrings = getConfiguration().getBlockListKeys(categoryId);
+            Collection<String> blockStateStrings = config.getBlockListKeys();
             if (blockStateStrings.isEmpty()) {
                 this.getLogger().info(String.format("No block list configured for category with id \"%s\". Ignoring registration.", categoryId));
                 continue;
@@ -523,15 +524,17 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 continue;
             }
 
-            int priority = config.getPriority();
-            String nbtValue = config.getNBTValue();
+            if (!hand) {
+                int priority = config.getPriority();
+                String nbtValue = config.getNBTValue();
 
-            this.toolCategoryRegistry.register(new VeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, config, items));
+                this.toolCategoryRegistry.register(new VeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, config, items));
+            } else {
+                this.toolCategoryRegistry.register(new VeinMinerToolCategoryHand(blocklist, config));
+            }
+
             this.getLogger().info(String.format("Registered category with id \"%s\" holding %d unique items and %d unique blocks.", categoryId, items.size(), blocklist.size()));
         }
-
-        // Also register the hand category (required)
-        getToolCategoryRegistry().register(new VeinMinerToolCategoryHand(BlockList.parseBlockList(getConfiguration().getBlockListKeys("Hand"), getLogger()), getConfiguration()));
 
         // Register permissions dynamically
         Permission veinminePermissionParent = getOrRegisterPermission("veinminer.veinmine.*", () -> "Allow the use of vein miner for all tool categories", PermissionDefault.TRUE);
