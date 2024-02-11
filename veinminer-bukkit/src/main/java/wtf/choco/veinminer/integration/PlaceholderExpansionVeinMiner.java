@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**

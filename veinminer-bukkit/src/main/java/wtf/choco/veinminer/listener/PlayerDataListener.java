@@ -9,9 +9,9 @@ import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetPattern;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
 import wtf.choco.veinminer.util.VMConstants;
 
 public final class PlayerDataListener implements Listener {

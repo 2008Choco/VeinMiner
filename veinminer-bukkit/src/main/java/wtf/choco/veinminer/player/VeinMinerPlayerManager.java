@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.manager;
+package wtf.choco.veinminer.player;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.config.ClientConfig;
 
 /**

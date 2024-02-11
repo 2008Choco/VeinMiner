@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMinerPlayer;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
 
 /**
  * An implementation of {@link PersistentDataStorage} that performs no save or load

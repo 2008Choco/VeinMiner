@@ -10,6 +10,7 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
 import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
 
 /**
  * A {@link ChannelRegistrar} implementation for VeinMiner on Bukkit servers.
@@ -27,7 +28,8 @@ public final class VeinMinerBukkitChannelRegistrar extends BukkitChannelRegistra
 
     @Override
     protected VeinMinerServerboundMessageListener onSuccessfulMessage(@NotNull Player player, @NotNull String channel, @NotNull Message<VeinMinerServerboundMessageListener> message) {
-        return plugin.getPlayerManager().get(player);
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
+        return (veinMinerPlayer != null) ? veinMinerPlayer.getServerboundMessageListener() : null;
     }
 
 }
