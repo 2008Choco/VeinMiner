@@ -31,7 +31,7 @@ final class ConfigKeys {
     static final String KEY_ALIASES = "Aliases";
 
     static String keyBlockList(@NotNull String categoryId) {
-        return KEY_BLOCKLIST + categoryId;
+        return KEY_BLOCKLIST + "." + categoryId;
     }
 
     // ToolCategoryConfiguration
