@@ -3,8 +3,6 @@ package wtf.choco.veinminer.update;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.math.NumberUtils;
-
 /**
  * A utility class holding constants representing standard version schemes.
  */
@@ -17,7 +15,7 @@ public final class StandardVersionSchemes {
         String[] firstSplit = splitVersionInfo(first), secondSplit = splitVersionInfo(second);
 
         for (int i = 0; i < Math.min(firstSplit.length, secondSplit.length); i++) {
-            int currentValue = NumberUtils.toInt(firstSplit[i], -1), newestValue = NumberUtils.toInt(secondSplit[i], -1);
+            int currentValue = toInt(firstSplit[i], -1), newestValue = toInt(secondSplit[i], -1);
 
             if (newestValue > currentValue) {
                 return second;
@@ -41,6 +39,18 @@ public final class StandardVersionSchemes {
         }
 
         return matcher.group().split("\\.");
+    }
+
+    private static int toInt(String string, int defaultValue) {
+        if (string == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
 }
