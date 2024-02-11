@@ -287,14 +287,14 @@ public class BlockList implements Iterable<VeinMinerBlock>, Cloneable {
             VeinMinerBlock veinMinerBlock = VeinMinerBlock.fromString(blockStateString);
             if (veinMinerBlock == null) {
                 if (logger != null) {
-                    logger.info(String.format("Unknown or invalid block state string for input: \"%s\". Is it an item?", blockStateString));
+                    logger.warning(String.format("Unknown or invalid block state string for input: \"%s\". Is it an item?", blockStateString));
                 }
 
                 continue;
             }
 
             if (!blocklist.add(veinMinerBlock) && logger != null) {
-                logger.info(String.format("Duplicate block state string: \"%s\"", blockStateString));
+                logger.warning(String.format("Duplicate block state string: \"%s\"", blockStateString));
             }
         }
 
