@@ -132,7 +132,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
         }
         else {
             Material type = Material.matchMaterial(matcher.group(1));
-            return (type != null && type.isItem()) ? new VeinMinerBlockType(type) : null;
+            return (type != null && type.isBlock()) ? new VeinMinerBlockType(type) : null;
         }
     }
 
