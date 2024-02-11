@@ -513,15 +513,9 @@ public final class VeinMinerPlugin extends JavaPlugin {
             }
 
             Collection<String> blockStateStrings = config.getBlockListKeys();
-            if (blockStateStrings.isEmpty()) {
-                this.getLogger().info(String.format("No block list configured for category with id \"%s\". Ignoring registration.", categoryId));
-                continue;
-            }
-
             BlockList blocklist = BlockList.parseBlockList(blockStateStrings, getLogger());
             if (blocklist.size() == 0) {
-                this.getLogger().info(String.format("No block list configured for category with id \"%s\". Ignoring registration.", categoryId));
-                continue;
+                this.getLogger().info(String.format("No block list configured for category with id \"%s\"! Is this intentional?", categoryId));
             }
 
             if (!hand) {
