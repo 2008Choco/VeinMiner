@@ -29,7 +29,7 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
      * Get whether or not metrics are enabled.
      * <p>
      * If this value returns true, bStats Metrics will be used to send anonymous data to
-     * <a href="https://bstats.org/plugin/bukkit/VeinMiner">.
+     * <a href="https://bstats.org/plugin/bukkit/VeinMiner">https://bstats.org/plugin/bukkit/VeinMiner</a>.
      *
      * @return true if metrics are enabled, false if disabled
      */
