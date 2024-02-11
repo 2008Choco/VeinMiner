@@ -211,11 +211,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         // Vault integration
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.getLogger().info("Vault found. Attempting to enable economy support...");
-
-            SimpleVaultEconomy economy = new SimpleVaultEconomy();
-            this.setEconomy(economy);
-
-            this.getLogger().info(economy.hasEconomyPlugin() ? "Economy found! Hooked successfully." : "Cancelled. No economy plugin found.");
+            this.setEconomy(new SimpleVaultEconomy(this));
         } else {
             this.getLogger().info("Vault not found. Economy support suspended");
         }

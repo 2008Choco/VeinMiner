@@ -1,11 +1,15 @@
 package wtf.choco.veinminer.economy;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Suppliers;
+
+import java.util.function.Supplier;
 
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.util.VMConstants;
@@ -16,42 +20,49 @@ import wtf.choco.veinminer.util.VMConstants;
  */
 public class SimpleVaultEconomy implements SimpleEconomy {
 
-    private Economy economy;
+    private boolean warnedAboutMissingEconomy = false;
+
+    private final Plugin plugin;
+    private final Supplier<Economy> economy;
+
+    public SimpleVaultEconomy(Plugin plugin) {
+        this.plugin = plugin;
+        this.economy = Suppliers.memoize(this::getEconomy);
+    }
 
     @Override
     public boolean shouldCharge(@NotNull Player player) {
-        return hasEconomyPlugin() && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
+        return economy.get() != null && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
     }
 
     @Override
     public boolean hasSufficientBalance(@NotNull Player player, double amount) {
-        if (!hasEconomyPlugin()) {
-            return true;
-        }
-
-        return economy.has(player, amount);
+        Economy economy = this.economy.get();
+        return economy == null || economy.has(player, amount);
     }
 
     @Override
     public void withdraw(@NotNull Player player, double amount) {
         Preconditions.checkArgument(player.isOnline(), "cannot charge offline player");
 
-        if (hasEconomyPlugin()) {
-            this.economy.withdrawPlayer(player, amount);
+        Economy economy = this.economy.get();
+        if (economy != null) {
+            economy.withdrawPlayer(player, amount);
         }
     }
 
-    /**
-     * Check whether or not an economy implementation was found.
-     *
-     * @return true if economy is enabled, false otherwise
-     */
-    public boolean hasEconomyPlugin() {
+    private Economy getEconomy() {
+        Economy economy = Bukkit.getServicesManager().load(Economy.class);
         if (economy == null) {
-            this.economy = Bukkit.getServicesManager().load(Economy.class);
+            if (!warnedAboutMissingEconomy) {
+                this.plugin.getLogger().warning("Tried to use Vault economy but no economy plugin was found! You need to install an economy plugin in addition to Vault in order for this feature to work.");
+                this.warnedAboutMissingEconomy = true;
+            }
+
+            return null;
         }
 
-        return economy != null;
+        return economy;
     }
 
 }
