@@ -8,8 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.platform.BukkitPlatformPlayer;
-import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.util.VMConstants;
 
 /**
@@ -21,29 +19,25 @@ public class SimpleVaultEconomy implements SimpleEconomy {
     private Economy economy;
 
     @Override
-    public boolean shouldCharge(@NotNull PlatformPlayer player) {
+    public boolean shouldCharge(@NotNull Player player) {
         return hasEconomyPlugin() && !player.hasPermission(VMConstants.PERMISSION_FREE_ECONOMY);
     }
 
     @Override
-    public boolean hasSufficientBalance(@NotNull PlatformPlayer player, double amount) {
+    public boolean hasSufficientBalance(@NotNull Player player, double amount) {
         if (!hasEconomyPlugin()) {
             return true;
         }
 
-        Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayer();
-        return bukkitPlayer != null && economy.has(bukkitPlayer, amount);
+        return economy.has(player, amount);
     }
 
     @Override
-    public void withdraw(@NotNull PlatformPlayer player, double amount) {
+    public void withdraw(@NotNull Player player, double amount) {
         Preconditions.checkArgument(player.isOnline(), "cannot charge offline player");
 
         if (hasEconomyPlugin()) {
-            Player bukkitPlayer = ((BukkitPlatformPlayer) player).getPlayer();
-            if (bukkitPlayer != null) {
-                this.economy.withdrawPlayer(bukkitPlayer, amount);
-            }
+            this.economy.withdrawPlayer(player, amount);
         }
     }
 

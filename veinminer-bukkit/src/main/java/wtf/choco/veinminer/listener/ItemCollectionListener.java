@@ -29,7 +29,7 @@ public final class ItemCollectionListener implements Listener {
             return;
         }
 
-        if (!plugin.getConfig().getBoolean(VMConstants.CONFIG_COLLECT_ITEMS_AT_SOURCE, true)) {
+        if (!plugin.getConfiguration().isCollectItemsAtSource()) {
             return;
         }
 

@@ -20,7 +20,7 @@ import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMin
 /**
  * A class holding VeinMiner's core common functionality.
  */
-public interface VeinMiner {
+public final class VeinMiner {
 
     /**
      * A pattern to match a Minecraft block state. e.g. {@code minecraft:chest[waterlogged=false]}
@@ -65,5 +65,7 @@ public interface VeinMiner {
                 .registerMessage(ClientboundVeinMineResults.class, ClientboundVeinMineResults::new)
                 .registerMessage(ClientboundSetPattern.class, ClientboundSetPattern::new)
     ).configure(new VeinMinerProtocolConfiguration());
+
+    private VeinMiner() { }
 
 }

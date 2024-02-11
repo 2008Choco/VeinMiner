@@ -1,6 +1,6 @@
 package wtf.choco.veinminer.util;
 
-import java.util.Set;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -37,7 +37,7 @@ public final class VMEventFactory {
      * @return the event
      */
     @NotNull
-    public static PlayerVeinMineEvent callPlayerVeinMineEvent(@NotNull Player player, @NotNull Block block, @NotNull VeinMinerBlock veinMinerBlock, @Nullable ItemStack item, @NotNull VeinMinerToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
+    public static PlayerVeinMineEvent callPlayerVeinMineEvent(@NotNull Player player, @NotNull Block block, @NotNull VeinMinerBlock veinMinerBlock, @Nullable ItemStack item, @NotNull VeinMinerToolCategory category, @NotNull List<Block> blocks, @NotNull VeinMiningPattern pattern) {
         PlayerVeinMineEvent event = new PlayerVeinMineEvent(player, block, veinMinerBlock, item, category, blocks, pattern);
         Bukkit.getPluginManager().callEvent(event);
         return event;
@@ -51,7 +51,7 @@ public final class VMEventFactory {
      *
      * @return true if not cancelled, false if cancelled
      */
-    public static boolean handlePlayerClientActivateVeinMinerEvent(@NotNull Player player, boolean activated) {
+    public static boolean callPlayerClientActivateVeinMinerEvent(@NotNull Player player, boolean activated) {
         PlayerClientActivateVeinMinerEvent event = new PlayerClientActivateVeinMinerEvent(player, activated);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled();

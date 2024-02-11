@@ -18,7 +18,6 @@ dependencies {
     compileOnly(libs.spigot.api)
 
     implementation(project(":veinminer-common"))
-    implementation(project(":veinminer-server"))
 
     implementation(libs.bstats.bukkit)
     implementation(libs.choco.networking.bukkit)
@@ -34,6 +33,9 @@ dependencies {
     compileOnly(libs.anticheat.matrix)
     compileOnly(libs.anticheat.nocheatplus)
     compileOnly(libs.anticheat.spartan)
+
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
 tasks {
@@ -50,6 +52,7 @@ tasks {
 
     withType<Javadoc>() {
         exclude("wtf/choco/veinminer/listener/**")
+        exclude("wtf/choco/veinminer/command/**")
     }
 
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
@@ -58,7 +61,6 @@ tasks {
 
         dependencies {
             include(project(":veinminer-common"))
-            include(project(":veinminer-server"))
             include(dependency(libs.bstats.base.get()))
             include(dependency(libs.bstats.bukkit.get()))
             include(dependency(libs.choco.networking.common.get()))

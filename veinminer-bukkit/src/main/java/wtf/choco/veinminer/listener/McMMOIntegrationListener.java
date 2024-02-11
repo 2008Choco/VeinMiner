@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.util.VMConstants;
 
 public final class McMMOIntegrationListener implements Listener {
 
@@ -25,7 +24,7 @@ public final class McMMOIntegrationListener implements Listener {
             return;
         }
 
-        if (!plugin.getConfig().getBoolean(VMConstants.CONFIG_NERF_MCMMO, false) || !event.getPlayer().hasMetadata("veinminer:veinmining")) {
+        if (!plugin.getConfiguration().isNerfMcMMO() || !event.getPlayer().hasMetadata("veinminer:veinmining")) {
             return;
         }
 
