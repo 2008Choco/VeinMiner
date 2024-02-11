@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.bukkit.GameMode;
+import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -51,17 +52,14 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
     @NotNull
     public ClientConfig getClientConfiguration();
 
-    public default boolean isAllowActivationKeybind() {
-        return getClientConfiguration().isAllowActivationKeybind();
-    }
+    @NotNull
+    public ClientConfig getClientConfiguration(@NotNull Permissible permissible);
 
-    public default boolean isAllowPatternSwitchingKeybind() {
-        return getClientConfiguration().isAllowPatternSwitchingKeybind();
-    }
+    public boolean isAllowActivationKeybind();
 
-    public default boolean isAllowWireframeRendering() {
-        return getClientConfiguration().isAllowWireframeRendering();
-    }
+    public boolean isAllowPatternSwitchingKeybind();
+
+    public boolean isAllowWireframeRendering();
 
     @NotNull
     public PersistentDataStorage.Type getStorageType();

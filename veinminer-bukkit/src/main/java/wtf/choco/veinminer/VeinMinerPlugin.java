@@ -5,11 +5,8 @@ import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import org.bstats.bukkit.Metrics;
@@ -17,15 +14,11 @@ import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,13 +33,10 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookLightAntiCheat;
 import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
-import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.command.CommandBlocklist;
 import wtf.choco.veinminer.command.CommandToollist;
 import wtf.choco.veinminer.command.CommandVeinMiner;
-import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.config.ConfigWrapper;
-import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.config.impl.StandardVeinMinerConfiguration;
 import wtf.choco.veinminer.config.migrator.ConfigMigrator;
@@ -76,8 +66,6 @@ import wtf.choco.veinminer.pattern.VeinMiningPatternStaircase;
 import wtf.choco.veinminer.pattern.VeinMiningPatternStaircase.Direction;
 import wtf.choco.veinminer.pattern.VeinMiningPatternTunnel;
 import wtf.choco.veinminer.tool.ToolCategoryRegistry;
-import wtf.choco.veinminer.tool.VeinMinerToolCategory;
-import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 import wtf.choco.veinminer.update.SpigotMCUpdateChecker;
 import wtf.choco.veinminer.update.StandardVersionSchemes;
 import wtf.choco.veinminer.update.UpdateChecker;
@@ -91,7 +79,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
     private VeinMinerManager veinMinerManager = new VeinMinerManager(this);
     private VeinMinerPlayerManager playerManager = new VeinMinerPlayerManager();
-    private ToolCategoryRegistry toolCategoryRegistry = new ToolCategoryRegistry();
+    private ToolCategoryRegistry toolCategoryRegistry = new ToolCategoryRegistry(this);
     private PatternRegistry patternRegistry = new PatternRegistry();
 
     private SimpleEconomy economy = EmptyEconomy.INSTANCE;
@@ -141,8 +129,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         // VeinMinerManager and ToolCategory loading into memory
         this.getLogger().info("Loading configuration options to local memory");
-        this.reloadVeinMinerManagerConfig();
-        this.reloadToolCategoryRegistryConfig();
+        this.veinMinerManager.reloadFromConfig();
+        this.toolCategoryRegistry.reloadFromConfig();
 
         // Special case for server reloads
         this.storage.load(Bukkit.getOnlinePlayers().stream().map(playerManager::get).toList());
@@ -350,27 +338,14 @@ public final class VeinMinerPlugin extends JavaPlugin {
         return categoriesConfig;
     }
 
+    /**
+     * Get VeinMiner's {@link VeinMinerConfiguration} instance.
+     *
+     * @return the vein miner configuration
+     */
     @NotNull
     public VeinMinerConfiguration getConfiguration() {
         return configuration;
-    }
-
-    /**
-     * Create a {@link ClientConfig} with values supplied by the plugin's config.
-     *
-     * @param player the player for whom to create the config
-     *
-     * @return the default client config
-     */
-    @NotNull
-    public ClientConfig createClientConfig(@NotNull Player player) {
-        ClientConfig defaultConfig = getConfiguration().getClientConfiguration();
-
-        return ClientConfig.builder()
-                .allowActivationKeybind(defaultConfig.isAllowActivationKeybind() && player.hasPermission("veinminer.client.activation"))
-                .allowPatternSwitchingKeybind(defaultConfig.isAllowPatternSwitchingKeybind() && player.hasPermission("veinminer.client.patterns"))
-                .allowWireframeRendering(defaultConfig.isAllowWireframeRendering() && player.hasPermission("veinminer.client.wireframe"))
-                .build();
     }
 
     /**
@@ -446,108 +421,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
         }
     }
 
-    /**
-     * Reload the {@link VeinMinerManager}'s values from config into memory.
-     */
-    public void reloadVeinMinerManagerConfig() {
-        this.veinMinerManager.clear();
-
-        // Global block list and disabled game modes
-        this.veinMinerManager.setGlobalBlockList(BlockList.parseBlockList(getConfiguration().getGlobalBlockListKeys(), getLogger()));
-
-        // Aliases
-        int aliasesAdded = 0;
-        for (String aliasString : getConfiguration().getAliasStrings()) {
-            List<String> aliasStringEntries = List.of(aliasString.split(";"));
-            if (aliasStringEntries.size() <= 1) {
-                this.getLogger().info("Alias \"%s\" contains %d entries but must have at least 2. Not adding.".formatted(aliasString, aliasStringEntries.size()));
-                continue;
-            }
-
-            BlockList aliasBlockList = BlockList.parseBlockList(aliasStringEntries, getLogger());
-            if (aliasBlockList.isEmpty()) {
-                continue;
-            }
-
-            this.getVeinMinerManager().addAlias(aliasBlockList);
-            aliasesAdded++;
-        }
-
-        this.getLogger().info("Added " + aliasesAdded + " aliases.");
-    }
-
-    /**
-     * Reload the {@link ToolCategoryRegistry}'s values from config into memory.
-     */
-    public void reloadToolCategoryRegistryConfig() {
-        this.toolCategoryRegistry.unregisterAll(); // Unregister all the categories before re-loading them
-
-        for (String categoryId : getConfiguration().getDefinedCategoryIds()) {
-            if (categoryId.contains(" ")) {
-                this.getLogger().info(String.format("Category id \"%s\" is invalid. Must not contain spaces (' ')", categoryId));
-                continue;
-            }
-
-            ToolCategoryConfiguration config = getConfiguration().getToolCategoryConfiguration(categoryId);
-            boolean hand = (categoryId.equalsIgnoreCase("Hand"));
-
-            Set<Material> items = new HashSet<>();
-            for (String itemTypeString : config.getItemKeys()) {
-                Material material = Material.matchMaterial(itemTypeString);
-
-                if (material == null || !material.isItem()) {
-                    this.getLogger().info(String.format("Unknown item for input \"%s\". Did you spell it correctly?", itemTypeString));
-                    continue;
-                }
-
-                items.add(material);
-            }
-
-            if (!hand && items.isEmpty()) {
-                this.getLogger().info(String.format("Category with id \"%s\" has no items. Ignoring registration.", categoryId));
-                continue;
-            }
-
-            Collection<String> blockStateStrings = config.getBlockListKeys();
-            BlockList blocklist = BlockList.parseBlockList(blockStateStrings, getLogger());
-            if (blocklist.size() == 0) {
-                this.getLogger().info(String.format("No block list configured for category with id \"%s\"! Is this intentional?", categoryId));
-            }
-
-            if (!hand) {
-                int priority = config.getPriority();
-                String nbtValue = config.getNBTValue();
-
-                this.toolCategoryRegistry.register(new VeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, config, items));
-            } else {
-                this.toolCategoryRegistry.register(new VeinMinerToolCategoryHand(blocklist, config));
-            }
-
-            this.getLogger().info(String.format("Registered category with id \"%s\" holding %d unique items and %d unique blocks.", categoryId, items.size(), blocklist.size()));
-        }
-
-        // Register permissions dynamically
-        Permission veinminePermissionParent = getOrRegisterPermission("veinminer.veinmine.*", () -> "Allow the use of vein miner for all tool categories", PermissionDefault.TRUE);
-        Permission blocklistPermissionParent = getOrRegisterPermission("veinminer.blocklist.list.*", () -> "Allow access to list the blocks in all block lists", PermissionDefault.OP);
-        Permission toollistPermissionParent = getOrRegisterPermission("veinminer.toollist.list.*", () -> "Allow access to list the tools in a category's tool list", PermissionDefault.OP);
-
-        for (VeinMinerToolCategory category : getToolCategoryRegistry().getAll()) {
-            String id = category.getId().toLowerCase();
-
-            Permission veinminePermission = getOrRegisterPermission("veinminer.veinmine." + id, () -> "Allows players to vein mine using the " + category.getId() + " category", PermissionDefault.TRUE);
-            Permission blocklistPermission = getOrRegisterPermission("veinminer.blocklist.list." + id, () -> "Allows players to list blocks in the " + category.getId() + " category", PermissionDefault.OP);
-            Permission toollistPermission = getOrRegisterPermission("veinminer.toollist.list." + id, () -> "Allows players to list tools in the " + category.getId() + " category", PermissionDefault.OP);
-
-            veinminePermissionParent.getChildren().put(veinminePermission.getName(), true);
-            blocklistPermissionParent.getChildren().put(blocklistPermission.getName(), true);
-            toollistPermissionParent.getChildren().put(toollistPermission.getName(), true);
-        }
-
-        veinminePermissionParent.recalculatePermissibles();
-        blocklistPermissionParent.recalculatePermissibles();
-        toollistPermissionParent.recalculatePermissibles();
-    }
-
     private void setupPersistentStorage() {
         PersistentDataStorage.Type storageType = getConfiguration().getStorageType();
 
@@ -599,18 +472,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
             this.getLogger().severe("Could not setup persistent file storage. Player data cannot be saved nor loaded. Investigate IMMEDIATELY.");
             e.printStackTrace();
         }
-    }
-
-    private Permission getOrRegisterPermission(String permissionName, Supplier<String> description, PermissionDefault permissionDefault) {
-        PluginManager pluginManager = Bukkit.getPluginManager();
-        Permission permission = pluginManager.getPermission(permissionName);
-
-        if (permission == null) {
-            permission = new Permission(permissionName, description.get(), permissionDefault);
-            pluginManager.addPermission(permission);
-        }
-
-        return permission;
     }
 
 }

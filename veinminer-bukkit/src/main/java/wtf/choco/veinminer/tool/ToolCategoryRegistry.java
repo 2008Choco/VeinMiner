@@ -1,18 +1,31 @@
 package wtf.choco.veinminer.tool;
 
+import com.google.common.base.Predicates;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.block.BlockList;
+import wtf.choco.veinminer.config.ToolCategoryConfiguration;
+import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.util.ItemUtil;
 
 /**
@@ -20,9 +33,13 @@ import wtf.choco.veinminer.util.ItemUtil;
  */
 public final class ToolCategoryRegistry {
 
-    private static final Predicate<VeinMinerToolCategory> PREDICATE_ALWAYS_TRUE = category -> true;
-
     private final Map<String, VeinMinerToolCategory> categories = new HashMap<>();
+
+    private final VeinMinerPlugin plugin;
+
+    public ToolCategoryRegistry(@NotNull VeinMinerPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Register the given {@link VeinMinerToolCategory}.
@@ -86,7 +103,7 @@ public final class ToolCategoryRegistry {
     @Deprecated
     @Nullable
     public VeinMinerToolCategory get(@NotNull Material item) {
-        return get(item, null, PREDICATE_ALWAYS_TRUE);
+        return get(item, null, Predicates.alwaysTrue());
     }
 
     /**
@@ -121,7 +138,7 @@ public final class ToolCategoryRegistry {
      */
     @Nullable
     public VeinMinerToolCategory get(@NotNull ItemStack itemStack) {
-        return get(itemStack.getType(), ItemUtil.getVeinMinerNBTValue(itemStack), PREDICATE_ALWAYS_TRUE);
+        return get(itemStack.getType(), ItemUtil.getVeinMinerNBTValue(itemStack), Predicates.alwaysTrue());
     }
 
     /**
@@ -182,6 +199,89 @@ public final class ToolCategoryRegistry {
     @UnmodifiableView
     public Collection<? extends VeinMinerToolCategory> getAll() {
         return Collections.unmodifiableCollection(categories.values());
+    }
+
+    public void reloadFromConfig() {
+        this.unregisterAll();
+
+        VeinMinerConfiguration config = plugin.getConfiguration();
+        for (String categoryId : config.getDefinedCategoryIds()) {
+            if (categoryId.contains(" ")) {
+                this.plugin.getLogger().warning(String.format("Category id \"%s\" is invalid. Must not contain spaces (' ')", categoryId));
+                continue;
+            }
+
+            ToolCategoryConfiguration categoryConfig = config.getToolCategoryConfiguration(categoryId);
+            boolean hand = (categoryId.equalsIgnoreCase("Hand"));
+
+            Set<Material> items = new HashSet<>();
+            for (String itemTypeString : categoryConfig.getItemKeys()) {
+                Material material = Material.matchMaterial(itemTypeString);
+
+                if (material == null || !material.isItem()) {
+                    this.plugin.getLogger().warning(String.format("Unknown item for input \"%s\". Did you spell it correctly?", itemTypeString));
+                    continue;
+                }
+
+                items.add(material);
+            }
+
+            if (!hand && items.isEmpty()) {
+                this.plugin.getLogger().warning(String.format("Category with id \"%s\" has no items. Ignoring registration.", categoryId));
+                continue;
+            }
+
+            Collection<String> blockStateStrings = categoryConfig.getBlockListKeys();
+            BlockList blocklist = BlockList.parseBlockList(blockStateStrings, plugin.getLogger());
+            if (blocklist.size() == 0) {
+                this.plugin.getLogger().warning(String.format("No block list configured for category with id \"%s\"! Is this intentional?", categoryId));
+            }
+
+            if (!hand) {
+                int priority = categoryConfig.getPriority();
+                String nbtValue = categoryConfig.getNBTValue();
+
+                this.register(new VeinMinerToolCategory(categoryId, priority, nbtValue, blocklist, categoryConfig, items));
+            } else {
+                this.register(new VeinMinerToolCategoryHand(blocklist, categoryConfig));
+            }
+
+            this.plugin.getLogger().info(String.format("Registered category with id \"%s\" holding %d unique items and %d unique blocks.", categoryId, items.size(), blocklist.size()));
+        }
+
+        // Register permissions dynamically
+        Permission veinminePermissionParent = getOrRegisterPermission("veinminer.veinmine.*", () -> "Allow the use of vein miner for all tool categories", PermissionDefault.TRUE);
+        Permission blocklistPermissionParent = getOrRegisterPermission("veinminer.blocklist.list.*", () -> "Allow access to list the blocks in all block lists", PermissionDefault.OP);
+        Permission toollistPermissionParent = getOrRegisterPermission("veinminer.toollist.list.*", () -> "Allow access to list the tools in a category's tool list", PermissionDefault.OP);
+
+        for (VeinMinerToolCategory category : getAll()) {
+            String id = category.getId().toLowerCase();
+
+            Permission veinminePermission = getOrRegisterPermission("veinminer.veinmine." + id, () -> "Allows players to vein mine using the " + category.getId() + " category", PermissionDefault.TRUE);
+            Permission blocklistPermission = getOrRegisterPermission("veinminer.blocklist.list." + id, () -> "Allows players to list blocks in the " + category.getId() + " category", PermissionDefault.OP);
+            Permission toollistPermission = getOrRegisterPermission("veinminer.toollist.list." + id, () -> "Allows players to list tools in the " + category.getId() + " category", PermissionDefault.OP);
+
+            veinminePermissionParent.getChildren().put(veinminePermission.getName(), true);
+            blocklistPermissionParent.getChildren().put(blocklistPermission.getName(), true);
+            toollistPermissionParent.getChildren().put(toollistPermission.getName(), true);
+        }
+
+        veinminePermissionParent.recalculatePermissibles();
+        blocklistPermissionParent.recalculatePermissibles();
+        toollistPermissionParent.recalculatePermissibles();
+    }
+
+    @NotNull
+    private Permission getOrRegisterPermission(@NotNull String permissionName, @NotNull Supplier<String> description, @NotNull PermissionDefault permissionDefault) {
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        Permission permission = pluginManager.getPermission(permissionName);
+
+        if (permission == null) {
+            permission = new Permission(permissionName, description.get(), permissionDefault);
+            pluginManager.addPermission(permission);
+        }
+
+        return permission;
     }
 
     /**

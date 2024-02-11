@@ -25,7 +25,7 @@ public final class PlayerDataListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().getOrRegister(player, () -> plugin.createClientConfig(player));
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().getOrRegister(player, () -> plugin.getConfiguration().getClientConfiguration(player));
 
         this.plugin.getPersistentDataStorage().load(veinMinerPlayer).whenComplete((vmPlayer, e) -> {
             if (e != null) {

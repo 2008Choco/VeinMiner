@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.bukkit.GameMode;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -23,6 +23,7 @@ import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
+import wtf.choco.veinminer.util.VMConstants;
 
 import static wtf.choco.veinminer.config.impl.ConfigKeys.*;
 
@@ -147,13 +148,41 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
     @NotNull
     @Override
     public ClientConfig getClientConfiguration() {
-        FileConfiguration config = plugin.getConfig();
+        return createClientConfiguration(null);
+    }
 
+    @NotNull
+    @Override
+    public ClientConfig getClientConfiguration(@NotNull Permissible permissible) {
+        return createClientConfiguration(permissible);
+    }
+
+    @NotNull
+    private ClientConfig createClientConfiguration(@Nullable Permissible permissible) {
         return ClientConfig.builder()
-                .allowActivationKeybind(config.getBoolean(KEY_CLIENT_ALLOW_ACTIVATION_KEYBIND, true))
-                .allowPatternSwitchingKeybind(config.getBoolean(KEY_CLIENT_ALLOW_PATTERN_SWITCHING_KEYBIND, true))
-                .allowWireframeRendering(config.getBoolean(KEY_CLIENT_ALLOW_WIREFRAME_RENDERING, true))
+                .allowActivationKeybind(isAllowActivationKeybind() && test(permissible, VMConstants.PERMISSION_CLIENT_ACTIVATION))
+                .allowPatternSwitchingKeybind(isAllowPatternSwitchingKeybind() && test(permissible, VMConstants.PERMISSION_CLIENT_PATTERNS))
+                .allowWireframeRendering(isAllowWireframeRendering() && test(permissible, VMConstants.PERMISSION_CLIENT_WIREFRAME))
                 .build();
+    }
+
+    private boolean test(@Nullable Permissible permissible, @NotNull String permission) {
+        return permissible == null || permissible.hasPermission(permission);
+    }
+
+    @Override
+    public boolean isAllowActivationKeybind() {
+        return plugin.getConfig().getBoolean(KEY_CLIENT_ALLOW_ACTIVATION_KEYBIND, true);
+    }
+
+    @Override
+    public boolean isAllowPatternSwitchingKeybind() {
+        return plugin.getConfig().getBoolean(KEY_CLIENT_ALLOW_PATTERN_SWITCHING_KEYBIND, true);
+    }
+
+    @Override
+    public boolean isAllowWireframeRendering() {
+        return plugin.getConfig().getBoolean(KEY_CLIENT_ALLOW_WIREFRAME_RENDERING, true);
     }
 
     @NotNull
