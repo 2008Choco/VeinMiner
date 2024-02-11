@@ -11,8 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
+import wtf.choco.veinminer.util.VMConstants;
 
 /**
  * Represents a category of tools.
@@ -72,12 +74,14 @@ public class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> 
     }
 
     /**
-     * Get the value that must be on items in this category to be vein mineable.
+     * Get the NBT value that must be on items in this category to be vein mineable.
      * <p>
      * Callers of {@link #containsItem(Material)} should verify also that any ItemStack to be
      * checked contains also the value returned by this method.
      *
      * @return the NBT value, or null if no NBT is required
+     *
+     * @see VMConstants#getVeinMinerNBTKey()
      */
     @Nullable
     public String getNBTValue() {
@@ -96,11 +100,14 @@ public class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> 
 
     /**
      * Get the {@link ToolCategoryConfiguration} for this tool category.
+     * <p>
+     * The returned configuration may be edited. It will be saved in memory until saved via the
+     * {@link VeinMinerPlugin#getCategoriesConfig()}.
      *
      * @return the config
      */
     @NotNull
-    public ToolCategoryConfiguration getConfig() {
+    public ToolCategoryConfiguration getConfiguration() {
         return config;
     }
 
@@ -142,7 +149,7 @@ public class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> 
     }
 
     /**
-     * Get an unmodifiable collection of all items in this category.
+     * Get an unmodifiable {@link Set} of all items in this category.
      *
      * @return the items
      */

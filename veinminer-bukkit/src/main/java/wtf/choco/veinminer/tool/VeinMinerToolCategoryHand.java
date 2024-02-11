@@ -9,8 +9,8 @@ import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 
 /**
- * A more specific type of {@link VeinMinerToolCategory} whereby the hand category
- * is being represented. No items may be added to or removed from this category.
+ * A more specific type of {@link VeinMinerToolCategory} that represents the hand category.
+ * No items may be added to or removed from this category.
  */
 public final class VeinMinerToolCategoryHand extends VeinMinerToolCategory {
 

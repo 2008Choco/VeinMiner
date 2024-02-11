@@ -25,7 +25,14 @@ public class SimpleVaultEconomy implements SimpleEconomy {
     private final Plugin plugin;
     private final Supplier<Economy> economy;
 
-    public SimpleVaultEconomy(Plugin plugin) {
+    /**
+     * Construct a new {@link SimpleVaultEconomy}.
+     *
+     * @param plugin the plugin instance
+     */
+    public SimpleVaultEconomy(@NotNull Plugin plugin) {
+        Preconditions.checkArgument(plugin != null, "plugin must not be null");
+
         this.plugin = plugin;
         this.economy = Suppliers.memoize(this::getEconomy);
     }

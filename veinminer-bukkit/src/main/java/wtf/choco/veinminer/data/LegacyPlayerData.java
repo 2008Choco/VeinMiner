@@ -15,4 +15,4 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
  * @param activationStrategy the activation strategy
  * @param disabledCategories the disabled categories
  */
-public record LegacyPlayerData(@NotNull UUID playerUUID, @NotNull ActivationStrategy activationStrategy, @NotNull List<VeinMinerToolCategory> disabledCategories) { }
+record LegacyPlayerData(@NotNull UUID playerUUID, @NotNull ActivationStrategy activationStrategy, @NotNull List<VeinMinerToolCategory> disabledCategories) { }

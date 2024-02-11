@@ -21,12 +21,22 @@ import wtf.choco.veinminer.config.VeinMinerConfiguration;
 
 import static wtf.choco.veinminer.config.impl.ConfigKeys.*;
 
+/**
+ * A standard {@link ToolCategoryConfiguration} implementation.
+ */
 public final class StandardToolCategoryConfiguration implements ToolCategoryConfiguration {
 
     private final String categoryId;
     private final ConfigWrapper categoriesConfig;
     private final VeinMinerConfiguration parent;
 
+    /**
+     * Construct a new {@link StandardToolCategoryConfiguration}.
+     *
+     * @param categoryId the id of the category for this configuration
+     * @param categoriesConfig the {@link ConfigWrapper} instance for the categories.yml
+     * @param parent the parent {@link VeinMinerConfiguration}
+     */
     StandardToolCategoryConfiguration(@NotNull String categoryId, @NotNull ConfigWrapper categoriesConfig, @NotNull VeinMinerConfiguration parent) {
         this.categoryId = categoryId;
         this.categoriesConfig = categoriesConfig;

@@ -1,6 +1,7 @@
 package wtf.choco.veinminer.config.impl;
 
 import com.google.common.base.Enums;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -27,11 +28,20 @@ import wtf.choco.veinminer.util.VMConstants;
 
 import static wtf.choco.veinminer.config.impl.ConfigKeys.*;
 
+/**
+ * A standard {@link VeinMinerConfiguration} implementation.
+ */
 public final class StandardVeinMinerConfiguration implements VeinMinerConfiguration {
 
     private final VeinMinerPlugin plugin;
 
-    public StandardVeinMinerConfiguration(VeinMinerPlugin plugin) {
+    /**
+     * Construct a new {@link StandardVeinMinerConfiguration}.
+     *
+     * @param plugin the plugin instance
+     */
+    public StandardVeinMinerConfiguration(@NotNull VeinMinerPlugin plugin) {
+        Preconditions.checkArgument(plugin != null, "plugin must not be null");
         this.plugin = plugin;
     }
 

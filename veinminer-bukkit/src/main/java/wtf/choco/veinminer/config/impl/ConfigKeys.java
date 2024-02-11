@@ -1,5 +1,8 @@
 package wtf.choco.veinminer.config.impl;
 
+/**
+ * A class containing keys for configurable values in the standard VeinMiner configurations.
+ */
 final class ConfigKeys {
 
     // VeinMinerConfiguration

@@ -83,7 +83,7 @@ public final class BreakBlockListener implements Listener {
         if (!veinMinerPlayer.isVeinMinerActive()
                 || !veinMinerPlayer.isVeinMinerEnabled(category)
                 || plugin.getConfiguration().isDisabledGameMode(player.getGameMode())
-                || category.getConfig().isDisabledWorld(origin.getWorld().getName())
+                || category.getConfiguration().isDisabledWorld(origin.getWorld().getName())
                 || !player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(category))) {
             return;
         }
@@ -98,7 +98,7 @@ public final class BreakBlockListener implements Listener {
         // Economy check
         SimpleEconomy economy = plugin.getEconomy();
         if (economy.shouldCharge(player)) {
-            double cost = category.getConfig().getCost();
+            double cost = category.getConfiguration().getCost();
             if (!economy.hasSufficientBalance(player, cost)) {
                 player.sendMessage(ChatColor.GRAY + "You have insufficient funds to vein mine (Required: " + ChatColor.YELLOW + cost + ChatColor.GRAY + ")");
                 return;
@@ -122,7 +122,7 @@ public final class BreakBlockListener implements Listener {
         VeinMiningPattern pattern = veinMinerPlayer.getVeinMiningPattern();
         BlockList aliasBlockList = veinMinerManager.getAlias(originVeinMinerBlock);
 
-        List<Block> blocks = pattern.allocateBlocks(origin, targetBlockFace, originVeinMinerBlock, category.getConfig(), aliasBlockList);
+        List<Block> blocks = pattern.allocateBlocks(origin, targetBlockFace, originVeinMinerBlock, category.getConfiguration(), aliasBlockList);
         blocks.removeIf(Block::isEmpty);
 
         if (blocks.isEmpty()) {
@@ -147,7 +147,7 @@ public final class BreakBlockListener implements Listener {
         hooks.forEach(h -> h.exempt(player));
 
         // Actually destroying the allocated blocks
-        int maxDurability = item.getType().getMaxDurability() - (category.getConfig().isRepairFriendly() ? 1 : 0);
+        int maxDurability = item.getType().getMaxDurability() - (category.getConfiguration().isRepairFriendly() ? 1 : 0);
         float hungerModifier = plugin.getConfiguration().getHungerModifier() * 0.025F;
         int minimumFoodLevel = plugin.getConfiguration().getMinimumFoodLevel();
 

@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A simple wrapper to more easily handle {@link YamlConfiguration} instances.
+ * A simple wrapper to more easily work with {@link YamlConfiguration} instances.
  */
 public final class ConfigWrapper {
 

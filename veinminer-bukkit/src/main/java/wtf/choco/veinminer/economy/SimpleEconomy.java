@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A wrapper for economic transactions
+ * A wrapper for economic transactions.
  */
 public interface SimpleEconomy {
 

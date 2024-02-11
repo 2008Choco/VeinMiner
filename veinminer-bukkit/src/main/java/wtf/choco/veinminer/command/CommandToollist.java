@@ -11,13 +11,13 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
-import wtf.choco.veinminer.util.StringUtils;
 
 public final class CommandToollist implements TabExecutor {
 
@@ -73,7 +73,7 @@ public final class CommandToollist implements TabExecutor {
             }
 
             // Update configuration
-            category.getConfig().setItems(new ArrayList<>(category.getItems()));
+            category.getConfiguration().setItems(new ArrayList<>(category.getItems()));
 
             sender.sendMessage(ChatColor.YELLOW + material.getKey().toString() + ChatColor.GRAY + " successfully added to the tool list.");
             return true;
@@ -109,7 +109,7 @@ public final class CommandToollist implements TabExecutor {
             }
 
             // Update configuration
-            category.getConfig().setItems(new ArrayList<>(category.getItems()));
+            category.getConfiguration().setItems(new ArrayList<>(category.getItems()));
 
             sender.sendMessage(ChatColor.YELLOW + material.getKey().toString() + ChatColor.GRAY + " successfully removed from the tool list.");
             return true;
@@ -155,7 +155,7 @@ public final class CommandToollist implements TabExecutor {
         }
 
         if (args.length == 2) {
-            return StringUtils.copyPartialMatches(args[1], ARGUMENTS_1, new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[1], ARGUMENTS_1, new ArrayList<>());
         }
 
         if (args.length == 3 && !args[1].equalsIgnoreCase("list")) {

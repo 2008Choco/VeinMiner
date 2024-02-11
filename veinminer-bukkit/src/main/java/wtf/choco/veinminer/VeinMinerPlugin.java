@@ -23,6 +23,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.network.bukkit.BukkitProtocolConfiguration;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
@@ -153,8 +154,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
             });
         }
 
-        // Everything below this point is exclusive to Bukkit servers
-
         // Enable anti cheat hooks if required
         PluginManager manager = Bukkit.getPluginManager();
         this.registerAntiCheatHookIfEnabled(manager, "AAC5", AntiCheatHookAAC::new);
@@ -231,9 +230,9 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get an instance of the main VeinMiner class (for VeinMiner API).
+     * Get the {@link VeinMinerPlugin} instance.
      *
-     * @return an instance of the VeinMiner class
+     * @return the vein miner instance
      */
     @NotNull
     public static VeinMinerPlugin getInstance() {
@@ -241,7 +240,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get the {@link VeinMinerManager}.
+     * Get VeinMiner's {@link VeinMinerManager} instance.
      *
      * @return the vein miner manager
      */
@@ -251,7 +250,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get the {@link ToolCategoryRegistry}.
+     * Get VeinMiner's {@link ToolCategoryRegistry} instance.
      *
      * @return the tool category registry
      */
@@ -261,7 +260,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get the {@link PatternRegistry}.
+     * Get VeinMiner's {@link PatternRegistry} instance.
      *
      * @return the pattern registry
      */
@@ -271,7 +270,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get the {@link VeinMinerPlayerManager} instance.
+     * Get VeinMiner's {@link VeinMinerPlayerManager} instance.
      *
      * @return the player manager
      */
@@ -281,16 +280,17 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Set the {@link SimpleEconomy} implementation.
+     * Set the economy implementation used to handle economy transactions.
      *
      * @param economy the economy
      */
     public void setEconomy(@NotNull SimpleEconomy economy) {
+        Preconditions.checkArgument(economy != null, "economy must not be null");
         this.economy = economy;
     }
 
     /**
-     * Get the {@link SimpleEconomy}.
+     * Get the economy instance used to handle economy transactions.
      *
      * @return the economy
      */
@@ -300,16 +300,16 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Set the {@link PersistentDataStorage} for the server.
+     * Set VeinMiner's {@link PersistentDataStorage} implementation.
      *
-     * @param storage the persistent data storage to set
+     * @param storage the persistent data storage
      */
     public void setPersistentDataStorage(@NotNull PersistentDataStorage storage) {
         this.storage = storage;
     }
 
     /**
-     * Get the {@link PersistentDataStorage} for the server.
+     * Get VeinMiner's {@link PersistentDataStorage}.
      *
      * @return the persistent data storage
      */
@@ -329,9 +329,9 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get an instance of the categories configuration file.
+     * Get VeinMiner's categories.yml {@link ConfigWrapper} instance.
      *
-     * @return the categories config
+     * @return the categories config wrapper
      */
     @NotNull
     public ConfigWrapper getCategoriesConfig() {
@@ -349,12 +349,14 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Register an anti cheat hook to VeinMiner. Hooks should be registered for all anti cheat plugins
-     * as to support VeinMining and not false-flag players with fast-break.
+     * Register an {@link AntiCheatHook} to VeinMiner. If an AntiCheatHook is registered, it is
+     * expected to exempt players so as to not false-flag them with a fast-break violation while
+     * they are vein mining.
      *
      * @param hook the hook to register
      *
-     * @return true if registered, false if unsupported
+     * @return true if successfully registered, false if the anti cheat is unsupported (according
+     * to the hook itself, {@link AntiCheatHook#isSupported()})
      */
     public boolean registerAntiCheatHook(@NotNull AntiCheatHook hook) {
         Preconditions.checkNotNull(hook, "Cannot register a null anticheat hook implementation");
@@ -368,24 +370,25 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Get an immutable list of all anti cheat hooks.
+     * Get an immutable {@link List} of all {@link AntiCheatHook AntiCheatHooks}.
      *
      * @return all anti cheat hooks
      */
     @NotNull
+    @UnmodifiableView
     public List<AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
     }
 
     /**
-     * Get a {@link NamespacedKey} with VeinMiner's namespace.
+     * Create a new {@link NamespacedKey} with VeinMiner's namespace.
      *
      * @param key the key
      *
-     * @return a VeinMiner namespaced key
+     * @return a "veinminer" namespaced key
      */
     @NotNull
-    public static NamespacedKey key(String key) {
+    public static NamespacedKey key(@NotNull String key) {
         return new NamespacedKey(instance, key);
     }
 

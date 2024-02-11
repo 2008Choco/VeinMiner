@@ -26,7 +26,7 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
-import wtf.choco.veinminer.util.ItemUtil;
+import wtf.choco.veinminer.util.ItemStackUtil;
 
 /**
  * A registry to which {@link VeinMinerToolCategory VeinMinerToolCategories} may be registered.
@@ -37,6 +37,11 @@ public final class ToolCategoryRegistry {
 
     private final VeinMinerPlugin plugin;
 
+    /**
+     * Construct a new {@link ToolCategoryRegistry}.
+     *
+     * @param plugin the plugin instance
+     */
     public ToolCategoryRegistry(@NotNull VeinMinerPlugin plugin) {
         this.plugin = plugin;
     }
@@ -90,8 +95,8 @@ public final class ToolCategoryRegistry {
 
     /**
      * Get the {@link VeinMinerToolCategory} that contains the given {@link Material}. There is
-     * no guarantee as to which category will be returned if more than one category contains the
-     * provided ItemType.
+     * no guarantee which category will be returned if more than one category contains the provided
+     * item type.
      *
      * @param item the item type
      *
@@ -108,8 +113,8 @@ public final class ToolCategoryRegistry {
 
     /**
      * Get the {@link VeinMinerToolCategory} that contains the given {@link Material}. There is
-     * no guarantee as to which category will be returned if more than one category contains the
-     * provided ItemType.
+     * no guarantee which category will be returned if more than one category contains the provided
+     * item type.
      *
      * @param item the item type
      * @param categoryPredicate a predicate to apply on top of the item condition. If the predicate
@@ -129,8 +134,8 @@ public final class ToolCategoryRegistry {
 
     /**
      * Get the {@link VeinMinerToolCategory} that contains the given {@link Material}. There is
-     * no guarantee as to which category will be returned if more than one category contains the
-     * provided ItemType.
+     * no guarantee which category will be returned if more than one category contains the provided
+     * item type.
      *
      * @param itemStack the item
      *
@@ -138,13 +143,13 @@ public final class ToolCategoryRegistry {
      */
     @Nullable
     public VeinMinerToolCategory get(@NotNull ItemStack itemStack) {
-        return get(itemStack.getType(), ItemUtil.getVeinMinerNBTValue(itemStack), Predicates.alwaysTrue());
+        return get(itemStack.getType(), ItemStackUtil.getVeinMinerNBTValue(itemStack), Predicates.alwaysTrue());
     }
 
     /**
      * Get the {@link VeinMinerToolCategory} that contains the given {@link Material}. There is
-     * no guarantee as to which category will be returned if more than one category contains the
-     * provided ItemType.
+     * no guarantee which category will be returned if more than one category contains the provided
+     * item type.
      *
      * @param itemStack the item
      * @param categoryPredicate a predicate to apply on top of the item condition. If the predicate
@@ -155,7 +160,7 @@ public final class ToolCategoryRegistry {
      */
     @Nullable
     public VeinMinerToolCategory get(@NotNull ItemStack itemStack, @NotNull Predicate<VeinMinerToolCategory> categoryPredicate) {
-        return get(itemStack.getType(), ItemUtil.getVeinMinerNBTValue(itemStack), categoryPredicate);
+        return get(itemStack.getType(), ItemStackUtil.getVeinMinerNBTValue(itemStack), categoryPredicate);
     }
 
     /**
@@ -201,6 +206,10 @@ public final class ToolCategoryRegistry {
         return Collections.unmodifiableCollection(categories.values());
     }
 
+    /**
+     * Unregister all tool categories from this registry and re-register categories that have
+     * been read and parsed from VeinMiner's configuration files.
+     */
     public void reloadFromConfig() {
         this.unregisterAll();
 

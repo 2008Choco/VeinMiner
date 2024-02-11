@@ -27,7 +27,7 @@ public final class VMEventFactory {
      * Call the {@link PlayerVeinMineEvent}.
      *
      * @param player the player
-     * @param block the origin block that was broken by the player
+     * @param block the block that was broken by the player
      * @param veinMinerBlock the type of block being vein mined
      * @param item the item used to vein mine
      * @param category the tool category
@@ -60,7 +60,7 @@ public final class VMEventFactory {
     /**
      * Call the {@link PlayerVeinMiningPatternChangeEvent}.
      *
-     * @param player the player whose pattern was changed
+     * @param player the player
      * @param currentPattern the player's current pattern
      * @param newPattern the pattern to be set
      * @param cause the cause of the event

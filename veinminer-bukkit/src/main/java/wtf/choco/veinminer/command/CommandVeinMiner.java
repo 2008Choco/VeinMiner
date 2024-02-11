@@ -1,5 +1,8 @@
 package wtf.choco.veinminer.command;
 
+import com.google.common.base.Enums;
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,8 +36,6 @@ import wtf.choco.veinminer.data.PersistentDataStorageSQL;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.update.UpdateResult;
-import wtf.choco.veinminer.util.EnumUtil;
-import wtf.choco.veinminer.util.StringUtils;
 import wtf.choco.veinminer.util.VMConstants;
 import wtf.choco.veinminer.util.VMEventFactory;
 
@@ -81,7 +82,7 @@ public final class CommandVeinMiner implements TabExecutor {
 
         else if (args[0].equalsIgnoreCase("version")) {
             PluginDescriptionFile description = plugin.getDescription();
-            String headerFooter = ChatColor.GOLD.toString() + ChatColor.BOLD + ChatColor.STRIKETHROUGH + StringUtils.repeat('-', 44);
+            String headerFooter = ChatColor.GOLD.toString() + ChatColor.BOLD + ChatColor.STRIKETHROUGH + "-".repeat(44);
 
             sender.sendMessage(headerFooter);
             sender.sendMessage("");
@@ -157,7 +158,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            Optional<ActivationStrategy> strategyOptional = EnumUtil.get(ActivationStrategy.class, args[1].toUpperCase());
+            Optional<ActivationStrategy> strategyOptional = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase());
             if (!strategyOptional.isPresent()) {
                 player.sendMessage(ChatColor.RED + "Invalid mode " + args[1] + ".");
                 return true;
@@ -290,7 +291,7 @@ public final class CommandVeinMiner implements TabExecutor {
             this.addConditionally(suggestions, "pattern", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_PATTERN));
             this.addConditionally(suggestions, "import", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_IMPORT));
 
-            return StringUtils.copyPartialMatches(args[0], suggestions, new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0], suggestions, new ArrayList<>());
         }
 
         if (args[0].equalsIgnoreCase("blocklist")) {
@@ -337,7 +338,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 }
             }
 
-            return StringUtils.copyPartialMatches(args[1], suggestions, new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[1], suggestions, new ArrayList<>());
         }
 
         return Collections.emptyList();

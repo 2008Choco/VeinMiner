@@ -6,10 +6,21 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class ItemUtil {
+/**
+ * A utility class for {@link ItemStack} instances.
+ */
+public final class ItemStackUtil {
 
-    private ItemUtil() { }
+    private ItemStackUtil() { }
 
+    /**
+     * Get the String value for VeinMiner's NBT key on the given {@link ItemStack}.
+     *
+     * @param itemStack the item stack
+     *
+     * @return the value set for VeinMiner's NBT key, or null if not set or if the item
+     * does not have any item meta
+     */
     @Nullable
     public static String getVeinMinerNBTValue(@NotNull ItemStack itemStack) {
         if (!itemStack.hasItemMeta()) {

@@ -49,8 +49,8 @@ import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.VMEventFactory;
 
 /**
- * A player wrapper containing player-related data for VeinMiner, as well as a network
- * handler for vein miner protocol messages.
+ * A {@link Player} wrapper holding all VeinMiner-related data for an online player, as well as a
+ * network handler for vein miner protocol messages for that player.
  */
 public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerboundMessageListener {
 
@@ -75,14 +75,14 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     /**
      * Construct a new {@link VeinMinerPlayer}.
      * <p>
-     * This is an internal method. To get an instance of VeinMinerPlayer, the {@link VeinMinerPlayerManager}
-     * should be used instead. Constructing a new instance of this class may have unintended side-effects
-     * and will not have accurate information tracked by VeinMiner.
+     * This is an internal constructor. To get an instance of VeinMinerPlayer, the {@link
+     * VeinMinerPlayerManager} should be used instead. Constructing a new instance of this class may
+     * have unintended side-effects and will not have accurate information tracked by VeinMiner.
      *
-     * @param player the player
+     * @param player the player to wrap
      * @param clientConfig the client configuration
      *
-     * @see VeinMinerPlayerManager
+     * @see VeinMinerPlayerManager#get(Player)
      */
     @Internal
     public VeinMinerPlayer(@NotNull Player player, @NotNull ClientConfig clientConfig) {
@@ -91,9 +91,12 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Get the {@link Player} wrapped by this vein miner player.
+     * Get the wrapped {@link Player}.
+     * <p>
+     * While this object will never be null, caution should be taken when interacting with this
+     * object because there is no guarantee that this player will still be online.
      *
-     * @return the platform player
+     * @return the player
      */
     @NotNull
     public Player getPlayer() {
@@ -111,10 +114,10 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Set whether or not the given {@link VeinMinerToolCategory} is enabled.
+     * Set whether or not the given {@link VeinMinerToolCategory} is enabled for this player.
      *
-     * @param category the category to change
-     * @param enabled whether or not the category is enabled
+     * @param category the category whose state to update
+     * @param enabled the enabled state to set
      *
      * @return true if the category state was changed, false if the category remains unchanged
      */
@@ -125,15 +128,11 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Set whether or not vein miner is enabled entirely.
-     * <p>
-     * If {@code true} and one or more categories are disabled, it will enable all disabled
-     * categories. If {code false} not all categories have been disabled, it will disable all
-     * remaining categories.
+     * Set whether or not vein miner is enabled for all registered categories for this player.
      *
-     * @param enabled whether or not to enable vein miner
+     * @param enabled the enabled state to set
      *
-     * @return true if at least one category was changed as a result of the enable toggle
+     * @return true if at least one category was changed as a result of the change
      */
     public boolean setVeinMinerEnabled(boolean enabled) {
         boolean changed;
@@ -150,9 +149,9 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Check whether or not the given {@link VeinMinerToolCategory} is enabled.
+     * Check whether or not this player has the given {@link VeinMinerToolCategory} enabled.
      *
-     * @param category the category to check
+     * @param category the category
      *
      * @return true if enabled, false otherwise
      */
@@ -161,44 +160,45 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Check whether or not vein miner is completely enabled.
+     * Check whether or not this player has all registered categories enabled.
      * <p>
      * If at least one category is disabled (according to {@link #isVeinMinerEnabled(VeinMinerToolCategory)}),
      * this method will return {@code false}.
      *
-     * @return true if fully enabled, false if at least one category is disabled
+     * @return true if all categories are enabled, false if at least one category is disabled
      */
     public boolean isVeinMinerEnabled() {
         return disabledCategories.isEmpty();
     }
 
     /**
-     * Check whether or not vein miner is completely disabled.
+     * Check whether or not this player has all registered categories disabled.
      * <p>
      * If at least one category is enabled (according to {@link #isVeinMinerEnabled(VeinMinerToolCategory)}),
      * this method will return {@code false}.
      *
-     * @return true if fully disabled, false if at least one category is enabled
+     * @return true if all categories are disabled, false if at least one category is enabled
      */
     public boolean isVeinMinerDisabled() {
         return disabledCategories.size() >= VeinMinerPlugin.getInstance().getToolCategoryRegistry().size();
     }
 
     /**
-     * Check whether or not vein miner has been partially disabled but still has at least
-     * one category still enabled.
+     * Check whether or not vein miner has been partially disabled by this player. Vein miner is
+     * considered partially disabled if one or more category is enabled, but not <em>all</em> categories.
+     * In other words, there is a mix of both enabled and disabled categories, neither are all the same
+     * state.
      *
-     * @return true if partially disabled, false if all categories are enabled or all
-     * categories are disabled
+     * @return true if partially disabled, false if categories are either all enabled or all disabled
      */
     public boolean isVeinMinerPartiallyDisabled() {
         return !isVeinMinerDisabled() && !isVeinMinerEnabled();
     }
 
     /**
-     * Get this player's disabled {@link VeinMinerToolCategory VeinMinerToolCategories}.
+     * Get an unmodifiable {@link Set} of all categories this player has disabled.
      *
-     * @return the disabled tool categories
+     * @return all disabled tool categories
      */
     @NotNull
     @UnmodifiableView
@@ -207,17 +207,17 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Set the {@link ActivationStrategy} to use for this player.
+     * Set this player's {@link ActivationStrategy}.
      *
-     * @param activationStrategy the activation strategy
+     * @param strategy the new activation strategy
      */
-    public void setActivationStrategy(@NotNull ActivationStrategy activationStrategy) {
-        this.dirty |= (this.activationStrategy != activationStrategy);
-        this.activationStrategy = activationStrategy;
+    public void setActivationStrategy(@NotNull ActivationStrategy strategy) {
+        this.dirty |= (this.activationStrategy != strategy);
+        this.activationStrategy = strategy;
     }
 
     /**
-     * Get the {@link ActivationStrategy} to use for this player.
+     * Get this player's {@link ActivationStrategy}.
      *
      * @return the activation strategy
      */
@@ -231,35 +231,37 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Set the {@link VeinMiningPattern} to use for this player.
+     * Set this player's active {@link VeinMiningPattern}.
      *
-     * @param veinMiningPattern the pattern
-     * @param updateClient whether or not the client should be informed of this update
+     * @param pattern the new vein mining pattern
+     * @param updateClient whether or not the client should be informed of this update. If true and this
+     * player has the client mod installed ({@link #isUsingClientMod()}, an update packet will be sent
+     * to the client
      */
-    public void setVeinMiningPattern(@NotNull VeinMiningPattern veinMiningPattern, boolean updateClient) {
-        boolean changed = !Objects.equals(veinMiningPattern, this.veinMiningPattern);
+    public void setVeinMiningPattern(@NotNull VeinMiningPattern pattern, boolean updateClient) {
+        boolean changed = !Objects.equals(pattern, this.veinMiningPattern);
 
         this.dirty |= changed;
-        this.veinMiningPattern = veinMiningPattern;
+        this.veinMiningPattern = pattern;
 
-        if (changed && updateClient) {
-            this.sendMessage(new ClientboundSetPattern(veinMiningPattern.getKey()));
+        if (changed && updateClient && isUsingClientMod()) {
+            this.sendMessage(new ClientboundSetPattern(pattern.getKey()));
         }
     }
 
     /**
-     * Set the {@link VeinMiningPattern} to use for this player and update the client.
+     * Set this player's active {@link VeinMiningPattern} and update the client if necessary.
      *
-     * @param veinMiningPattern the pattern
+     * @param pattern the new vein mining pattern
      */
-    public void setVeinMiningPattern(@NotNull VeinMiningPattern veinMiningPattern) {
-        this.setVeinMiningPattern(veinMiningPattern, true);
+    public void setVeinMiningPattern(@NotNull VeinMiningPattern pattern) {
+        this.setVeinMiningPattern(pattern, true);
     }
 
     /**
-     * Get the {@link VeinMiningPattern} to use for this player.
+     * Get this player's active {@link VeinMiningPattern}.
      *
-     * @return the pattern
+     * @return the active vein mining pattern
      */
     @NotNull
     public VeinMiningPattern getVeinMiningPattern() {
@@ -271,7 +273,8 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Execute the given {@link Runnable} when the client is ready.
+     * Queue the given {@link Runnable} for execution when the client is ready, or execute it now
+     * if the client is ready.
      *
      * @param runnable the runnable to execute
      *
@@ -292,7 +295,8 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Execute the given {@link Consumer} when the client is ready.
+     * Queue the given {@link Consumer} for execution when the client is ready, or execute it now
+     * if the client is ready.
      *
      * @param consumer the consumer to execute
      *
@@ -308,9 +312,9 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     /**
      * Check whether or not the client is ready to receive messages.
      * <p>
-     * This method will only be true if {@link #isUsingClientMod()} is true, and if the client
-     * has successfully shaken hands with the server, is capable of being sent a client message,
-     * and has been synchronized with the server as per the protocol specification.
+     * This method will only be true if {@link #isUsingClientMod()} is {@code true}, the client has
+     * successfully shaken hands with the server, is capable of being sent a client message, and
+     * has been synchronized with the server as per the protocol specification.
      *
      * @return true if the client is ready, false otherwise
      *
@@ -331,7 +335,8 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Check whether or not vein miner is active as a result of this user's client mod.
+     * Check whether or not vein miner is active as a result of this user's client mod. This method will
+     * always return {@code false} if the player {@link #isUsingClientMod() is not using the client mod}.
      *
      * @return true if active, false otherwise
      */
@@ -340,22 +345,26 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Set the {@link ClientConfig} for this player.
+     * Set this player's {@link ClientConfig} and update the client.
+     * <p>
+     * <strong>NOTE:</strong> This configuration only really applies if the player {@link #isUsingClientMod()
+     * is not using the client mod}.
      *
      * @param clientConfig the client config to set
      */
     public void setClientConfig(@NotNull ClientConfig clientConfig) {
         this.clientConfig = clientConfig;
 
-        if (usingClientMod) {
+        if (isUsingClientMod()) {
             this.sendMessage(new ClientboundSetConfig(clientConfig));
         }
     }
 
     /**
-     * Get the {@link ClientConfig} for this player.
+     * Get this player's {@link ClientConfig}.
      * <p>
-     * Note that this configuration only really applies if {@link #isUsingClientMod()} is true.
+     * <strong>NOTE:</strong> This configuration only really applies if the player {@link #isUsingClientMod()
+     * is not using the client mod}.
      *
      * @return the client config
      */
@@ -365,23 +374,23 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Check whether or not vein miner is currently active and ready to be used.
+     * Check whether or not this player has vein miner active and ready use.
      * <p>
      * <strong>NOTE:</strong> Do not confuse this with {@link #isVeinMinerEnabled()}. This method
      * verifies whether or not the player has activated vein miner according to their current
-     * activation strategy ({@link #getActivationStrategy()}), <strong>NOT</strong> whether they
+     * ({@link #getActivationStrategy() activation strategy}), <strong>NOT</strong> whether they
      * have it enabled via commands.
      *
      * @return true if active, false otherwise
      */
     public boolean isVeinMinerActive() {
-        return activationStrategy.test(this);
+        return activationStrategy.isActive(this);
     }
 
     /**
      * Set whether or not the player is actively vein mining.
      * <p>
-     * Not part of the public API. This method is intended for internal use only.
+     * <strong>NOTE:</strong> Not part of the public API. This method is intended for internal use only.
      *
      * @param veinMining the new vein mining state
      */
@@ -400,7 +409,8 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Set whether or not this player data should be written.
+     * Set whether or not this player's data has changed since it was read from persistent storage
+     * and needs to be written again.
      *
      * @param dirty true if dirty, false otherwise
      */
@@ -409,7 +419,8 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
     }
 
     /**
-     * Check whether or not this player data has been modified since last write.
+     * Check whether or not this player's data has changed since it was read from persistent storage
+     * and needs to be written again.
      *
      * @return true if modified, false otherwise
      */
@@ -417,6 +428,11 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
         return dirty;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * <strong>NOTE:</strong> Not part of the public API. This method is intended for internal use only.
+     */
     @Internal
     @Override
     public void sendMessage(@NotNull NamespacedKey channel, byte @NotNull [] message) {
@@ -548,7 +564,7 @@ public final class VeinMinerPlayer implements MessageReceiver, VeinMinerServerbo
         }
 
         BlockList aliasBlockList = veinMinerManager.getAlias(vmBlock);
-        List<Block> blocks = getVeinMiningPattern().allocateBlocks(targetBlock, targetBlockFace, vmBlock, category.getConfig(), aliasBlockList);
+        List<Block> blocks = getVeinMiningPattern().allocateBlocks(targetBlock, targetBlockFace, vmBlock, category.getConfiguration(), aliasBlockList);
 
         this.sendMessage(new ClientboundVeinMineResults(blocks.parallelStream().map(block -> new BlockPosition(block.getX(), block.getY(), block.getZ())).toList()));
     }

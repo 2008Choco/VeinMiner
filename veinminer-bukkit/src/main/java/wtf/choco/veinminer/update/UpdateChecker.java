@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public interface UpdateChecker {
 
     /**
-     * Get the {@link UpdateResult result} of the last update check that was performed.
+     * Get the {@link UpdateResult UpdateResult} of the last update check that was performed.
      *
      * @return the last update result, or an empty {@link Optional} if an update check has
      * not yet been performed

@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,6 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
-import wtf.choco.veinminer.util.StringUtils;
 
 public final class CommandBlocklist implements TabExecutor {
 
@@ -69,7 +69,7 @@ public final class CommandBlocklist implements TabExecutor {
             }
 
             // Update configuration
-            category.getConfig().setBlockListKeys(blockList);
+            category.getConfiguration().setBlockListKeys(blockList);
 
             sender.sendMessage(formatBlockData(block.toStateString()) + ChatColor.GRAY + " successfully added to the block list.");
             return true;
@@ -96,7 +96,7 @@ public final class CommandBlocklist implements TabExecutor {
             }
 
             // Update configuration
-            category.getConfig().setBlockListKeys(blockList);
+            category.getConfiguration().setBlockListKeys(blockList);
 
             sender.sendMessage(formatBlockData(block.toStateString()) + ChatColor.GRAY + " successfully removed from the block list.");
             return true;
@@ -142,7 +142,7 @@ public final class CommandBlocklist implements TabExecutor {
         }
 
         if (args.length == 2) {
-            return StringUtils.copyPartialMatches(args[1], ARGUMENTS_1, new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[1], ARGUMENTS_1, new ArrayList<>());
         }
 
         if (args.length == 3 && !args[1].equalsIgnoreCase("list")) {
