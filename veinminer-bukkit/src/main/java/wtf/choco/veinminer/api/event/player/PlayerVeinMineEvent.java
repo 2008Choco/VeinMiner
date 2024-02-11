@@ -1,6 +1,6 @@
 package wtf.choco.veinminer.api.event.player;
 
-import java.util.Set;
+import java.util.List;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -28,7 +28,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     private final VeinMinerBlock veinMinerBlock;
     private final ItemStack itemStack;
     private final VeinMinerToolCategory category;
-    private final Set<Block> blocks;
+    private final List<Block> blocks;
     private final VeinMiningPattern pattern;
 
     /**
@@ -42,7 +42,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
      * @param blocks the blocks to be destroyed as a result of vein miner
      * @param pattern the pattern used to vein mine
      */
-    public PlayerVeinMineEvent(@NotNull Player player, @NotNull Block block, @NotNull VeinMinerBlock veinMinerBlock, @Nullable ItemStack itemStack, @NotNull VeinMinerToolCategory category, @NotNull Set<Block> blocks, @NotNull VeinMiningPattern pattern) {
+    public PlayerVeinMineEvent(@NotNull Player player, @NotNull Block block, @NotNull VeinMinerBlock veinMinerBlock, @Nullable ItemStack itemStack, @NotNull VeinMinerToolCategory category, @NotNull List<Block> blocks, @NotNull VeinMiningPattern pattern) {
         super(player);
 
         this.block = block;
@@ -95,7 +95,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
     }
 
     /**
-     * Get a {@link Set} of all blocks destroyed by this vein mine. This set is mutable. Changes made
+     * Get a {@link List} of all blocks destroyed by this vein mine. This list is mutable. Changes made
      * to the returned collection will directly affect what blocks are destroyed.
      * <p>
      * Note that just because a block is present in the returned collection does not mean that it will
@@ -106,7 +106,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
      * @return the blocks to be destroyed
      */
     @NotNull
-    public Set<Block> getBlocks() {
+    public List<Block> getBlocks() {
         return blocks;
     }
 

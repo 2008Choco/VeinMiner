@@ -11,10 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlayer;
 import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.VeinMinerServer;
 import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetPattern;
-import wtf.choco.veinminer.platform.BukkitAdapter;
-import wtf.choco.veinminer.platform.PlatformPlayer;
 import wtf.choco.veinminer.util.VMConstants;
 
 public final class PlayerDataListener implements Listener {
@@ -27,33 +24,31 @@ public final class PlayerDataListener implements Listener {
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
-        Player bukkitPlayer = event.getPlayer();
-        PlatformPlayer platformPlayer = BukkitAdapter.adapt(bukkitPlayer);
-        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().getOrRegister(platformPlayer, () -> VeinMinerServer.getInstance().createClientConfig(platformPlayer));
+        Player player = event.getPlayer();
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().getOrRegister(player, () -> plugin.createClientConfig(player));
 
-        VeinMinerServer.getInstance().getPersistentDataStorage().load(veinMinerPlayer).whenComplete((player, e) -> {
+        this.plugin.getPersistentDataStorage().load(veinMinerPlayer).whenComplete((vmPlayer, e) -> {
             if (e != null) {
                 e.printStackTrace();
                 return;
             }
 
-            bukkitPlayer.setMetadata(VMConstants.METADATA_KEY_VEIN_MINER_ACTIVE, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, player::isVeinMinerActive));
-            bukkitPlayer.setMetadata(VMConstants.METADATA_KEY_VEINMINING, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, player::isVeinMining));
+            player.setMetadata(VMConstants.METADATA_KEY_VEIN_MINER_ACTIVE, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, vmPlayer::isVeinMinerActive));
+            player.setMetadata(VMConstants.METADATA_KEY_VEINMINING, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, vmPlayer::isVeinMining));
 
             // Update the selected pattern on the client
-            player.executeWhenClientIsReady(() -> player.sendMessage(new ClientboundSetPattern(player.getVeinMiningPattern().getKey())));
+            vmPlayer.executeWhenClientIsReady(() -> vmPlayer.sendMessage(new ClientboundSetPattern(vmPlayer.getVeinMiningPattern().getKey())));
         });
     }
 
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
-        PlatformPlayer platformPlayer = BukkitAdapter.adapt(event.getPlayer());
-        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(platformPlayer);
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(event.getPlayer());
         if (veinMinerPlayer == null || !veinMinerPlayer.isDirty()) {
             return;
         }
 
-        VeinMinerServer.getInstance().getPersistentDataStorage().save(veinMinerPlayer).exceptionally(e -> {
+        this.plugin.getPersistentDataStorage().save(veinMinerPlayer).exceptionally(e -> {
             e.printStackTrace();
             return null;
         });
