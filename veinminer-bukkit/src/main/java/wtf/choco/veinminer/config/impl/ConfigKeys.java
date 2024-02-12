@@ -12,6 +12,7 @@ final class ConfigKeys {
     static final String KEY_DEFAULT_VEIN_MINING_PATTERN = "DefaultVeinMiningPattern";
     static final String KEY_COLLECT_ITEMS_AT_SOURCE = "CollectItemsAtSource";
     static final String KEY_COLLECT_EXPERIENCE_AT_SOURCE = "CollectExperienceAtSource";
+    static final String KEY_ONLY_DAMAGE_ON_FIRST_BLOCK = "OnlyDamageOnFirstBlock";
     static final String KEY_NERF_MCMMO = "NerfMcMMO";
     static final String KEY_DISABLED_GAME_MODES = "DisabledGameModes";
     static final String KEY_HUNGER_HUNGER_MODIFIER = "Hunger.HungerModifier";

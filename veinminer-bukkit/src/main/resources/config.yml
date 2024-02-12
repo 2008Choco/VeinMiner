@@ -16,6 +16,7 @@ DefaultActivationStrategy: SNEAK
 DefaultVeinMiningPattern: 'veinminer:default'
 CollectItemsAtSource: true
 CollectExperienceAtSource: true
+OnlyDamageOnFirstBlock: false
 NerfMcMMO: false
 
 # "RepairFriendly", "MaxVeinSize", "Cost", and "DisabledWorlds" may be

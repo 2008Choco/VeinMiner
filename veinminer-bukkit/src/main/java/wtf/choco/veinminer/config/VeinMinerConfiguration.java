@@ -89,6 +89,20 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
     public boolean isCollectExperienceAtSource();
 
     /**
+     * Get whether or not damage should be applied to the tool used while vein mining <strong>only
+     * </strong> for the first block that was broken, not any subsequent blocks mined in the vein.
+     * <p>
+     * If this value returns true, standard vanilla block break item damage logic (taking into account
+     * the unbreaking enchantment and any other damage modifiers, etc.) will only be calculated for the
+     * first block that was broken. If false, then durability will be applied to tools with vanilla
+     * block break logic as though the player broke each block separately.
+     *
+     * @return true to only damage for the first block, false to apply standard vanilla damage for
+     * each broken block
+     */
+    public boolean isOnlyDamageOnFirstBlock();
+
+    /**
      * Get whether or not McMMO's experience system should be nerfed while vein mining.
      * <p>
      * If this value returns true, McMMO experience will only be yielded for the initial block

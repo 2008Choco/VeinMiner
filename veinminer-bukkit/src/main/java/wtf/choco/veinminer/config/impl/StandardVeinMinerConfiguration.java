@@ -92,6 +92,11 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
     }
 
     @Override
+    public boolean isOnlyDamageOnFirstBlock() {
+        return plugin.getConfig().getBoolean(KEY_ONLY_DAMAGE_ON_FIRST_BLOCK, true);
+    }
+
+    @Override
     public boolean isNerfMcMMO() {
         return plugin.getConfig().getBoolean(KEY_NERF_MCMMO, false);
     }
