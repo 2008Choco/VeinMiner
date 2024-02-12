@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.player.VeinMinerPlayer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 

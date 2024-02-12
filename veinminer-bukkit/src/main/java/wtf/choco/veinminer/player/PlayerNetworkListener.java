@@ -17,7 +17,6 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.network.data.NamespacedKey;
-import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;

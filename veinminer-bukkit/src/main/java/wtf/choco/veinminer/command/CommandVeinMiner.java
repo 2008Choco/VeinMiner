@@ -27,12 +27,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.network.data.NamespacedKey;
-import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.data.LegacyImportTask;
 import wtf.choco.veinminer.data.PersistentDataStorageSQL;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.player.VeinMinerPlayer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.update.UpdateResult;

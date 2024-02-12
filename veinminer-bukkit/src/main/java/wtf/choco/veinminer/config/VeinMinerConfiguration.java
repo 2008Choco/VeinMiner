@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.player.ActivationStrategy;
 
 /**
  * A configuration contract for all of VeinMiner's configurable values.

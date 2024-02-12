@@ -15,7 +15,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 import wtf.choco.network.Message;
 import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.network.receiver.MessageReceiver;
-import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.config.ClientConfig;

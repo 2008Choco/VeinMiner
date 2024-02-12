@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.config.ConfigWrapper;
@@ -24,6 +23,7 @@ import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.data.PersistentDataStorage;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
+import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.util.VMConstants;
 
 import static wtf.choco.veinminer.config.impl.ConfigKeys.*;

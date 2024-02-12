@@ -17,8 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
-import wtf.choco.veinminer.ActivationStrategy;
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.ActivationStrategy;
+import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
