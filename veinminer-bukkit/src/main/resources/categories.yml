@@ -1,5 +1,10 @@
 # All tool categories and their item and block lists are defined here.
 #
+# Block list values are 1:1 with in-game IDs. The prepending of "minecraft:" is optional.
+# To specify states, do so with [brackets] as you would in a vanilla /setblock command. For
+# example, "minecraft:chest[waterlogged=true]" will search for any waterlogged chests. Other
+# undefined states will be ignored when checking.
+#
 # Each category may define any of the following options:
 # "RepairFriendly", "MaxVeinSize", "Cost", and "DisabledWorlds"
 # If NOT defined, the global value (the one in the config.yml) will be used instead.

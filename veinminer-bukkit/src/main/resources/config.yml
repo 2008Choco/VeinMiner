@@ -1,13 +1,4 @@
-# Material values are 1:1 with in-game IDs. The prepending of "minecraft:" is optional
-# To specify states, do so with [brackets]. For example, "minecraft:chest[waterlogged=true]"
-# The above will search for any waterlogged chests. Other states will be ignored when checking.
-#
-# To add a custom category, see the categories.yml
-#
-# VeinMiner supports 3 different types of storage (SQLite is used by default)
-#   JSON: Each player's data is stored in its own JSON file under the specified directory.
-#   SQLite: Player data is stored in an SQLite database table. A flat file database. Generally faster than JSON.
-#   MySQL: Player data is stored remotely in a MySQL-compliant database (MySQL, MariaDB, etc.). Use this if you want to share VeinMiner data on multiple servers and have a MySQL server available to use
+# To custom categories or to edit the block lists, see the categories.yml
 
 MetricsEnabled: true
 PerformUpdateChecks: true
@@ -41,11 +32,12 @@ Client:
   AllowPatternSwitchingKeybind: true
   AllowWireframeRendering: true
 
+# VeinMiner supports 3 different types of storage (SQLite is used by default)
+#   JSON: Each player's data is stored in its own JSON file under the specified directory. Creates lots of files, is very messy, and is generally discouraged.
+#   SQLite: Player data is stored in an SQLite database table. A flat file database. Generally faster and more compact than JSON.
+#   MySQL: Player data is stored remotely in a MySQL-compliant database (MySQL, MariaDB, etc.). Use this if you want to share VeinMiner data on multiple servers and have a MySQL server available to use.
 Storage:
-  # Supported types...
-  # JSON: Each player's data is stored in its own JSON file under the specified directory.
-  # SQLite: Player data is stored in an SQLite database table. A flat file database. Generally faster than JSON.
-  # MySQL: Player data is stored remotely in a MySQL-compliant database (MySQL, MariaDB, etc.). Use this if you want to share VeinMiner data on multiple servers and have a MySQL server available to use.
+  # Can be either "JSON", "SQLite", or "MySQL"
   Type: 'SQLite'
 
   JSON:
