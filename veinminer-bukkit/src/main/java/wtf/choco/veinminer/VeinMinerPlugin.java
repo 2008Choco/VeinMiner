@@ -52,8 +52,8 @@ import wtf.choco.veinminer.economy.SimpleEconomy;
 import wtf.choco.veinminer.economy.SimpleVaultEconomy;
 import wtf.choco.veinminer.integration.PlaceholderExpansionVeinMiner;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
+import wtf.choco.veinminer.listener.BlockDropCollectionListener;
 import wtf.choco.veinminer.listener.BreakBlockListener;
-import wtf.choco.veinminer.listener.ItemCollectionListener;
 import wtf.choco.veinminer.listener.McMMOIntegrationListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
 import wtf.choco.veinminer.manager.VeinMinerManager;
@@ -174,8 +174,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         // Register events
         this.getLogger().info("Registering events");
+        manager.registerEvents(new BlockDropCollectionListener(this), this);
         manager.registerEvents(new BreakBlockListener(this), this);
-        manager.registerEvents(new ItemCollectionListener(this), this);
         manager.registerEvents(new PlayerDataListener(this), this);
 
         Plugin mcMMOPlugin = manager.getPlugin("mcMMO");

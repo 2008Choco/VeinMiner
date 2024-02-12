@@ -74,6 +74,21 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
     public boolean isCollectItemsAtSource();
 
     /**
+     * Get whether or not experience should be collected and dropped at the origin location.
+     * <p>
+     * If this value returns true, after a player completes a vein mine, all the experience that
+     * would have dropped as a result of all the blocks being broken will be dropped at the location
+     * where the original block was broken. If false, the experience orbs will drop individually at
+     * the block's broken position, as though the player broke each block separately.
+     * <p>
+     * If this value is not explicitly set, it will default to {@link #isCollectItemsAtSource()}.
+     *
+     * @return true if experience will be collected at the source, false if dropped at each block's
+     * location
+     */
+    public boolean isCollectExperienceAtSource();
+
+    /**
      * Get whether or not McMMO's experience system should be nerfed while vein mining.
      * <p>
      * If this value returns true, McMMO experience will only be yielded for the initial block

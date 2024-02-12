@@ -37,6 +37,7 @@ public final class VMConstants {
     // Metadata keys
     public static final String METADATA_KEY_TO_BE_VEINMINED = "veinminer:to_be_veinmined";
     public static final String METADATA_KEY_VEINMINER_SOURCE = "veinminer:source";
+    public static final String METADATA_KEY_VEINMINER_EXPERIENCE = "veinminer:experience";
 
     public static final String METADATA_KEY_VEINMINING = "veinminer:vein_mining";
     public static final String METADATA_KEY_VEIN_MINER_ACTIVE = "veinminer:vein_miner_active";

@@ -87,6 +87,11 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
     }
 
     @Override
+    public boolean isCollectExperienceAtSource() {
+        return plugin.getConfig().getBoolean(KEY_COLLECT_EXPERIENCE_AT_SOURCE, isCollectItemsAtSource());
+    }
+
+    @Override
     public boolean isNerfMcMMO() {
         return plugin.getConfig().getBoolean(KEY_NERF_MCMMO, false);
     }

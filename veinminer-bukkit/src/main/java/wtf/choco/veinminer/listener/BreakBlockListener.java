@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -142,6 +143,12 @@ public final class BreakBlockListener implements Listener {
             block.setMetadata(VMConstants.METADATA_KEY_VEINMINER_SOURCE, new LazyMetadataValue(plugin, CacheStrategy.CACHE_ETERNALLY, origin::getLocation));
         });
 
+        ExperienceTracker experienceTracker = null;
+        if (plugin.getConfiguration().isCollectExperienceAtSource()) {
+            experienceTracker = new ExperienceTracker();
+            origin.setMetadata(VMConstants.METADATA_KEY_VEINMINER_EXPERIENCE, new FixedMetadataValue(plugin, experienceTracker));
+        }
+
         // Anticheat support
         List<AntiCheatHook> hooks = plugin.getAnticheatHooks();
         hooks.forEach(h -> h.exempt(player));
@@ -198,6 +205,13 @@ public final class BreakBlockListener implements Listener {
             block.removeMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED, plugin);
             block.removeMetadata(VMConstants.METADATA_KEY_VEINMINER_SOURCE, plugin);
         });
+
+        // Handle experience dropping if necessary
+        if (experienceTracker != null && experienceTracker.hasExperience()) {
+            Location experienceLocation = origin.getLocation().add(0.5, 0.5, 0.5);
+            experienceTracker.spawnExperienceOrbsAt(experienceLocation);
+            origin.removeMetadata(VMConstants.METADATA_KEY_VEINMINER_EXPERIENCE, plugin);
+        }
 
         // VEINMINER - DONE
 
