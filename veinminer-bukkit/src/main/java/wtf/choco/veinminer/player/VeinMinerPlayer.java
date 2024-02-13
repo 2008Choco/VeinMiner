@@ -18,6 +18,7 @@ import wtf.choco.network.receiver.MessageReceiver;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.config.ClientConfig;
+import wtf.choco.veinminer.network.NetworkUtil;
 import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
 import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetConfig;
@@ -231,7 +232,7 @@ public final class VeinMinerPlayer implements MessageReceiver {
         this.veinMiningPattern = pattern;
 
         if (changed && updateClient && isUsingClientMod()) {
-            this.sendMessage(new ClientboundSetPattern(pattern.getKey()));
+            this.sendMessage(new ClientboundSetPattern(NetworkUtil.toNetwork(pattern.getKey())));
         }
     }
 

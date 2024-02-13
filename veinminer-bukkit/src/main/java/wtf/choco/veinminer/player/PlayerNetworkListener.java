@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -16,13 +17,13 @@ import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.manager.VeinMinerManager;
+import wtf.choco.veinminer.network.NetworkUtil;
 import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
 import wtf.choco.veinminer.network.protocol.clientbound.ClientboundHandshakeResponse;
 import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetConfig;
@@ -130,8 +131,9 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
             VeinMiningPattern defaultPattern = plugin.getConfiguration().getDefaultVeinMiningPattern();
 
             // Move the default pattern to the start if it wasn't already there
-            if (patternKeys.size() > 1 && patternKeys.remove(defaultPattern.getKey())) {
-                patternKeys.add(0, defaultPattern.getKey());
+            NamespacedKey defaultPatternKey = defaultPattern.getKey();
+            if (patternKeys.size() > 1 && patternKeys.remove(defaultPatternKey)) {
+                patternKeys.add(0, defaultPatternKey);
             }
 
             // Don't send any patterns to which the player does not have access
@@ -145,7 +147,7 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
                 return permission != null && !player.getPlayer().hasPermission(permission);
             });
 
-            this.player.sendMessage(new ClientboundSyncRegisteredPatterns(patternKeys));
+            this.player.sendMessage(new ClientboundSyncRegisteredPatterns(NetworkUtil.toNetwork(patternKeys)));
             this.player.sendMessage(new ClientboundSetConfig(player.getClientConfig()));
 
             // The client is ready, accept post-client init tasks now
@@ -227,7 +229,7 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
         }
 
         VeinMinerPlugin plugin = VeinMinerPlugin.getInstance();
-        VeinMiningPattern pattern = plugin.getPatternRegistry().getOrDefault(message.getPatternKey(), plugin.getConfiguration().getDefaultVeinMiningPattern());
+        VeinMiningPattern pattern = plugin.getPatternRegistry().getOrDefault(NetworkUtil.toBukkit(message.getPatternKey()), plugin.getConfiguration().getDefaultVeinMiningPattern());
         String patternPermission = pattern.getPermission();
 
         if (patternPermission != null && !player.getPlayer().hasPermission(patternPermission)) {

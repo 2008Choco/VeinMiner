@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -26,7 +27,6 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.data.LegacyImportTask;
@@ -214,7 +214,12 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            NamespacedKey patternKey = NamespacedKey.fromString(args[1], "veinminer");
+            NamespacedKey patternKey = NamespacedKey.fromString(args[1], plugin);
+            if (patternKey == null) {
+                sender.sendMessage(ChatColor.RED + "Invalid key: \"" + args[1] + "\"");
+                return true;
+            }
+
             VeinMiningPattern pattern = plugin.getPatternRegistry().get(patternKey);
             if (pattern == null) {
                 sender.sendMessage(ChatColor.RED + "A pattern with the key " + patternKey + " could not be found.");

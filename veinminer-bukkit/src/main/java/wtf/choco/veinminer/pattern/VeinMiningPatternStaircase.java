@@ -3,13 +3,14 @@ package wtf.choco.veinminer.pattern;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.network.data.NamespacedKey;
+import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfiguration;
@@ -32,7 +33,7 @@ public final class VeinMiningPatternStaircase implements VeinMiningPattern {
         String nameLowercase = direction.name().toLowerCase();
 
         this.direction = direction;
-        this.key = NamespacedKey.of("veinminer", "staircase_" + nameLowercase);
+        this.key = VeinMinerPlugin.key("staircase_" + nameLowercase);
         this.permission = "veinminer.pattern.staircase_" + nameLowercase;
     }
 

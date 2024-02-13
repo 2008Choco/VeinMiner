@@ -3,13 +3,14 @@ package wtf.choco.veinminer.pattern;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.network.data.NamespacedKey;
+import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfiguration;
@@ -19,7 +20,7 @@ import wtf.choco.veinminer.config.VeinMiningConfiguration;
  */
 public final class VeinMiningPatternTunnel implements VeinMiningPattern {
 
-    private static final NamespacedKey KEY = NamespacedKey.of("veinminer", "tunnel");
+    private static final NamespacedKey KEY = VeinMinerPlugin.key("tunnel");
 
     private static final int DEFAULT_TUNNEL_RADIUS = 1;
 
