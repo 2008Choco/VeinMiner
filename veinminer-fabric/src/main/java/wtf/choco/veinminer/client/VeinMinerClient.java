@@ -1,10 +1,6 @@
 package wtf.choco.veinminer.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import java.util.Objects;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -13,17 +9,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,14 +18,11 @@ import wtf.choco.network.fabric.FabricProtocolConfiguration;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.client.network.VeinMinerFabricChannelRegistrar;
-import wtf.choco.veinminer.client.render.VeinMinerRenderType;
-import wtf.choco.veinminer.client.render.hud.HudRenderComponent;
-import wtf.choco.veinminer.client.render.hud.HudRenderComponentPatternWheel;
-import wtf.choco.veinminer.client.render.hud.HudRenderComponentVeinMiningIcon;
-import wtf.choco.veinminer.config.ClientConfig;
+import wtf.choco.veinminer.client.render.WireframeShapeRenderer;
+import wtf.choco.veinminer.client.render.hud.PatternWheelHudComponent;
+import wtf.choco.veinminer.client.render.hud.HudComponentRenderer;
+import wtf.choco.veinminer.client.render.hud.VeinMiningIconHudComponent;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
-import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
-import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMiner;
 
 /**
  * The Fabric VeinMiner mod entry class.
@@ -60,180 +44,36 @@ public final class VeinMinerClient implements ClientModInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("veinminer_companion");
 
-    private static FabricServerState serverState;
+    private FabricServerState serverState;
 
-    private final HudRenderComponentPatternWheel patternWheelRenderComponent = new HudRenderComponentPatternWheel();
-    private final HudRenderComponent[] hudRenderComponents = {
-            new HudRenderComponentVeinMiningIcon(),
+    private final KeyHandler keyHandler = new KeyHandler(this);
+    private final BlockLookUpdateHandler wireframeUpdateHandler = new BlockLookUpdateHandler(this);
+
+    private final PatternWheelHudComponent patternWheelRenderComponent = new PatternWheelHudComponent();
+    private final HudComponentRenderer hudComponentRenderer = new HudComponentRenderer(this,
+            new VeinMiningIconHudComponent(),
             patternWheelRenderComponent
-    };
-
-    private boolean changingPatterns = false;
+    );
+    private final WireframeShapeRenderer wireframeShapeRenderer = new WireframeShapeRenderer(this);
 
     @Override
     public void onInitializeClient() {
-        VeinMiner.PROTOCOL.registerChannels(new VeinMinerFabricChannelRegistrar(LOGGER));
+        VeinMiner.PROTOCOL.registerChannels(new VeinMinerFabricChannelRegistrar(this, LOGGER));
         VeinMiner.PROTOCOL.configure(new FabricProtocolConfiguration(true));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!hasServerState() || !getServerState().isEnabledOnServer()) {
-                return;
-            }
-
-            ClientConfig config = getServerState().getConfig();
-
-            boolean shouldRequestVeinMine = false;
-            boolean active = KEY_MAPPING_ACTIVATE_VEINMINER.isDown();
-
-            if (config.isAllowActivationKeybind()) {
-                boolean lastActive = getServerState().isActive();
-                getServerState().setActive(active = KEY_MAPPING_ACTIVATE_VEINMINER.isDown());
-
-                // Activating / deactivating vein miner
-                if (lastActive ^ active) {
-                    serverState.sendMessage(new ServerboundToggleVeinMiner(active));
-                    shouldRequestVeinMine = active;
-                }
-            }
-
-            HitResult result = client.hitResult;
-
-            if (result instanceof BlockHitResult blockResult) {
-                BlockPos position = blockResult.getBlockPos();
-                Direction blockFace = blockResult.getDirection();
-
-                // Requesting that the server vein mine at the player's current target block because it's different
-                shouldRequestVeinMine |= (active && config.isAllowActivationKeybind() && (!Objects.equals(getServerState().getLastLookedAtBlockPos(), position) || !Objects.equals(getServerState().getLastLookedAtBlockFace(), blockFace)));
-
-                if (shouldRequestVeinMine) {
-                    getServerState().resetShape();
-                    serverState.sendMessage(new ServerboundRequestVeinMine(position.getX(), position.getY(), position.getZ()));
-                }
-
-                // Updating the new last looked at position
-                if (client.player != null && client.player.level() != null && !client.player.level().isEmptyBlock(position)) {
-                    getServerState().setLastLookedAt(position, blockFace);
-                } else {
-                    getServerState().setLastLookedAt(null, null);
-                }
-            }
-
-            // Changing patterns
-            if (config.isAllowPatternSwitchingKeybind()) {
-                boolean lastChangingPatterns = changingPatterns;
-                this.changingPatterns = (KEY_MAPPING_NEXT_PATTERN.isDown() || KEY_MAPPING_PREVIOUS_PATTERN.isDown());
-
-                if (lastChangingPatterns ^ changingPatterns) {
-                    boolean next;
-
-                    // There has to be a smarter way to write this...
-                    if (KEY_MAPPING_NEXT_PATTERN.isDown()) {
-                        next = true;
-                    }
-                    else if (KEY_MAPPING_PREVIOUS_PATTERN.isDown()) {
-                        next = false;
-                    }
-                    else {
-                        return;
-                    }
-
-                    // If the HUD wheel isn't rendered yet, push a render call but don't change the pattern
-                    if (patternWheelRenderComponent.shouldRender(config)) {
-                        serverState.changePattern(next);
-                    }
-
-                    this.patternWheelRenderComponent.pushRender();
-                }
-            }
+            this.keyHandler.tick();
+            this.wireframeUpdateHandler.updateLastLookedPosition(client);
         });
 
-        ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-            // Initialize a new server state
-            serverState = new FabricServerState(client);
-        });
+        ClientPlayConnectionEvents.INIT.register((handler, client) -> serverState = new FabricServerState(client));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> serverState = null);
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-            serverState = null; // Nullify the server state. We are no longer connected
-        });
+        // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion())));
 
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
-            serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion()));
-        });
-
-        HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
-            if (!hasServerState() || !getServerState().isEnabledOnServer()) {
-                return;
-            }
-
-            Minecraft client = Minecraft.getInstance();
-            ClientConfig config = getServerState().getConfig();
-
-            for (HudRenderComponent component : hudRenderComponents) {
-                if (!component.shouldRender(config)) {
-                    continue;
-                }
-
-                component.render(client, graphics, tickDelta);
-            }
-        });
-
-        /*
-         * Massive credit to FTB-Ultimine for help with this rendering code. I don't think I
-         * would have been able to figure this out myself... I'm not familiar with navigating the
-         * Minecraft codebase. But this does make a lot of sense and it helped a lot. I'm very
-         * appreciative for open source code :)
-         *
-         * https://github.com/FTBTeam/FTB-Ultimine
-         */
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
-            if (!hasServerState() || !getServerState().isEnabledOnServer() || !getServerState().isActive() || !getServerState().getConfig().isAllowWireframeRendering()) {
-                return;
-            }
-
-            BlockPos origin = getServerState().getLastLookedAtBlockPos();
-            VoxelShape shape = getServerState().getVeinMineResultShape();
-
-            if (origin == null || shape == null) {
-                return;
-            }
-
-            Minecraft client = Minecraft.getInstance();
-
-            // Calculate the stack
-            PoseStack stack = context.matrixStack();
-            Vec3 position = client.getEntityRenderDispatcher().camera.getPosition();
-
-            stack.pushPose();
-            stack.translate(origin.getX() - position.x, origin.getY() - position.y, origin.getZ() - position.z);
-
-            Matrix4f matrix = stack.last().pose();
-
-            // Buffer vertices
-            BufferSource source = client.renderBuffers().bufferSource();
-
-            // Full wireframe drawing
-            VertexConsumer consumer = source.getBuffer(VeinMinerRenderType.getWireframe());
-
-            shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
-                consumer.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 255).endVertex();
-                consumer.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 255).endVertex();
-            });
-
-            source.endBatch(VeinMinerRenderType.getWireframe());
-
-            // Transparent drawing
-            VertexConsumer bufferTransparent = source.getBuffer(VeinMinerRenderType.getWireframeTransparent());
-
-            shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
-                bufferTransparent.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 20).endVertex();
-                bufferTransparent.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 20).endVertex();
-            });
-
-            source.endBatch(VeinMinerRenderType.getWireframeTransparent());
-
-            stack.popPose();
-        });
+        HudRenderCallback.EVENT.register(hudComponentRenderer::render);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(wireframeShapeRenderer::render);
     }
 
     /**
@@ -243,7 +83,7 @@ public final class VeinMinerClient implements ClientModInitializer {
      *
      * @return true if a server state is available, false otherwise
      */
-    public static boolean hasServerState() {
+    public boolean hasServerState() {
         return serverState != null;
     }
 
@@ -255,12 +95,22 @@ public final class VeinMinerClient implements ClientModInitializer {
      * @throws IllegalStateException if there is no server state
      */
     @NotNull
-    public static FabricServerState getServerState() {
+    public FabricServerState getServerState() {
         if (!hasServerState()) {
             throw new IllegalStateException("Tried to get FabricServerState while not connected to server.");
         }
 
         return serverState;
+    }
+
+    /**
+     * Get the HudComponent for the pattern wheel.
+     *
+     * @return the pattern wheel hud component
+     */
+    @NotNull
+    public PatternWheelHudComponent getPatternWheelRenderComponent() {
+        return patternWheelRenderComponent;
     }
 
     private static KeyMapping registerKeyMapping(String id, int key) {

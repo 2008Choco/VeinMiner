@@ -15,14 +15,17 @@ import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
 
 public final class VeinMinerFabricChannelRegistrar extends FabricClientChannelRegistrar<VeinMinerServerboundMessageListener, VeinMinerClientboundMessageListener> {
 
-    public VeinMinerFabricChannelRegistrar(Logger logger) {
+    private final VeinMinerClient client;
+
+    public VeinMinerFabricChannelRegistrar(@NotNull VeinMinerClient client, @NotNull Logger logger) {
         super(VeinMiner.PROTOCOL, logger);
+        this.client = client;
     }
 
     @Nullable
     @Override
     protected VeinMinerClientboundMessageListener onSuccessfulMessage(@NotNull ResourceLocation channel, @NotNull Message<VeinMinerClientboundMessageListener> message) {
-        return VeinMinerClient.hasServerState() ? VeinMinerClient.getServerState() : null;
+        return client.hasServerState() ? client.getServerState() : null;
     }
 
 }

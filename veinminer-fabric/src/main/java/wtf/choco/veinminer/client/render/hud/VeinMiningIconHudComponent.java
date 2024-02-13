@@ -8,18 +8,18 @@ import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.client.VeinMinerClient;
+import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.config.ClientConfig;
 
 /**
- * A {@link HudRenderComponent} for the vein mining icon at the user's crosshair.
+ * A {@link HudComponent} for the vein mining icon at the user's crosshair.
  */
-public final class HudRenderComponentVeinMiningIcon implements HudRenderComponent {
+public final class VeinMiningIconHudComponent implements HudComponent {
 
     private static final ResourceLocation VEINMINER_ICON_LOCATION = new ResourceLocation("veinminer_companion", "textures/gui/veinminer_icon.png");
 
     @Override
-    public void render(@NotNull Minecraft client, @NotNull GuiGraphics graphics, float delta) {
+    public void render(@NotNull Minecraft client, @NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, float delta) {
         client.getProfiler().push("veinMiningIcon");
 
         Window window = client.getWindow();
@@ -31,8 +31,8 @@ public final class HudRenderComponentVeinMiningIcon implements HudRenderComponen
     }
 
     @Override
-    public boolean shouldRender(@NotNull ClientConfig config) {
-        return config.isAllowActivationKeybind() && Minecraft.renderNames() && VeinMinerClient.getServerState().isActive();
+    public boolean shouldRender(@NotNull ClientConfig config, @NotNull FabricServerState serverState) {
+        return config.isAllowActivationKeybind() && Minecraft.renderNames() && serverState.isActive();
     }
 
 }

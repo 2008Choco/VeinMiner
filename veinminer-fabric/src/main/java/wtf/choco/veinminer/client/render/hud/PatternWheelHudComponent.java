@@ -10,14 +10,13 @@ import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.config.ClientConfig;
 
 /**
- * A {@link HudRenderComponent} for the pattern selection wheel in the top left.
+ * A {@link HudComponent} for the pattern selection wheel in the top left.
  */
-public final class HudRenderComponentPatternWheel implements HudRenderComponent {
+public final class PatternWheelHudComponent implements HudComponent {
 
     private static final float STAY_TIME_MS = 3000F;
     private static final float FADE_MS = 200F;
@@ -26,7 +25,7 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
     private float remainingMs = -1L;
 
     @Override
-    public void render(@NotNull Minecraft client, @NotNull GuiGraphics graphics, float tickDelta) {
+    public void render(@NotNull Minecraft client, @NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, float tickDelta) {
         client.getProfiler().push("veinminerPatternWheel");
 
         RenderSystem.enableBlend();
@@ -47,7 +46,6 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
         int alpha = (Mth.floor(alphaProgress * 255) << 24) & 0xFF000000;
         int colour = 0xFFFFFF | alpha;
 
-        FabricServerState serverState = VeinMinerClient.getServerState();
         String before = serverState.getPreviousPattern().toString();
         String selected = serverState.getSelectedPattern().toString();
         String after = serverState.getNextPattern().toString();
@@ -70,8 +68,8 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
     }
 
     @Override
-    public boolean shouldRender(@NotNull ClientConfig config) {
-        return config.isAllowPatternSwitchingKeybind() && VeinMinerClient.getServerState().hasPatternKeys() && remainingMs >= 0L;
+    public boolean shouldRender(@NotNull ClientConfig config, @NotNull FabricServerState serverState) {
+        return config.isAllowPatternSwitchingKeybind() && serverState.hasPatternKeys() && remainingMs >= 0L;
     }
 
     /**
