@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.network;
+package wtf.choco.veinminer.client.network;
 
 import java.util.ArrayList;
 import java.util.Collections;

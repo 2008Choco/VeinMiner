@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.hud;
+package wtf.choco.veinminer.client.render.hud;
 
 import com.mojang.blaze3d.platform.Window;
 
@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMinerMod;
+import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.config.ClientConfig;
 
 /**
@@ -32,7 +32,7 @@ public final class HudRenderComponentVeinMiningIcon implements HudRenderComponen
 
     @Override
     public boolean shouldRender(@NotNull ClientConfig config) {
-        return config.isAllowActivationKeybind() && Minecraft.renderNames() && VeinMinerMod.getServerState().isActive();
+        return config.isAllowActivationKeybind() && Minecraft.renderNames() && VeinMinerClient.getServerState().isActive();
     }
 
 }

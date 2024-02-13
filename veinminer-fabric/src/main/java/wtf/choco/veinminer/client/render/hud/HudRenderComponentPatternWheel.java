@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.hud;
+package wtf.choco.veinminer.client.render.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -10,9 +10,9 @@ import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.veinminer.VeinMinerMod;
+import wtf.choco.veinminer.client.VeinMinerClient;
+import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.config.ClientConfig;
-import wtf.choco.veinminer.network.FabricServerState;
 
 /**
  * A {@link HudRenderComponent} for the pattern selection wheel in the top left.
@@ -47,7 +47,7 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
         int alpha = (Mth.floor(alphaProgress * 255) << 24) & 0xFF000000;
         int colour = 0xFFFFFF | alpha;
 
-        FabricServerState serverState = VeinMinerMod.getServerState();
+        FabricServerState serverState = VeinMinerClient.getServerState();
         String before = serverState.getPreviousPattern().toString();
         String selected = serverState.getSelectedPattern().toString();
         String after = serverState.getNextPattern().toString();
@@ -71,7 +71,7 @@ public final class HudRenderComponentPatternWheel implements HudRenderComponent 
 
     @Override
     public boolean shouldRender(@NotNull ClientConfig config) {
-        return config.isAllowPatternSwitchingKeybind() && VeinMinerMod.getServerState().hasPatternKeys() && remainingMs >= 0L;
+        return config.isAllowPatternSwitchingKeybind() && VeinMinerClient.getServerState().hasPatternKeys() && remainingMs >= 0L;
     }
 
     /**

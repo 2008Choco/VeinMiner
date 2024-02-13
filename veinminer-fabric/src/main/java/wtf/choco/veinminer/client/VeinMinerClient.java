@@ -1,4 +1,4 @@
-package wtf.choco.veinminer;
+package wtf.choco.veinminer.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -28,21 +28,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import wtf.choco.network.fabric.FabricProtocolConfiguration;
+import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.client.network.FabricServerState;
+import wtf.choco.veinminer.client.network.VeinMinerFabricChannelRegistrar;
+import wtf.choco.veinminer.client.render.VeinMinerRenderType;
+import wtf.choco.veinminer.client.render.hud.HudRenderComponent;
+import wtf.choco.veinminer.client.render.hud.HudRenderComponentPatternWheel;
+import wtf.choco.veinminer.client.render.hud.HudRenderComponentVeinMiningIcon;
 import wtf.choco.veinminer.config.ClientConfig;
-import wtf.choco.veinminer.hud.HudRenderComponent;
-import wtf.choco.veinminer.hud.HudRenderComponentPatternWheel;
-import wtf.choco.veinminer.hud.HudRenderComponentVeinMiningIcon;
-import wtf.choco.veinminer.network.FabricServerState;
-import wtf.choco.veinminer.network.VeinMinerFabricChannelRegistrar;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMiner;
-import wtf.choco.veinminer.render.VeinMinerRenderType;
 
 /**
  * The Fabric VeinMiner mod entry class.
  */
-public final class VeinMinerMod implements ClientModInitializer {
+public final class VeinMinerClient implements ClientModInitializer {
 
     /**
      * The "activate veinminer" key mapping. Defaults to ~

@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.hud;
+package wtf.choco.veinminer.client.render.hud;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 

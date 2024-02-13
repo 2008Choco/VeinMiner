@@ -1,4 +1,4 @@
-package wtf.choco.veinminer.render;
+package wtf.choco.veinminer.client.render;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
