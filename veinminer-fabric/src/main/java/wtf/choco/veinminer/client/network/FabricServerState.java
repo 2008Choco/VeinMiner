@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -52,6 +53,7 @@ public final class FabricServerState implements MessageReceiver, VeinMinerClient
 
     private BlockPos lastLookedAtBlockPos;
     private Direction lastLookedAtBlockFace;
+    private BlockState lastLookedAtBlockState;
     private VoxelShape veinMineResultShape;
 
     /**
@@ -203,12 +205,14 @@ public final class FabricServerState implements MessageReceiver, VeinMinerClient
      *
      * @param position the last looked at position
      * @param blockFace the last looked at block face
+     * @param state the last looked at block state
      */
-    public void setLastLookedAt(@Nullable BlockPos position, @Nullable Direction blockFace) {
+    public void setLastLookedAt(@Nullable BlockPos position, @Nullable Direction blockFace, @Nullable BlockState state) {
         this.lastLookedAtBlockPos = position;
         this.lastLookedAtBlockFace = blockFace;
+        this.lastLookedAtBlockState = state;
 
-        if (position == null || blockFace == null) {
+        if (position == null || blockFace == null || state == null) {
             this.resetShape();
         }
     }
@@ -233,6 +237,17 @@ public final class FabricServerState implements MessageReceiver, VeinMinerClient
     @Nullable
     public Direction getLastLookedAtBlockFace() {
         return lastLookedAtBlockFace;
+    }
+
+    /**
+     * Get the {@link BlockState} last looked at by the client, or null if the client has not
+     * looked at a block.
+     *
+     * @return the last looked at block state, or null if none
+     */
+    @Nullable
+    public BlockState getLastLookedAtBlockState() {
+        return lastLookedAtBlockState;
     }
 
     /**

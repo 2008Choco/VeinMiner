@@ -5,6 +5,7 @@ import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,31 +44,34 @@ public final class BlockLookUpdateHandler {
         FabricServerState serverState = client.getServerState();
         BlockPos position = hit.getBlockPos();
         Direction blockFace = hit.getDirection();
+        BlockState blockState = minecraft.level.getBlockState(position);
 
-        this.updateWireframeIfNecessary(serverState, position, blockFace);
+        this.updateWireframeIfNecessary(serverState, position, blockFace, blockState);
 
         // Updating the new last looked at position
         if (minecraft.player != null && minecraft.player.level() != null && !minecraft.player.level().isEmptyBlock(position)) {
-            serverState.setLastLookedAt(position, blockFace);
+            serverState.setLastLookedAt(position, blockFace, blockState);
         } else {
-            serverState.setLastLookedAt(null, null);
+            serverState.setLastLookedAt(null, null, null);
         }
     }
 
-    private void updateWireframeIfNecessary(@NotNull FabricServerState serverState, @NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace) {
+    private void updateWireframeIfNecessary(@NotNull FabricServerState serverState, @NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace, @NotNull BlockState lookingAtState) {
         ClientConfig config = serverState.getConfig();
         if (!serverState.isActive() || !config.isAllowActivationKeybind()) {
             return;
         }
 
-        if (isLookingAtDifferentPosition(serverState, lookingAtPos, lookingAtFace)) {
+        if (isLookingAtDifferentPositionOrState(serverState, lookingAtPos, lookingAtFace, lookingAtState)) {
             serverState.resetShape();
             serverState.sendMessage(new ServerboundRequestVeinMine(lookingAtPos.getX(), lookingAtPos.getY(), lookingAtPos.getZ()));
         }
     }
 
-    private boolean isLookingAtDifferentPosition(@NotNull FabricServerState serverState, @NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace) {
-        return !Objects.equals(serverState.getLastLookedAtBlockPos(), lookingAtPos) || !Objects.equals(serverState.getLastLookedAtBlockFace(), lookingAtFace);
+    private boolean isLookingAtDifferentPositionOrState(@NotNull FabricServerState serverState, @NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace, @NotNull BlockState lookingAtState) {
+        return !Objects.equals(serverState.getLastLookedAtBlockPos(), lookingAtPos)
+                || !Objects.equals(serverState.getLastLookedAtBlockFace(), lookingAtFace)
+                || !Objects.equals(serverState.getLastLookedAtBlockState(), lookingAtState);
     }
 
 }
