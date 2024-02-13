@@ -44,24 +44,38 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
         int maxVeinSize = config.getMaxVeinSize();
         BlockData originBlockData = origin.getBlockData();
 
+        // Such loops, much wow! I promise, this is as efficient as it can be
         while (blocks.size() < maxVeinSize) {
             recentSearch:
             for (Block current : recent) {
-                for (BlockFace face : BlockFace.values()) { // TODO: Use better faces
-                    Block relative = current.getRelative(face);
-                    if (blocks.contains(relative) || !PatternUtils.typeMatches(block, aliasList, originBlockData, relative.getBlockData())) {
-                        continue;
-                    }
+                for (int x = -1; x <= 1; x++) {
+                    for (int y = -1; y <= 1; y++) {
+                        for (int z = -1; z <= 1; z++) {
+                            // Ignore self
+                            if (x == 0 && y == 0 && z == 0) {
+                                continue;
+                            }
 
-                    if (blocks.size() + buffer.size() >= maxVeinSize) {
-                        break recentSearch;
-                    }
+                            Block relative = current.getRelative(x, y, z);
+                            if (blocks.contains(relative) || buffer.contains(relative)) {
+                                continue;
+                            }
 
-                    this.buffer.add(relative);
+                            if (!PatternUtils.typeMatches(block, aliasList, originBlockData, relative.getBlockData())) {
+                                continue;
+                            }
+
+                            if (blocks.size() + buffer.size() >= maxVeinSize) {
+                                break recentSearch;
+                            }
+
+                            this.buffer.add(relative);
+                        }
+                    }
                 }
             }
 
-            // No more positions to allocate :D
+            // No more blocks to allocate :D
             if (buffer.isEmpty()) {
                 break;
             }
