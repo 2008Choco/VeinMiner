@@ -19,8 +19,8 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.client.network.VeinMinerFabricChannelRegistrar;
 import wtf.choco.veinminer.client.render.WireframeShapeRenderer;
-import wtf.choco.veinminer.client.render.hud.PatternWheelHudComponent;
 import wtf.choco.veinminer.client.render.hud.HudComponentRenderer;
+import wtf.choco.veinminer.client.render.hud.PatternWheelHudComponent;
 import wtf.choco.veinminer.client.render.hud.VeinMiningIconHudComponent;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
 

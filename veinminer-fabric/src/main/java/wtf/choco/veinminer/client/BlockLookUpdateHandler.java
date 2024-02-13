@@ -29,7 +29,7 @@ public final class BlockLookUpdateHandler {
      * Update on the client the last looked position with the current looking position,
      * and send a request to the server to update the wireframe if necessary.
      *
-     * @param minecraft
+     * @param minecraft the minecraft instance
      */
     public void updateLastLookedPosition(@NotNull Minecraft minecraft) {
         if (!client.hasServerState()) {
