@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.config.ClientConfig;
@@ -19,6 +20,10 @@ import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMi
  * server to update the vein mining for the new position (if necesary).
  */
 public final class BlockLookUpdateHandler {
+
+    private BlockPos lastLookedAtBlockPos;
+    private Direction lastLookedAtBlockFace;
+    private BlockState lastLookedAtBlockState;
 
     private final VeinMinerClient client;
 
@@ -32,7 +37,7 @@ public final class BlockLookUpdateHandler {
      *
      * @param minecraft the minecraft instance
      */
-    public void updateLastLookedPosition(@NotNull Minecraft minecraft) {
+    public void tick(@NotNull Minecraft minecraft) {
         if (!client.hasServerState()) {
             return;
         }
@@ -42,18 +47,39 @@ public final class BlockLookUpdateHandler {
         }
 
         FabricServerState serverState = client.getServerState();
-        BlockPos position = hit.getBlockPos();
-        Direction blockFace = hit.getDirection();
-        BlockState blockState = minecraft.level.getBlockState(position);
+        BlockPos lookingAtPos = hit.getBlockPos();
+        Direction lookingAtFace = hit.getDirection();
+        BlockState lookingAtState = minecraft.level.getBlockState(lookingAtPos);
 
-        this.updateWireframeIfNecessary(serverState, position, blockFace, blockState);
+        this.updateWireframeIfNecessary(serverState, lookingAtPos, lookingAtFace, lookingAtState);
 
         // Updating the new last looked at position
-        if (minecraft.player != null && minecraft.player.level() != null && !minecraft.player.level().isEmptyBlock(position)) {
-            serverState.setLastLookedAt(position, blockFace, blockState);
+        if (minecraft.player != null && minecraft.player.level() != null && !minecraft.player.level().isEmptyBlock(lookingAtPos)) {
+            this.lastLookedAtBlockPos = lookingAtPos;
+            this.lastLookedAtBlockFace = lookingAtFace;
+            this.lastLookedAtBlockState = lookingAtState;
         } else {
-            serverState.setLastLookedAt(null, null, null);
+            this.reset();
         }
+    }
+
+    /**
+     * Reset the last looked at state data.
+     */
+    public void reset() {
+        this.lastLookedAtBlockPos = null;
+        this.lastLookedAtBlockFace = null;
+        this.lastLookedAtBlockState = null;
+    }
+
+    /**
+     * Get the last looked at {@link BlockPos}.
+     *
+     * @return the last looked at block pos
+     */
+    @Nullable
+    public BlockPos getLastLookedAtBlockPos() {
+        return lastLookedAtBlockPos;
     }
 
     private void updateWireframeIfNecessary(@NotNull FabricServerState serverState, @NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace, @NotNull BlockState lookingAtState) {
@@ -62,16 +88,16 @@ public final class BlockLookUpdateHandler {
             return;
         }
 
-        if (isLookingAtDifferentPositionOrState(serverState, lookingAtPos, lookingAtFace, lookingAtState)) {
+        if (isLookingAtDifferentPositionOrState(lookingAtPos, lookingAtFace, lookingAtState)) {
             serverState.resetShape();
             serverState.sendMessage(new ServerboundRequestVeinMine(lookingAtPos.getX(), lookingAtPos.getY(), lookingAtPos.getZ()));
         }
     }
 
-    private boolean isLookingAtDifferentPositionOrState(@NotNull FabricServerState serverState, @NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace, @NotNull BlockState lookingAtState) {
-        return !Objects.equals(serverState.getLastLookedAtBlockPos(), lookingAtPos)
-                || !Objects.equals(serverState.getLastLookedAtBlockFace(), lookingAtFace)
-                || !Objects.equals(serverState.getLastLookedAtBlockState(), lookingAtState);
+    private boolean isLookingAtDifferentPositionOrState(@NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace, @NotNull BlockState lookingAtState) {
+        return !Objects.equals(lastLookedAtBlockPos, lookingAtPos)
+                || !Objects.equals(lastLookedAtBlockFace, lookingAtFace)
+                || !Objects.equals(lastLookedAtBlockState, lookingAtState);
     }
 
 }

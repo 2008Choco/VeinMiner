@@ -9,10 +9,8 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -23,6 +21,7 @@ import wtf.choco.network.Message;
 import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.network.receiver.MessageReceiver;
 import wtf.choco.veinminer.VeinMiner;
+import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
 import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
@@ -51,19 +50,21 @@ public final class FabricServerState implements MessageReceiver, VeinMinerClient
     private int selectedPatternIndex = 0;
     private List<NamespacedKey> patternKeys = null;
 
-    private BlockPos lastLookedAtBlockPos;
-    private Direction lastLookedAtBlockFace;
-    private BlockState lastLookedAtBlockState;
     private VoxelShape veinMineResultShape;
+
+    private final VeinMinerClient client;
 
     /**
      * Construct a new {@link FabricServerState}.
      *
-     * @param client the {@link Minecraft} instance
+     * @param client the client instance
+     * @param minecraft the {@link Minecraft} instance
      */
-    public FabricServerState(@NotNull Minecraft client) {
+    public FabricServerState(@NotNull VeinMinerClient client, @NotNull Minecraft minecraft) {
+        this.client = client;
+
         // We'll enable VeinMiner if we're in single player development mode, just for testing
-        if (client.hasSingleplayerServer() && FabricLoader.getInstance().isDevelopmentEnvironment()) {
+        if (minecraft.hasSingleplayerServer() && FabricLoader.getInstance().isDevelopmentEnvironment()) {
             this.config = new ClientConfig();
             this.enabledOnServer = true;
             this.patternKeys = List.of(
@@ -201,56 +202,6 @@ public final class FabricServerState implements MessageReceiver, VeinMinerClient
     }
 
     /**
-     * Set the last {@link BlockPos} and {@link Direction} the client has looked at.
-     *
-     * @param position the last looked at position
-     * @param blockFace the last looked at block face
-     * @param state the last looked at block state
-     */
-    public void setLastLookedAt(@Nullable BlockPos position, @Nullable Direction blockFace, @Nullable BlockState state) {
-        this.lastLookedAtBlockPos = position;
-        this.lastLookedAtBlockFace = blockFace;
-        this.lastLookedAtBlockState = state;
-
-        if (position == null || blockFace == null || state == null) {
-            this.resetShape();
-        }
-    }
-
-    /**
-     * Get the {@link BlockPos} last looked at by the client, or null if the client has not
-     * looked at a block.
-     *
-     * @return the last looked at block position, or null if none
-     */
-    @Nullable
-    public BlockPos getLastLookedAtBlockPos() {
-        return lastLookedAtBlockPos;
-    }
-
-    /**
-     * Get the block face {@link Direction} last looked at by the client, or null if the client
-     * has not looked at a block.
-     *
-     * @return the last looked at block face, or null if none
-     */
-    @Nullable
-    public Direction getLastLookedAtBlockFace() {
-        return lastLookedAtBlockFace;
-    }
-
-    /**
-     * Get the {@link BlockState} last looked at by the client, or null if the client has not
-     * looked at a block.
-     *
-     * @return the last looked at block state, or null if none
-     */
-    @Nullable
-    public BlockState getLastLookedAtBlockState() {
-        return lastLookedAtBlockState;
-    }
-
-    /**
      * Get the {@link VoxelShape} outlining the last vein mine result received from the server.
      *
      * @return the last vein mine result shape, or null if none
@@ -312,7 +263,7 @@ public final class FabricServerState implements MessageReceiver, VeinMinerClient
     public void handleVeinMineResults(@NotNull ClientboundVeinMineResults message) {
         this.resetShape();
 
-        BlockPos origin = lastLookedAtBlockPos;
+        BlockPos origin = client.getBlockLookUpdateHandler().getLastLookedAtBlockPos();
         if (origin == null) {
             return;
         }

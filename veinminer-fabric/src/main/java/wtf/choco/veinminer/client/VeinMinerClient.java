@@ -47,7 +47,7 @@ public final class VeinMinerClient implements ClientModInitializer {
     private FabricServerState serverState;
 
     private final KeyHandler keyHandler = new KeyHandler(this);
-    private final BlockLookUpdateHandler wireframeUpdateHandler = new BlockLookUpdateHandler(this);
+    private final BlockLookUpdateHandler blockLookUpdateHandler = new BlockLookUpdateHandler(this);
 
     private final PatternWheelHudComponent patternWheelRenderComponent = new PatternWheelHudComponent();
     private final HudComponentRenderer hudComponentRenderer = new HudComponentRenderer(this,
@@ -63,11 +63,14 @@ public final class VeinMinerClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             this.keyHandler.tick();
-            this.wireframeUpdateHandler.updateLastLookedPosition(client);
+            this.blockLookUpdateHandler.tick(client);
         });
 
-        ClientPlayConnectionEvents.INIT.register((handler, client) -> serverState = new FabricServerState(client));
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> serverState = null);
+        ClientPlayConnectionEvents.INIT.register((handler, client) -> serverState = new FabricServerState(this, client));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            this.serverState = null;
+            this.blockLookUpdateHandler.reset();
+        });
 
         // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion())));
@@ -101,6 +104,16 @@ public final class VeinMinerClient implements ClientModInitializer {
         }
 
         return serverState;
+    }
+
+    /**
+     * Get the {@link BlockLookUpdateHandler} instance.
+     *
+     * @return the block look update handler
+     */
+    @NotNull
+    public BlockLookUpdateHandler getBlockLookUpdateHandler() {
+        return blockLookUpdateHandler;
     }
 
     /**

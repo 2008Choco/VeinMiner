@@ -47,7 +47,7 @@ public final class WireframeShapeRenderer {
             return;
         }
 
-        BlockPos origin = serverState.getLastLookedAtBlockPos();
+        BlockPos origin = client.getBlockLookUpdateHandler().getLastLookedAtBlockPos();
         VoxelShape shape = serverState.getVeinMineResultShape();
         if (origin == null || shape == null) {
             return;
