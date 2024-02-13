@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.listener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -123,7 +124,7 @@ public final class BreakBlockListener implements Listener {
         VeinMiningPattern pattern = veinMinerPlayer.getVeinMiningPattern();
         BlockList aliasBlockList = veinMinerManager.getAlias(originVeinMinerBlock);
 
-        List<Block> blocks = pattern.allocateBlocks(origin, targetBlockFace, originVeinMinerBlock, category.getConfiguration(), aliasBlockList);
+        List<Block> blocks = new ArrayList<>(pattern.allocateBlocks(origin, targetBlockFace, originVeinMinerBlock, category.getConfiguration(), aliasBlockList));
         blocks.removeIf(Block::isEmpty);
 
         if (blocks.isEmpty()) {

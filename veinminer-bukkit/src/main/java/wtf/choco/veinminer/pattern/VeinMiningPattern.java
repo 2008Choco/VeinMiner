@@ -37,6 +37,9 @@ public interface VeinMiningPattern {
      * or null
      *
      * @return the allocated blocks to break
+     *
+     * @apiNote mutability of the returned List cannot be guaranteed. Pattern implementations may or
+     * may not return immutable lists, therefore it's best to assume that it will be immutable
      */
     @NotNull
     public List<Block> allocateBlocks(@NotNull Block origin, @NotNull BlockFace destroyedFace, @NotNull VeinMinerBlock block, @NotNull VeinMiningConfiguration config, @Nullable BlockList aliasList);
@@ -51,6 +54,9 @@ public interface VeinMiningPattern {
      * @param config the configuration applicable for this vein mine
      *
      * @return the allocated blocks to break
+     *
+     * @apiNote mutability of the returned List cannot be guaranteed. Pattern implementations may or
+     * may not return immutable lists, therefore it's best to assume that it will be immutable
      */
     @NotNull
     public default List<Block> allocateBlocks(@NotNull Block origin, @NotNull BlockFace destroyedFace, @NotNull VeinMinerBlock block, @NotNull VeinMiningConfiguration config) {
