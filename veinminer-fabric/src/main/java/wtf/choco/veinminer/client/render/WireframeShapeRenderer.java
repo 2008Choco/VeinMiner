@@ -53,6 +53,9 @@ public final class WireframeShapeRenderer {
             return;
         }
 
+        Minecraft client = Minecraft.getInstance();
+        client.getProfiler().push("veinMinerWireframe");
+
         /*
          * Massive credit to FTB-Ultimine for help with this rendering code. I don't think I
          * would have been able to figure this out myself... I'm not familiar with navigating the
@@ -64,7 +67,6 @@ public final class WireframeShapeRenderer {
 
         // Calculate the stack
         PoseStack stack = context.matrixStack();
-        Minecraft client = Minecraft.getInstance();
         Vec3 position = client.getEntityRenderDispatcher().camera.getPosition();
 
         stack.pushPose();
@@ -96,6 +98,7 @@ public final class WireframeShapeRenderer {
         source.endBatch(VeinMinerRenderType.getWireframeTransparent());
 
         stack.popPose();
+        client.getProfiler().pop();
     }
 
 }
