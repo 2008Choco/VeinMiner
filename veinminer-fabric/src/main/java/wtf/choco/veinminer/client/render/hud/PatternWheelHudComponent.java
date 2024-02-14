@@ -18,11 +18,11 @@ import wtf.choco.veinminer.config.ClientConfig;
  */
 public final class PatternWheelHudComponent implements HudComponent {
 
-    private static final float STAY_TIME_MS = 3000F;
-    private static final float FADE_MS = 200F;
-    private static final float TOTAL_TIME_MS = STAY_TIME_MS + (FADE_MS * 2);
+    private static final int STAY_TICKS = 60; // 3 seconds
+    private static final int FADE_TICKS = 4; // 0.2 seconds
+    private static final int TOTAL_TICKS = STAY_TICKS + (FADE_TICKS * 2);
 
-    private float remainingMs = -1L;
+    private int remainingTicks = 0;
 
     @Override
     public void render(@NotNull Minecraft client, @NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, float tickDelta) {
@@ -31,20 +31,21 @@ public final class PatternWheelHudComponent implements HudComponent {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        // Calculate alpha based on progress of fade in/out times
-        float alphaProgress = 1.0F;
-        if (remainingMs >= (STAY_TIME_MS + FADE_MS)) { // Fade in
-            alphaProgress = 1.0F - (remainingMs - (STAY_TIME_MS + FADE_MS)) / FADE_MS;
-        }
-        else if (remainingMs < FADE_MS) { // Fade out
-            alphaProgress = (remainingMs / FADE_MS);
-        }
+        float actualRemainingMs = remainingTicks - tickDelta;
 
-        alphaProgress = Mth.clamp(alphaProgress, 0.0F, 1.0F);
+        // Calculate alpha based on progress of fade in/out times
+        float alpha = 255.0F;
+        if (remainingTicks >= (STAY_TICKS + FADE_TICKS)) { // Fade in
+            float elapsed = TOTAL_TICKS - actualRemainingMs;
+            alpha = Math.min((int) (elapsed * 255.0F / FADE_TICKS), 255);
+        }
+        else if (remainingTicks < FADE_TICKS) { // Fade out
+            alpha = Math.min((int) (actualRemainingMs * 255.0F / FADE_TICKS), 255);
+        }
 
         // Final colour with alpha included
-        int alpha = (Mth.floor(alphaProgress * 255) << 24) & 0xFF000000;
-        int colour = 0xFFFFFF | alpha;
+        int finalAlpha = (Mth.floor(alpha) << 24) & 0xFF000000;
+        int colour = 0xFFFFFF | finalAlpha;
 
         String before = serverState.getPreviousPattern().toString();
         String selected = serverState.getSelectedPattern().toString();
@@ -62,14 +63,19 @@ public final class PatternWheelHudComponent implements HudComponent {
 
         RenderSystem.disableBlend();
 
-        this.remainingMs -= (client.getDeltaFrameTime() * 50);
-
         client.getProfiler().pop();
     }
 
     @Override
     public boolean shouldRender(@NotNull ClientConfig config, @NotNull FabricServerState serverState) {
-        return config.isAllowPatternSwitchingKeybind() && serverState.hasPatternKeys() && remainingMs >= 0L;
+        return config.isAllowPatternSwitchingKeybind() && serverState.hasPatternKeys() && remainingTicks > 0;
+    }
+
+    @Override
+    public void tick() {
+        if (remainingTicks > 0) {
+            this.remainingTicks--;
+        }
     }
 
     /**
@@ -80,14 +86,14 @@ public final class PatternWheelHudComponent implements HudComponent {
      * period. If it is fading out, it will start fading in starting from the current fade out time.
      */
     public void pushRender() {
-        if (remainingMs <= 0) { // If not rendered, set to max time
-            this.remainingMs = TOTAL_TIME_MS;
+        if (remainingTicks <= 0) { // If not rendered, set to max time
+            this.remainingTicks = TOTAL_TICKS;
         }
-        else if (remainingMs < FADE_MS) { // If fading out, fade back in starting at current fade out point
-            this.remainingMs = TOTAL_TIME_MS - remainingMs;
+        else if (remainingTicks < FADE_TICKS) { // If fading out, fade back in starting at current fade out point
+            this.remainingTicks = TOTAL_TICKS - remainingTicks;
         }
-        else if (remainingMs < (TOTAL_TIME_MS - FADE_MS)) { // If already faded in (during stay time), skip fade in time
-            this.remainingMs = TOTAL_TIME_MS - FADE_MS;
+        else if (remainingTicks < (TOTAL_TICKS - FADE_TICKS)) { // If already faded in (during stay time), skip fade in time
+            this.remainingTicks = TOTAL_TICKS - FADE_TICKS;
         }
     }
 

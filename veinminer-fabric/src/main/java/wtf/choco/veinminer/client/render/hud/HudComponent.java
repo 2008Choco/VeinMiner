@@ -37,4 +37,9 @@ public interface HudComponent {
      */
     public boolean shouldRender(@NotNull ClientConfig config, @NotNull FabricServerState serverState);
 
+    /**
+     * Tick this component.
+     */
+    public default void tick() {}
+
 }

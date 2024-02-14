@@ -56,4 +56,13 @@ public final class HudComponentRenderer {
         }
     }
 
+    /**
+     * Tick all hud components.
+     */
+    public void tick() {
+        for (HudComponent component : hudComponents) {
+            component.tick();
+        }
+    }
+
 }

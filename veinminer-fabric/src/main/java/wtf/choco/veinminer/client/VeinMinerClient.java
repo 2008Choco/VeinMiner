@@ -64,6 +64,7 @@ public final class VeinMinerClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             this.keyHandler.tick();
             this.blockLookUpdateHandler.tick(client);
+            this.hudComponentRenderer.tick();
         });
 
         ClientPlayConnectionEvents.INIT.register((handler, client) -> serverState = new FabricServerState(this, client));
