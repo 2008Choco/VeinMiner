@@ -257,6 +257,11 @@ public final class CommandVeinMiner implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("import")) {
+            if (!sender.hasPermission(VMConstants.PERMISSION_COMMAND_IMPORT)) {
+                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
+                return true;
+            }
+
             if (!(plugin.getPersistentDataStorage() instanceof PersistentDataStorageSQL dataStorage)) {
                 sender.sendMessage(ChatColor.RED + "You are not using MySQL or SQLite storage. You do not need to import data.");
                 return true;
