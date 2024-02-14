@@ -14,6 +14,23 @@ public final class ItemStackUtil {
     private ItemStackUtil() { }
 
     /**
+     * Set the String value for VeinMiner's NBT key on the given {@link ItemStack}.
+     *
+     * @param itemStack the item stack
+     * @param value the value to set
+     */
+    @Nullable
+    public static void setVeinMinerNBTValue(@NotNull ItemStack itemStack, @NotNull String value) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
+            return;
+        }
+
+        meta.getPersistentDataContainer().set(VMConstants.getVeinMinerNBTKey(), PersistentDataType.STRING, value);
+        itemStack.setItemMeta(meta);
+    }
+
+    /**
      * Get the String value for VeinMiner's NBT key on the given {@link ItemStack}.
      *
      * @param itemStack the item stack

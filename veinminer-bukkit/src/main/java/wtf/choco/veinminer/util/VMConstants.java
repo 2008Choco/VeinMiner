@@ -25,6 +25,7 @@ public final class VMConstants {
     public static final String PERMISSION_COMMAND_RELOAD = "veinminer.command.reload";
     public static final String PERMISSION_COMMAND_BLOCKLIST = "veinminer.command.blocklist";
     public static final String PERMISSION_COMMAND_TOOLLIST = "veinminer.command.toollist";
+    public static final String PERMISSION_COMMAND_GIVETOOL = "veinminer.command.givetool";
     public static final String PERMISSION_COMMAND_TOGGLE = "veinminer.command.toggle";
     public static final String PERMISSION_COMMAND_MODE = "veinminer.command.mode";
     public static final String PERMISSION_COMMAND_PATTERN = "veinminer.command.pattern";

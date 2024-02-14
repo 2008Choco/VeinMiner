@@ -2,6 +2,7 @@ package wtf.choco.veinminer.command;
 
 import com.google.common.base.Enums;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,15 +14,19 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +47,8 @@ import wtf.choco.veinminer.util.VMEventFactory;
 public final class CommandVeinMiner implements TabExecutor {
 
     private static final long IMPORT_CONFIRMATION_TIME_MILLIS = TimeUnit.SECONDS.toMillis(20);
+    private static final List<String> NUMBERS = IntStream.range(1, 10).mapToObj(String::valueOf).toList();
+    private static final List<String> SUGGESTION_OPTIONAL_AMOUNT = List.of("[amount]");
 
     private final Map<CommandSender, Long> requiresConfirmation = new HashMap<>();
 
@@ -278,6 +285,68 @@ public final class CommandVeinMiner implements TabExecutor {
             return true;
         }
 
+        else if (args[0].equalsIgnoreCase("givetool")) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage(ChatColor.RED + "Only players can be given category tools.");
+                return true;
+            }
+
+            if (!sender.hasPermission(VMConstants.PERMISSION_COMMAND_GIVETOOL)) {
+                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
+                return true;
+            }
+
+            if (args.length < 3) {
+                sender.sendMessage("/" + label + " givetool <category> <item> [amount]");
+                return true;
+            }
+
+            VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(args[1]);
+            if (category == null) {
+                sender.sendMessage(ChatColor.RED + "Unknown tool category, " + args[1]);
+                return true;
+            }
+
+            if (category.getItems().isEmpty()) {
+                sender.sendMessage(ChatColor.RED + "Cannot give items from category " + args[1] + " because it does not have any items.");
+                return true;
+            }
+
+            Material material = Material.matchMaterial(args[2]);
+            if (material == null || !material.isItem()) {
+                sender.sendMessage(ChatColor.RED + "Unknown item type. " + ChatColor.GRAY + "Given " + ChatColor.YELLOW + args[2] + ChatColor.GRAY + ".");
+                return true;
+            } else if (!category.getItems().contains(material)) {
+                sender.sendMessage(ChatColor.RED + "Unsupported item type, does not belong to " + ChatColor.YELLOW + category.getId() + ChatColor.RED + ". " + ChatColor.GRAY + "Given " + ChatColor.YELLOW + args[2] + ChatColor.GRAY + ".");
+                return true;
+            }
+
+            int amount = 1;
+            if (args.length >= 4) {
+                amount = Math.max(1, parseInt(args[3], 1));
+            }
+
+            ItemStack itemStack = category.createItemStack(material, amount);
+            if (!player.getInventory().addItem(itemStack).isEmpty()) {
+                sender.sendMessage(ChatColor.RED + "Your inventory was too full and the tool could not be given to you!");
+            } else {
+                String message = "Successfully given the tool from category " + category.getId() + " and type " + itemStack.getType().getKey();
+
+                if (itemStack.hasItemMeta()) {
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    assert itemMeta != null;
+
+                    message += " and NBT " + itemMeta.getAsString() + ".";
+                } else {
+                    message += ".";
+                }
+
+                sender.sendMessage(ChatColor.GREEN + message);
+            }
+
+            return true;
+        }
+
         return false;
     }
 
@@ -291,6 +360,7 @@ public final class CommandVeinMiner implements TabExecutor {
             this.addConditionally(suggestions, "reload", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_RELOAD));
             this.addConditionally(suggestions, "blocklist", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_BLOCKLIST));
             this.addConditionally(suggestions, "toollist", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_TOOLLIST));
+            this.addConditionally(suggestions, "givetool", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_GIVETOOL));
             this.addConditionally(suggestions, "toggle", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_TOGGLE));
             this.addConditionally(suggestions, "mode", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_MODE));
             this.addConditionally(suggestions, "pattern", () -> sender.hasPermission(VMConstants.PERMISSION_COMMAND_PATTERN));
@@ -312,6 +382,14 @@ public final class CommandVeinMiner implements TabExecutor {
 
             if (args[0].equalsIgnoreCase("toggle")) {
                 this.plugin.getToolCategoryRegistry().getAll().forEach(category -> suggestions.add(category.getId().toLowerCase()));
+            }
+
+            else if (args[0].equalsIgnoreCase("givetool")) {
+                this.plugin.getToolCategoryRegistry().getAll().forEach(category -> {
+                    if (!category.getItems().isEmpty()) {
+                        suggestions.add(category.getId().toLowerCase());
+                    }
+                });
             }
 
             else if (args[0].equalsIgnoreCase("mode") && sender instanceof Player player) {
@@ -346,7 +424,49 @@ public final class CommandVeinMiner implements TabExecutor {
             return StringUtil.copyPartialMatches(args[1], suggestions, new ArrayList<>());
         }
 
+        else if (args[0].equalsIgnoreCase("givetool")) {
+            VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(args[1]);
+            if (category == null) {
+                return Collections.emptyList();
+            }
+
+            if (args.length == 3) {
+                List<String> suggestions = new ArrayList<>();
+                category.getItems().forEach(material -> suggestions.add(material.getKey().toString()));
+                return StringUtil.copyPartialMatches(args[2], suggestions, new ArrayList<>());
+            }
+
+            else if (args.length == 4) {
+                if (args[3].isEmpty()) {
+                    return SUGGESTION_OPTIONAL_AMOUNT;
+                }
+
+                if (isNumber(args[3])) {
+                    return Lists.transform(NUMBERS, value -> args[3] + value);
+                } else {
+                    return NUMBERS;
+                }
+            }
+        }
+
         return Collections.emptyList();
+    }
+
+    private boolean isNumber(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private int parseInt(String input, int defaultValue) {
+        try {
+            return Integer.parseInt(input);
+        } catch (IllegalArgumentException e) {
+            return defaultValue;
+        }
     }
 
     private <T> void addConditionally(Collection<T> collection, T value, BooleanSupplier predicate) {

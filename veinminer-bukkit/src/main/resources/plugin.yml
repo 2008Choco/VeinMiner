@@ -98,6 +98,9 @@ permissions:
   veinminer.command.toollist:
     description: Allow the use of the '/toollist' command
     default: op
+  veinminer.command.givetool:
+    description: Allow the use of the '/veinminer givetool' command
+    default: op
   veinminer.command.toggle:
     description: Allow the use of the '/veinminer toggle' subcommand
     default: true

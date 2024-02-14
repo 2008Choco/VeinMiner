@@ -1,5 +1,7 @@
 package wtf.choco.veinminer.tool;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -7,6 +9,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -14,6 +17,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
+import wtf.choco.veinminer.util.ItemStackUtil;
 import wtf.choco.veinminer.util.VMConstants;
 
 /**
@@ -157,6 +161,42 @@ public class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> 
     @UnmodifiableView
     public Set<Material> getItems() {
         return Collections.unmodifiableSet(items);
+    }
+
+    /**
+     * Create an {@link ItemStack} with the given {@link Material} that would be a valid item
+     * for this category (including its NBT value if present).
+     *
+     * @param material the item type to create. Must be in this category's item list
+     * @param amount the item quantity
+     *
+     * @return the item stack
+     */
+    @NotNull
+    public ItemStack createItemStack(@NotNull Material material, int amount) {
+        Preconditions.checkArgument(material != null, "material must not be null");
+        Preconditions.checkArgument(items.contains(material), "material must be an item in this category's item list");
+        Preconditions.checkArgument(amount >= 1, "amount must be >= 1");
+
+        ItemStack itemStack = new ItemStack(material, amount);
+        if (nbtValue != null) {
+            ItemStackUtil.setVeinMinerNBTValue(itemStack, nbtValue);
+        }
+
+        return itemStack;
+    }
+
+    /**
+     * Create an {@link ItemStack} with the given {@link Material} that would be a valid item
+     * for this category (including its NBT value if present).
+     *
+     * @param material the item type to create. Must be in this category's item list
+     *
+     * @return the item stack
+     */
+    @NotNull
+    public ItemStack createItemStack(@NotNull Material material) {
+        return createItemStack(material, 1);
     }
 
     /**
