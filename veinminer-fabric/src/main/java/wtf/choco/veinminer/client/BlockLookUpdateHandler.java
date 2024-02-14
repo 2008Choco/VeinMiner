@@ -49,7 +49,7 @@ public final class BlockLookUpdateHandler {
         FabricServerState serverState = client.getServerState();
         BlockPos lookingAtPos = hit.getBlockPos();
         Direction lookingAtFace = hit.getDirection();
-        BlockState lookingAtState = minecraft.level.getBlockState(lookingAtPos);
+        BlockState lookingAtState = (minecraft.level != null ? minecraft.level.getBlockState(lookingAtPos) : null);
 
         this.updateWireframeIfNecessary(serverState, lookingAtPos, lookingAtFace, lookingAtState);
 
@@ -82,7 +82,7 @@ public final class BlockLookUpdateHandler {
         return lastLookedAtBlockPos;
     }
 
-    private void updateWireframeIfNecessary(@NotNull FabricServerState serverState, @NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace, @NotNull BlockState lookingAtState) {
+    private void updateWireframeIfNecessary(@NotNull FabricServerState serverState, @NotNull BlockPos lookingAtPos, @Nullable Direction lookingAtFace, @Nullable BlockState lookingAtState) {
         ClientConfig config = serverState.getConfig();
         if (!serverState.isActive() || !config.isAllowActivationKeybind()) {
             return;
@@ -94,7 +94,7 @@ public final class BlockLookUpdateHandler {
         }
     }
 
-    private boolean isLookingAtDifferentPositionOrState(@NotNull BlockPos lookingAtPos, @NotNull Direction lookingAtFace, @NotNull BlockState lookingAtState) {
+    private boolean isLookingAtDifferentPositionOrState(@Nullable BlockPos lookingAtPos, @Nullable Direction lookingAtFace, @Nullable BlockState lookingAtState) {
         return !Objects.equals(lastLookedAtBlockPos, lookingAtPos)
                 || !Objects.equals(lastLookedAtBlockFace, lookingAtFace)
                 || !Objects.equals(lastLookedAtBlockState, lookingAtState);
