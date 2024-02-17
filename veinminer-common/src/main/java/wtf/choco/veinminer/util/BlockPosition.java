@@ -32,18 +32,6 @@ public record BlockPosition(int x, int y, int z) implements ProtocolData {
     }
 
     /**
-     * Get a new {@link BlockPosition} relative to the given {@link BlockFace}.
-     *
-     * @param face the direction in which to get the relative position
-     *
-     * @return the relative position
-     */
-    @NotNull
-    public BlockPosition getRelative(@NotNull BlockFace face) {
-        return face.getRelative(this);
-    }
-
-    /**
      * Get the distance squared between this block and the given set of coordinates.
      *
      * @param x the x coordinate
