@@ -1,20 +1,18 @@
 plugins {
     alias(libs.plugins.fabric.loom)
+    alias(libs.plugins.shadow)
 }
 
 dependencies {
-    implementation(project(":veinminer-common"))
+    api(project(":veinminer-common"))
+    shadow(project(":veinminer-common"))
+    modApi(libs.choco.networking.fabric)
 
     minecraft(libs.minecraft.get())
     mappings(loom.officialMojangMappings())
     modImplementation(libs.fabric.loader)
 
     modImplementation(libs.fabric.api)
-    modImplementation(libs.choco.networking.fabric)
-
-    include(project(":veinminer-common"))
-    include(libs.choco.networking.common)
-    include(libs.choco.networking.fabric)
 }
 
 loom {
@@ -33,5 +31,22 @@ tasks {
         from("LICENSE") {
             rename { "${it}_${project.name}" }
         }
+    }
+
+    shadowJar {
+        configurations = listOf(project.configurations["shadow"], project.configurations["modApi"])
+        exclude("META-INF")
+
+        dependencies {
+            include(project(":veinminer-common"))
+            include(dependency(libs.choco.networking.common.get()))
+            include(dependency(libs.choco.networking.fabric.get()))
+        }
+    }
+
+    remapJar {
+        dependsOn("shadowJar")
+        mustRunAfter("shadowJar")
+        inputFile.set(shadowJar.get().archiveFile)
     }
 }
