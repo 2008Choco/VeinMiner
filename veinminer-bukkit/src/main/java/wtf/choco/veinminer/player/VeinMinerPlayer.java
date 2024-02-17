@@ -371,7 +371,7 @@ public final class VeinMinerPlayer implements MessageReceiver {
      * @return true if active, false otherwise
      */
     public boolean isVeinMinerActive() {
-        return activationStrategy.isActive(this);
+        return getActivationStrategy().isActive(this);
     }
 
     /**
