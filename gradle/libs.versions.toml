@@ -12,7 +12,7 @@ anticheat-matrix = "317d4635fd" # This repository is dead now, but we're going t
 anticheat-nocheatplus = "3.16.1-SNAPSHOT"
 anticheat-spartan = "1.0"
 bstats = "3.0.2"
-mcmmo = "085c8db" # https://github.com/mcMMO-Dev/mcMMO/commit/085c8dbf68b8503f84b92c8adbde94631707effe (2.1.175-SNAPSHOT)
+mcmmo = "2.1.228"
 placeholder-api = "2.11.5"
 spigot-api = "1.17.1-R0.1-SNAPSHOT"
 vault-api = "1.7"
@@ -45,7 +45,7 @@ anticheat-spartan = { module = "me.vagdedes:SpartanAPI", version.ref = "antichea
 bstats-base = { module = "org.bstats:bstats-base", version.ref = "bstats" }
 bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
 choco-networking-bukkit = { module = "wtf.choco:networking-bukkit", version.ref = "choco-networking" }
-mcmmo = { module = "com.github.mcMMO-Dev:mcMMO", version.ref = "mcmmo" }
+mcmmo = { module = "com.gmail.nossr50.mcMMO:mcMMO", version.ref = "mcmmo" }
 placeholder-api = { module = "me.clip:placeholderapi", version.ref = "placeholder-api" }
 spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot-api" }
 vault-api = { module = "net.milkbowl.vault:VaultAPI", version.ref = "vault-api" }

@@ -7,6 +7,7 @@ repositories {
 
     maven("https://nexus.hc.to/content/repositories/pub_releases/") // Vault API
     maven("https://maven.enginehub.org/repo/") // WorldGuard
+    maven("https://nexus.neetgames.com/repository/maven-public/") // mcMMO
 
     maven("https://jitpack.io") // mcMMO, Grim AntiCheat, Matrix AntiCheat
     maven("https://repo.janmm14.de/repository/public/") // Advanced AntiCheat
