@@ -43,18 +43,6 @@ public final class MigrationStepBlockListsToCategoriesFile implements MigrationS
             rawCategoriesConfig.set(categoryId + "." + KEY_BLOCK_LIST, config.getStringList(KEY_BLOCK_LIST + "." + categoryId));
         }
 
-        try {
-            /*
-             * setComments() was added in 1.18.1, but it's not big enough of a feature for me to bump past 1.17 support
-             * TODO: Remove try-catch when a version after 1.18 is required
-             */
-            rawCategoriesConfig.setComments("Hand", List.of("Does not support an \"Items\" list, but does support all other options"));
-            rawCategoriesConfig.setComments("All", List.of(
-                "Does not support any configurable values other than \"BlockList\"",
-                "Applies this list of blocks to all other categories, to avoid repetition"
-            ));
-        } catch (Exception | Error e) { /* ignore */ }
-
         config.set(KEY_BLOCK_LIST, "Moved to categories.yml");
     }
 

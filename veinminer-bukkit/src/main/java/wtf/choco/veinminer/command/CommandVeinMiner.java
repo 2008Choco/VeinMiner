@@ -26,7 +26,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -335,18 +334,7 @@ public final class CommandVeinMiner implements TabExecutor {
             if (!player.getInventory().addItem(itemStack).isEmpty()) {
                 sender.sendMessage(ChatColor.RED + "Your inventory was too full and the tool could not be given to you!");
             } else {
-                String message = "Successfully given the tool from category " + category.getId() + " and type " + itemStack.getType().getKey();
-
-                if (itemStack.hasItemMeta()) {
-                    ItemMeta itemMeta = itemStack.getItemMeta();
-                    assert itemMeta != null;
-
-                    message += " and NBT " + itemMeta.getAsString() + ".";
-                } else {
-                    message += ".";
-                }
-
-                sender.sendMessage(ChatColor.GREEN + message);
+                sender.sendMessage(ChatColor.GREEN + "Successfully given the tool from category " + category.getId() + " and type " + itemStack.getType().getKey() + ".");
             }
 
             return true;
