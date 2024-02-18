@@ -21,6 +21,8 @@ loom {
 
 tasks {
     processResources {
+        outputs.upToDateWhen { false } // Always process resource properties
+
         filesMatching("fabric.mod.json") {
             expand(getProperties())
             expand(mutableMapOf("version" to project.version))

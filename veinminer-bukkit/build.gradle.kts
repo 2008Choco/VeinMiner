@@ -42,6 +42,8 @@ dependencies {
 
 tasks {
     processResources {
+        outputs.upToDateWhen { false } // Always process resource properties
+
         filesMatching("plugin.yml") {
             expand(getProperties())
             expand(mutableMapOf("version" to project.version))
