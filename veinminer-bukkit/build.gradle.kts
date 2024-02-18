@@ -20,7 +20,9 @@ dependencies {
     implementation(project(":veinminer-common"))
 
     implementation(libs.bstats.bukkit)
-    implementation(libs.choco.networking.bukkit)
+    implementation(libs.choco.networking.bukkit) {
+        exclude(group = "org.spigotmc", module = "spigot-api")
+    }
 
     compileOnly(libs.placeholder.api)
     compileOnly(libs.vault.api)
