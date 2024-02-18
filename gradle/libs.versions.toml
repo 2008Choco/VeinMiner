@@ -1,6 +1,6 @@
 [versions]
 # (common)
-choco-networking = "0.0.2-SNAPSHOT"
+choco-networking = "0.0.2"
 gson = "2.10.1" # keep in line with Minecraft and/or Bukkit
 jetbrains-annotations = "24.1.0"
 junit = "5.10.2"

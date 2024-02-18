@@ -26,7 +26,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url = uri("http://repo.choco.wtf/releases"); isAllowInsecureProtocol = true }
-        maven { url = uri("http://repo.choco.wtf/snapshots"); isAllowInsecureProtocol = true }
+        // maven { url = uri("http://repo.choco.wtf/snapshots"); isAllowInsecureProtocol = true }
     }
 
     dependencies {
