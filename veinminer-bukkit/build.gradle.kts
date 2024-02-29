@@ -32,7 +32,7 @@ dependencies {
 
     // Anti-cheats
     compileOnly(libs.anticheat.aac)
-    compileOnly(libs.anticheat.grim)
+    // compileOnly(libs.anticheat.grim) // (REMOVED BECAUSE GRIM UPDATED IT'S API FORCING USE OF REFLECTION)
     compileOnly(libs.anticheat.matrix)
     compileOnly(libs.anticheat.nocheatplus)
     compileOnly(libs.anticheat.spartan)
