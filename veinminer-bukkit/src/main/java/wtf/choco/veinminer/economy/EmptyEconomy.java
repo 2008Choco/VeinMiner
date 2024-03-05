@@ -29,4 +29,9 @@ public final class EmptyEconomy implements SimpleEconomy {
     @Override
     public void withdraw(@NotNull Player player, double amount) { }
 
+    @Override
+    public int getFractionalDigits() {
+        return 0;
+    }
+
 }
