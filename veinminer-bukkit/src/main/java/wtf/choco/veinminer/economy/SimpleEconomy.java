@@ -37,4 +37,11 @@ public interface SimpleEconomy {
      */
     public void withdraw(@NotNull Player player, double amount);
 
+    /**
+     * Get the amount of digits to show in the fractional portion of this economy.
+     *
+     * @return the fractional digit count, or -1 if no rounding occurs
+     */
+    public int getFractionalDigits();
+
 }

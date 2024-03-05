@@ -58,6 +58,12 @@ public class SimpleVaultEconomy implements SimpleEconomy {
         }
     }
 
+    @Override
+    public int getFractionalDigits() {
+        Economy economy = this.economy.get();
+        return (economy != null) ? economy.fractionalDigits() : 0;
+    }
+
     private Economy getEconomy() {
         Economy economy = Bukkit.getServicesManager().load(Economy.class);
         if (economy == null) {
