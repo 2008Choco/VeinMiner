@@ -21,7 +21,7 @@ subprojects {
     apply(plugin = "maven-publish")
 
     group = "wtf.choco"
-    version = "2.2.6"
+    version = "2.3.0"
 
     repositories {
         mavenCentral()
