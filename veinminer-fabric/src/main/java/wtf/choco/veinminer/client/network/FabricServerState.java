@@ -5,12 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -19,7 +16,8 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.network.Message;
 import wtf.choco.network.data.NamespacedKey;
-import wtf.choco.network.receiver.MessageReceiver;
+import wtf.choco.network.fabric.FabricMessageReceiver;
+import wtf.choco.network.fabric.RawDataPayload;
 import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.config.ClientConfig;
@@ -36,7 +34,7 @@ import wtf.choco.veinminer.util.BlockPosition;
 /**
  * The client's state on a connected server.
  */
-public final class FabricServerState implements MessageReceiver, VeinMinerClientboundMessageListener {
+public final class FabricServerState implements FabricMessageReceiver, VeinMinerClientboundMessageListener {
 
     private static final VoxelShape WIDE_CUBE = Shapes.box(-0.005, -0.005, -0.005, 1.005, 1.005, 1.005);
 
@@ -219,11 +217,8 @@ public final class FabricServerState implements MessageReceiver, VeinMinerClient
     }
 
     @Override
-    public void sendMessage(@NotNull NamespacedKey channel, byte @NotNull [] message) {
-        FriendlyByteBuf byteBuf = PacketByteBufs.create();
-        byteBuf.writeBytes(message);
-
-        ClientPlayNetworking.send(new ResourceLocation(channel.namespace(), channel.key()), byteBuf);
+    public void sendMessage(@NotNull RawDataPayload payload) {
+        ClientPlayNetworking.send(payload);
     }
 
     /**

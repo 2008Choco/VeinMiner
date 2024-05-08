@@ -15,6 +15,12 @@ dependencies {
     modImplementation(libs.fabric.api)
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
 loom {
     accessWidenerPath = file("src/main/resources/veinminer_companion.accesswidener")
 }

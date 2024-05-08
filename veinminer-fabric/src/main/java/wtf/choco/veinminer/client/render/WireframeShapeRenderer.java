@@ -67,6 +67,11 @@ public final class WireframeShapeRenderer {
 
         // Calculate the stack
         PoseStack stack = context.matrixStack();
+        if (stack == null) { // Should never be null, but maybe in the future it will.
+            client.getProfiler().pop();
+            return;
+        }
+
         Vec3 position = client.getEntityRenderDispatcher().camera.getPosition();
 
         stack.pushPose();
