@@ -1,6 +1,6 @@
 [versions]
 # (common)
-choco-networking = "0.1.0"
+choco-networking = "0.1.1"
 gson = "2.10.1" # keep in line with Minecraft and/or Bukkit
 jetbrains-annotations = "24.1.0"
 junit = "5.10.2"
@@ -23,9 +23,9 @@ vault-api = "1.7"
 worldguard = "7.0.9"
 
 # (fabric)
-fabric-api = "0.97.1+1.20.5"
+fabric-api = "0.100.4+1.21"
 fabric-loader = "0.15.11"
-minecraft = "1.20.5"
+minecraft = "1.21"
 
 # plugins
 aggregate-javadoc = "8.4"

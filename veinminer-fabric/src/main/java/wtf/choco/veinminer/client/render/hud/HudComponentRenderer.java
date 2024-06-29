@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.client.render.hud;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -32,9 +33,9 @@ public final class HudComponentRenderer {
      * Render all hud components.
      *
      * @param graphics the GUI graphics instance
-     * @param tickDelta the tick delta time
+     * @param delta the delta time tracker
      */
-    public void render(@NotNull GuiGraphics graphics, float tickDelta) {
+    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         if (!client.hasServerState()) {
             return;
         }
@@ -52,7 +53,7 @@ public final class HudComponentRenderer {
                 continue;
             }
 
-            component.render(client, serverState, graphics, tickDelta);
+            component.render(client, serverState, graphics, delta.getGameTimeDeltaTicks());
         }
     }
 

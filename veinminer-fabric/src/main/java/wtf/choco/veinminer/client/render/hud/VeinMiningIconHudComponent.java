@@ -16,7 +16,7 @@ import wtf.choco.veinminer.config.ClientConfig;
  */
 public final class VeinMiningIconHudComponent implements HudComponent {
 
-    private static final ResourceLocation VEINMINER_ICON_LOCATION = new ResourceLocation("veinminer_companion", "textures/gui/veinminer_icon.png");
+    private static final ResourceLocation VEINMINER_ICON_LOCATION = ResourceLocation.fromNamespaceAndPath("veinminer_companion", "textures/gui/veinminer_icon.png");
 
     @Override
     public void render(@NotNull Minecraft client, @NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, float delta) {
