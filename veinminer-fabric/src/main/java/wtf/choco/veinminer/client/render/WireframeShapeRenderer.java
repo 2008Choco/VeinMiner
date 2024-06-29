@@ -86,8 +86,8 @@ public final class WireframeShapeRenderer {
         VertexConsumer consumer = source.getBuffer(VeinMinerRenderType.getWireframe());
 
         shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
-            consumer.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 255).endVertex();
-            consumer.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 255).endVertex();
+            consumer.addVertex(matrix, (float) x1, (float) y1, (float) z1).setColor(255, 255, 255, 255);
+            consumer.addVertex(matrix, (float) x2, (float) y2, (float) z2).setColor(255, 255, 255, 255);
         });
 
         source.endBatch(VeinMinerRenderType.getWireframe());
@@ -96,8 +96,8 @@ public final class WireframeShapeRenderer {
         VertexConsumer bufferTransparent = source.getBuffer(VeinMinerRenderType.getWireframeTransparent());
 
         shape.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
-            bufferTransparent.vertex(matrix, (float) x1, (float) y1, (float) z1).color(255, 255, 255, 20).endVertex();
-            bufferTransparent.vertex(matrix, (float) x2, (float) y2, (float) z2).color(255, 255, 255, 20).endVertex();
+            bufferTransparent.addVertex(matrix, (float) x1, (float) y1, (float) z1).setColor(255, 255, 255, 20);
+            bufferTransparent.addVertex(matrix, (float) x2, (float) y2, (float) z2).setColor(255, 255, 255, 20);
         });
 
         source.endBatch(VeinMinerRenderType.getWireframeTransparent());
