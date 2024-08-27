@@ -12,6 +12,7 @@ anticheat-matrix = "317d4635fd" # This repository is dead now, but we're going t
 anticheat-nocheatplus = "3.16.1-SNAPSHOT"
 anticheat-spartan = "1.0"
 anticheat-light = "99d1930f2a" # https://github.com/tiredvekster/LightAntiCheat/commit/99d1930f2afa0e5dd23a5e212aadf49499e3fd83
+anticheat-negativity = "2.7.1"
 bstats = "3.0.2"
 mcmmo = "2.1.228"
 placeholder-api = "2.11.5"
@@ -44,6 +45,7 @@ anticheat-matrix = { module = "com.github.jiangdashao:matrix-api-repo", version.
 anticheat-nocheatplus = { module = "fr.neatmonster:nocheatplus", version.ref = "anticheat-nocheatplus" }
 anticheat-spartan = { module = "me.vagdedes:SpartanAPI", version.ref = "anticheat-spartan" }
 anticheat-light = { module = "com.github.tiredvekster:LightAntiCheat", version.ref = "anticheat-light" }
+anticheat-negativity = { module = "com.github.Elikill58:Negativity", version.ref = "anticheat-negativity" }
 bstats-base = { module = "org.bstats:bstats-base", version.ref = "bstats" }
 bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
 choco-networking-bukkit = { module = "wtf.choco:networking-bukkit", version.ref = "choco-networking" }

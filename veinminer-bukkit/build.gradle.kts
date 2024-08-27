@@ -37,6 +37,7 @@ dependencies {
     compileOnly(libs.anticheat.nocheatplus)
     compileOnly(libs.anticheat.spartan)
     compileOnly(libs.anticheat.light)
+    compileOnly(libs.anticheat.negativity)
 
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
