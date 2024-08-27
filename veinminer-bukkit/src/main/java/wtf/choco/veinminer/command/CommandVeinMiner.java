@@ -74,6 +74,7 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             this.plugin.reloadConfig();
+            this.plugin.getCategoriesConfig().reload();
             this.plugin.getVeinMinerManager().reloadFromConfig();
             this.plugin.getToolCategoryRegistry().reloadFromConfig();
 
