@@ -7,7 +7,7 @@ junit = "5.10.2"
 
 # (bukkit)
 anticheat-aac = "5.0.0"
-# anticheat-grim = "9f5aaef74b" # https://github.com/GrimAnticheat/GrimAPI/commit/9f5aaef74bf94bb3df5924a9c3f48d1ba9e2576d (REMOVED BECAUSE GRIM UPDATED IT'S API FORCING USE OF REFLECTION)
+anticheat-grim = "1193c4fa41" # https://github.com/GrimAnticheat/GrimAPI/commit/1193c4fa41c7eb622645a8beafcc17034fc494f8
 anticheat-matrix = "317d4635fd" # This repository is dead now, but we're going to keep using it because it exists on JitPack :)
 anticheat-nocheatplus = "3.16.1-SNAPSHOT"
 anticheat-spartan = "1.0"
@@ -39,7 +39,7 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 
 # (bukkit)
 anticheat-aac = { module = "de.janmm14:aac-api", version.ref = "anticheat-aac" }
-# anticheat-grim = { module = "com.github.GrimAnticheat:GrimAPI", version.ref = "anticheat-grim" } (REMOVED BECAUSE GRIM UPDATED IT'S API FORCING USE OF REFLECTION)
+anticheat-grim = { module = "com.github.GrimAnticheat:GrimAPI", version.ref = "anticheat-grim" }
 anticheat-matrix = { module = "com.github.jiangdashao:matrix-api-repo", version.ref = "anticheat-matrix" }
 anticheat-nocheatplus = { module = "fr.neatmonster:nocheatplus", version.ref = "anticheat-nocheatplus" }
 anticheat-spartan = { module = "me.vagdedes:SpartanAPI", version.ref = "anticheat-spartan" }
