@@ -1,6 +1,5 @@
 package wtf.choco.veinminer.player;
 
-import com.google.common.base.Enums;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
@@ -9,10 +8,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -41,6 +37,7 @@ import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMin
 import wtf.choco.veinminer.pattern.PatternRegistry;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+import wtf.choco.veinminer.util.AttributeUtil;
 import wtf.choco.veinminer.util.BlockPosition;
 import wtf.choco.veinminer.util.VMEventFactory;
 
@@ -53,10 +50,6 @@ import wtf.choco.veinminer.util.VMEventFactory;
  */
 @Internal
 public final class PlayerNetworkListener implements VeinMinerServerboundMessageListener {
-
-    private static final Attribute ATTRIBUTE_BLOCK_INTERACTION_RANGE = Enums.getIfPresent(Attribute.class, "PLAYER_BLOCK_INTERACTION_RANGE")
-            .or(Enums.getIfPresent(Attribute.class, "BLOCK_INTERACTION_RANGE")) // Renamed in 1.21.2
-            .orNull();
 
     private boolean clientReady = false;
     private boolean usingClientMod = false;
@@ -194,7 +187,7 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
             return;
         }
 
-        double reachDistance = getReachDistance(bukkitPlayer);
+        double reachDistance = AttributeUtil.getReachDistance(bukkitPlayer);
         RayTraceResult rayTraceResult = bukkitPlayer.rayTraceBlocks(reachDistance);
         if (rayTraceResult == null) {
             this.player.sendMessage(new ClientboundVeinMineResults());
@@ -253,17 +246,6 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
         }
 
         this.player.setVeinMiningPattern(event.getNewPattern());
-    }
-
-    private double getReachDistance(Player player) {
-        if (ATTRIBUTE_BLOCK_INTERACTION_RANGE != null) {
-            AttributeInstance attribute = player.getAttribute(ATTRIBUTE_BLOCK_INTERACTION_RANGE);
-            if (attribute != null) {
-                return attribute.getValue();
-            }
-        }
-
-        return player.getGameMode() == GameMode.CREATIVE ? 4.5 : 4;
     }
 
 }

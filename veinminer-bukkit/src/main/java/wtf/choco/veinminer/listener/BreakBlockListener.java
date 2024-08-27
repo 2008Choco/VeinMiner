@@ -37,6 +37,7 @@ import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.player.VeinMinerPlayer;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
+import wtf.choco.veinminer.util.AttributeUtil;
 import wtf.choco.veinminer.util.VMConstants;
 import wtf.choco.veinminer.util.VMEventFactory;
 
@@ -110,9 +111,9 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Fetch the target block face
+        double reachDistance = AttributeUtil.getReachDistance(player);
         BlockFace targetBlockFace;
-        RayTraceResult rayTraceResult = player.rayTraceBlocks(6, FluidCollisionMode.NEVER);
-
+        RayTraceResult rayTraceResult = player.rayTraceBlocks(reachDistance, FluidCollisionMode.NEVER);
         if (rayTraceResult == null || (targetBlockFace = rayTraceResult.getHitBlockFace()) == null) {
             return;
         }
