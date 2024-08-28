@@ -23,7 +23,12 @@ public final class AttributeUtil {
             }
         }
 
-        return player.getGameMode() == GameMode.CREATIVE ? 4.5 : 4;
+        double reachDistance = 4.5;
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            reachDistance += 1;
+        }
+
+        return reachDistance;
     }
 
 }
