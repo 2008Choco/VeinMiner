@@ -47,7 +47,7 @@ anticheat-nocheatplus = { module = "fr.neatmonster:nocheatplus", version.ref = "
 anticheat-spartan = { module = "me.vagdedes:SpartanAPI", version.ref = "anticheat-spartan" }
 anticheat-light = { module = "com.github.tiredvekster:LightAntiCheat", version.ref = "anticheat-light" }
 anticheat-negativity = { module = "com.github.Elikill58:Negativity", version.ref = "anticheat-negativity" }
-anticheat-themis = { module = "com.gmail.olexorous:ThemisAPIDummy", version.ref = "anticheat-themis" } // Dummy API artifact, contains only ViolationEvent and its methods useful to VeinMiner!
+anticheat-themis = { module = "com.gmail.olexorous:ThemisAPIDummy", version.ref = "anticheat-themis" } # Dummy API artifact, contains only ViolationEvent and its methods useful to VeinMiner!
 bstats-base = { module = "org.bstats:bstats-base", version.ref = "bstats" }
 bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
 choco-networking-bukkit = { module = "wtf.choco:networking-bukkit", version.ref = "choco-networking" }
