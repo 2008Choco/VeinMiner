@@ -38,6 +38,7 @@ dependencies {
     compileOnly(libs.anticheat.spartan)
     compileOnly(libs.anticheat.light)
     compileOnly(libs.anticheat.negativity)
+    compileOnly(libs.anticheat.themis)
 
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
