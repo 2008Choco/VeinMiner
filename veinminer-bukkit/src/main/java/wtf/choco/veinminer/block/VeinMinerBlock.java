@@ -15,7 +15,8 @@ import wtf.choco.veinminer.VeinMiner;
 /**
  * Represents a block understood by vein miner.
  */
-public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
+public sealed interface VeinMinerBlock extends Comparable<VeinMinerBlock>
+    permits VeinMinerBlockState, VeinMinerBlockTag, VeinMinerBlockType, VeinMinerBlockWildcard {
 
     /**
      * The wildcard block.
