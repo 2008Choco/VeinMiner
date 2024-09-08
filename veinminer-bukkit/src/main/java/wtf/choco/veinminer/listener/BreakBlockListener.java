@@ -203,7 +203,7 @@ public final class BreakBlockListener implements Listener {
             // Break the block
             Material blockType = block.getType();
             if (block.equals(origin) || player.breakBlock(block)) {
-                StatTracker.accumulateVeinMinedMaterial(blockType);
+                StatTracker.incrementMinedBlock(blockType);
             }
         }
 

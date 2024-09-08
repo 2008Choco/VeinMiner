@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.DrilldownPie;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,12 +22,22 @@ public final class StatTracker {
     private StatTracker() { }
 
     /**
+     * Setup custom charts on the given Metrics instance using data provided by the StatTracker.
+     *
+     * @param metrics the metrics instance to setup
+     */
+    public static void setupMetrics(@NotNull Metrics metrics) {
+        metrics.addCustomChart(new AdvancedPie("blocks_veinmined", StatTracker::pollMinedBlocks));
+        metrics.addCustomChart(new DrilldownPie("installed_anticheats", StatTracker::pollInstalledAntiCheats));
+    }
+
+    /**
      * Add one to the amount of mined blocks for the provided block type.
      *
-     * @param blockType the block type to accumulate
+     * @param material the material to accumulate
      */
-    public static void accumulateVeinMinedMaterial(@NotNull Material blockType) {
-        MINED_BLOCKS.merge(blockType, 1, Integer::sum);
+    public static void incrementMinedBlock(@NotNull Material material) {
+        MINED_BLOCKS.merge(material, 1, Integer::sum);
     }
 
     /**
@@ -35,7 +48,7 @@ public final class StatTracker {
      * @return the readable bStats data
      */
     @NotNull
-    public static Map<String, Integer> getVeinMinedCountAsData() {
+    private static Map<String, Integer> pollMinedBlocks() {
         Map<String, Integer> data = new HashMap<>();
 
         MINED_BLOCKS.forEach((blockType, amount) -> data.put(blockType.getKey().toString(), amount));
@@ -49,7 +62,7 @@ public final class StatTracker {
      *
      * @param antiCheat the anti cheat information
      */
-    public static void recognizeInstalledAntiCheat(@NotNull AntiCheat antiCheat) {
+    public static void addInstalledAntiCheat(@NotNull AntiCheat antiCheat) {
         INSTALLED_ANTI_CHEATS.add(antiCheat);
     }
 
@@ -59,7 +72,7 @@ public final class StatTracker {
      * @return the readable bStats data
      */
     @NotNull
-    public static Map<String, Map<String, Integer>> getInstalledAntiCheatsAsData() {
+    private static Map<String, Map<String, Integer>> pollInstalledAntiCheats() {
         Map<String, Map<String, Integer>> data = new HashMap<>();
 
         INSTALLED_ANTI_CHEATS.forEach(antiCheat -> {

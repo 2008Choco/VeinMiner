@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.bstats.bukkit.Metrics;
-import org.bstats.charts.AdvancedPie;
-import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -218,9 +216,8 @@ public final class VeinMinerPlugin extends JavaPlugin {
             this.getLogger().info("Enabling Plugin Metrics");
 
             Metrics metrics = new Metrics(this, 1938); // https://bstats.org/what-is-my-plugin-id
-            metrics.addCustomChart(new AdvancedPie("blocks_veinmined", StatTracker::getVeinMinedCountAsData));
             metrics.addCustomChart(new SingleLineChart("using_client_mod", playerManager::getPlayerCountUsingClientMod));
-            metrics.addCustomChart(new DrilldownPie("installed_anticheats", StatTracker::getInstalledAntiCheatsAsData));
+            StatTracker.setupMetrics(metrics);
 
             this.getLogger().info("Thanks for enabling Metrics! The anonymous stats are appreciated");
         }
@@ -430,7 +427,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
         Plugin antiCheatPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
         if (antiCheatPlugin != null) {
-            StatTracker.recognizeInstalledAntiCheat(new AntiCheat(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
+            StatTracker.addInstalledAntiCheat(new AntiCheat(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
         }
     }
 
