@@ -9,22 +9,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A type of {@link VeinMinerBlock} backed by a {@link BlockData}.
  */
-public final class VeinMinerBlockState implements VeinMinerBlock {
+final class VeinMinerBlockState implements VeinMinerBlock {
 
     private final BlockData state;
 
-    /**
-     * Construct a new {@link VeinMinerBlockState}.
-     *
-     * @param state the state
-     */
-    public VeinMinerBlockState(@NotNull BlockData state) {
+    VeinMinerBlockState(@NotNull BlockData state) {
         this.state = state;
-    }
-
-    @NotNull
-    public BlockData getState() {
-        return state.clone();
     }
 
     @Override

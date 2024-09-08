@@ -7,22 +7,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A type of {@link VeinMinerBlock} backed by a {@link Material}.
  */
-public final class VeinMinerBlockType implements VeinMinerBlock {
+final class VeinMinerBlockType implements VeinMinerBlock {
 
     private final Material type;
 
-    /**
-     * Construct a new {@link VeinMinerBlockType}.
-     *
-     * @param type the type of block
-     */
-    public VeinMinerBlockType(@NotNull Material type) {
+    VeinMinerBlockType(@NotNull Material type) {
         this.type = type;
-    }
-
-    @NotNull
-    public Material getType() {
-        return type;
     }
 
     @Override

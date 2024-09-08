@@ -173,12 +173,12 @@ public class BlockList implements Iterable<VeinMinerBlock>, Cloneable {
     }
 
     /**
-     * Check whether or not this list contains the {@link VeinMinerBlock#WILDCARD wildcard}.
+     * Check whether or not this list contains a wildcard.
      *
      * @return true if contains wildcard, false otherwise
      */
     public boolean containsWildcard() {
-        return containsOnPredicate(block -> block == VeinMinerBlock.WILDCARD);
+        return containsOnPredicate(block -> block == VeinMinerBlock.wildcard());
     }
 
     private boolean containsOnPredicate(@NotNull Predicate<VeinMinerBlock> predicate) {
