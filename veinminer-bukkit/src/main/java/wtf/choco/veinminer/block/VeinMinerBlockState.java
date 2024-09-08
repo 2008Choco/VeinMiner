@@ -23,20 +23,8 @@ public final class VeinMinerBlockState implements VeinMinerBlock {
     }
 
     @NotNull
-    @Override
-    public Material getType() {
-        return state.getMaterial();
-    }
-
-    @NotNull
-    @Override
     public BlockData getState() {
         return state.clone();
-    }
-
-    @Override
-    public boolean hasState() {
-        return true;
     }
 
     @Override

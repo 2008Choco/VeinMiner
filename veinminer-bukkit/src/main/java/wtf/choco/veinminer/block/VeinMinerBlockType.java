@@ -21,20 +21,8 @@ public final class VeinMinerBlockType implements VeinMinerBlock {
     }
 
     @NotNull
-    @Override
     public Material getType() {
         return type;
-    }
-
-    @NotNull
-    @Override
-    public BlockData getState() {
-        return type.createBlockData();
-    }
-
-    @Override
-    public boolean hasState() {
-        return false;
     }
 
     @Override

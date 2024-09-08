@@ -23,32 +23,6 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
     public static final VeinMinerBlock WILDCARD = new VeinMinerBlockWildcard();
 
     /**
-     * Get the {@link Material} represented by this block.
-     *
-     * @return the type
-     */
-    @NotNull
-    public Material getType();
-
-    /**
-     * Get the {@link BlockData} represented by this block.
-     * <p>
-     * If this block has no state (e.g. {@link #hasState()} is {@code false}), this method
-     * should return a state with default block state values.
-     *
-     * @return the state
-     */
-    @NotNull
-    public BlockData getState();
-
-    /**
-     * Check whether or not this block has at least one state set.
-     *
-     * @return true if a state is set, false otherwise
-     */
-    public boolean hasState();
-
-    /**
      * Check whether or not this {@link VeinMinerBlock} matches the given {@link Material}.
      *
      * @param type the type to check
