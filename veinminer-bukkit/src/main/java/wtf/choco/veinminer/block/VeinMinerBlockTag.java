@@ -8,21 +8,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A type of {@link VeinMinerBlock} backed by a block {@link Tag}.
  */
-public final class VeinMinerBlockTag implements VeinMinerBlock {
+final class VeinMinerBlockTag implements VeinMinerBlock {
 
     private final Tag<Material> tag;
 
-    /**
-     * Construct a new {@link VeinMinerBlockTag}.
-     *
-     * @param tag the block tag
-     */
-    public VeinMinerBlockTag(Tag<Material> tag) {
+    VeinMinerBlockTag(Tag<Material> tag) {
         this.tag = tag;
-    }
-
-    public Tag<Material> getTag() {
-        return tag;
     }
 
     @Override

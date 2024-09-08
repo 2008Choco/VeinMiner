@@ -7,7 +7,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A type of {@link VeinMinerBlock} that passes all states and types.
  */
-public final class VeinMinerBlockWildcard implements VeinMinerBlock {
+final class VeinMinerBlockWildcard implements VeinMinerBlock {
+
+    static final VeinMinerBlockWildcard INSTANCE = new VeinMinerBlockWildcard();
 
     VeinMinerBlockWildcard() { }
 

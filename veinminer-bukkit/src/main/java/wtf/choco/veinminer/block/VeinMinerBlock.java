@@ -19,13 +19,6 @@ public sealed interface VeinMinerBlock extends Comparable<VeinMinerBlock>
     permits VeinMinerBlockState, VeinMinerBlockTag, VeinMinerBlockType, VeinMinerBlockWildcard {
 
     /**
-     * The wildcard block.
-     *
-     * @see VeinMinerBlockWildcard
-     */
-    public static final VeinMinerBlock WILDCARD = new VeinMinerBlockWildcard();
-
-    /**
      * Checks whether or not this block is tangible and can be defined as a specific type. For
      * blocks where this is false, when vein mined, subsequent blocks must be matched against the
      * type of the origin in order to avoid unintentional aliasing with other types within this
@@ -82,6 +75,52 @@ public sealed interface VeinMinerBlock extends Comparable<VeinMinerBlock>
     }
 
     /**
+     * Get a {@link VeinMinerBlock} for a {@link BlockData}.
+     *
+     * @param state the block state
+     *
+     * @return the vein miner block
+     */
+    @NotNull
+    public static VeinMinerBlock state(@NotNull BlockData state) {
+        return new VeinMinerBlockState(state);
+    }
+
+    /**
+     * Get a {@link VeinMinerBlock} for a {@link Tag}.
+     *
+     * @param tag the block tag
+     *
+     * @return the vein miner block
+     */
+    @NotNull
+    public static VeinMinerBlock tag(@NotNull Tag<Material> tag) {
+        return new VeinMinerBlockTag(tag);
+    }
+
+    /**
+     * Get a {@link VeinMinerBlock} for a {@link Material}.
+     *
+     * @param material the block type
+     *
+     * @return the vein miner block
+     */
+    @NotNull
+    public static VeinMinerBlock type(@NotNull Material material) {
+        return new VeinMinerBlockType(material);
+    }
+
+    /**
+     * Get a wildcard {@link VeinMinerBlock}.
+     *
+     * @return the vein miner wildcard block
+     */
+    @NotNull
+    public static VeinMinerBlock wildcard() {
+        return VeinMinerBlockWildcard.INSTANCE;
+    }
+
+    /**
      * Get a {@link VeinMinerBlock} from a string. Example states:
      * <pre>
      * chest
@@ -99,22 +138,17 @@ public sealed interface VeinMinerBlock extends Comparable<VeinMinerBlock>
     @Nullable
     public static VeinMinerBlock fromString(@NotNull String string) {
         if (string.equals("*")) {
-            return WILDCARD;
+            return wildcard();
         }
 
         if (string.startsWith("#")) {
-            // TODO: Use the new tag system
             NamespacedKey tagKey = NamespacedKey.fromString(string.substring(1));
             if (tagKey == null) {
                 return null;
             }
 
-            Tag<Material> tag = Bukkit.getTag("blocks", tagKey, Material.class);
-            if (tag == null) {
-                return null;
-            }
-
-            return new VeinMinerBlockTag(tag);
+            Tag<Material> tag = Bukkit.getTag("blocks", tagKey, Material.class); // TODO: Use the new tag system
+            return tag != null ? tag(tag) : null;
         }
 
         Matcher matcher = VeinMiner.PATTERN_BLOCK_STATE.matcher(string);
@@ -126,14 +160,14 @@ public sealed interface VeinMinerBlock extends Comparable<VeinMinerBlock>
 
         if (stated) {
             try {
-                return new VeinMinerBlockState(Bukkit.createBlockData(matcher.group()));
+                return state(Bukkit.createBlockData(matcher.group()));
             } catch (IllegalArgumentException e) {
                 return null;
             }
         }
         else {
             Material type = Material.matchMaterial(matcher.group(1));
-            return (type != null && type.isBlock()) ? new VeinMinerBlockType(type) : null;
+            return (type != null && type.isBlock()) ? type(type) : null;
         }
     }
 
