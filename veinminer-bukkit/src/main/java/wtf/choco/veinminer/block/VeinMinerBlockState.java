@@ -28,6 +28,11 @@ public final class VeinMinerBlockState implements VeinMinerBlock {
     }
 
     @Override
+    public boolean isTangible() {
+        return true;
+    }
+
+    @Override
     public boolean matchesType(@NotNull Material type) {
         return false; // Will never match a general type. State always has AT LEAST one state
     }
