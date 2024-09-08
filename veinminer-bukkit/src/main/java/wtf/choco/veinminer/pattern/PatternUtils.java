@@ -6,8 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
-import wtf.choco.veinminer.block.VeinMinerBlockTag;
-import wtf.choco.veinminer.block.VeinMinerBlockWildcard;
 
 /**
  * Utility methods for implementing {@link VeinMiningPattern VeinMiningPatterns}.
@@ -30,7 +28,7 @@ public final class PatternUtils {
      * false otherwise
      */
     public static boolean typeMatches(@NotNull VeinMinerBlock block, @Nullable BlockList aliasList, @NotNull BlockData origin, @NotNull BlockData current) {
-        if (block instanceof VeinMinerBlockWildcard || block instanceof VeinMinerBlockTag) {
+        if (!block.isTangible()) {
             return origin.getMaterial() == current.getMaterial() || (aliasList != null && aliasList.containsState(current));
         }
 

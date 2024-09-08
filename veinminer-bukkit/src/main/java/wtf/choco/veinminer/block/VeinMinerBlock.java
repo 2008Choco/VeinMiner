@@ -26,6 +26,16 @@ public sealed interface VeinMinerBlock extends Comparable<VeinMinerBlock>
     public static final VeinMinerBlock WILDCARD = new VeinMinerBlockWildcard();
 
     /**
+     * Checks whether or not this block is tangible and can be defined as a specific type. For
+     * blocks where this is false, when vein mined, subsequent blocks must be matched against the
+     * type of the origin in order to avoid unintentional aliasing with other types within this
+     * block implementation.
+     *
+     * @return true if tangible, false otherwise
+     */
+    public boolean isTangible();
+
+    /**
      * Check whether or not this {@link VeinMinerBlock} matches the given {@link Material}.
      *
      * @param type the type to check

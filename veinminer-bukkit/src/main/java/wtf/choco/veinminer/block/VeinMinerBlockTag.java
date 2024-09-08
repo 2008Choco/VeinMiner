@@ -26,6 +26,11 @@ public final class VeinMinerBlockTag implements VeinMinerBlock {
     }
 
     @Override
+    public boolean isTangible() {
+        return false;
+    }
+
+    @Override
     public boolean matchesType(@NotNull Material type) {
         return tag.isTagged(type);
     }

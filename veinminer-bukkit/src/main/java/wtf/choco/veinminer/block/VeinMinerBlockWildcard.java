@@ -12,6 +12,11 @@ public final class VeinMinerBlockWildcard implements VeinMinerBlock {
     VeinMinerBlockWildcard() { }
 
     @Override
+    public boolean isTangible() {
+        return true;
+    }
+
+    @Override
     public boolean matchesType(@NotNull Material type) {
         return true;
     }
