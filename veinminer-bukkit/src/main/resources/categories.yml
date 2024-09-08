@@ -3,7 +3,8 @@
 # Block list values are 1:1 with in-game IDs. The prepending of "minecraft:" is optional.
 # To specify states, do so with [brackets] as you would in a vanilla /setblock command. For
 # example, "minecraft:chest[waterlogged=true]" will search for any waterlogged chests. Other
-# undefined states will be ignored when checking.
+# undefined states will be ignored when checking. Tag keys may also be specified if desired
+# by prepending the key with a #. For example, '#minecraft:logs' will reference all log blocks.
 #
 # Each category may define any of the following options:
 # "RepairFriendly", "MaxVeinSize", "Cost", and "DisabledWorlds"
@@ -108,61 +109,28 @@ Pickaxe:
   - 'minecraft:diamond_pickaxe'
   - 'minecraft:netherite_pickaxe'
   BlockList:
+  - '#minecraft:coal_ores'
+  - '#minecraft:copper_ores'
+  - '#minecraft:diamond_ores'
+  - '#minecraft:emerald_ores'
+  - '#minecraft:gold_ores'
+  - '#minecraft:iron_ores'
+  - '#minecraft:lapis_ores'
+  - '#minecraft:redstone_ores'
   - 'minecraft:amethyst_cluster'
   - 'minecraft:ancient_debris'
-  - 'minecraft:coal_ore'
-  - 'minecraft:copper_ore'
-  - 'minecraft:deepslate_coal_ore'
-  - 'minecraft:deepslate_copper_ore'
-  - 'minecraft:deepslate_diamond_ore'
-  - 'minecraft:deepslate_emerald_ore'
-  - 'minecraft:deepslate_gold_ore'
-  - 'minecraft:deepslate_iron_ore'
-  - 'minecraft:deepslate_lapis_ore'
-  - 'minecraft:deepslate_redstone_ore'
-  - 'minecraft:diamond_ore'
-  - 'minecraft:emerald_ore'
-  - 'minecraft:gold_ore'
-  - 'minecraft:iron_ore'
-  - 'minecraft:lapis_ore'
-  - 'minecraft:nether_gold_ore'
   - 'minecraft:nether_quartz_ore'
   - 'minecraft:raw_copper_block'
   - 'minecraft:raw_gold_block'
   - 'minecraft:raw_iron_block'
-  - 'minecraft:redstone_ore'
 
 Shears:
   Items:
   - 'minecraft:shears'
   BlockList:
-  - 'minecraft:acacia_leaves'
-  - 'minecraft:azalea_leaves'
-  - 'minecraft:birch_leaves'
-  - 'minecraft:black_wool'
-  - 'minecraft:blue_wool'
-  - 'minecraft:brown_wool'
-  - 'minecraft:cherry_leaves'
+  - '#minecraft:leaves'
+  - '#minecraft:wool'
   - 'minecraft:cobweb'
-  - 'minecraft:cyan_wool'
-  - 'minecraft:dark_oak_leaves'
-  - 'minecraft:flowering_azalea_leaves'
-  - 'minecraft:gray_wool'
-  - 'minecraft:green_wool'
-  - 'minecraft:jungle_leaves'
-  - 'minecraft:light_blue_wool'
-  - 'minecraft:light_gray_wool'
-  - 'minecraft:lime_wool'
-  - 'minecraft:magenta_wool'
-  - 'minecraft:mangrove_leaves'
-  - 'minecraft:oak_leaves'
-  - 'minecraft:orange_wool'
-  - 'minecraft:pink_wool'
-  - 'minecraft:purple_wool'
-  - 'minecraft:red_wool'
-  - 'minecraft:spruce_leaves'
-  - 'minecraft:white_wool'
-  - 'minecraft:yellow_wool'
 
 Shovel:
   Items:

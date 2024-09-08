@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,9 +71,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
     }
 
     /**
-     * Get a {@link VeinMinerBlock} from a string.
-     *
-     * Example states:
+     * Get a {@link VeinMinerBlock} from a string. Example states:
      * <pre>
      * chest
      * minecraft:chest
@@ -79,6 +79,7 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
      * minecraft:chest[facing=north,waterlogged=true]
      * * // The wildcard state
      * </pre>
+     * This method will also support a tag key such as {@code #minecraft:leaves}.
      *
      * @param string the string from which to parse a VeinMinerBlock instance
      *
@@ -88,6 +89,21 @@ public interface VeinMinerBlock extends Comparable<VeinMinerBlock> {
     public static VeinMinerBlock fromString(@NotNull String string) {
         if (string.equals("*")) {
             return WILDCARD;
+        }
+
+        if (string.startsWith("#")) {
+            // TODO: Use the new tag system
+            NamespacedKey tagKey = NamespacedKey.fromString(string.substring(1));
+            if (tagKey == null) {
+                return null;
+            }
+
+            Tag<Material> tag = Bukkit.getTag("blocks", tagKey, Material.class);
+            if (tag == null) {
+                return null;
+            }
+
+            return new VeinMinerBlockTag(tag);
         }
 
         Matcher matcher = VeinMiner.PATTERN_BLOCK_STATE.matcher(string);
