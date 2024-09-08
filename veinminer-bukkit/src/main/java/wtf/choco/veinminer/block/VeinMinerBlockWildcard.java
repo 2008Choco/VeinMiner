@@ -3,6 +3,7 @@ package wtf.choco.veinminer.block;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A type of {@link VeinMinerBlock} that passes all states and types.
@@ -32,6 +33,11 @@ final class VeinMinerBlockWildcard implements VeinMinerBlock {
     @Override
     public String toStateString() {
         return "*";
+    }
+
+    @Override
+    public int compareTo(@Nullable VeinMinerBlock other) {
+        return -1; // Always at the top
     }
 
     @Override
