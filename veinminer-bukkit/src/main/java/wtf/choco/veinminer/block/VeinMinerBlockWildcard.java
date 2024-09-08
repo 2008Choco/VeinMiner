@@ -11,23 +11,6 @@ public final class VeinMinerBlockWildcard implements VeinMinerBlock {
 
     VeinMinerBlockWildcard() { }
 
-    @NotNull
-    @Override
-    public Material getType() {
-        return Material.AIR;
-    }
-
-    @NotNull
-    @Override
-    public BlockData getState() {
-        return Material.AIR.createBlockData();
-    }
-
-    @Override
-    public boolean hasState() {
-        return false;
-    }
-
     @Override
     public boolean matchesType(@NotNull Material type) {
         return true;
