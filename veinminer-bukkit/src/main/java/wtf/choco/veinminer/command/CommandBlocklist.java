@@ -57,9 +57,11 @@ public final class CommandBlocklist implements TabExecutor {
             BlockList blockList = category.getBlockList();
 
             String blockArg = args[2].toLowerCase();
-            VeinMinerBlock block = VeinMinerBlock.fromString(blockArg);
-            if (block == null) {
-                sender.sendMessage(ChatColor.RED + "Unknown block type, state, or tag (was it an item)? " + ChatColor.GRAY + "Given " + ChatColor.YELLOW + blockArg + ChatColor.GRAY + ".");
+            VeinMinerBlock block;
+            try {
+                block = VeinMinerBlock.fromString(blockArg);
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage(ChatColor.RED + e.getMessage());
                 return true;
             }
 
@@ -84,9 +86,11 @@ public final class CommandBlocklist implements TabExecutor {
             BlockList blockList = category.getBlockList();
 
             String blockArg = args[2].toLowerCase();
-            VeinMinerBlock block = VeinMinerBlock.fromString(blockArg);
-            if (block == null) {
-                sender.sendMessage(ChatColor.RED + "Unknown block type, state, or tag (was it an item)? " + ChatColor.GRAY + "Given " + ChatColor.YELLOW + blockArg + ChatColor.GRAY + ".");
+            VeinMinerBlock block;
+            try {
+                block = VeinMinerBlock.fromString(blockArg);
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage(ChatColor.RED + e.getMessage());
                 return true;
             }
 

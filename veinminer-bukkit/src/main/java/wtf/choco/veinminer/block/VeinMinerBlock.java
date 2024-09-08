@@ -134,8 +134,11 @@ public sealed interface VeinMinerBlock extends Comparable<VeinMinerBlock>
      * @param string the string from which to parse a VeinMinerBlock instance
      *
      * @return the constructed VeinMinerBlock, or null if an invalid format was provided
+     *
+     * @throws IllegalArgumentException if the parsing failed for some reason (specified by
+     * the exception's error message)
      */
-    @Nullable
+    @NotNull
     public static VeinMinerBlock fromString(@NotNull String string) {
         if (string.equals("*")) {
             return wildcard();
@@ -144,30 +147,39 @@ public sealed interface VeinMinerBlock extends Comparable<VeinMinerBlock>
         if (string.startsWith("#")) {
             NamespacedKey tagKey = NamespacedKey.fromString(string.substring(1));
             if (tagKey == null) {
-                return null;
+                throw new IllegalArgumentException("Malformed tag key: \"" + string + "\"");
             }
 
             Tag<Material> tag = Bukkit.getTag("blocks", tagKey, Material.class); // TODO: Use the new tag system
-            return tag != null ? tag(tag) : null;
+            if (tag == null) {
+                throw new IllegalArgumentException("No such tag with key \"" + string + "\"");
+            }
+
+            return tag(tag);
         }
 
         Matcher matcher = VeinMiner.PATTERN_BLOCK_STATE.matcher(string);
         if (!matcher.find()) {
-            return null;
+            throw new IllegalArgumentException("Invalid block state string: \"" + string + "\"");
         }
 
         boolean stated = (matcher.group(2) != null);
 
         if (stated) {
+            String stateString = matcher.group();
             try {
-                return state(Bukkit.createBlockData(matcher.group()));
+                return state(Bukkit.createBlockData(stateString));
             } catch (IllegalArgumentException e) {
-                return null;
+                throw new IllegalArgumentException("Unknown or invalid block state string: \"" + stateString + "\"");
             }
-        }
-        else {
-            Material type = Material.matchMaterial(matcher.group(1));
-            return (type != null && type.isBlock()) ? type(type) : null;
+        } else {
+            String typeKey = matcher.group(1);
+            Material type = Material.matchMaterial(typeKey);
+            if (type == null || !type.isBlock()) {
+                throw new IllegalArgumentException("No such block with key \"" + typeKey + "\"");
+            }
+
+            return type(type);
         }
     }
 
