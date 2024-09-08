@@ -284,10 +284,12 @@ public class BlockList implements Iterable<VeinMinerBlock>, Cloneable {
         BlockList blocklist = new BlockList();
 
         for (String blockStateString : blockStateStrings) {
-            VeinMinerBlock veinMinerBlock = VeinMinerBlock.fromString(blockStateString);
-            if (veinMinerBlock == null) {
+            VeinMinerBlock veinMinerBlock;
+            try {
+                veinMinerBlock = VeinMinerBlock.fromString(blockStateString);
+            } catch (IllegalArgumentException e) {
                 if (logger != null) {
-                    logger.warning(String.format("Unknown or invalid block state string for input: \"%s\". Is it an item?", blockStateString));
+                    logger.warning(e.getMessage());
                 }
 
                 continue;
