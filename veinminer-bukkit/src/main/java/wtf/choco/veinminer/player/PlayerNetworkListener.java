@@ -220,7 +220,7 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
             return;
         }
 
-        BlockList aliasBlockList = veinMinerManager.getAlias(vmBlock);
+        BlockList aliasBlockList = veinMinerManager.getAliases(vmBlock);
         List<Block> blocks = player.getVeinMiningPattern().allocateBlocks(targetBlock, targetBlockFace, vmBlock, category.getConfiguration(), aliasBlockList);
 
         this.player.sendMessage(new ClientboundVeinMineResults(blocks.parallelStream().map(block -> new BlockPosition(block.getX(), block.getY(), block.getZ())).toList()));
