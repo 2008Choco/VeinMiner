@@ -43,4 +43,6 @@ final class ConfigKeys {
     static final String KEY_COST = "Cost";
     static final String KEY_DISABLED_WORLDS = "DisabledWorlds";
 
+    private ConfigKeys() { }
+
 }
