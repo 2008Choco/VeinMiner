@@ -20,7 +20,7 @@ import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.config.ConfigWrapper;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
-import wtf.choco.veinminer.data.PersistentDataStorage;
+import wtf.choco.veinminer.data.PersistentStorageType;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
 import wtf.choco.veinminer.player.ActivationStrategy;
@@ -207,15 +207,14 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
 
     @NotNull
     @Override
-    public PersistentDataStorage.@NotNull Type getStorageType() {
-        PersistentDataStorage.Type type = PersistentDataStorage.Type.SQLITE;
-
+    public PersistentStorageType getStorageType() {
         String typeString = plugin.getConfig().getString(KEY_STORAGE_TYPE);
-        if (typeString != null) {
-            type = Enums.getIfPresent(PersistentDataStorage.Type.class, typeString.toUpperCase()).or(type);
+        if (typeString == null) {
+            return PersistentStorageType.SQLITE;
         }
 
-        return type;
+        PersistentStorageType type = PersistentStorageType.getByName(typeString.toLowerCase());
+        return type != null ? type : PersistentStorageType.NONE;
     }
 
     @Nullable

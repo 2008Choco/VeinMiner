@@ -13,7 +13,7 @@ import wtf.choco.veinminer.player.VeinMinerPlayer;
  * An implementation of {@link PersistentDataStorage} that performs no save or load
  * operations. This implementation is used only when all other implementations fail.
  */
-public final class PersistentDataStorageNoOp implements PersistentDataStorage {
+final class PersistentDataStorageNoOp implements PersistentDataStorage {
 
     /**
      * The {@link PersistentDataStorageNoOp} singleton instance.
@@ -24,8 +24,8 @@ public final class PersistentDataStorageNoOp implements PersistentDataStorage {
 
     @NotNull
     @Override
-    public Type getType() {
-        return Type.UNKNOWN;
+    public PersistentStorageType getType() {
+        return PersistentStorageType.NONE;
     }
 
     @NotNull

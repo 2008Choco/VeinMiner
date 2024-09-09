@@ -2,8 +2,6 @@ package wtf.choco.veinminer;
 
 import com.google.common.base.Preconditions;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,10 +42,7 @@ import wtf.choco.veinminer.config.impl.StandardVeinMinerConfiguration;
 import wtf.choco.veinminer.config.migrator.ConfigMigrator;
 import wtf.choco.veinminer.config.migrator.MigrationStep;
 import wtf.choco.veinminer.data.PersistentDataStorage;
-import wtf.choco.veinminer.data.PersistentDataStorageJSON;
-import wtf.choco.veinminer.data.PersistentDataStorageMySQL;
-import wtf.choco.veinminer.data.PersistentDataStorageNoOp;
-import wtf.choco.veinminer.data.PersistentDataStorageSQLite;
+import wtf.choco.veinminer.data.PersistentStorageType;
 import wtf.choco.veinminer.economy.EmptyEconomy;
 import wtf.choco.veinminer.economy.SimpleEconomy;
 import wtf.choco.veinminer.economy.SimpleVaultEconomy;
@@ -86,7 +81,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
     private PatternRegistry patternRegistry = new PatternRegistry();
 
     private SimpleEconomy economy = EmptyEconomy.INSTANCE;
-    private PersistentDataStorage storage = PersistentDataStorageNoOp.INSTANCE;
+    private PersistentDataStorage storage = PersistentStorageType.NONE.createStorage(this);
 
     private final UpdateChecker updateChecker = new SpigotMCUpdateChecker(this, 12038);
     private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
@@ -307,15 +302,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     /**
-     * Set VeinMiner's {@link PersistentDataStorage} implementation.
-     *
-     * @param storage the persistent data storage
-     */
-    public void setPersistentDataStorage(@NotNull PersistentDataStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
      * Get VeinMiner's {@link PersistentDataStorage}.
      *
      * @return the persistent data storage
@@ -432,55 +418,17 @@ public final class VeinMinerPlugin extends JavaPlugin {
     }
 
     private void setupPersistentStorage() {
-        PersistentDataStorage.Type storageType = getConfiguration().getStorageType();
-
         try {
-            PersistentDataStorage persistentDataStorage = switch (storageType) {
-                case JSON -> {
-                    File jsonDirectory = getConfiguration().getJsonStorageDirectory();
+            this.storage = getConfiguration().getStorageType().createStorage(this);
+            this.storage.init();
 
-                    if (jsonDirectory == null) {
-                        this.getLogger().warning("Incomplete configuration for JSON persistent storage. Requires a valid directory.");
-                        yield PersistentDataStorageNoOp.INSTANCE;
-                    }
-
-                    yield new PersistentDataStorageJSON(this, jsonDirectory);
-                }
-                case SQLITE -> new PersistentDataStorageSQLite(this, getDataFolder().toPath(), "veinminer.db");
-                case MYSQL -> {
-                    String host = getConfiguration().getMySQLHost();
-                    int port = getConfiguration().getMySQLPort();
-                    String username = getConfiguration().getMySQLUsername();
-                    String password = getConfiguration().getMySQLPassword();
-                    String database = getConfiguration().getMySQLDatabase();
-                    String tablePrefix = getConfiguration().getMySQLTablePrefix();
-
-                    if (host == null || database == null || username == null || password == null || tablePrefix == null) {
-                        this.getLogger().warning("Incomplete configuration for MySQL persistent storage. Requires a valid host, port, database, username, password, and table prefix.");
-                        yield PersistentDataStorageNoOp.INSTANCE;
-                    }
-
-                    yield new PersistentDataStorageMySQL(this, host, port, username, password, database, tablePrefix);
-                }
-                default -> {
-                    this.getLogger().warning("No persistent storage is available. This may be a bug.");
-                    yield PersistentDataStorageNoOp.INSTANCE;
-                }
-            };
-
-            this.setPersistentDataStorage(persistentDataStorage);
-
-            persistentDataStorage.init().whenComplete((result, e) -> {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
-
-                this.getLogger().info("Using " + persistentDataStorage.getType() + " for persistent storage.");
-            });
-        } catch (IOException e) {
-            this.getLogger().severe("Could not setup persistent file storage. Player data cannot be saved nor loaded. Investigate IMMEDIATELY.");
-            e.printStackTrace();
+            if (storage.getType() != PersistentStorageType.NONE) {
+                this.getLogger().info("Using \"" + storage.getType().getName() + "\" for persistent data storage.");
+            } else {
+                this.getLogger().warning("Not persistently storing player data. Is this intentional?");
+            }
+        } catch (Throwable e) {
+            this.getLogger().severe("Could not setup persistent file storage. Player data cannot be saved nor loaded. Investigate IMMEDIATELY. Cause: " + e.getMessage());
         }
     }
 
