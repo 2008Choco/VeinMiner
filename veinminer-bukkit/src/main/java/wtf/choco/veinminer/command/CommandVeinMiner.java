@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.data.LegacyImportTask;
-import wtf.choco.veinminer.data.PersistentDataStorageSQL;
+import wtf.choco.veinminer.data.LegacyImportable;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.player.VeinMinerPlayer;
@@ -262,7 +262,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            if (!(plugin.getPersistentDataStorage() instanceof PersistentDataStorageSQL dataStorage)) {
+            if (!(plugin.getPersistentDataStorage() instanceof LegacyImportable importable)) {
                 sender.sendMessage(ChatColor.RED + "You are not using MySQL or SQLite storage. You do not need to import data.");
                 return true;
             }
@@ -286,7 +286,7 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             this.requiresConfirmation.remove(sender);
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new LegacyImportTask(plugin, sender, dataStorage));
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new LegacyImportTask(plugin, sender, importable, plugin.getPersistentDataStorage().getType().getName()));
             return true;
         }
 

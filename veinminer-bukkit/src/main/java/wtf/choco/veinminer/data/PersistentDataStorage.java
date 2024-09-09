@@ -14,12 +14,12 @@ import wtf.choco.veinminer.player.VeinMinerPlayer;
 public interface PersistentDataStorage {
 
     /**
-     * Get the {@link Type} of persistent storage.
+     * Get the {@link PersistentStorageType} of this storage.
      *
-     * @return the type
+     * @return the storage type
      */
     @NotNull
-    public Type getType();
+    public PersistentStorageType getType();
 
     /**
      * Initialize this persistent storage.
@@ -71,32 +71,5 @@ public interface PersistentDataStorage {
      */
     @NotNull
     public CompletableFuture<List<VeinMinerPlayer>> load(@NotNull Collection<? extends VeinMinerPlayer> players);
-
-    /**
-     * Represents a support type of persistent storage.
-     */
-    public enum Type {
-
-        /**
-         * A series of JSON files in a directory. One file per player.
-         */
-        JSON,
-
-        /**
-         * A remote MySQL server.
-         */
-        MYSQL,
-
-        /**
-         * A local SQLite flat file.
-         */
-        SQLITE,
-
-        /**
-         * An unknown type of persistent storage. Not supported.
-         */
-        UNKNOWN;
-
-    }
 
 }

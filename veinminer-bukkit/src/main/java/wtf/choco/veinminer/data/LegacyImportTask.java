@@ -23,7 +23,7 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
  * A {@link Runnable} task that will read VeinMiner's playerdata directory and import it
- * into a {@link PersistentDataStorageSQL}.
+ * into a {@link LegacyImportable} type.
  * <p>
  * This is an internal class and not meant for public API.
  */
@@ -32,19 +32,22 @@ public final class LegacyImportTask implements Runnable {
 
     private final VeinMinerPlugin plugin;
     private final CommandSender sender;
-    private final PersistentDataStorageSQL dataStorage;
+    private final LegacyImportable importable;
+    private final String targetName;
 
     /**
      * Construct a new {@link LegacyImportTask}.
      *
      * @param plugin the vein miner instance
      * @param sender the sender to which messages should be sent about the task's progress
-     * @param dataStorage the data storage into which data should be imported
+     * @param importable the data storage into which data should be imported
+     * @param targetName the name of the target importable data structure
      */
-    public LegacyImportTask(VeinMinerPlugin plugin, CommandSender sender, PersistentDataStorageSQL dataStorage) {
+    public LegacyImportTask(VeinMinerPlugin plugin, CommandSender sender, LegacyImportable importable, String targetName) {
         this.plugin = plugin;
         this.sender = sender;
-        this.dataStorage = dataStorage;
+        this.importable = importable;
+        this.targetName = targetName;
     }
 
     @Override
@@ -110,7 +113,7 @@ public final class LegacyImportTask implements Runnable {
         this.sender.sendMessage("Done!");
         this.sender.sendMessage("Importing (" + legacyPlayerData.size() + ") players into the database... This might take some time.");
 
-        this.dataStorage.importLegacyData(legacyPlayerData).whenComplete((succeeded, e) -> {
+        this.importable.importLegacyData(legacyPlayerData).whenComplete((succeeded, e) -> {
             if (e != null) {
                 this.sender.sendMessage("Something went wrong during the import. Check the console for more information.");
                 e.printStackTrace();
@@ -119,7 +122,7 @@ public final class LegacyImportTask implements Runnable {
 
             this.sender.sendMessage("Done!");
             this.sender.sendMessage("");
-            this.sender.sendMessage("Successfully imported (" + succeeded + ") players into the " + dataStorage.getType().name().toLowerCase() + " database.");
+            this.sender.sendMessage("Successfully imported (" + succeeded + ") players into the " + targetName.toLowerCase() + " database.");
             if (failed.get() > 0) {
                 this.sender.sendMessage("(" + failed + ") users failed to import correctly. These users cannot be imported automatically.");
             }

@@ -16,7 +16,7 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 /**
  * An implementation of {@link PersistentDataStorage} for SQLite databases.
  */
-public final class PersistentDataStorageSQLite extends PersistentDataStorageSQL {
+final class PersistentDataStorageSQLite extends PersistentDataStorageSQL {
 
     // Create tables
 
@@ -47,18 +47,8 @@ public final class PersistentDataStorageSQLite extends PersistentDataStorageSQL 
 
     private final String connectionURL;
 
-    /**
-     * Construct a new {@link PersistentDataStorageSQLite}.
-     *
-     * @param plugin the vein miner instance
-     * @param directoryPath the path to the directory in which the database is located
-     * @param fileName the name of the file at which the database is located
-     *
-     * @throws IOException if an exception occurs while creating the database file (if it was
-     * not already created)
-     */
-    public PersistentDataStorageSQLite(@NotNull VeinMinerPlugin plugin, @NotNull Path directoryPath, @NotNull String fileName) throws IOException {
-        super(plugin);
+    PersistentDataStorageSQLite(@NotNull PersistentStorageType type, @NotNull VeinMinerPlugin plugin, @NotNull Path directoryPath, @NotNull String fileName) throws IOException {
+        super(type, plugin);
 
         Path databaseFilePath = directoryPath.resolve(fileName);
         if (Files.notExists(databaseFilePath)) {
@@ -70,12 +60,6 @@ public final class PersistentDataStorageSQLite extends PersistentDataStorageSQL 
         }
 
         this.connectionURL = "jdbc:sqlite:" + databaseFilePath.toAbsolutePath();
-    }
-
-    @NotNull
-    @Override
-    public Type getType() {
-        return Type.SQLITE;
     }
 
     @Override

@@ -13,7 +13,7 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 /**
  * An implementation of {@link PersistentDataStorage} for MySQL servers.
  */
-public final class PersistentDataStorageMySQL extends PersistentDataStorageSQL {
+final class PersistentDataStorageMySQL extends PersistentDataStorageSQL {
 
     private static final String CREATE_TABLE_PLAYERS = """
             CREATE TABLE IF NOT EXISTS %prefix%player_data (
@@ -50,30 +50,13 @@ public final class PersistentDataStorageMySQL extends PersistentDataStorageSQL {
     private final String username, password;
     private final String tablePrefix;
 
-    /**
-     * Construct a new {@link PersistentDataStorageMySQL}.
-     *
-     * @param plugin the vein miner instance
-     * @param host the server host
-     * @param port the server port
-     * @param username the username
-     * @param password the password
-     * @param database the database to use
-     * @param tablePrefix the prefix for all tables created by this implementation
-     */
-    public PersistentDataStorageMySQL(@NotNull VeinMinerPlugin plugin, @NotNull String host, int port, @NotNull String username, @NotNull String password, @NotNull String database, @NotNull String tablePrefix) {
-        super(plugin);
+    PersistentDataStorageMySQL(@NotNull PersistentStorageType type, @NotNull VeinMinerPlugin plugin, @NotNull String host, int port, @NotNull String username, @NotNull String password, @NotNull String database, @NotNull String tablePrefix) {
+        super(type, plugin);
 
         this.connectionURL = String.format("jdbc:mysql://%s:%d/%s", host, port, database);
         this.username = username;
         this.password = password;
         this.tablePrefix = tablePrefix;
-    }
-
-    @NotNull
-    @Override
-    public Type getType() {
-        return Type.MYSQL;
     }
 
     @Override

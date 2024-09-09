@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.data.PersistentDataStorage;
+import wtf.choco.veinminer.data.PersistentStorageType;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.player.ActivationStrategy;
 
@@ -238,7 +238,7 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
      * @return the storage type
      */
     @NotNull
-    public PersistentDataStorage.Type getStorageType();
+    public PersistentStorageType getStorageType();
 
     /**
      * Get the {@link File} directory in which JSON data is stored.

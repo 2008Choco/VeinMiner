@@ -27,19 +27,15 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 /**
  * An implementation of {@link PersistentDataStorage} for JSON files in a directory.
  */
-public final class PersistentDataStorageJSON implements PersistentDataStorage {
+final class PersistentDataStorageJSON implements PersistentDataStorage {
 
+    private final PersistentStorageType type;
     private final VeinMinerPlugin plugin;
     private final File directory;
     private final Gson gson;
 
-    /**
-     * Construct a new {@link PersistentDataStorageJSON}.
-     *
-     * @param plugin the vein miner instance
-     * @param directory the directory where all JSON files are held
-     */
-    public PersistentDataStorageJSON(@NotNull VeinMinerPlugin plugin, @NotNull File directory) {
+    PersistentDataStorageJSON(@NotNull PersistentStorageType type, @NotNull VeinMinerPlugin plugin, @NotNull File directory) {
+        this.type = type;
         this.plugin = plugin;
         this.directory = directory;
         this.gson = new Gson();
@@ -47,8 +43,8 @@ public final class PersistentDataStorageJSON implements PersistentDataStorage {
 
     @NotNull
     @Override
-    public Type getType() {
-        return Type.JSON;
+    public PersistentStorageType getType() {
+        return type;
     }
 
     @NotNull

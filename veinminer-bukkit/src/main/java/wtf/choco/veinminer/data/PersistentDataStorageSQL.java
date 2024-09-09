@@ -28,17 +28,20 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategory;
  * @see PersistentDataStorageMySQL
  * @see PersistentDataStorageSQLite
  */
-public abstract class PersistentDataStorageSQL implements PersistentDataStorage { // Java 17: Sealed classes
+abstract sealed class PersistentDataStorageSQL implements PersistentDataStorage, LegacyImportable permits PersistentDataStorageMySQL, PersistentDataStorageSQLite {
 
+    private final PersistentStorageType type;
     private final VeinMinerPlugin plugin;
 
-    /**
-     * Construct a new {@link PersistentDataStorageSQL}.
-     *
-     * @param plugin the vein miner instance
-     */
-    public PersistentDataStorageSQL(@NotNull VeinMinerPlugin plugin) {
+    PersistentDataStorageSQL(@NotNull PersistentStorageType type, @NotNull VeinMinerPlugin plugin) {
+        this.type = type;
         this.plugin = plugin;
+    }
+
+    @NotNull
+    @Override
+    public PersistentStorageType getType() {
+        return type;
     }
 
     @NotNull
@@ -163,15 +166,8 @@ public abstract class PersistentDataStorageSQL implements PersistentDataStorage 
         });
     }
 
-    /**
-     * Import legacy data into the SQL database. This makes no attempt at preserving existing
-     * entries in the database.
-     *
-     * @param data the data to import
-     *
-     * @return a completable future, completed when the import has finished
-     */
     @NotNull
+    @Override
     public CompletableFuture<Integer> importLegacyData(@NotNull List<LegacyPlayerData> data) {
         if (data.isEmpty()) {
             return CompletableFuture.completedFuture(0);
