@@ -200,24 +200,27 @@ public final class VeinMinerManager {
     }
 
     /**
-     * Get an alias {@link BlockList} that contains the given {@link VeinMinerBlock}.
+     * Get a {@link BlockList} containing all known aliases for the given block.
      *
-     * @param block the block
+     * @param block the block whose aliases to get
      *
-     * @return a block list containing all blocks with which the given block is aliased.
-     * Changes made to the returned list will not affect aliases
+     * @return a block list containing all blocks with which the given block is aliased,
+     * or null if this block is not aliased at all. Changes made to the returned list will
+     * not affect alias definitions
      */
     @Nullable
     public BlockList getAliases(@NotNull VeinMinerBlock block) {
         BlockList aliasList = null;
 
         for (BlockList blockList : aliases) {
-            if (blockList.contains(block)) {
-                if (aliasList == null) {
-                    aliasList = blockList.clone();
-                } else {
-                    aliasList.addAll(blockList);
-                }
+            if (!blockList.contains(block)) {
+                continue;
+            }
+
+            if (aliasList == null) {
+                aliasList = blockList.clone();
+            } else {
+                aliasList.addAll(blockList);
             }
         }
 
