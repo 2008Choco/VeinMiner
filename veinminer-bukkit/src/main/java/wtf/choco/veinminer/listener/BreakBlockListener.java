@@ -125,7 +125,7 @@ public final class BreakBlockListener implements Listener {
         assert originVeinMinerBlock != null; // If this is null, something is broken internally
 
         VeinMiningPattern pattern = veinMinerPlayer.getVeinMiningPattern();
-        BlockList aliasBlockList = veinMinerManager.getAlias(originVeinMinerBlock);
+        BlockList aliasBlockList = veinMinerManager.getAliases(originVeinMinerBlock);
 
         List<Block> blocks = new ArrayList<>(pattern.allocateBlocks(origin, targetBlockFace, originVeinMinerBlock, category.getConfiguration(), aliasBlockList));
         blocks.removeIf(Block::isEmpty);

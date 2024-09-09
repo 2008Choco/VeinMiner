@@ -3,7 +3,6 @@ package wtf.choco.veinminer.manager;
 import com.sk89q.worldedit.world.block.BlockType;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -201,40 +200,24 @@ public final class VeinMinerManager {
     }
 
     /**
-     * Remove an alias that contains the given {@link VeinMinerBlock}.
-     *
-     * @param block the block
-     *
-     * @return the removed alias block list, or null if none contained the block
-     */
-    @Nullable
-    public BlockList removeAliasContaining(@NotNull VeinMinerBlock block) {
-        Iterator<BlockList> aliasIterator = aliases.iterator();
-
-        while (aliasIterator.hasNext()) {
-            BlockList blockList = aliasIterator.next();
-
-            if (blockList.contains(block)) {
-                aliasIterator.remove();
-                return blockList;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Get an alias {@link BlockList} that contains the given {@link VeinMinerBlock}.
      *
      * @param block the block
      *
-     * @return the alias block list to which the block belongs
+     * @return a block list containing all blocks with which the given block is aliased.
+     * Changes made to the returned list will not affect aliases
      */
     @Nullable
-    public BlockList getAlias(@NotNull VeinMinerBlock block) {
+    public BlockList getAliases(@NotNull VeinMinerBlock block) {
+        BlockList aliasList = null;
+
         for (BlockList blockList : aliases) {
             if (blockList.contains(block)) {
-                return blockList;
+                if (aliasList == null) {
+                    aliasList = blockList.clone();
+                } else {
+                    aliasList.addAll(blockList);
+                }
             }
         }
 
