@@ -257,8 +257,8 @@ public final class VeinMinerManager {
         int aliasesAdded = 0;
         for (String aliasString : config.getAliasStrings()) {
             List<String> aliasStringEntries = List.of(aliasString.split(";"));
-            if (aliasStringEntries.size() <= 1) {
-                this.plugin.getLogger().warning("Alias \"%s\" contains %d entries but must have at least 2. Not adding.".formatted(aliasString, aliasStringEntries.size()));
+            if (aliasStringEntries.size() <= 1 && !aliasStringEntries.get(0).startsWith("#")) {
+                this.plugin.getLogger().warning("Alias \"%s\" contains %d entries but must have at least 2, or be a tag. Ignoring...".formatted(aliasString, aliasStringEntries.size()));
                 continue;
             }
 
