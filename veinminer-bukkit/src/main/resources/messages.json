@@ -4,7 +4,7 @@
 	"command.unknown_category": "<red>A tool category with the id \"%s\" does not exist!",
 	"command.unknown_item": "<red>Cannot find item with key \"%s\". Does it exist?",
     "command.veinminer.reload.success": "<green>VeinMiner configuration successfully reloaded!",
-    "command.veinminer.version.border": "<gold><bold>--------------------------------------------",
+    "command.veinminer.version.border": "<gold><bold><strikethrough>--------------------------------------------",
     "command.veinminer.version.version": "<gold>Version: <white>%s",
     "command.veinminer.version.version_alert": "<gold>Version: <white>%s <gray>(%s<gray>)",
     "command.veinminer.version.version.update_available": "<green><bold>UPDATE AVAILABLE!",
