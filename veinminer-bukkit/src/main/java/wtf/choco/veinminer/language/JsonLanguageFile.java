@@ -1,7 +1,6 @@
 package wtf.choco.veinminer.language;
 
 import com.google.common.base.Enums;
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -38,7 +37,6 @@ public final class JsonLanguageFile implements LanguageFile {
      * @param filePath the file path. Must end with .json
      */
     public JsonLanguageFile(Path filePath) {
-        Preconditions.checkArgument(filePath.getFileName().endsWith(".json"), "filePath must be a .json file");
         this.filePath = filePath;
     }
 
