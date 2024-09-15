@@ -159,12 +159,6 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
         return Math.max(plugin.getConfig().getInt(KEY_HUNGER_MINIMUM_FOOD_LEVEL, 1), 0);
     }
 
-    @Nullable
-    @Override
-    public String getHungryMessage() {
-        return plugin.getConfig().getString(KEY_HUNGER_HUNGRY_MESSAGE);
-    }
-
     @NotNull
     @Override
     public ClientConfig getClientConfiguration() {

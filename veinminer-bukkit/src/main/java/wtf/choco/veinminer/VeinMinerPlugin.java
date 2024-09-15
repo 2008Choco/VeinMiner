@@ -2,6 +2,7 @@ package wtf.choco.veinminer;
 
 import com.google.common.base.Preconditions;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +48,8 @@ import wtf.choco.veinminer.economy.SimpleEconomy;
 import wtf.choco.veinminer.economy.SimpleVaultEconomy;
 import wtf.choco.veinminer.integration.PlaceholderExpansionVeinMiner;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
+import wtf.choco.veinminer.language.JsonLanguageFile;
+import wtf.choco.veinminer.language.LanguageFile;
 import wtf.choco.veinminer.listener.BlockDropCollectionListener;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.ItemDamageListener;
@@ -85,6 +88,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
     private final UpdateChecker updateChecker = new SpigotMCUpdateChecker(this, 12038);
     private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
 
+    private LanguageFile language;
     private ConfigWrapper categoriesConfig;
     private final VeinMinerConfiguration configuration = new StandardVeinMinerConfiguration(this);
 
@@ -111,6 +115,12 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         this.categoriesConfig = new ConfigWrapper(this, "categories.yml");
+
+        if (!new File(getDataFolder(), "messages.json").exists()) {
+            this.saveResource("messages.json", false);
+        }
+        this.language = new JsonLanguageFile(getDataFolder().toPath().resolve("messages.json"));
+        this.language.reload(getLogger());
 
         this.saveDefaultConfig();
 
@@ -317,6 +327,16 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @NotNull
     public UpdateChecker getUpdateChecker() {
         return updateChecker;
+    }
+
+    /**
+     * Get VeinMiner's language file instance.
+     *
+     * @return the language
+     */
+    @NotNull
+    public LanguageFile getLanguage() {
+        return language;
     }
 
     /**

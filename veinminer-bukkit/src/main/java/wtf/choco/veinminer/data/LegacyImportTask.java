@@ -18,6 +18,8 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.language.LanguageFile;
+import wtf.choco.veinminer.language.LanguageKeys;
 import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
@@ -52,7 +54,8 @@ public final class LegacyImportTask implements Runnable {
 
     @Override
     public void run() {
-        this.sender.sendMessage("Looking for data folder...");
+        LanguageFile language = plugin.getLanguage();
+        language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_SEARCHING);
 
         File jsonStorageDirectory = plugin.getConfiguration().getJsonStorageDirectory();
         if (jsonStorageDirectory == null || !jsonStorageDirectory.isDirectory()) {
@@ -60,7 +63,7 @@ public final class LegacyImportTask implements Runnable {
         }
 
         if (!jsonStorageDirectory.isDirectory()) {
-            this.sender.sendMessage("No data to import.");
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_NO_DATA);
             return;
         }
 
@@ -69,7 +72,7 @@ public final class LegacyImportTask implements Runnable {
         List<LegacyPlayerData> legacyPlayerData = new ArrayList<>();
         AtomicInteger failed = new AtomicInteger();
 
-        this.sender.sendMessage("Found legacy data directory (" + jsonStorageDirectory.getName() + "), reading all player data... This might take some time.");
+        language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_FOUND, jsonStorageDirectory.getName());
 
         for (File file : jsonStorageDirectory.listFiles((dir, name) -> name.endsWith(".json"))) {
             String fileName = file.getName();
@@ -105,26 +108,26 @@ public final class LegacyImportTask implements Runnable {
                 legacyPlayerData.add(new LegacyPlayerData(playerUUID, activationStrategy, disabledCategories));
             } catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
                 failed.incrementAndGet();
-                this.sender.sendMessage("Could not import the data of " + playerUUID);
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_FAIL_PLAYER, playerUUID.toString());
                 continue;
             }
         }
 
-        this.sender.sendMessage("Done!");
-        this.sender.sendMessage("Importing (" + legacyPlayerData.size() + ") players into the database... This might take some time.");
+        language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_DONE);
+        language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_IMPORTING, legacyPlayerData.size());
 
         this.importable.importLegacyData(legacyPlayerData).whenComplete((succeeded, e) -> {
             if (e != null) {
-                this.sender.sendMessage("Something went wrong during the import. Check the console for more information.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_FAIL_UNKNOWN);
                 e.printStackTrace();
                 return;
             }
 
-            this.sender.sendMessage("Done!");
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_DONE);
             this.sender.sendMessage("");
-            this.sender.sendMessage("Successfully imported (" + succeeded + ") players into the " + targetName.toLowerCase() + " database.");
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_SUCCESS, succeeded, targetName.toLowerCase());
             if (failed.get() > 0) {
-                this.sender.sendMessage("(" + failed + ") users failed to import correctly. These users cannot be imported automatically.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_SUCCESS_FAILURES, failed);
             }
         });
     }

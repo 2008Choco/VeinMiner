@@ -17,7 +17,6 @@ final class ConfigKeys {
     static final String KEY_DISABLED_GAME_MODES = "DisabledGameModes";
     static final String KEY_HUNGER_HUNGER_MODIFIER = "Hunger.HungerModifier";
     static final String KEY_HUNGER_MINIMUM_FOOD_LEVEL = "Hunger.MinimumFoodLevel";
-    static final String KEY_HUNGER_HUNGRY_MESSAGE = "Hunger.HungryMessage";
     static final String KEY_CLIENT_ALLOW_ACTIVATION_KEYBIND = "Client.AllowActivationKeybind";
     static final String KEY_CLIENT_ALLOW_PATTERN_SWITCHING_KEYBIND = "Client.AllowPatternSwitchingKeybind";
     static final String KEY_CLIENT_ALLOW_WIREFRAME_RENDERING = "Client.AllowWireframeRendering";
