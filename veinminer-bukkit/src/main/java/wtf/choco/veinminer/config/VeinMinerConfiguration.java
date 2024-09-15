@@ -156,15 +156,6 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
     public int getMinimumFoodLevel();
 
     /**
-     * Get the message to send to the player when they were too hungry to vein mine. The returned
-     * string is legacy colour code formatted with {@code '&'} used in place of section symbols.
-     *
-     * @return the hungry message
-     */
-    @Nullable
-    public String getHungryMessage();
-
-    /**
      * Get the default {@link ClientConfig}.
      *
      * @return the default client configuration

@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.language.LanguageFile;
+import wtf.choco.veinminer.language.LanguageKeys;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 
@@ -37,9 +38,11 @@ public final class CommandToollist implements TabExecutor {
             return true;
         }
 
+        LanguageFile language = plugin.getLanguage();
+
         VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(args[0]);
         if (category == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown tool category, " + args[0]);
+            language.send(sender, LanguageKeys.COMMAND_UNKNOWN_CATEGORY, args[0]);
             return true;
         }
 
@@ -55,7 +58,7 @@ public final class CommandToollist implements TabExecutor {
             }
 
             if (category instanceof VeinMinerToolCategoryHand) {
-                sender.sendMessage(ChatColor.RED + "Cannot add tools to the hand category.");
+                language.send(sender, LanguageKeys.COMMAND_TOOLLIST_ADD_HAND);
                 return true;
             }
 
@@ -63,19 +66,19 @@ public final class CommandToollist implements TabExecutor {
             Material material = Material.matchMaterial(itemArg);
 
             if (material == null || !material.isItem()) {
-                sender.sendMessage(ChatColor.RED + "Unknown item type. " + ChatColor.GRAY + "Given " + ChatColor.YELLOW + itemArg + ChatColor.GRAY + ".");
+                language.send(sender, LanguageKeys.COMMAND_UNKNOWN_ITEM, itemArg);
                 return true;
             }
 
             if (!category.addItem(material)) {
-                sender.sendMessage(ChatColor.RED + material.getKey().toString() + " is already on the " + category.getId() + " tool list.");
+                language.send(sender, LanguageKeys.COMMAND_TOOLLIST_ADD_EXISTS, material.getKey().toString(), category.getId());
                 return true;
             }
 
             // Update configuration
             category.getConfiguration().setItems(new ArrayList<>(category.getItems()));
 
-            sender.sendMessage(ChatColor.YELLOW + material.getKey().toString() + ChatColor.GRAY + " successfully added to the tool list.");
+            language.send(sender, LanguageKeys.COMMAND_TOOLLIST_ADD_SUCCESS, material.getKey().toString(), category.getId());
             return true;
         }
 
@@ -86,12 +89,12 @@ public final class CommandToollist implements TabExecutor {
             }
 
             if (category instanceof VeinMinerToolCategoryHand) {
-                sender.sendMessage(ChatColor.RED + "Cannot remove tools from the hand category.");
+                language.send(sender, LanguageKeys.COMMAND_TOOLLIST_REMOVE_HAND);
                 return true;
             }
 
             if (category.getItems().size() == 1) {
-                sender.sendMessage(ChatColor.RED + "The " + category.getId() + " category has only 1 item. Cannot remove from in game.");
+                language.send(sender, LanguageKeys.COMMAND_TOOLLIST_REMOVE_TOO_FEW_ITEMS, category.getId());
                 return true;
             }
 
@@ -99,19 +102,19 @@ public final class CommandToollist implements TabExecutor {
             Material material = Material.matchMaterial(itemArg);
 
             if (material == null || !material.isItem()) {
-                sender.sendMessage(ChatColor.RED + "Unknown item type. " + ChatColor.GRAY + "Given " + ChatColor.YELLOW + itemArg + ChatColor.GRAY + ".");
+                language.send(sender, LanguageKeys.COMMAND_UNKNOWN_ITEM, itemArg);
                 return true;
             }
 
             if (!category.removeItem(material)) {
-                sender.sendMessage(ChatColor.RED + material.getKey().toString() + " is not on the " + category.getId() + " tool list.");
+                language.send(sender, LanguageKeys.COMMAND_TOOLLIST_REMOVE_MISSING, material.getKey().toString(), category.getId());
                 return true;
             }
 
             // Update configuration
             category.getConfiguration().setItems(new ArrayList<>(category.getItems()));
 
-            sender.sendMessage(ChatColor.YELLOW + material.getKey().toString() + ChatColor.GRAY + " successfully removed from the tool list.");
+            language.send(sender, LanguageKeys.COMMAND_TOOLLIST_REMOVE_SUCCESS, material.getKey().toString(), category.getId());
             return true;
         }
 
@@ -119,13 +122,13 @@ public final class CommandToollist implements TabExecutor {
             Set<Material> items = category.getItems();
 
             if (items.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "The " + category.getId() + " category has no tools.");
+                language.send(sender, LanguageKeys.COMMAND_TOOLLIST_LIST_EMPTY, category.getId());
                 return true;
             }
 
             sender.sendMessage("");
-            sender.sendMessage(ChatColor.GREEN + "Tool list " + ChatColor.GRAY + "for category " + ChatColor.GREEN + category.getId().replace("_", " ") + ChatColor.GRAY + ":");
-            category.getItems().forEach(tool -> sender.sendMessage(ChatColor.WHITE + " - " + ChatColor.YELLOW + tool.getKey().toString()));
+            language.send(sender, LanguageKeys.COMMAND_TOOLLIST_LIST_HEADER, category.getId());
+            category.getItems().forEach(tool -> language.send(sender, LanguageKeys.COMMAND_TOOLLIST_LIST_ENTRY, tool.getKey().toString()));
             sender.sendMessage("");
             return true;
         }

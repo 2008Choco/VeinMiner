@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,6 +30,8 @@ import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.economy.SimpleEconomy;
 import wtf.choco.veinminer.integration.WorldGuardIntegration;
+import wtf.choco.veinminer.language.LanguageFile;
+import wtf.choco.veinminer.language.LanguageKeys;
 import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.metrics.StatTracker;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
@@ -91,10 +92,12 @@ public final class BreakBlockListener implements Listener {
             return;
         }
 
+        LanguageFile language = plugin.getLanguage();
+
         // WorldGuard check
         boolean worldGuard = Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
         if (worldGuard && !WorldGuardIntegration.queryFlagVeinMiner(origin, player)) {
-            player.sendMessage(ChatColor.GRAY + "You are not allowed to vein mine in this area.");
+            language.send(player, LanguageKeys.VEINMINER_WORLDGUARD);
             return;
         }
 
@@ -104,7 +107,7 @@ public final class BreakBlockListener implements Listener {
             SimpleEconomy economy = plugin.getEconomy();
             if (economy.shouldCharge(player)) {
                 if (!economy.hasSufficientBalance(player, cost)) {
-                    player.sendMessage(ChatColor.GRAY + "You have insufficient funds to vein mine (Required: " + ChatColor.YELLOW + cost + ChatColor.GRAY + ")");
+                    language.send(player, LanguageKeys.VEINMINER_INSUFFICIENT_FUNDS, cost);
                     return;
                 }
 
@@ -166,10 +169,7 @@ public final class BreakBlockListener implements Listener {
         float hungerModifier = plugin.getConfiguration().getHungerModifier() * 0.025F;
         int minimumFoodLevel = plugin.getConfiguration().getMinimumFoodLevel();
 
-        String hungryMessage = plugin.getConfiguration().getHungryMessage();
-        if (hungryMessage != null) {
-            hungryMessage = ChatColor.translateAlternateColorCodes('&', hungryMessage);
-        }
+        String hungryMessage = language.get(LanguageKeys.VEINMINER_HUNGRY);
 
         boolean isHandCategory = category instanceof VeinMinerToolCategoryHand;
         boolean shouldApplyHunger = !player.hasPermission(VMConstants.PERMISSION_FREE_HUNGER);
@@ -180,7 +180,7 @@ public final class BreakBlockListener implements Listener {
                 this.applyHungerDebuff(player, hungerModifier);
 
                 if (player.getFoodLevel() <= minimumFoodLevel) {
-                    if (hungryMessage != null) {
+                    if (!hungryMessage.isBlank()) {
                         player.sendMessage(hungryMessage);
                     }
 

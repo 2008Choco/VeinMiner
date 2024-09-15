@@ -35,6 +35,8 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.data.LegacyImportTask;
 import wtf.choco.veinminer.data.LegacyImportable;
+import wtf.choco.veinminer.language.LanguageFile;
+import wtf.choco.veinminer.language.LanguageKeys;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.player.VeinMinerPlayer;
@@ -67,9 +69,11 @@ public final class CommandVeinMiner implements TabExecutor {
             return false;
         }
 
+        LanguageFile language = plugin.getLanguage();
+
         if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission(VMConstants.PERMISSION_COMMAND_RELOAD)) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
+                sender.sendMessage(language.get(LanguageKeys.COMMAND_INSUFFICIENT_PERMISSIONS));
                 return true;
             }
 
@@ -77,26 +81,27 @@ public final class CommandVeinMiner implements TabExecutor {
             this.plugin.getCategoriesConfig().reload();
             this.plugin.getVeinMinerManager().reloadFromConfig();
             this.plugin.getToolCategoryRegistry().reloadFromConfig();
+            this.plugin.getLanguage().reload(plugin.getLogger());
 
             // Update configurations for all players
             this.plugin.getPlayerManager().getAll().forEach(veinMinerPlayer -> {
                 veinMinerPlayer.setClientConfig(plugin.getConfiguration().getClientConfiguration(veinMinerPlayer.getPlayer()));
             });
 
-            sender.sendMessage(ChatColor.GREEN + "VeinMiner configuration successfully reloaded.");
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_RELOAD_SUCCESS);
             return true;
         }
 
         else if (args[0].equalsIgnoreCase("version")) {
             PluginDescriptionFile description = plugin.getDescription();
-            String headerFooter = ChatColor.GOLD.toString() + ChatColor.BOLD + ChatColor.STRIKETHROUGH + "-".repeat(44);
+            String headerFooter = language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_BORDER);
 
             sender.sendMessage(headerFooter);
             sender.sendMessage("");
-            sender.sendMessage(ChatColor.GOLD + "Version: " + ChatColor.WHITE + description.getVersion() + getUpdateSuffix());
-            sender.sendMessage(ChatColor.GOLD + "Developer: " + ChatColor.WHITE + description.getAuthors().get(0));
-            sender.sendMessage(ChatColor.GOLD + "Plugin page: " + ChatColor.WHITE + description.getWebsite());
-            sender.sendMessage(ChatColor.GOLD + "Source code: " + ChatColor.WHITE + "https://github.com/2008Choco/VeinMiner");
+            sender.sendMessage(getVersionLine(language));
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_DEVELOPER, description.getAuthors().get(0));
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_WEBSITE, description.getWebsite());
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_WEBSITE, "https://github.com/2008Choco/VeinMiner");
             sender.sendMessage("");
             sender.sendMessage(headerFooter);
             return true;
@@ -104,12 +109,12 @@ public final class CommandVeinMiner implements TabExecutor {
 
         else if (args[0].equalsIgnoreCase("toggle")) {
             if (!(sender instanceof Player player)) {
-                sender.sendMessage("Vein miner cannot be toggled from the console.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_TOGGLE_CONSOLE);
                 return true;
             }
 
             if (!canVeinMine(player) || !player.hasPermission(VMConstants.PERMISSION_COMMAND_TOGGLE)) {
-                player.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
+                language.send(sender, LanguageKeys.COMMAND_INSUFFICIENT_PERMISSIONS);
                 return true;
             }
 
@@ -122,28 +127,24 @@ public final class CommandVeinMiner implements TabExecutor {
             if (args.length >= 2) {
                 VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(args[1]);
                 if (category == null) {
-                    player.sendMessage(ChatColor.RED + "Invalid tool category " + args[1] + ".");
+                    language.send(sender, LanguageKeys.COMMAND_UNKNOWN_CATEGORY, args[1]);
                     return true;
                 }
 
                 veinMinerPlayer.setVeinMinerEnabled(category, !veinMinerPlayer.isVeinMinerEnabled(category));
-                player.sendMessage(ChatColor.GRAY + "Vein miner toggled "
-                    + (veinMinerPlayer.isVeinMinerEnabled(category)
-                            ? ChatColor.GREEN.toString() + ChatColor.BOLD + "ON"
-                            : ChatColor.RED.toString() + ChatColor.BOLD + "OFF"
-                    )
-                    + ChatColor.GRAY + " for tool " + ChatColor.YELLOW + category.getId().toLowerCase() + ChatColor.GRAY + ".");
-            }
-
-            // Toggle all tools
-            else {
+                if (veinMinerPlayer.isVeinMinerEnabled(category)) {
+                    language.send(sender, LanguageKeys.COMMAND_VEINMINER_TOGGLE_SUCCESS_CATEGORY_ON, category.getId());
+                } else {
+                    language.send(sender, LanguageKeys.COMMAND_VEINMINER_TOGGLE_SUCCESS_CATEGORY_OFF, category.getId());
+                }
+            } else {
+                // Toggle all tools
                 veinMinerPlayer.setVeinMinerEnabled(!veinMinerPlayer.isVeinMinerEnabled());
-                player.sendMessage(ChatColor.GRAY + "Vein miner toggled "
-                    + (veinMinerPlayer.isVeinMinerDisabled()
-                            ? ChatColor.RED.toString() + ChatColor.BOLD + "OFF"
-                            : ChatColor.GREEN.toString() + ChatColor.BOLD + "ON"
-                    )
-                    + ChatColor.GRAY + " for " + ChatColor.YELLOW + "all tools" + ChatColor.GRAY + ".");
+                if (veinMinerPlayer.isVeinMinerEnabled()) {
+                    language.send(sender, LanguageKeys.COMMAND_VEINMINER_TOGGLE_SUCCESS_ALL_ON);
+                } else {
+                    language.send(sender, LanguageKeys.COMMAND_VEINMINER_TOGGLE_SUCCESS_ALL_OFF);
+                }
             }
 
             return true;
@@ -151,12 +152,12 @@ public final class CommandVeinMiner implements TabExecutor {
 
         else if (args[0].equalsIgnoreCase("mode")) {
             if (!(sender instanceof Player player)) {
-                sender.sendMessage("Vein miner modes cannot be changed from the console.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_MODE_CONSOLE);
                 return true;
             }
 
             if (!canVeinMine(player) || !player.hasPermission(VMConstants.PERMISSION_COMMAND_MODE)) {
-                player.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
+                language.send(sender, LanguageKeys.COMMAND_INSUFFICIENT_PERMISSIONS);
                 return true;
             }
 
@@ -167,7 +168,7 @@ public final class CommandVeinMiner implements TabExecutor {
 
             Optional<ActivationStrategy> strategyOptional = Enums.getIfPresent(ActivationStrategy.class, args[1].toUpperCase());
             if (!strategyOptional.isPresent()) {
-                player.sendMessage(ChatColor.RED + "Invalid mode " + args[1] + ".");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_MODE_INVALID, args[1]);
                 return true;
             }
 
@@ -178,20 +179,20 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             if (strategy == ActivationStrategy.CLIENT && !veinMinerPlayer.isUsingClientMod()) {
-                player.sendMessage(ChatColor.RED + "You do not have the VeinMiner Companion mod installed on your client!");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_MODE_NO_CLIENT_MOD);
 
                 // Let them know where to install VeinMiner on the client (if it's allowed)
                 if (veinMinerPlayer.getClientConfig().isAllowActivationKeybind()) {
-                    player.sendMessage("In order to use client activation, you must install a client-sided mod.");
+                    language.send(sender, LanguageKeys.COMMAND_VEINMINER_MODE_CLIENT_MOD_INFO);
                     player.sendMessage("https://www.curseforge.com/minecraft/mc-mods/veinminer-companion");
-                    player.sendMessage("Supports " + ChatColor.GRAY + "Fabric" + ChatColor.RESET + " (support for " + ChatColor.GRAY + "Forge" + ChatColor.RESET + " Soon™)");
+                    language.send(sender, LanguageKeys.COMMAND_VEINMINER_MODE_CLIENT_MOD_SUPPORTS);
                 }
 
                 return true;
             }
 
             veinMinerPlayer.setActivationStrategy(strategy);
-            player.sendMessage(ChatColor.GREEN + "Mode successfully changed to " + ChatColor.YELLOW + strategy.name().toLowerCase().replace("_", " ") + ChatColor.GREEN + ".");
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_MODE_SUCCESS, strategy.getFriendlyName().toLowerCase());
             return true;
         }
 
@@ -207,12 +208,12 @@ public final class CommandVeinMiner implements TabExecutor {
 
         else if (args[0].equalsIgnoreCase("pattern")) {
             if (!(sender instanceof Player player)) {
-                sender.sendMessage("Vein miner patterns cannot be changed from the console.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_PATTERN_CONSOLE);
                 return true;
             }
 
             if (!sender.hasPermission(VMConstants.PERMISSION_COMMAND_PATTERN)) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
+                language.send(sender, LanguageKeys.COMMAND_INSUFFICIENT_PERMISSIONS);
                 return true;
             }
 
@@ -223,19 +224,19 @@ public final class CommandVeinMiner implements TabExecutor {
 
             NamespacedKey patternKey = NamespacedKey.fromString(args[1], plugin);
             if (patternKey == null) {
-                sender.sendMessage(ChatColor.RED + "Invalid key: \"" + args[1] + "\"");
+                language.send(sender, LanguageKeys.COMMAND_INVALID_KEY, args[1]);
                 return true;
             }
 
             VeinMiningPattern pattern = plugin.getPatternRegistry().get(patternKey);
             if (pattern == null) {
-                sender.sendMessage(ChatColor.RED + "A pattern with the key " + patternKey + " could not be found.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_PATTERN_UNKNOWN_PATTERN, patternKey);
                 return true;
             }
 
             String permission = pattern.getPermission();
             if (permission != null && !player.hasPermission(permission)) {
-                sender.sendMessage(ChatColor.RED + "You do not have permission to use this pattern.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_PATTERN_NO_PERMISSION);
                 return true;
             }
 
@@ -252,34 +253,29 @@ public final class CommandVeinMiner implements TabExecutor {
             pattern = event.getNewPattern();
             veinMinerPlayer.setVeinMiningPattern(pattern);
 
-            sender.sendMessage(ChatColor.GREEN + "Pattern set to " + pattern.getKey() + ".");
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_PATTERN_SUCCESS, pattern.getKey());
             return true;
         }
 
         else if (args[0].equalsIgnoreCase("import")) {
             if (!sender.hasPermission(VMConstants.PERMISSION_COMMAND_IMPORT)) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
+                language.send(sender, LanguageKeys.COMMAND_INSUFFICIENT_PERMISSIONS);
                 return true;
             }
 
             if (!(plugin.getPersistentDataStorage() instanceof LegacyImportable importable)) {
-                sender.sendMessage(ChatColor.RED + "You are not using MySQL or SQLite storage. You do not need to import data.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_NON_IMPORTABLE);
                 return true;
             }
 
             if (System.currentTimeMillis() - requiresConfirmation.getOrDefault(sender, 0L) > IMPORT_CONFIRMATION_TIME_MILLIS) {
-                sender.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "WARNING!");
-                sender.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.ITALIC + "This is a destructive operation");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_WARNING);
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_DESTRUCTIVE);
                 sender.sendMessage("");
-                sender.sendMessage("""
-                        The import command is meant to import data from JSON storage from before the 2.0.0 update.
-                        This includes only the player's preferred activation strategy and their disabled categories.
-                        If a JSON file represents the data of a player already in the new VeinMiner database, it will overwrite what is in the database.
-                        Depending on the amount of unique players on your server, this process may take time.
-
-                        You only need to do this import once.
-                        You have 20 seconds to run "/veinminer import" to confirm.
-                        """);
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_DESCRIPTION);
+                sender.sendMessage("");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_DO_ONCE);
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_CONFIRM);
 
                 this.requiresConfirmation.put(sender, System.currentTimeMillis());
                 return true;
@@ -292,12 +288,12 @@ public final class CommandVeinMiner implements TabExecutor {
 
         else if (args[0].equalsIgnoreCase("givetool")) {
             if (!(sender instanceof Player player)) {
-                sender.sendMessage(ChatColor.RED + "Only players can be given category tools.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_GIVETOOL_CONSOLE);
                 return true;
             }
 
             if (!sender.hasPermission(VMConstants.PERMISSION_COMMAND_GIVETOOL)) {
-                sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command.");
+                language.send(sender, LanguageKeys.COMMAND_INSUFFICIENT_PERMISSIONS);
                 return true;
             }
 
@@ -308,21 +304,21 @@ public final class CommandVeinMiner implements TabExecutor {
 
             VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(args[1]);
             if (category == null) {
-                sender.sendMessage(ChatColor.RED + "Unknown tool category, " + args[1]);
+                language.send(sender, LanguageKeys.COMMAND_UNKNOWN_CATEGORY, args[1]);
                 return true;
             }
 
             if (category.getItems().isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "Cannot give items from category " + args[1] + " because it does not have any items.");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_GIVETOOL_NO_ITEMS, category.getId().toLowerCase());
                 return true;
             }
 
             Material material = Material.matchMaterial(args[2]);
             if (material == null || !material.isItem()) {
-                sender.sendMessage(ChatColor.RED + "Unknown item type. " + ChatColor.GRAY + "Given " + ChatColor.YELLOW + args[2] + ChatColor.GRAY + ".");
+                language.send(sender, LanguageKeys.COMMAND_UNKNOWN_ITEM, args[2]);
                 return true;
             } else if (!category.getItems().contains(material)) {
-                sender.sendMessage(ChatColor.RED + "Unsupported item type, does not belong to " + ChatColor.YELLOW + category.getId() + ChatColor.RED + ". " + ChatColor.GRAY + "Given " + ChatColor.YELLOW + args[2] + ChatColor.GRAY + ".");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_GIVETOOL_UNSUPPORTED_ITEM, args[2], category.getId());
                 return true;
             }
 
@@ -333,9 +329,9 @@ public final class CommandVeinMiner implements TabExecutor {
 
             ItemStack itemStack = category.createItemStack(material, amount);
             if (!player.getInventory().addItem(itemStack).isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "Your inventory was too full and the tool could not be given to you!");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_GIVETOOL_INVENTORY_FULL);
             } else {
-                sender.sendMessage(ChatColor.GREEN + "Successfully given the tool from category " + category.getId() + " and type " + itemStack.getType().getKey() + ".");
+                language.send(sender, LanguageKeys.COMMAND_VEINMINER_GIVETOOL_SUCCESS, category.getId(), itemStack.getType().getKey());
             }
 
             return true;
@@ -479,21 +475,25 @@ public final class CommandVeinMiner implements TabExecutor {
         return false;
     }
 
-    private String getUpdateSuffix() {
+    private String getVersionLine(LanguageFile language) {
         UpdateResult result = plugin.getUpdateChecker().getLastUpdateResult().orElse(null);
         if (result == null) {
-            return "";
+            return language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_VERSION);
         }
 
+        return language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_VERSION_ALERT, getUpdateSuffix(language, result));
+    }
+
+    private String getUpdateSuffix(LanguageFile language, UpdateResult result) {
         if (result.isUpdateAvailable()) {
-            return ChatColor.GRAY + " (" + ChatColor.GREEN + ChatColor.BOLD + "UPDATE AVAILABLE!" + ChatColor.GRAY + ")";
+            return language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_VERSION_UPDATE_AVAILABLE);
         } else if (result.isUnreleased()) {
-            return ChatColor.GRAY + " (" + ChatColor.AQUA + ChatColor.BOLD + "DEV BUILD!" + ChatColor.GRAY + ")";
+            return language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_VERSION_DEV_BUILD);
         } else if (result.isFailed()) {
-            return ChatColor.GRAY + " (" + ChatColor.RED + ChatColor.BOLD + "UPDATE CHECK FAILED!" + ChatColor.GRAY + ")";
+            return language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_VERSION_FAILED);
+        } else {
+            return ChatColor.DARK_RED + "<unhandled>";
         }
-
-        return "";
     }
 
 }

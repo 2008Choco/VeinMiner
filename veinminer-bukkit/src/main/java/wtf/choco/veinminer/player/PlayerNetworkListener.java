@@ -23,6 +23,7 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMiningPatternChangeEvent;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
+import wtf.choco.veinminer.language.LanguageKeys;
 import wtf.choco.veinminer.manager.VeinMinerManager;
 import wtf.choco.veinminer.network.NetworkUtil;
 import wtf.choco.veinminer.network.protocol.VeinMinerServerboundMessageListener;
@@ -107,9 +108,16 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
 
     @Override
     public void handleHandshake(@NotNull ServerboundHandshake message) {
+        VeinMinerPlugin plugin = VeinMinerPlugin.getInstance();
+
         int serverProtocolVersion = VeinMiner.PROTOCOL.getVersion();
         if (serverProtocolVersion != message.getProtocolVersion()) {
-            this.player.getPlayer().kickPlayer("Your client-side version of VeinMiner (for Bukkit) is " + (serverProtocolVersion > message.getProtocolVersion() ? "out of date. Please update." : "too new. Please downgrade."));
+            String kickMessage = plugin.getLanguage().get(serverProtocolVersion > message.getProtocolVersion()
+                ? LanguageKeys.VEINMINER_CLIENT_VERSION_MISMATCH_OUT_OF_DATE
+                : LanguageKeys.VEINMINER_CLIENT_VERSION_MISMATCH_TOO_NEW
+            );
+
+            this.player.getPlayer().kickPlayer(kickMessage);
             return;
         }
 
@@ -121,7 +129,6 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
          * Let the client know whether or not the client is even allowed.
          * We send this one tick later so we know that the player's connection has been initialized
          */
-        VeinMinerPlugin plugin = VeinMinerPlugin.getInstance();
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             this.player.sendMessage(new ClientboundHandshakeResponse());
 

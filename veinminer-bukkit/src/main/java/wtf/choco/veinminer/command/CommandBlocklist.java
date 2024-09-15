@@ -17,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
+import wtf.choco.veinminer.language.LanguageFile;
+import wtf.choco.veinminer.language.LanguageKeys;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 public final class CommandBlocklist implements TabExecutor {
@@ -37,9 +39,11 @@ public final class CommandBlocklist implements TabExecutor {
             return true;
         }
 
+        LanguageFile language = plugin.getLanguage();
+
         VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(args[0]);
         if (category == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown tool category, " + args[0]);
+            language.send(sender, LanguageKeys.COMMAND_UNKNOWN_CATEGORY, args[0]);
             return true;
         }
 
@@ -66,14 +70,14 @@ public final class CommandBlocklist implements TabExecutor {
             }
 
             if (!blockList.add(block)) {
-                sender.sendMessage(formatBlockData(block.toStateString()) + ChatColor.RED + " is already on the " + category.getId() + " block list.");
+                language.send(sender, LanguageKeys.COMMAND_BLOCKLIST_ADD_EXISTS, formatBlockData(block.toStateString()), category.getId());
                 return true;
             }
 
             // Update configuration
             category.getConfiguration().setBlockListKeys(blockList);
 
-            sender.sendMessage(formatBlockData(block.toStateString()) + ChatColor.GRAY + " successfully added to the block list.");
+            language.send(sender, LanguageKeys.COMMAND_BLOCKLIST_ADD_SUCCESS, formatBlockData(block.toStateString()), category.getId());
             return true;
         }
 
@@ -95,14 +99,14 @@ public final class CommandBlocklist implements TabExecutor {
             }
 
             if (!blockList.remove(block)) {
-                sender.sendMessage(formatBlockData(block.toStateString()) + ChatColor.RED + " is not on the " + category.getId() + " block list.");
+                language.send(sender, LanguageKeys.COMMAND_BLOCKLIST_REMOVE_MISSING, formatBlockData(block.toStateString()), category.getId());
                 return true;
             }
 
             // Update configuration
             category.getConfiguration().setBlockListKeys(blockList);
 
-            sender.sendMessage(formatBlockData(block.toStateString()) + ChatColor.GRAY + " successfully removed from the block list.");
+            language.send(sender, LanguageKeys.COMMAND_BLOCKLIST_REMOVE_SUCCESS, formatBlockData(block.toStateString()), category.getId());
             return true;
         }
 
@@ -110,13 +114,13 @@ public final class CommandBlocklist implements TabExecutor {
             List<VeinMinerBlock> blockList = category.getBlockList().asList(null);
 
             if (blockList.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "The " + category.getId() + " category is empty.");
+                language.send(sender, LanguageKeys.COMMAND_BLOCKLIST_LIST_EMPTY, category.getId());
                 return true;
             }
 
             sender.sendMessage("");
-            sender.sendMessage(ChatColor.GREEN + "Block list " + ChatColor.GRAY + "for category " + ChatColor.GREEN + category.getId().toLowerCase().replace("_", " ") + ChatColor.GRAY + ":");
-            blockList.forEach(block -> sender.sendMessage(ChatColor.WHITE + " - " + formatBlockData(block.toStateString())));
+            language.send(sender, LanguageKeys.COMMAND_BLOCKLIST_LIST_HEADER, category.getId());
+            blockList.forEach(block -> language.send(sender, LanguageKeys.COMMAND_BLOCKLIST_LIST_ENTRY, formatBlockData(block.toStateString())));
             sender.sendMessage("");
             return true;
         }
