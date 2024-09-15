@@ -3,23 +3,23 @@ package wtf.choco.veinminer.update;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A functional interface to compare two version Strings with similar version schemes.
+ * A functional interface to compare two version Strings under the same format.
  */
 @FunctionalInterface
 public interface VersionScheme {
 
     /**
-     * Compare two versions and return the higher of the two.
+     * Compare two version strings.
      *
-     * @param first the first version to check
-     * @param second the second version to check
+     * @param versionA the first version to compare
+     * @param versionB the second version to compare
      *
-     * @return the greater of the two versions
+     * @return -1 if {@code versionA} is less than {@code versionB}, 1 if {@code versionA}
+     * is greater than {@code versionB}, or 0 if the two versions are equivalent
      *
      * @throws UnsupportedOperationException if either of the two versions do not abide
      * by this version scheme's expected format
      */
-    @NotNull
-    public String compareVersions(@NotNull String first, @NotNull String second) throws UnsupportedOperationException;
+    public int compareVersions(@NotNull String versionA, @NotNull String versionB) throws UnsupportedOperationException;
 
 }

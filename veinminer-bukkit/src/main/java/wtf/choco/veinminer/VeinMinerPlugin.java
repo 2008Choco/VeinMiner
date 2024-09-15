@@ -149,9 +149,11 @@ public final class VeinMinerPlugin extends JavaPlugin {
                     e -> this.getLogger().info("Could not check for an update. Reason: ".formatted(e.getMessage())),
                     () -> {
                         if (result.isUpdateAvailable()) {
-                            this.getLogger().info("Your version of VeinMiner is out of date. Version %s is available for download.".formatted(result.getNewestVersion()));
+                            this.getLogger().info("Your version of VeinMiner is out of date! Version %s is available for download.".formatted(result.getNewestVersion()));
+                        } else if (result.isUnreleased()) {
+                            this.getLogger().info("You are running an unreleased version of VeinMiner! Proceed with caution!");
                         } else {
-                            this.getLogger().info("You are on the latest version of VeinMiner.");
+                            this.getLogger().info("You are on the latest version of VeinMiner!");
                         }
                     }
                 );
