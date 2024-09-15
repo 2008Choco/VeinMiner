@@ -14,17 +14,27 @@ public final class StandardVersionSchemes {
     public static final VersionScheme DECIMAL = (first, second) -> {
         String[] firstSplit = splitVersionInfo(first), secondSplit = splitVersionInfo(second);
 
-        for (int i = 0; i < Math.min(firstSplit.length, secondSplit.length); i++) {
-            int currentValue = toInt(firstSplit[i], -1), newestValue = toInt(secondSplit[i], -1);
+        int decimalCount = Math.min(firstSplit.length, secondSplit.length);
+        for (int i = 0; i < decimalCount; i++) {
+            int firstValue = toInt(firstSplit[i], -1), secondValue = toInt(secondSplit[i], -1);
 
-            if (newestValue > currentValue) {
-                return second;
-            } else if (newestValue < currentValue) {
-                return first;
+            if (firstValue > secondValue) {
+                return 1;
+            } else if (firstValue < secondValue) {
+                return -1;
             }
         }
 
-        return (secondSplit.length > firstSplit.length) ? second : first;
+        /*
+         * At this point, decimals up until the max decimalCount all match, so we defer to decimal count...
+         * If the strings contain the same amount of decimals, they must be the same
+         * If the first string has more decimals than the second, it must be newer (e.g. 1.2.3.1 is newer than 1.2.3)
+         * The inverse is also true.
+         *
+         * Integer#compare() against the split lengths accomplishes exactly this.
+         */
+
+        return Integer.compare(firstSplit.length, secondSplit.length);
     };
 
     private static final Pattern DECIMAL_SCHEME_PATTERN = Pattern.compile("\\d+(?:\\.\\d+)*");

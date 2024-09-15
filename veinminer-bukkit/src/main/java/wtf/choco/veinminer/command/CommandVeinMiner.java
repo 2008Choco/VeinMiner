@@ -480,10 +480,20 @@ public final class CommandVeinMiner implements TabExecutor {
     }
 
     private String getUpdateSuffix() {
-        return plugin.getUpdateChecker().getLastUpdateResult()
-                .filter(UpdateResult::isUpdateAvailable)
-                .map(result -> " (" + ChatColor.GREEN + ChatColor.BOLD + "UPDATE AVAILABLE!" + ChatColor.GRAY + ")")
-                .orElseGet(() -> "");
+        UpdateResult result = plugin.getUpdateChecker().getLastUpdateResult().orElse(null);
+        if (result == null) {
+            return "";
+        }
+
+        if (result.isUpdateAvailable()) {
+            return ChatColor.GRAY + " (" + ChatColor.GREEN + ChatColor.BOLD + "UPDATE AVAILABLE!" + ChatColor.GRAY + ")";
+        } else if (result.isUnreleased()) {
+            return ChatColor.GRAY + " (" + ChatColor.AQUA + ChatColor.BOLD + "DEV BUILD!" + ChatColor.GRAY + ")";
+        } else if (result.isFailed()) {
+            return ChatColor.GRAY + " (" + ChatColor.RED + ChatColor.BOLD + "UPDATE CHECK FAILED!" + ChatColor.GRAY + ")";
+        }
+
+        return "";
     }
 
 }

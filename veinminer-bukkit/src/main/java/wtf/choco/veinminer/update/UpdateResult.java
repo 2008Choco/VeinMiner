@@ -13,33 +13,18 @@ public final class UpdateResult {
 
     private final String currentVersion, newestVersion;
     private final VersionScheme versionScheme;
-    private final boolean updateAvailable;
+    private final boolean updateAvailable, unreleased;
 
-    /**
-     * Construct a new {@link UpdateResult}.
-     *
-     * @param currentVersion the currently installed version of the plugin
-     * @param newestVersion the newest version of the plugin (may or may not equal
-     * {@code currentVersion})
-     * @param versionScheme the version scheme used in the update check
-     * @param updateAvailable whether or not an update is available for download
-     */
-    public UpdateResult(@NotNull String currentVersion, @NotNull String newestVersion, @NotNull VersionScheme versionScheme, boolean updateAvailable) {
+    private UpdateResult(@NotNull String currentVersion, @NotNull String newestVersion, @NotNull VersionScheme versionScheme, boolean updateAvailable, boolean unreleased) {
         this.currentVersion = currentVersion;
         this.newestVersion = newestVersion;
         this.versionScheme = versionScheme;
         this.updateAvailable = updateAvailable;
+        this.unreleased = unreleased;
     }
 
-    /**
-     * Construct a new {@link UpdateResult}.
-     *
-     * @param currentVersion the currently installed version of the plugin
-     * @param versionScheme the version scheme used in the update check
-     * @param exception the exception that was thrown in the update check
-     */
-    public UpdateResult(@NotNull String currentVersion, @NotNull VersionScheme versionScheme, @NotNull Throwable exception) {
-        this(currentVersion, currentVersion, versionScheme, false);
+    private UpdateResult(@NotNull String currentVersion, @NotNull VersionScheme versionScheme, @NotNull Throwable exception) {
+        this(currentVersion, currentVersion, versionScheme, false, false);
         this.exception = Optional.ofNullable(exception);
     }
 
@@ -83,6 +68,16 @@ public final class UpdateResult {
     }
 
     /**
+     * Check whether or not the current version is unreleased (i.e. the current version is newer
+     * than the one publicly available).
+     *
+     * @return true if unreleased, false otherwise
+     */
+    public boolean isUnreleased() {
+        return unreleased;
+    }
+
+    /**
      * Check whether or not this update check failed and there was an exception.
      *
      * @return true if the check failed, false if it completed normally
@@ -99,6 +94,62 @@ public final class UpdateResult {
     @NotNull
     public Optional<Throwable> getException() {
         return exception;
+    }
+
+    /**
+     * Create an {@link UpdateResult} identifying that an update is available.
+     *
+     * @param currentVersion the currently installed version
+     * @param latestVersion the latest version available for download
+     * @param versionScheme the version scheme used to compare versions
+     *
+     * @return the update result
+     */
+    @NotNull
+    static UpdateResult updateAvailable(@NotNull String currentVersion, @NotNull String latestVersion, @NotNull VersionScheme versionScheme) {
+        return new UpdateResult(currentVersion, latestVersion, versionScheme, true, false);
+    }
+
+    /**
+     * Create an {@link UpdateResult} identifying that no update is available, the user is up to date.
+     *
+     * @param currentVersion the currently installed version
+     * @param versionScheme the version scheme used to compare versions
+     *
+     * @return the update result
+     */
+    @NotNull
+    static UpdateResult upToDate(@NotNull String currentVersion, @NotNull VersionScheme versionScheme) {
+        return new UpdateResult(currentVersion, currentVersion, versionScheme, false, false);
+    }
+
+    /**
+     * Create an {@link UpdateResult} identifying that the installed version is unreleased and is likely
+     * a development build.
+     *
+     * @param currentVersion the currently installed version
+     * @param latestVersion the latest version available for download
+     * @param versionScheme the version scheme used to compare versions
+     *
+     * @return the update result
+     */
+    @NotNull
+    static UpdateResult unreleased(@NotNull String currentVersion, @NotNull String latestVersion, @NotNull VersionScheme versionScheme) {
+        return new UpdateResult(currentVersion, latestVersion, versionScheme, false, true);
+    }
+
+    /**
+     * Create an {@link UpdateResult} identifying that the update check failed for some reason.
+     *
+     * @param currentVersion the currently installed version
+     * @param versionScheme the version scheme used to compare versions
+     * @param exception the exception that was raised while performing the update check
+     *
+     * @return the update result
+     */
+    @NotNull
+    static UpdateResult failed(@NotNull String currentVersion, @NotNull VersionScheme versionScheme, @NotNull Throwable exception) {
+        return new UpdateResult(currentVersion, versionScheme, exception);
     }
 
 }

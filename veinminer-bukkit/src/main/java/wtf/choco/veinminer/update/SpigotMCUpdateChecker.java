@@ -72,13 +72,21 @@ public final class SpigotMCUpdateChecker implements UpdateChecker {
 
             JsonObject object = gson.fromJson(body, JsonObject.class);
 
-            String returnedVersion = object.get("current_version").getAsString();
-            String latestVersion = versionScheme.compareVersions(currentVersion, returnedVersion);
+            String fetchedVersion = object.get("current_version").getAsString();
+            int compare = versionScheme.compareVersions(currentVersion, fetchedVersion);
 
-            UpdateResult result = new UpdateResult(currentVersion, latestVersion, versionScheme, !returnedVersion.equals(latestVersion));
+            UpdateResult result;
+            if (compare > 0) {
+                result = UpdateResult.unreleased(currentVersion, fetchedVersion, versionScheme);
+            } else if (compare < 0) {
+                result = UpdateResult.updateAvailable(currentVersion, fetchedVersion, versionScheme);
+            } else {
+                result = UpdateResult.upToDate(currentVersion, versionScheme);
+            }
+
             this.lastResult = result;
             return result;
-        }).exceptionally(e -> new UpdateResult(currentVersion, versionScheme, e));
+        }).exceptionally(e -> UpdateResult.failed(currentVersion, versionScheme, e));
     }
 
 }
