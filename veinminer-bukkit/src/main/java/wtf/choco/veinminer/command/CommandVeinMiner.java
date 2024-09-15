@@ -481,7 +481,7 @@ public final class CommandVeinMiner implements TabExecutor {
             return language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_VERSION);
         }
 
-        return language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_VERSION_ALERT, getUpdateSuffix(language, result));
+        return language.get(LanguageKeys.COMMAND_VEINMINER_VERSION_VERSION_ALERT, plugin.getDescription().getVersion(), getUpdateSuffix(language, result));
     }
 
     private String getUpdateSuffix(LanguageFile language, UpdateResult result) {
