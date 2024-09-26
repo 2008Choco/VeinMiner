@@ -102,15 +102,17 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Economy check
-        SimpleEconomy economy = plugin.getEconomy();
-        if (economy.shouldCharge(player)) {
-            double cost = category.getConfiguration().getCost();
-            if (!economy.hasSufficientBalance(player, cost)) {
-                language.send(player, LanguageKeys.VEINMINER_INSUFFICIENT_FUNDS, cost);
-                return;
-            }
+        double cost = category.getConfiguration().getCost();
+        if (cost > 0) {
+            SimpleEconomy economy = plugin.getEconomy();
+            if (economy.shouldCharge(player)) {
+                if (!economy.hasSufficientBalance(player, cost)) {
+                    language.send(player, LanguageKeys.VEINMINER_INSUFFICIENT_FUNDS, cost);
+                    return;
+                }
 
-            economy.withdraw(player, cost);
+                economy.withdraw(player, cost);
+            }
         }
 
         // Fetch the target block face
