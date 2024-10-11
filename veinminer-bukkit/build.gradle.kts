@@ -39,6 +39,7 @@ dependencies {
     compileOnly(libs.anticheat.light)
     compileOnly(libs.anticheat.negativity)
     compileOnly(libs.anticheat.themis)
+    compileOnly(files("./libs/VulcanAPI.jar"))
 
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
