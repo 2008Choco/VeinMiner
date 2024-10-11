@@ -30,9 +30,10 @@ public class AntiCheatHookVulcan implements AntiCheatHook, Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void vulcanFlag(final VulcanFlagEvent event) {
-        if (!exempt.contains(event.getPlayer().getUniqueId()))
+    public void onFlag(VulcanFlagEvent event) {
+        if (!exempt.contains(event.getPlayer().getUniqueId())) {
             return;
+        }
 
         event.setCancelled(true);
     }

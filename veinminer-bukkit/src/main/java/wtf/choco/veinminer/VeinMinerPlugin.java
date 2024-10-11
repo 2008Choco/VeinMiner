@@ -26,7 +26,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.network.bukkit.BukkitProtocolConfiguration;
-import wtf.choco.veinminer.anticheat.*;
+import wtf.choco.veinminer.anticheat.AntiCheatHook;
+import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
+import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
+import wtf.choco.veinminer.anticheat.AntiCheatHookGrim;
+import wtf.choco.veinminer.anticheat.AntiCheatHookLightAntiCheat;
+import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
+import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
+import wtf.choco.veinminer.anticheat.AntiCheatHookNegativity;
+import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
+import wtf.choco.veinminer.anticheat.AntiCheatHookThemis;
+import wtf.choco.veinminer.anticheat.AntiCheatHookVulcan;
 import wtf.choco.veinminer.command.CommandBlocklist;
 import wtf.choco.veinminer.command.CommandToollist;
 import wtf.choco.veinminer.command.CommandVeinMiner;
