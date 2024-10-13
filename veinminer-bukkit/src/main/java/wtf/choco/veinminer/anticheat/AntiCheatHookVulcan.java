@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import me.frep.vulcan.api.event.VulcanFlagEvent;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
