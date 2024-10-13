@@ -39,6 +39,7 @@ dependencies {
     compileOnly(libs.anticheat.light)
     compileOnly(libs.anticheat.negativity)
     compileOnly(libs.anticheat.themis)
+    compileOnly(libs.anticheat.vulcan)
 
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)

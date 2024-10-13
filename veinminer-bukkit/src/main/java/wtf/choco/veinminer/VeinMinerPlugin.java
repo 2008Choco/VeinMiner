@@ -36,6 +36,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNegativity;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.anticheat.AntiCheatHookThemis;
+import wtf.choco.veinminer.anticheat.AntiCheatHookVulcan;
 import wtf.choco.veinminer.command.CommandBlocklist;
 import wtf.choco.veinminer.command.CommandToollist;
 import wtf.choco.veinminer.command.CommandVeinMiner;
@@ -168,6 +169,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.registerAntiCheatHookIfEnabled(manager, "NoCheatPlus", () -> new AntiCheatHookNCP(this));
         this.registerAntiCheatHookIfEnabled(manager, "Spartan", () -> new AntiCheatHookSpartan(this));
         this.registerAntiCheatHookIfEnabled(manager, "Themis", AntiCheatHookThemis::new);
+        this.registerAntiCheatHookIfEnabled(manager, "Vulcan", AntiCheatHookVulcan::new);
 
         // Register commands
         this.getLogger().info("Registering commands");
