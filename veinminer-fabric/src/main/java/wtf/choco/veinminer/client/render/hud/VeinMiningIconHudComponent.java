@@ -4,7 +4,9 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.profiling.Profiler;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,14 +22,14 @@ public final class VeinMiningIconHudComponent implements HudComponent {
 
     @Override
     public void render(@NotNull Minecraft client, @NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, float delta) {
-        client.getProfiler().push("veinMiningIcon");
+        Profiler.get().push("veinMiningIcon");
 
         Window window = client.getWindow();
         int width = window.getGuiScaledWidth(), height = window.getGuiScaledHeight();
 
-        graphics.blit(VEINMINER_ICON_LOCATION, (width / 2) + 8, (height / 2) - 4, 0, 0, 8, 8, 8, 8);
+        graphics.blit(RenderType::guiTextured, VEINMINER_ICON_LOCATION, (width / 2) + 8, (height / 2) - 4, 0, 0, 8, 8, 8, 8);
 
-        client.getProfiler().pop();
+        Profiler.get().pop();
     }
 
     @Override

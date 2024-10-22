@@ -23,13 +23,13 @@ vault-api = "1.7"
 worldguard = "7.0.9"
 
 # (fabric)
-fabric-api = "0.100.4+1.21"
-fabric-loader = "0.15.11"
-minecraft = "1.21"
+fabric-api = "0.106.1+1.21.2"
+fabric-loader = "0.16.7"
+minecraft = "1.21.2"
 
 # plugins
 aggregate-javadoc = "8.4"
-fabric-loom = "1.6-SNAPSHOT"
+fabric-loom = "1.8-SNAPSHOT"
 shadow = "8.1.1"
 
 [libraries]

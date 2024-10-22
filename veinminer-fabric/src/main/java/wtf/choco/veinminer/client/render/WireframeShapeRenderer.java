@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -54,7 +55,7 @@ public final class WireframeShapeRenderer {
         }
 
         Minecraft client = Minecraft.getInstance();
-        client.getProfiler().push("veinMinerWireframe");
+        Profiler.get().push("veinMinerWireframe");
 
         /*
          * Massive credit to FTB-Ultimine for help with this rendering code. I don't think I
@@ -68,7 +69,7 @@ public final class WireframeShapeRenderer {
         // Calculate the stack
         PoseStack stack = context.matrixStack();
         if (stack == null) { // Should never be null, but maybe in the future it will.
-            client.getProfiler().pop();
+            Profiler.get().pop();
             return;
         }
 
@@ -103,7 +104,7 @@ public final class WireframeShapeRenderer {
         source.endBatch(VeinMinerRenderType.getWireframeTransparent());
 
         stack.popPose();
-        client.getProfiler().pop();
+        Profiler.get().pop();
     }
 
 }
