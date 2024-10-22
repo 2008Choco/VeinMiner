@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +27,7 @@ public final class PatternWheelHudComponent implements HudComponent {
 
     @Override
     public void render(@NotNull Minecraft client, @NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, float tickDelta) {
-        client.getProfiler().push("veinminerPatternWheel");
+        Profiler.get().push("veinminerPatternWheel");
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -63,7 +64,7 @@ public final class PatternWheelHudComponent implements HudComponent {
 
         RenderSystem.disableBlend();
 
-        client.getProfiler().pop();
+        Profiler.get().pop();
     }
 
     @Override
