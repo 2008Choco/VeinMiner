@@ -1,17 +1,18 @@
 package wtf.choco.veinminer.util;
 
-import com.google.common.base.Enums;
-
 import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
 public final class AttributeUtil {
 
-    private static final Attribute ATTRIBUTE_BLOCK_INTERACTION_RANGE = Enums.getIfPresent(Attribute.class, "PLAYER_BLOCK_INTERACTION_RANGE")
-            .or(Enums.getIfPresent(Attribute.class, "BLOCK_INTERACTION_RANGE")) // Renamed in 1.21.2
-            .orNull();
+    private static final Attribute ATTRIBUTE_BLOCK_INTERACTION_RANGE = getAttribute(
+            NamespacedKey.minecraft("player.block_interaction_range"),
+            NamespacedKey.minecraft("block_interaction_range") // "player." prefix removed in 1.21.2
+    );
 
     private AttributeUtil() { }
 
@@ -29,6 +30,17 @@ public final class AttributeUtil {
         }
 
         return reachDistance;
+    }
+
+    private static Attribute getAttribute(NamespacedKey... possibleKeys) {
+        for (NamespacedKey key : possibleKeys) {
+            Attribute attribute = Registry.ATTRIBUTE.get(key);
+            if (attribute != null) {
+                return attribute;
+            }
+        }
+
+        return null;
     }
 
 }
