@@ -9,9 +9,9 @@ repositories {
     maven("https://maven.enginehub.org/repo/") // WorldGuard
     maven("https://nexus.neetgames.com/repository/maven-public/") // mcMMO
 
-    maven("https://jitpack.io") // mcMMO, Grim AntiCheat, Matrix AntiCheat, Light AntiCheat
-    maven("https://repo.janmm14.de/repository/public/") // Advanced AntiCheat
+    maven("https://jitpack.io") // mcMMO, Matrix AntiCheat, Light AntiCheat
     maven("https://repo.md-5.net/content/repositories/snapshots/") // NoCheatPlus
+    maven("https://repo.grim.ac/snapshots/") // Grim Anticheat
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
 }
 

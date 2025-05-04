@@ -25,9 +25,8 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven { url = uri("https://repo.choco.wtf/releases"); }
-        maven { url = uri("https://repo.choco.wtf/snapshots"); } // Themis
-        maven { url = uri("https://repo.grim.ac/snapshots"); } // Grim Anticheat
+        maven("https://repo.choco.wtf/releases")
+        maven("https://repo.choco.wtf/snapshots") // Themis
     }
 
     dependencies {
