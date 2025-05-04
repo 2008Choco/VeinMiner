@@ -21,10 +21,6 @@ java {
     }
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/veinminer_companion.accesswidener")
-}
-
 tasks {
     processResources {
         outputs.upToDateWhen { false } // Always process resource properties

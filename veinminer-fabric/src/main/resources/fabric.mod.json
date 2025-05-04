@@ -25,13 +25,10 @@
             "wtf.choco.veinminer.client.VeinMinerClient"
         ]
     },
-
-    "accessWidener" : "veinminer_companion.accesswidener",
-
     "depends": {
         "fabricloader": ">=0.16.7",
-        "fabric": ">=0.106",
-        "minecraft": ">=1.21.2",
+        "fabric": ">=0.121",
+        "minecraft": ">=1.21.5",
         "java": ">=21"
     }
 }

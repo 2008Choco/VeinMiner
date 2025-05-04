@@ -7,7 +7,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.client.network.FabricServerState;
-import wtf.choco.veinminer.client.render.hud.PatternWheelHudComponent;
+import wtf.choco.veinminer.client.render.layer.PatternWheelLayer;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMiner;
@@ -91,10 +91,10 @@ public final class KeyHandler {
                 return;
             }
 
-            PatternWheelHudComponent patternWheel = client.getPatternWheelRenderComponent();
+            PatternWheelLayer patternWheel = client.getPatternWheelLayer();
 
             // If the HUD wheel isn't rendered yet, push a render call but don't change the pattern
-            if (patternWheel.shouldRender(config, serverState)) {
+            if (patternWheel.shouldRender(serverState)) {
                 serverState.changePattern(next);
             }
 

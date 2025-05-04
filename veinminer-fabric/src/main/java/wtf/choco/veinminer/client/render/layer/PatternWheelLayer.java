@@ -1,23 +1,26 @@
-package wtf.choco.veinminer.client.render.hud;
+package wtf.choco.veinminer.client.render.layer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.client.network.FabricServerState;
-import wtf.choco.veinminer.config.ClientConfig;
 
 /**
- * A {@link HudComponent} for the pattern selection wheel in the top left.
+ * A {@link VeinMinerIdentifiedLayer} for the pattern selection wheel in the top left.
  */
-public final class PatternWheelHudComponent implements HudComponent {
+public final class PatternWheelLayer extends VeinMinerIdentifiedLayer {
+
+    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("veinminer_companion", "pattern_wheel");
 
     private static final int STAY_TICKS = 60; // 3 seconds
     private static final int FADE_TICKS = 4; // 0.2 seconds
@@ -25,14 +28,20 @@ public final class PatternWheelHudComponent implements HudComponent {
 
     private int remainingTicks = 0;
 
+    public PatternWheelLayer(VeinMinerClient client) {
+        super(client);
+    }
+
     @Override
-    public void render(@NotNull Minecraft client, @NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, float tickDelta) {
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    @Override
+    public void render(@NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Profiler.get().push("veinminerPatternWheel");
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-
-        float actualRemainingMs = remainingTicks - tickDelta;
+        float actualRemainingMs = remainingTicks - delta.getGameTimeDeltaTicks();
 
         // Calculate alpha based on progress of fade in/out times
         float alpha = 255.0F;
@@ -52,27 +61,25 @@ public final class PatternWheelHudComponent implements HudComponent {
         String selected = serverState.getSelectedPattern().toString();
         String after = serverState.getNextPattern().toString();
 
+        Minecraft minecraft = Minecraft.getInstance();
         PoseStack stack = graphics.pose();
         stack.pushPose();
         stack.scale(1.1F, 1.1F, 1.1F);
-        graphics.drawString(client.font, Component.literal(selected), 4, client.font.lineHeight, colour);
+        graphics.drawString(minecraft.font, Component.literal(selected), 4, minecraft.font.lineHeight, colour);
 
         stack.scale(0.6F, 0.6F, 0.6F);
-        graphics.drawString(client.font, Component.literal(before), 7, 4, colour);
-        graphics.drawString(client.font, Component.literal(after), 7, 5 + (client.font.lineHeight * 3), colour);
+        graphics.drawString(minecraft.font, Component.literal(before), 7, 4, colour);
+        graphics.drawString(minecraft.font, Component.literal(after), 7, 5 + (minecraft.font.lineHeight * 3), colour);
         stack.popPose();
-
-        RenderSystem.disableBlend();
 
         Profiler.get().pop();
     }
 
     @Override
-    public boolean shouldRender(@NotNull ClientConfig config, @NotNull FabricServerState serverState) {
-        return config.isAllowPatternSwitchingKeybind() && serverState.hasPatternKeys() && remainingTicks > 0;
+    public boolean shouldRender(@NotNull FabricServerState serverState) {
+        return serverState.getConfig().isAllowPatternSwitchingKeybind() && serverState.hasPatternKeys() && remainingTicks > 0;
     }
 
-    @Override
     public void tick() {
         if (remainingTicks > 0) {
             this.remainingTicks--;
@@ -82,7 +89,7 @@ public final class PatternWheelHudComponent implements HudComponent {
     /**
      * Push a render cycle to the component.
      * <p>
-     * If this wheel is not being rendered, it will start rendering. If it is fading it, it will
+     * If this wheel is not being rendered, it will start rendering. If it is fading in, it will
      * continue to fade in. If it is during its stay period, it will reset to the start of the stay
      * period. If it is fading out, it will start fading in starting from the current fade out time.
      */

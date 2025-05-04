@@ -6,7 +6,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.KeyMapping;
 
@@ -19,9 +20,8 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.client.network.VeinMinerFabricChannelRegistrar;
 import wtf.choco.veinminer.client.render.WireframeShapeRenderer;
-import wtf.choco.veinminer.client.render.hud.HudComponentRenderer;
-import wtf.choco.veinminer.client.render.hud.PatternWheelHudComponent;
-import wtf.choco.veinminer.client.render.hud.VeinMiningIconHudComponent;
+import wtf.choco.veinminer.client.render.layer.PatternWheelLayer;
+import wtf.choco.veinminer.client.render.layer.VeinMiningIconLayer;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
 
 /**
@@ -49,11 +49,8 @@ public final class VeinMinerClient implements ClientModInitializer {
     private final KeyHandler keyHandler = new KeyHandler(this);
     private final BlockLookUpdateHandler blockLookUpdateHandler = new BlockLookUpdateHandler(this);
 
-    private final PatternWheelHudComponent patternWheelRenderComponent = new PatternWheelHudComponent();
-    private final HudComponentRenderer hudComponentRenderer = new HudComponentRenderer(this,
-            new VeinMiningIconHudComponent(),
-            patternWheelRenderComponent
-    );
+    private final PatternWheelLayer patternWheelRenderComponent = new PatternWheelLayer(this);
+
     private final WireframeShapeRenderer wireframeShapeRenderer = new WireframeShapeRenderer(this);
 
     @Override
@@ -64,7 +61,7 @@ public final class VeinMinerClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             this.keyHandler.tick();
             this.blockLookUpdateHandler.tick(client);
-            this.hudComponentRenderer.tick();
+            this.patternWheelRenderComponent.tick();
         });
 
         ClientPlayConnectionEvents.INIT.register((handler, client) -> serverState = new FabricServerState(this, client));
@@ -76,7 +73,11 @@ public final class VeinMinerClient implements ClientModInitializer {
         // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion())));
 
-        HudRenderCallback.EVENT.register(hudComponentRenderer::render);
+        HudLayerRegistrationCallback.EVENT.register(drawer -> {
+            drawer.attachLayerBefore(IdentifiedLayer.DEBUG, patternWheelRenderComponent);
+            drawer.attachLayerAfter(IdentifiedLayer.CROSSHAIR, new VeinMiningIconLayer(this));
+        });
+
         WorldRenderEvents.AFTER_TRANSLUCENT.register(wireframeShapeRenderer::render);
     }
 
@@ -118,12 +119,12 @@ public final class VeinMinerClient implements ClientModInitializer {
     }
 
     /**
-     * Get the HudComponent for the pattern wheel.
+     * Get the layer for the pattern wheel.
      *
-     * @return the pattern wheel hud component
+     * @return the pattern wheel layer
      */
     @NotNull
-    public PatternWheelHudComponent getPatternWheelRenderComponent() {
+    public PatternWheelLayer getPatternWheelLayer() {
         return patternWheelRenderComponent;
     }
 
