@@ -73,6 +73,8 @@ Axe:
   - 'minecraft:melon'
   - 'minecraft:oak_log'
   - 'minecraft:oak_wood'
+  - 'minecraft:pale_oak_log'
+  - 'minecraft:pale_oak_wood'
   - 'minecraft:pumpkin'
   - 'minecraft:red_mushroom_block'
   - 'minecraft:spruce_log'
@@ -94,6 +96,8 @@ Hoe:
   - 'minecraft:carrots[age=7]'
   - 'minecraft:moss_block'
   - 'minecraft:moss_carpet'
+  - 'minecraft:pale_moss_block'
+  - 'minecraft:pale_moss_carpet'
   - 'minecraft:potatoes[age=7]'
   - 'minecraft:red_mushroom'
   - 'minecraft:sculk'
@@ -131,6 +135,7 @@ Shears:
   - '#minecraft:leaves'
   - '#minecraft:wool'
   - 'minecraft:cobweb'
+  - 'minecraft:glow_lichen'
 
 Shovel:
   Items:
