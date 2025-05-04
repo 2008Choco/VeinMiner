@@ -25,8 +25,8 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven { url = uri("http://repo.choco.wtf/releases"); isAllowInsecureProtocol = true }
-        maven { url = uri("http://repo.choco.wtf/snapshots"); isAllowInsecureProtocol = true } // Themis
+        maven { url = uri("https://repo.choco.wtf/releases"); }
+        maven { url = uri("https://repo.choco.wtf/snapshots"); } // Themis
     }
 
     dependencies {
@@ -77,10 +77,8 @@ subprojects {
     publishing {
         repositories {
             maven {
-                isAllowInsecureProtocol = true // I'll fix this once I get an SSL cert for my repository :)
-
                 val repository = if (project.version.toString().endsWith("SNAPSHOT")) "snapshots" else "releases"
-                url = uri("http://repo.choco.wtf/$repository")
+                url = uri("https://repo.choco.wtf/$repository")
 
                 credentials {
                     username = project.properties["mavenUsername"].toString()
