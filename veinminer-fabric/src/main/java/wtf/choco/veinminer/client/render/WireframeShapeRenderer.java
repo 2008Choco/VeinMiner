@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.client.render;
 
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -33,7 +34,7 @@ public final class WireframeShapeRenderer {
     private static final int WIREFRAME_COLOR_SOLID = ARGB.color(255, WIREFRAME_COLOR);
     private static final int WIREFRAME_COLOR_TRANSLUCENT = ARGB.color(20, WIREFRAME_COLOR);
 
-    private static final Supplier<VoxelShape> DEBUG_SHAPE = () -> Shapes.or(
+    private static final Supplier<VoxelShape> DEBUG_SHAPE = Suppliers.memoize(() -> Shapes.or(
             Shapes.block(),
             Shapes.block().move(0, 1, 0),
             Shapes.block().move(0, -1, 0),
@@ -41,7 +42,7 @@ public final class WireframeShapeRenderer {
             Shapes.block().move(-1, 0, 0),
             Shapes.block().move(0, 0, 1),
             Shapes.block().move(0, 0, -1)
-    );
+    ));
 
     private final VeinMinerClient client;
 
