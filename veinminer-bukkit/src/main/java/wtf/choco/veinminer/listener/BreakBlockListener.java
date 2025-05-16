@@ -12,6 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -52,7 +53,8 @@ public final class BreakBlockListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(ignoreCancelled = true)
+    // Monitor priority is safe, VeinMiner does not mutate the event state
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void onBlockBreak(BlockBreakEvent event) {
         if (event.getClass() != BlockBreakEvent.class) { // For plugins such as McMMO, who fire custom events
             return;
