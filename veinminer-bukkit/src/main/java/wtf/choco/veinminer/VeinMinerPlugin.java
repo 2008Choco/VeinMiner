@@ -436,21 +436,23 @@ public final class VeinMinerPlugin extends JavaPlugin {
         }
 
         // Some plugins like Polar AntiCheat are loaded by "PolarLoader" (a provided id), but the plugin name might actually be "Polar". We'll try both
-        this.tryToRegisterAntiCheatToMetrics(pluginId);
-        this.tryToRegisterAntiCheatToMetrics(pluginDisplayName);
+        if (!tryToRegisterAntiCheatToMetrics(pluginDisplayName) && !pluginDisplayName.equals(pluginId)) {
+            this.tryToRegisterAntiCheatToMetrics(pluginId);
+        }
     }
 
     private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
         this.registerAntiCheatHookIfEnabled(manager, pluginName, pluginName, hookSupplier);
     }
 
-    private void tryToRegisterAntiCheatToMetrics(String pluginId) {
+    private boolean tryToRegisterAntiCheatToMetrics(String pluginId) {
         Plugin antiCheatPlugin = Bukkit.getPluginManager().getPlugin(pluginId);
         if (antiCheatPlugin == null) {
-            return;
+            return false;
         }
 
         StatTracker.addInstalledAntiCheat(new AntiCheat(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
+        return true;
     }
 
     private void setupPersistentStorage() {
