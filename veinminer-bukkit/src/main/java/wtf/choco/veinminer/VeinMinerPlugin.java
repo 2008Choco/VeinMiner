@@ -27,6 +27,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAntiAura;
 import wtf.choco.veinminer.anticheat.AntiCheatHookGrim;
+import wtf.choco.veinminer.anticheat.AntiCheatHookIntave;
 import wtf.choco.veinminer.anticheat.AntiCheatHookLightAntiCheat;
 import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
@@ -169,6 +170,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.registerAntiCheatHookIfEnabled(manager, "AAC5", AntiCheatHookAAC::new);
         this.registerAntiCheatHookIfEnabled(manager, "AntiAura", () -> new AntiCheatHookAntiAura(this));
         this.registerAntiCheatHookIfEnabled(manager, "GrimAC", () -> new AntiCheatHookGrim(this));
+        this.registerAntiCheatHookIfEnabled(manager, "Intave", AntiCheatHookIntave::new);
         this.registerAntiCheatHookIfEnabled(manager, "LightAntiCheat", AntiCheatHookLightAntiCheat::new);
         this.registerAntiCheatHookIfEnabled(manager, "Matrix", AntiCheatHookMatrix::new);
         this.registerAntiCheatHookIfEnabled(manager, "Negativity", AntiCheatHookNegativity::new);

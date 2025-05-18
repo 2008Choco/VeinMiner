@@ -14,6 +14,7 @@ repositories {
     maven("https://repo.grim.ac/snapshots/") // Grim Anticheat
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven("https://repo.polar.top/repository/polar/") // Polar AntiCheat
+    maven("https://repo.janmm14.de/repository/intave/") // Intave AntiCheat
 }
 
 dependencies {
@@ -34,6 +35,7 @@ dependencies {
     // Anti-cheats
     compileOnly(libs.anticheat.aac)
     compileOnly(libs.anticheat.grim)
+    compileOnly(libs.anticheat.intave)
     compileOnly(libs.anticheat.matrix)
     compileOnly(libs.anticheat.nocheatplus)
     compileOnly(libs.anticheat.polar)

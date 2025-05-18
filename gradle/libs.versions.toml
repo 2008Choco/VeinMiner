@@ -8,6 +8,7 @@ junit = "5.10.2"
 # (bukkit)
 anticheat-aac = "0.0.1-SNAPSHOT"
 anticheat-grim = "d99dcba158" # The last API version before their "platform independence" update, which changes the package of their FlagEvent!
+anticheat-intave = "14.4.2"
 anticheat-matrix = "317d4635fd" # This repository is dead now, but we're going to keep using it because it exists on JitPack :)
 anticheat-nocheatplus = "3.16.1-SNAPSHOT"
 anticheat-polar = "2.0.0"
@@ -44,6 +45,7 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 # (bukkit)
 anticheat-aac = { module = "me.konsolas:AACAPIDummy", version.ref = "anticheat-aac" } # Dummy API artifact, contains only add/removeExemption() and AACExemption classes useful to VeinMiner!
 anticheat-grim = { module = "ac.grim.grimac:GrimAPI", version.ref = "anticheat-grim" }
+anticheat-intave = { module = "de.jpx3.intave.access:intave-access", version.ref = "anticheat-intave" }
 anticheat-matrix = { module = "com.github.jiangdashao:matrix-api-repo", version.ref = "anticheat-matrix" }
 anticheat-nocheatplus = { module = "fr.neatmonster:nocheatplus", version.ref = "anticheat-nocheatplus" }
 anticheat-polar = { module = "top.polar:api", version.ref = "anticheat-polar" }
