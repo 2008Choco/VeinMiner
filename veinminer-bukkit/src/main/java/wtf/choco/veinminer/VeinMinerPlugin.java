@@ -31,6 +31,7 @@ import wtf.choco.veinminer.anticheat.AntiCheatHookLightAntiCheat;
 import wtf.choco.veinminer.anticheat.AntiCheatHookMatrix;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNCP;
 import wtf.choco.veinminer.anticheat.AntiCheatHookNegativity;
+import wtf.choco.veinminer.anticheat.AntiCheatHookPolar;
 import wtf.choco.veinminer.anticheat.AntiCheatHookSpartan;
 import wtf.choco.veinminer.anticheat.AntiCheatHookThemis;
 import wtf.choco.veinminer.anticheat.AntiCheatHookVulcan;
@@ -172,6 +173,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         this.registerAntiCheatHookIfEnabled(manager, "Matrix", AntiCheatHookMatrix::new);
         this.registerAntiCheatHookIfEnabled(manager, "Negativity", AntiCheatHookNegativity::new);
         this.registerAntiCheatHookIfEnabled(manager, "NoCheatPlus", () -> new AntiCheatHookNCP(this));
+        this.registerAntiCheatHookIfEnabled(manager, "PolarLoader", "Polar", () -> new AntiCheatHookPolar(this));
         this.registerAntiCheatHookIfEnabled(manager, "Spartan", () -> new AntiCheatHookSpartan(this));
         this.registerAntiCheatHookIfEnabled(manager, "Themis", AntiCheatHookThemis::new);
         this.registerAntiCheatHookIfEnabled(manager, "Vulcan", AntiCheatHookVulcan::new);
@@ -414,16 +416,16 @@ public final class VeinMinerPlugin extends JavaPlugin {
         command.setExecutor(executor);
     }
 
-    private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
-        if (!manager.isPluginEnabled(pluginName)) {
+    private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginId, @NotNull String pluginDisplayName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
+        if (!manager.isPluginEnabled(pluginId)) {
             return;
         }
 
-        this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + pluginName + "\"");
+        this.getLogger().info("Anti cheat detected. Enabling anti cheat support for \"" + pluginDisplayName + "\"");
 
         AntiCheatHook hook = hookSupplier.get();
         if (!registerAntiCheatHook(hook)) {
-            this.getLogger().warning("The installed version of \"%s\" is incompatible with VeinMiner. Please contact the author of VeinMiner.".formatted(pluginName));
+            this.getLogger().warning("The installed version of \"%s\" is incompatible with VeinMiner. Please contact the author of VeinMiner.".formatted(pluginDisplayName));
             return;
         }
 
@@ -431,10 +433,22 @@ public final class VeinMinerPlugin extends JavaPlugin {
             manager.registerEvents(hookListener, this);
         }
 
-        Plugin antiCheatPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
-        if (antiCheatPlugin != null) {
-            StatTracker.addInstalledAntiCheat(new AntiCheat(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
+        // Some plugins like Polar AntiCheat are loaded by "PolarLoader" (a provided id), but the plugin name might actually be "Polar". We'll try both
+        this.tryToRegisterAntiCheatToMetrics(pluginId);
+        this.tryToRegisterAntiCheatToMetrics(pluginDisplayName);
+    }
+
+    private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
+        this.registerAntiCheatHookIfEnabled(manager, pluginName, pluginName, hookSupplier);
+    }
+
+    private void tryToRegisterAntiCheatToMetrics(String pluginId) {
+        Plugin antiCheatPlugin = Bukkit.getPluginManager().getPlugin(pluginId);
+        if (antiCheatPlugin == null) {
+            return;
         }
+
+        StatTracker.addInstalledAntiCheat(new AntiCheat(antiCheatPlugin.getName(), antiCheatPlugin.getDescription().getVersion()));
     }
 
     private void setupPersistentStorage() {

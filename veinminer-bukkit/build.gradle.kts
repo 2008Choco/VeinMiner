@@ -13,6 +13,7 @@ repositories {
     maven("https://repo.md-5.net/content/repositories/snapshots/") // NoCheatPlus
     maven("https://repo.grim.ac/snapshots/") // Grim Anticheat
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
+    maven("https://repo.polar.top/repository/polar/") // Polar AntiCheat
 }
 
 dependencies {
@@ -35,6 +36,7 @@ dependencies {
     compileOnly(libs.anticheat.grim)
     compileOnly(libs.anticheat.matrix)
     compileOnly(libs.anticheat.nocheatplus)
+    compileOnly(libs.anticheat.polar)
     compileOnly(libs.anticheat.spartan)
     compileOnly(libs.anticheat.light)
     compileOnly(libs.anticheat.negativity)
