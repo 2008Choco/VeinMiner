@@ -1,7 +1,5 @@
 package wtf.choco.veinminer.client.render.layer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,16 +9,17 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 
 import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.client.network.FabricServerState;
 
 /**
- * A {@link VeinMinerIdentifiedLayer} for the pattern selection wheel in the top left.
+ * A {@link VeinMinerHudElement} for the pattern selection wheel in the top left.
  */
-public final class PatternWheelLayer extends VeinMinerIdentifiedLayer {
+public final class PatternWheelHudElement extends VeinMinerHudElement {
 
-    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("veinminer_companion", "pattern_wheel");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("veinminer_companion", "pattern_wheel");
 
     private static final int STAY_TICKS = 60; // 3 seconds
     private static final int FADE_TICKS = 4; // 0.2 seconds
@@ -28,13 +27,8 @@ public final class PatternWheelLayer extends VeinMinerIdentifiedLayer {
 
     private int remainingTicks = 0;
 
-    public PatternWheelLayer(VeinMinerClient client) {
+    public PatternWheelHudElement(VeinMinerClient client) {
         super(client);
-    }
-
-    @Override
-    public ResourceLocation id() {
-        return ID;
     }
 
     @Override
@@ -62,15 +56,15 @@ public final class PatternWheelLayer extends VeinMinerIdentifiedLayer {
         String after = serverState.getNextPattern().toString();
 
         Minecraft minecraft = Minecraft.getInstance();
-        PoseStack stack = graphics.pose();
-        stack.pushPose();
-        stack.scale(1.1F, 1.1F, 1.1F);
+        Matrix3x2fStack stack = graphics.pose();
+        stack.pushMatrix();
+        stack.scale(1.1F);
         graphics.drawString(minecraft.font, Component.literal(selected), 4, minecraft.font.lineHeight, colour);
 
-        stack.scale(0.6F, 0.6F, 0.6F);
+        stack.scale(0.6F);
         graphics.drawString(minecraft.font, Component.literal(before), 7, 4, colour);
         graphics.drawString(minecraft.font, Component.literal(after), 7, 5 + (minecraft.font.lineHeight * 3), colour);
-        stack.popPose();
+        stack.popMatrix();
 
         Profiler.get().pop();
     }

@@ -1,6 +1,6 @@
 package wtf.choco.veinminer.client.render.layer;
 
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -9,11 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.client.network.FabricServerState;
 
-public abstract class VeinMinerIdentifiedLayer implements IdentifiedLayer {
+public abstract class VeinMinerHudElement implements HudElement {
 
     private final VeinMinerClient client;
 
-    public VeinMinerIdentifiedLayer(VeinMinerClient client) {
+    public VeinMinerHudElement(VeinMinerClient client) {
         this.client = client;
     }
 

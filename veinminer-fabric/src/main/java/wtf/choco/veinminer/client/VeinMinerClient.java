@@ -6,9 +6,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.KeyMapping;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +20,8 @@ import wtf.choco.veinminer.VeinMiner;
 import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.client.network.VeinMinerFabricChannelRegistrar;
 import wtf.choco.veinminer.client.render.WireframeShapeRenderer;
-import wtf.choco.veinminer.client.render.layer.PatternWheelLayer;
-import wtf.choco.veinminer.client.render.layer.VeinMiningIconLayer;
+import wtf.choco.veinminer.client.render.layer.PatternWheelHudElement;
+import wtf.choco.veinminer.client.render.layer.VeinMiningIconHudElement;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
 
 /**
@@ -49,7 +49,7 @@ public final class VeinMinerClient implements ClientModInitializer {
     private final KeyHandler keyHandler = new KeyHandler(this);
     private final BlockLookUpdateHandler blockLookUpdateHandler = new BlockLookUpdateHandler(this);
 
-    private final PatternWheelLayer patternWheelRenderComponent = new PatternWheelLayer(this);
+    private final PatternWheelHudElement patternWheelRenderComponent = new PatternWheelHudElement(this);
 
     private final WireframeShapeRenderer wireframeShapeRenderer = new WireframeShapeRenderer(this);
 
@@ -73,10 +73,8 @@ public final class VeinMinerClient implements ClientModInitializer {
         // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion())));
 
-        HudLayerRegistrationCallback.EVENT.register(drawer -> {
-            drawer.attachLayerBefore(IdentifiedLayer.DEBUG, patternWheelRenderComponent);
-            drawer.attachLayerAfter(IdentifiedLayer.CROSSHAIR, new VeinMiningIconLayer(this));
-        });
+        HudElementRegistry.attachElementBefore(VanillaHudElements.DEBUG, PatternWheelHudElement.ID, patternWheelRenderComponent);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, VeinMiningIconHudElement.ID, new VeinMiningIconHudElement(this));
 
         WorldRenderEvents.AFTER_TRANSLUCENT.register(wireframeShapeRenderer::render);
     }
@@ -124,7 +122,7 @@ public final class VeinMinerClient implements ClientModInitializer {
      * @return the pattern wheel layer
      */
     @NotNull
-    public PatternWheelLayer getPatternWheelLayer() {
+    public PatternWheelHudElement getPatternWheelLayer() {
         return patternWheelRenderComponent;
     }
 
