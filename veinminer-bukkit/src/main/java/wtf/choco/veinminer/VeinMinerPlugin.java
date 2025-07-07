@@ -56,6 +56,7 @@ import wtf.choco.veinminer.language.LanguageFile;
 import wtf.choco.veinminer.listener.BlockDropCollectionListener;
 import wtf.choco.veinminer.listener.BreakBlockListener;
 import wtf.choco.veinminer.listener.ItemDamageListener;
+import wtf.choco.veinminer.listener.JobsIntegrationListener;
 import wtf.choco.veinminer.listener.McMMOIntegrationListener;
 import wtf.choco.veinminer.listener.PlayerDataListener;
 import wtf.choco.veinminer.manager.VeinMinerManager;
@@ -205,6 +206,11 @@ public final class VeinMinerPlugin extends JavaPlugin {
                 this.getLogger().warning("This version of McMMO is not supported and therefore this configuration option will not work!");
                 this.getLogger().warning("Consider updating your version of McMMO.");
             }
+        }
+
+        Plugin jobsPlugin = manager.getPlugin("Jobs");
+        if (jobsPlugin != null && manager.isPluginEnabled("Jobs")) {
+            manager.registerEvents(new JobsIntegrationListener(this), this);
         }
 
         Plugin placeholderAPIPlugin = manager.getPlugin("PlaceholderAPI");

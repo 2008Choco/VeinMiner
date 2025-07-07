@@ -113,6 +113,26 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
     public boolean isNerfMcMMO();
 
     /**
+     * Get whether or not Jobs' experience system should be nerfed while vein mining.
+     * <p>
+     * If this value returns true, job experience will only be yielded for the initial block
+     * break. If false, every block broken in the vein mine will yield job experience.
+     *
+     * @return true to nerf Jobs' experience yield, false to behave as normal
+     */
+    public boolean isNerfJobsExperienceGain();
+
+    /**
+     * Get whether or not Jobs' currency gain should be nerfed while vein mining.
+     * <p>
+     * If this value returns true, job currency will only be yielded for the initial block
+     * break. If false, every block broken in the vein mine will yield job currency.
+     *
+     * @return true to nerf Jobs' currency gain, false to behave as normal
+     */
+    public boolean isNerfJobsCurrencyGain();
+
+    /**
      * Check whether or not vein mining is disabled when the player activates it while in the
      * specified {@link GameMode}.
      *

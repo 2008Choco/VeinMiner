@@ -9,6 +9,9 @@ CollectItemsAtSource: true
 CollectExperienceAtSource: true
 OnlyDamageOnFirstBlock: false
 NerfMcMMO: false
+Jobs:
+  NerfExpGain: false
+  NerfCurrencyGain: false
 
 # "RepairFriendly", "MaxVeinSize", "Cost", and "DisabledWorlds" may be
 # defined per-category in the categories.yml file

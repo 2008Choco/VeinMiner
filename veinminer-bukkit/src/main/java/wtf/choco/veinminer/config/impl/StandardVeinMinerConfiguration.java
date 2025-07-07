@@ -102,6 +102,16 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
     }
 
     @Override
+    public boolean isNerfJobsExperienceGain() {
+        return plugin.getConfig().getBoolean(KEY_JOBS_NERF_EXPERIENCE_GAIN, false);
+    }
+
+    @Override
+    public boolean isNerfJobsCurrencyGain() {
+        return plugin.getConfig().getBoolean(KEY_JOBS_NERF_CURRENCY_GAIN, false);
+    }
+
+    @Override
     public boolean isRepairFriendly() {
         return plugin.getConfig().getBoolean(KEY_REPAIR_FRIENDLY, false);
     }

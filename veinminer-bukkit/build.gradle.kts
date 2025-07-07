@@ -31,6 +31,12 @@ dependencies {
     compileOnly(libs.vault.api)
     compileOnly(libs.worldguard)
     compileOnly(libs.mcmmo)
+    compileOnly(libs.jobs) {
+        exclude(group = "com.sk89q.worldguard", module = "worldguard-bukkit")
+        exclude(group = "com.sk89q.worldedit", module = "worldedit-bukkit")
+        exclude(group = "com.bgsoftware", module = "WildStackerAPI")
+        exclude(group = "uk.antiperson.stackmob", module = "StackMob")
+    }
 
     // Anti-cheats
     compileOnly(libs.anticheat.aac)

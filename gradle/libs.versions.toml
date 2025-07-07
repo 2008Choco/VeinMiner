@@ -18,11 +18,12 @@ anticheat-negativity = "2.7.1"
 anticheat-themis = "0.0.1-SNAPSHOT"
 anticheat-vulcan = "2.9.1"
 bstats = "3.0.2"
+jobs = "v5.2.2.3" # Higher versions require Java 21
 mcmmo = "2.1.228"
 placeholder-api = "2.11.5"
 spigot-api = "1.17.1-R0.1-SNAPSHOT"
 vault-api = "1.7"
-worldguard = "7.0.9"
+worldguard = "7.0.9" # Higher versions require Java 21
 
 # (fabric)
 fabric-api = "0.127.0+1.21.6"
@@ -58,6 +59,7 @@ bstats-base = { module = "org.bstats:bstats-base", version.ref = "bstats" }
 bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
 choco-networking-bukkit = { module = "wtf.choco:networking-bukkit", version.ref = "choco-networking" }
 mcmmo = { module = "com.gmail.nossr50.mcMMO:mcMMO", version.ref = "mcmmo" }
+jobs = { module = "com.github.Zrips:Jobs", version.ref = "jobs" }
 placeholder-api = { module = "me.clip:placeholderapi", version.ref = "placeholder-api" }
 spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot-api" }
 vault-api = { module = "net.milkbowl.vault:VaultAPI", version.ref = "vault-api" }

@@ -14,6 +14,8 @@ final class ConfigKeys {
     static final String KEY_COLLECT_EXPERIENCE_AT_SOURCE = "CollectExperienceAtSource";
     static final String KEY_ONLY_DAMAGE_ON_FIRST_BLOCK = "OnlyDamageOnFirstBlock";
     static final String KEY_NERF_MCMMO = "NerfMcMMO";
+    static final String KEY_JOBS_NERF_EXPERIENCE_GAIN = "Jobs.NerfExperienceGain";
+    static final String KEY_JOBS_NERF_CURRENCY_GAIN = "Jobs.NerfCurrencyGain";
     static final String KEY_DISABLED_GAME_MODES = "DisabledGameModes";
     static final String KEY_HUNGER_HUNGER_MODIFIER = "Hunger.HungerModifier";
     static final String KEY_HUNGER_MINIMUM_FOOD_LEVEL = "Hunger.MinimumFoodLevel";
