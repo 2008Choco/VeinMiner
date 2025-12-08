@@ -7,6 +7,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
@@ -44,7 +46,11 @@ public final class PlayerDataListener implements Listener {
 
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
-        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(event.getPlayer());
+        Player player = event.getPlayer();
+        this.invalidateAndRemoveMetadata(player, VMConstants.METADATA_KEY_VEIN_MINER_ACTIVE);
+        this.invalidateAndRemoveMetadata(player, VMConstants.METADATA_KEY_VEINMINING);
+
+        VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().remove(player);
         if (veinMinerPlayer == null || !veinMinerPlayer.isDirty()) {
             return;
         }
@@ -53,6 +59,11 @@ public final class PlayerDataListener implements Listener {
             e.printStackTrace();
             return null;
         });
+    }
+
+    private void invalidateAndRemoveMetadata(@NotNull Metadatable target, String key) {
+        target.getMetadata(key).forEach(MetadataValue::invalidate);
+        target.removeMetadata(key, plugin);
     }
 
 }
