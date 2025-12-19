@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.profiling.Profiler;
@@ -87,7 +87,7 @@ public final class WireframeShapeRenderer {
 
         Profiler.get().push("veinMinerWireframe");
 
-        Vec3 camera = client.getEntityRenderDispatcher().camera.getPosition();
+        Vec3 camera = client.getEntityRenderDispatcher().camera.position();
         double relX = blockPos.getX() - camera.x;
         double relY = blockPos.getY() - camera.y;
         double relZ = blockPos.getZ() - camera.z;

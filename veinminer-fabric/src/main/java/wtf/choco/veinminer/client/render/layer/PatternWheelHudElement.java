@@ -4,7 +4,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 
@@ -19,7 +19,7 @@ import wtf.choco.veinminer.client.network.FabricServerState;
  */
 public final class PatternWheelHudElement extends VeinMinerHudElement {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("veinminer_companion", "pattern_wheel");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath("veinminer_companion", "pattern_wheel");
 
     private static final int STAY_TICKS = 60; // 3 seconds
     private static final int FADE_TICKS = 4; // 0.2 seconds

@@ -1,6 +1,6 @@
 package wtf.choco.veinminer.client.network;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +24,7 @@ public final class VeinMinerFabricChannelRegistrar extends FabricClientChannelRe
 
     @Nullable
     @Override
-    protected VeinMinerClientboundMessageListener onSuccessfulMessage(@NotNull ResourceLocation channel, @NotNull Message<VeinMinerClientboundMessageListener> message) {
+    protected VeinMinerClientboundMessageListener onSuccessfulMessage(@NotNull Identifier channel, @NotNull Message<VeinMinerClientboundMessageListener> message) {
         return client.hasServerState() ? client.getServerState() : null;
     }
 

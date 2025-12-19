@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
  */
 public final class VeinMinerClient implements ClientModInitializer {
 
-    private static final KeyMapping.Category VEINMINER_KEY_MAPPING_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("veinminer_companion", "general"));
+    private static final KeyMapping.Category VEINMINER_KEY_MAPPING_CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("veinminer_companion", "general"));
     /**
      * The "activate veinminer" key mapping. Defaults to ~
      */

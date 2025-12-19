@@ -1,6 +1,6 @@
 [versions]
 # (common)
-choco-networking = "0.1.2"
+choco-networking = "0.1.3"
 jetbrains-annotations = "24.1.0"
 junit = "5.13.4"
 
@@ -25,9 +25,9 @@ vault-api = "1.7"
 worldguard = "7.0.9" # Higher versions require Java 21
 
 # (fabric)
-fabric-api = "0.138.4+1.21.10"
+fabric-api = "0.140.0+1.21.11"
 fabric-loader = "0.18.3"
-minecraft = "1.21.10"
+minecraft = "1.21.11"
 
 # plugins
 fabric-loom = "1.13-SNAPSHOT"
