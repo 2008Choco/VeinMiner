@@ -94,13 +94,13 @@ public final class WireframeShapeRenderer {
 
         PoseStack stack = context.matrices();
         BufferSource source = client.renderBuffers().bufferSource();
-        this.renderShape(shape, source, VeinMinerRenderType.wireframe(), stack, relX, relY, relZ, WIREFRAME_COLOR_SOLID);
-        this.renderShape(shape, source, VeinMinerRenderType.wireframeTransparent(), stack, relX, relY, relZ, WIREFRAME_COLOR_TRANSLUCENT);
+        this.renderShape(shape, source, VeinMinerRenderType.wireframe(), stack, relX, relY, relZ, WIREFRAME_COLOR_SOLID, 1.0F);
+        this.renderShape(shape, source, VeinMinerRenderType.wireframeTransparent(), stack, relX, relY, relZ, WIREFRAME_COLOR_TRANSLUCENT, 2.0F);
 
         Profiler.get().pop();
     }
 
-    private void renderShape(VoxelShape shape, BufferSource source, RenderType renderType, PoseStack stack, double relX, double relY, double relZ, int color) {
+    private void renderShape(VoxelShape shape, BufferSource source, RenderType renderType, PoseStack stack, double relX, double relY, double relZ, int color, float lineWidth) {
         Pose pose = stack.last();
         VertexConsumer consumer = source.getBuffer(renderType);
         shape.forAllEdges((x, y, z, dx, dy, dz) -> renderEdge(
@@ -112,15 +112,16 @@ public final class WireframeShapeRenderer {
                 (float) (dx + relX),
                 (float) (dy + relY),
                 (float) (dz + relZ),
-                color
+                color,
+                lineWidth
         ));
         source.endLastBatch();
     }
 
-    private void renderEdge(VertexConsumer consumer, Pose pose, float x, float y, float z, float dx, float dy, float dz, int color) {
+    private void renderEdge(VertexConsumer consumer, Pose pose, float x, float y, float z, float dx, float dy, float dz, int color, float lineWidth) {
         Vector3f normal = new Vector3f(dx - x, dy - y, dz - z).normalize();
-        consumer.addVertex(pose, x, y, z).setColor(color).setNormal(pose, normal);
-        consumer.addVertex(pose, dx, dy, dz).setColor(color).setNormal(pose, normal);
+        consumer.addVertex(pose, x, y, z).setColor(color).setNormal(pose, normal).setLineWidth(lineWidth);
+        consumer.addVertex(pose, dx, dy, dz).setColor(color).setNormal(pose, normal).setLineWidth(lineWidth);
     }
 
 }
