@@ -225,7 +225,7 @@ public final class VeinMinerManager {
             }
         }
 
-        return null;
+        return aliasList;
     }
 
     /**
