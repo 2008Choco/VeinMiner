@@ -6,7 +6,7 @@ junit = "5.13.4"
 
 # (bukkit)
 anticheat-aac = "0.0.1-SNAPSHOT"
-anticheat-grim = "d99dcba158" # The last API version before their "platform independence" update, which changes the package of their FlagEvent!
+anticheat-grim = "1.2.0.0"
 anticheat-intave = "14.4.2"
 anticheat-matrix = "317d4635fd" # This repository is dead now, but we're going to keep using it because it exists on JitPack :)
 anticheat-nocheatplus = "3.16.1-SNAPSHOT"

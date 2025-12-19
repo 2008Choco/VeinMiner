@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
 
-import ac.grim.grimac.api.events.FlagEvent;
+import ac.grim.grimac.api.event.events.FlagEvent;
 
 /**
  * The default Grim AntiCheat hook implementation.
@@ -25,7 +25,7 @@ public final class AntiCheatHookGrim implements AntiCheatHook, Listener {
 
     public AntiCheatHookGrim(@NotNull VeinMinerPlugin plugin) {
         try {
-            Class.forName("ac.grim.grimac.api.events.FlagEvent");
+            Class.forName("ac.grim.grimac.api.event.events.FlagEvent");
             this.supported = true;
         } catch (ReflectiveOperationException e) {
             plugin.getLogger().severe("The version of GrimAC on this server is incompatible with Veinminer. Please post information on the spigot resource discussion page.");
