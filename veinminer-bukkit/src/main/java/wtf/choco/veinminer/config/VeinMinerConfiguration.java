@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.data.PersistentStorageType;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.player.ActivationStrategy;
@@ -308,18 +307,16 @@ public interface VeinMinerConfiguration extends VeinMiningConfiguration {
     public String getMySQLTablePrefix();
 
     /**
-     * Get an unmodifiable {@link Collection} of Strings containing the aliases that need to
-     * be parsed by VeinMiner to create a {@link BlockList}. Each returned string entry should
-     * be a pseudo "array" of Minecraft block keys separated by {@code ';'}s.
+     * Get an unmodifiable {@link Collection} of {@link AliasDefinition AliasDefinitions}.
      *
-     * @return the alias strings
+     * @return the alias definitions
      *
      * @apiNote The returned Collection is a snapshot of current values and, unlike other methods
      * in this configuration, will not be updated when this configuration is reloaded!
      */
     @NotNull
     @Unmodifiable
-    public Collection<String> getAliasStrings();
+    public Collection<AliasDefinition> getAliases();
 
     /**
      * Get an unmodifiable {@link Collection} of Strings, each entry a Minecraft block key, for

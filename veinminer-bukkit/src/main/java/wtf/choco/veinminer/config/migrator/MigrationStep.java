@@ -49,14 +49,4 @@ public interface MigrationStep {
         return Collections.emptyList();
     }
 
-    /**
-     * Get the "Move Block Lists To categories.yml" migration step instance.
-     *
-     * @return the migration step instance
-     */
-    @NotNull
-    public static MigrationStep blockListsToCategoriesFile() {
-        return MigrationStepBlockListsToCategoriesFile.INSTANCE;
-    }
-
 }

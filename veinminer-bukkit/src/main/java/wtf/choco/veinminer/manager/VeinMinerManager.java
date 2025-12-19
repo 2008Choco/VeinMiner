@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
+import wtf.choco.veinminer.config.AliasDefinition;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
@@ -241,14 +242,14 @@ public final class VeinMinerManager {
 
         // Aliases
         int aliasesAdded = 0;
-        for (String aliasString : config.getAliasStrings()) {
-            List<String> aliasStringEntries = List.of(aliasString.split(";"));
-            if (aliasStringEntries.size() <= 1 && !aliasStringEntries.get(0).startsWith("#")) {
-                this.plugin.getLogger().warning("Alias \"%s\" contains %d entries but must have at least 2, or be a tag. Ignoring...".formatted(aliasString, aliasStringEntries.size()));
+        for (AliasDefinition alias : config.getAliases()) {
+            List<String> entries = alias.entries();
+            if (entries.size() <= 1 && !entries.get(0).startsWith("#")) {
+                this.plugin.getLogger().warning("Alias \"%s\" contains %d entries but must have at least 2, or be a tag. Ignoring...".formatted(alias.key(), entries.size()));
                 continue;
             }
 
-            BlockList aliasBlockList = BlockList.parseBlockList(aliasStringEntries, plugin.getLogger());
+            BlockList aliasBlockList = BlockList.parseBlockList(entries, plugin.getLogger());
             if (aliasBlockList.isEmpty()) {
                 continue;
             }
