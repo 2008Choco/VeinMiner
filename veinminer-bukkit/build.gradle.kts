@@ -52,7 +52,11 @@ dependencies {
     compileOnly(libs.anticheat.vulcan)
 
     testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+shadow {
+    addShadowVariantIntoJavaComponent = false
 }
 
 tasks {
@@ -67,6 +71,10 @@ tasks {
 
     build {
         dependsOn("shadowJar")
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     withType<Javadoc>() {
@@ -86,10 +94,4 @@ tasks {
             include(dependency(libs.choco.networking.bukkit.get()))
         }
     }
-}
-
-// Strip out shadowed artifacts from publications
-val javaComponent = components["java"] as AdhocComponentWithVariants
-javaComponent.withVariantsFromConfiguration(configurations["shadowRuntimeElements"]) {
-    skip()
 }

@@ -6,10 +6,11 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
  */
 public final class VeinMinerClient implements ClientModInitializer {
 
+    private static final KeyMapping.Category VEINMINER_KEY_MAPPING_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("veinminer_companion", "general"));
     /**
      * The "activate veinminer" key mapping. Defaults to ~
      */
@@ -73,10 +75,10 @@ public final class VeinMinerClient implements ClientModInitializer {
         // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion())));
 
-        HudElementRegistry.attachElementBefore(VanillaHudElements.DEBUG, PatternWheelHudElement.ID, patternWheelRenderComponent);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, PatternWheelHudElement.ID, patternWheelRenderComponent);
         HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, VeinMiningIconHudElement.ID, new VeinMiningIconHudElement(this));
 
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(wireframeShapeRenderer::render);
+        WorldRenderEvents.END_MAIN.register(wireframeShapeRenderer::render);
     }
 
     /**
@@ -131,7 +133,7 @@ public final class VeinMinerClient implements ClientModInitializer {
             "key.veinminer_companion." + id,
             InputConstants.Type.KEYSYM,
             key,
-            "category.veinminer_companion.general"
+            VEINMINER_KEY_MAPPING_CATEGORY
         ));
     }
 
