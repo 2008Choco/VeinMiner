@@ -9,12 +9,11 @@ repositories {
     maven("https://maven.enginehub.org/repo/") // WorldGuard
     maven("https://nexus.neetgames.com/repository/maven-public/") // mcMMO
 
-    maven("https://jitpack.io") // mcMMO, Matrix AntiCheat, Light AntiCheat
+    maven("https://jitpack.io") // mcMMO, Matrix AntiCheat, Light AntiCheat, Intave Access
     maven("https://repo.md-5.net/content/repositories/snapshots/") // NoCheatPlus
     maven("https://repo.grim.ac/snapshots/") // Grim Anticheat
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven("https://repo.polar.top/repository/polar/") // Polar AntiCheat
-    maven("https://repo.janmm14.de/repository/intave/") // Intave AntiCheat
 }
 
 dependencies {

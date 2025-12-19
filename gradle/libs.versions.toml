@@ -42,7 +42,7 @@ junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter", version.ref = 
 # (bukkit)
 anticheat-aac = { module = "me.konsolas:AACAPIDummy", version.ref = "anticheat-aac" } # Dummy API artifact, contains only add/removeExemption() and AACExemption classes useful to VeinMiner!
 anticheat-grim = { module = "ac.grim.grimac:GrimAPI", version.ref = "anticheat-grim" }
-anticheat-intave = { module = "de.jpx3.intave.access:intave-access", version.ref = "anticheat-intave" }
+anticheat-intave = { module = "com.github.intave:access", version.ref = "anticheat-intave" }
 anticheat-matrix = { module = "com.github.jiangdashao:matrix-api-repo", version.ref = "anticheat-matrix" }
 anticheat-nocheatplus = { module = "fr.neatmonster:nocheatplus", version.ref = "anticheat-nocheatplus" }
 anticheat-polar = { module = "top.polar:api", version.ref = "anticheat-polar" }
