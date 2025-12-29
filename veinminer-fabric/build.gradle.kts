@@ -17,12 +17,6 @@ dependencies {
     modImplementation(libs.fabric.api)
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
 tasks {
     processResources {
         outputs.upToDateWhen { false } // Always process resource properties

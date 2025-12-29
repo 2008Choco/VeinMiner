@@ -39,13 +39,13 @@ subprojects {
         withSourcesJar()
 
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 
     tasks {
         withType<JavaCompile> {
-            options.release = 17
+            options.release = 21
             options.encoding = Charsets.UTF_8.name()
         }
 
