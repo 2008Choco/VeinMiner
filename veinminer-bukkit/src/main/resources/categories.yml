@@ -55,6 +55,7 @@ Axe:
   BlockList:
   - 'minecraft:acacia_log'
   - 'minecraft:acacia_wood'
+  - 'minecraft:bamboo_block'
   - 'minecraft:birch_log'
   - 'minecraft:birch_wood'
   - 'minecraft:brown_mushroom_block'
@@ -132,10 +133,27 @@ Shears:
   Items:
   - 'minecraft:shears'
   BlockList:
+  - '#minecraft:flowers'
   - '#minecraft:leaves'
   - '#minecraft:wool'
+  - 'minecraft:bush'
+  - 'minecraft:cave_vines'
+  - 'minecraft:cave_vines_plant'
   - 'minecraft:cobweb'
+  - 'minecraft:dead_bush'
+  - 'minecraft:fern'
+  - 'minecraft:firefly_bush'
+  - 'minecraft:leaf_litter'
   - 'minecraft:glow_lichen'
+  - 'minecraft:short_dry_grass'
+  - 'minecraft:short_grass'
+  - 'minecraft:tall_dry_grass'
+  - 'minecraft:tall_grass'
+  - 'minecraft:twisting_vines'
+  - 'minecraft:twisting_vines_plant'
+  - 'minecraft:vine'
+  - 'minecraft:weeping_vines'
+  - 'minecraft:weeping_vines_plant'
 
 Shovel:
   Items:

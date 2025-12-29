@@ -60,12 +60,9 @@ Aliases:
   birch_wood:
   - 'minecraft:birch_log'
   - 'minecraft:birch_wood'
-  mushroom_blocks:
-  - 'minecraft:brown_mushroom_block'
-  - 'minecraft:red_mushroom_block'
-  pumpkins:
-  - 'minecraft:carved_pumpkin'
-  - 'minecraft:pumpkin'
+  cave_vines:
+  - 'minecraft:cave_vines'
+  - 'minecraft:cave_vines_plant'
   cherry_wood:
   - 'minecraft:cherry_log'
   - 'minecraft:cherry_wood'
@@ -75,8 +72,13 @@ Aliases:
   dark_oak_wood:
   - 'minecraft:dark_oak_log'
   - 'minecraft:dark_oak_wood'
-  grass:
+  grass_foliage:
+  - 'minecraft:bush'
+  - 'minecraft:fern'
+  - 'minecraft:firefly_bush'
+  - 'minecraft:short_dry_grass'
   - 'minecraft:short_grass'
+  - 'minecraft:tall_dry_grass'
   - 'minecraft:tall_grass'
   jungle_wood:
   - 'minecraft:jungle_log'
@@ -84,12 +86,18 @@ Aliases:
   mangrove_wood:
   - 'minecraft:mangrove_log'
   - 'minecraft:mangrove_wood'
+  mushroom_blocks:
+  - 'minecraft:brown_mushroom_block'
+  - 'minecraft:red_mushroom_block'
   oak_wood:
   - 'minecraft:oak_log'
   - 'minecraft:oak_wood'
   pale_oak_wood:
   - 'minecraft:pale_oak_log'
   - 'minecraft:pale_oak_wood'
+  pumpkins:
+  - 'minecraft:carved_pumpkin'
+  - 'minecraft:pumpkin'
   spruce_wood:
   - 'minecraft:spruce_log'
   - 'minecraft:spruce_wood'
