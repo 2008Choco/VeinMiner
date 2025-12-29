@@ -20,7 +20,7 @@ bstats = "3.0.2"
 jobs = "v5.2.2.3" # Higher versions require Java 21
 mcmmo = "2.1.228"
 placeholder-api = "2.11.5"
-spigot-api = "1.17.1-R0.1-SNAPSHOT"
+spigot-api = "1.21.3-R0.1-SNAPSHOT"
 vault-api = "1.7"
 worldguard = "7.0.9" # Higher versions require Java 21
 
