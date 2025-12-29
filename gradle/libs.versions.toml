@@ -17,12 +17,12 @@ anticheat-negativity = "2.7.1"
 anticheat-themis = "0.0.1-SNAPSHOT"
 anticheat-vulcan = "2.9.1"
 bstats = "3.0.2"
-jobs = "v5.2.2.3" # Higher versions require Java 21
+jobs = "v5.2.6.3"
 mcmmo = "2.1.228"
 placeholder-api = "2.11.5"
 spigot-api = "1.21.3-R0.1-SNAPSHOT"
 vault-api = "1.7"
-worldguard = "7.0.9" # Higher versions require Java 21
+worldguard = "7.0.9"
 
 # (fabric)
 fabric-api = "0.140.0+1.21.11"
