@@ -13,10 +13,6 @@ public final class MigrationStepBlockListsToCategoriesFile implements MigrationS
 
     private static final String KEY_BLOCK_LIST = "BlockList";
 
-    static final MigrationStep INSTANCE = new MigrationStepBlockListsToCategoriesFile();
-
-    MigrationStepBlockListsToCategoriesFile() { }
-
     @Override
     public String getDescription() {
         return "Move Block Lists To categories.yml";

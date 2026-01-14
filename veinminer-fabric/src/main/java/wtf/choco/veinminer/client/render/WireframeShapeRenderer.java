@@ -7,11 +7,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import java.util.function.Supplier;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.profiling.Profiler;
@@ -85,26 +85,22 @@ public final class WireframeShapeRenderer {
             shape = DEBUG_SHAPE.get();
         }
 
-        PoseStack stack = context.matrixStack();
-        if (stack == null) { // Should never be null, but maybe in the future it will.
-            return;
-        }
-
         Profiler.get().push("veinMinerWireframe");
 
-        Vec3 camera = client.getEntityRenderDispatcher().camera.getPosition();
+        Vec3 camera = client.getEntityRenderDispatcher().camera.position();
         double relX = blockPos.getX() - camera.x;
         double relY = blockPos.getY() - camera.y;
         double relZ = blockPos.getZ() - camera.z;
 
+        PoseStack stack = context.matrices();
         BufferSource source = client.renderBuffers().bufferSource();
-        this.renderShape(shape, source, VeinMinerRenderType.wireframe(), stack, relX, relY, relZ, WIREFRAME_COLOR_SOLID);
-        this.renderShape(shape, source, VeinMinerRenderType.wireframeTransparent(), stack, relX, relY, relZ, WIREFRAME_COLOR_TRANSLUCENT);
+        this.renderShape(shape, source, VeinMinerRenderType.wireframe(), stack, relX, relY, relZ, WIREFRAME_COLOR_SOLID, 1.0F);
+        this.renderShape(shape, source, VeinMinerRenderType.wireframeTransparent(), stack, relX, relY, relZ, WIREFRAME_COLOR_TRANSLUCENT, 2.0F);
 
         Profiler.get().pop();
     }
 
-    private void renderShape(VoxelShape shape, BufferSource source, RenderType renderType, PoseStack stack, double relX, double relY, double relZ, int color) {
+    private void renderShape(VoxelShape shape, BufferSource source, RenderType renderType, PoseStack stack, double relX, double relY, double relZ, int color, float lineWidth) {
         Pose pose = stack.last();
         VertexConsumer consumer = source.getBuffer(renderType);
         shape.forAllEdges((x, y, z, dx, dy, dz) -> renderEdge(
@@ -116,15 +112,16 @@ public final class WireframeShapeRenderer {
                 (float) (dx + relX),
                 (float) (dy + relY),
                 (float) (dz + relZ),
-                color
+                color,
+                lineWidth
         ));
         source.endLastBatch();
     }
 
-    private void renderEdge(VertexConsumer consumer, Pose pose, float x, float y, float z, float dx, float dy, float dz, int color) {
+    private void renderEdge(VertexConsumer consumer, Pose pose, float x, float y, float z, float dx, float dy, float dz, int color, float lineWidth) {
         Vector3f normal = new Vector3f(dx - x, dy - y, dz - z).normalize();
-        consumer.addVertex(pose, x, y, z).setColor(color).setNormal(pose, normal);
-        consumer.addVertex(pose, dx, dy, dz).setColor(color).setNormal(pose, normal);
+        consumer.addVertex(pose, x, y, z).setColor(color).setNormal(pose, normal).setLineWidth(lineWidth);
+        consumer.addVertex(pose, dx, dy, dz).setColor(color).setNormal(pose, normal).setLineWidth(lineWidth);
     }
 
 }

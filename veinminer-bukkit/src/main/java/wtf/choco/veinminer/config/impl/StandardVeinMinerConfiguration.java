@@ -7,15 +7,19 @@ import com.google.common.collect.ImmutableSet;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.GameMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.config.AliasDefinition;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.config.ConfigWrapper;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
@@ -266,8 +270,20 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
     @NotNull
     @Unmodifiable
     @Override
-    public Collection<String> getAliasStrings() {
-        return ImmutableList.copyOf(plugin.getConfig().getStringList(KEY_ALIASES));
+    public Collection<AliasDefinition> getAliases() {
+        ConfigurationSection aliasesSection = plugin.getConfig().getConfigurationSection(KEY_ALIASES);
+        if (aliasesSection == null) {
+            return Collections.emptyList();
+        }
+
+        Set<String> aliasKeys = aliasesSection.getKeys(false);
+        ImmutableList.Builder<AliasDefinition> aliases = ImmutableList.builderWithExpectedSize(aliasKeys.size());
+        for (String key : aliasKeys) {
+            List<String> entries = aliasesSection.getStringList(key);
+            aliases.add(new AliasDefinition(key, entries));
+        }
+
+        return aliases.build();
     }
 
     @NotNull

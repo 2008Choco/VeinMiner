@@ -23,7 +23,7 @@ import wtf.choco.veinminer.util.VMConstants;
 /**
  * Represents a category of tools.
  */
-public class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> {
+public sealed class VeinMinerToolCategory implements Comparable<VeinMinerToolCategory> permits VeinMinerToolCategoryHand {
 
     private final String id;
     private final int priority;
