@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -129,7 +128,7 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
          * Let the client know whether or not the client is even allowed.
          * We send this one tick later so we know that the player's connection has been initialized
          */
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        plugin.getFoliaLib().getScheduler().runAtEntityLater(player.getPlayer(), () -> {
             this.player.sendMessage(new ClientboundHandshakeResponse());
 
             // Synchronize all registered patterns to the client

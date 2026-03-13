@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -282,7 +281,7 @@ public final class CommandVeinMiner implements TabExecutor {
             }
 
             this.requiresConfirmation.remove(sender);
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new LegacyImportTask(plugin, sender, importable, plugin.getPersistentDataStorage().getType().getName()));
+            plugin.getFoliaLib().getScheduler().runAsync(wrappedTask -> new LegacyImportTask(plugin, sender, importable, plugin.getPersistentDataStorage().getType().getName()));
             return true;
         }
 

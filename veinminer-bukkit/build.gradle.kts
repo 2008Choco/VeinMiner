@@ -14,6 +14,7 @@ repositories {
     maven("https://repo.grim.ac/snapshots/") // Grim Anticheat
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven("https://repo.polar.top/repository/polar/") // Polar AntiCheat
+    maven("https://repo.tcoded.com/releases") // FoliaLib
 }
 
 dependencies {
@@ -22,6 +23,7 @@ dependencies {
     implementation(project(":veinminer-common"))
 
     implementation(libs.bstats.bukkit)
+    implementation(libs.folialib)
     implementation(libs.choco.networking.bukkit) {
         exclude(group = "org.spigotmc", module = "spigot-api")
     }
@@ -83,12 +85,14 @@ tasks {
 
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
         relocate("org.bstats", "wtf.choco.veinminer.metrics")
+        relocate("com.tcoded.folialib", "wtf.choco.veinminer.folialib")
         archiveFileName = "VeinMiner-Bukkit-${version}.jar"
 
         dependencies {
             include(project(":veinminer-common"))
             include(dependency(libs.bstats.base.get()))
             include(dependency(libs.bstats.bukkit.get()))
+            include(dependency(libs.folialib.get()))
             include(dependency(libs.choco.networking.common.get()))
             include(dependency(libs.choco.networking.bukkit.get()))
         }

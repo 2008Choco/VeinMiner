@@ -2,7 +2,6 @@ package wtf.choco.veinminer.listener;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -42,7 +41,7 @@ public final class BlockDropCollectionListener implements Listener {
         }
 
         Location sourceFinal = source.clone().add(0.5, 0.5, 0.5);
-        Bukkit.getScheduler().runTask(plugin, () -> event.getItems().forEach(item -> item.teleport(sourceFinal)));
+        plugin.getFoliaLib().getScheduler().runAtLocation(sourceFinal, wrappedTask -> event.getItems().forEach(item -> plugin.getFoliaLib().getScheduler().teleportAsync(item, sourceFinal)));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

@@ -23,6 +23,7 @@ placeholder-api = "2.11.5"
 spigot-api = "1.21.3-R0.1-SNAPSHOT"
 vault-api = "1.7"
 worldguard = "7.0.9"
+folialib = "0.5.1"
 
 # (fabric)
 fabric-api = "0.140.0+1.21.11"
@@ -60,6 +61,7 @@ placeholder-api = { module = "me.clip:placeholderapi", version.ref = "placeholde
 spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot-api" }
 vault-api = { module = "net.milkbowl.vault:VaultAPI", version.ref = "vault-api" }
 worldguard = { module = "com.sk89q.worldguard:worldguard-bukkit", version.ref = "worldguard" }
+folialib = { module = "com.tcoded:FoliaLib", version.ref = "folialib" }
 
 # (fabric)
 choco-networking-fabric = { module = "wtf.choco:networking-fabric", version.ref = "choco-networking" }
