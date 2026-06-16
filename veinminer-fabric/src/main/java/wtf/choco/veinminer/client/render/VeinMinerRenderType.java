@@ -24,7 +24,7 @@ public final class VeinMinerRenderType {
     private static final RenderPipeline PIPELINE_WIREFRAME_TRANSPARENT = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
             .withLocation(Identifier.fromNamespaceAndPath("veinminer_companion", "pipeline/wireframe_transparent"))
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT)) // ARGB
-            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN, true))
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, true))
             .withCull(false)
             .build());
 

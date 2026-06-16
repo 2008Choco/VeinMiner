@@ -2,15 +2,13 @@ package wtf.choco.veinminer.client.render;
 
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
@@ -20,7 +18,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 
 import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.client.network.FabricServerState;
@@ -31,7 +28,7 @@ import wtf.choco.veinminer.client.network.FabricServerState;
 public final class WireframeShapeRenderer {
 
     private static final int WIREFRAME_COLOR = 0xFFFFFF;
-    private static final int WIREFRAME_COLOR_SOLID = ARGB.color(255, WIREFRAME_COLOR);
+    private static final int WIREFRAME_COLOR_SOLID = ARGB.color(102, WIREFRAME_COLOR);
     private static final int WIREFRAME_COLOR_TRANSLUCENT = ARGB.color(20, WIREFRAME_COLOR);
 
     private static final Supplier<VoxelShape> DEBUG_SHAPE = Suppliers.memoize(() -> Shapes.or(
@@ -59,27 +56,29 @@ public final class WireframeShapeRenderer {
      * Render the wireframe of the shape currently stored in the client's server state.
      *
      * @param context the world render context
+     *
+     * @return true if the block outline should be rendered, or false to hide it
      */
-    public void render(@NotNull LevelRenderContext context) {
+    public boolean render(@NotNull LevelRenderContext context) {
         Minecraft client = Minecraft.getInstance();
         if (!this.client.hasServerState()) {
-            return;
+            return true;
         }
 
         FabricServerState serverState = this.client.getServerState();
         if (!serverState.isEnabledOnServer() || !serverState.isActive() || !serverState.getConfig().isAllowWireframeRendering()) {
-            return;
+            return true;
         }
 
         BlockPos blockPos = this.client.getBlockLookUpdateHandler().getLastLookedAtBlockPos();
         if (blockPos == null) {
-            return;
+            return true;
         }
 
         VoxelShape shape = serverState.getVeinMineResultShape();
         if (shape == null) {
             if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
-                return;
+                return true;
             }
 
             shape = DEBUG_SHAPE.get();
@@ -92,36 +91,22 @@ public final class WireframeShapeRenderer {
         double relY = blockPos.getY() - camera.y;
         double relZ = blockPos.getZ() - camera.z;
 
+        SubmitNodeCollector collector = context.submitNodeCollector();
+        float lineWidth = context.gameRenderer().gameRenderState().windowRenderState.appropriateLineWidth;
+
         PoseStack stack = context.poseStack();
-        BufferSource source = client.renderBuffers().bufferSource();
-        this.renderShape(shape, source, VeinMinerRenderType.wireframe(), stack, relX, relY, relZ, WIREFRAME_COLOR_SOLID, 1.0F);
-        this.renderShape(shape, source, VeinMinerRenderType.wireframeTransparent(), stack, relX, relY, relZ, WIREFRAME_COLOR_TRANSLUCENT, 2.0F);
+        stack.pushPose();
+        stack.translate(relX, relY, relZ);
+        this.renderShape(shape, collector, VeinMinerRenderType.wireframe(), stack, WIREFRAME_COLOR_SOLID, lineWidth, false);
+        this.renderShape(shape, collector, VeinMinerRenderType.wireframeTransparent(), stack, WIREFRAME_COLOR_TRANSLUCENT, lineWidth, true);
+        stack.popPose();
 
         Profiler.get().pop();
+        return true;
     }
 
-    private void renderShape(VoxelShape shape, BufferSource source, RenderType renderType, PoseStack stack, double relX, double relY, double relZ, int color, float lineWidth) {
-        Pose pose = stack.last();
-        VertexConsumer consumer = source.getBuffer(renderType);
-        shape.forAllEdges((x, y, z, dx, dy, dz) -> renderEdge(
-                consumer,
-                pose,
-                (float) (x + relX),
-                (float) (y + relY),
-                (float) (z + relZ),
-                (float) (dx + relX),
-                (float) (dy + relY),
-                (float) (dz + relZ),
-                color,
-                lineWidth
-        ));
-        source.endLastBatch();
-    }
-
-    private void renderEdge(VertexConsumer consumer, Pose pose, float x, float y, float z, float dx, float dy, float dz, int color, float lineWidth) {
-        Vector3f normal = new Vector3f(dx - x, dy - y, dz - z).normalize();
-        consumer.addVertex(pose, x, y, z).setColor(color).setNormal(pose, normal).setLineWidth(lineWidth);
-        consumer.addVertex(pose, dx, dy, dz).setColor(color).setNormal(pose, normal).setLineWidth(lineWidth);
+    private void renderShape(VoxelShape shape, SubmitNodeCollector collector, RenderType renderType, PoseStack stack, int color, float lineWidth, boolean afterTerrain) {
+        collector.submitShapeOutline(stack, shape, renderType, color, lineWidth, afterTerrain);
     }
 
 }

@@ -41,7 +41,7 @@ public final class VeinMiningIconHudElement extends VeinMinerHudElement {
 
     @Override
     public boolean shouldRender(@NotNull FabricServerState serverState) {
-        return serverState.getConfig().isAllowActivationKeybind() && Minecraft.renderNames() && serverState.isActive();
+        return serverState.getConfig().isAllowActivationKeybind() && Minecraft.getInstance().gui.hud.isHidden() && serverState.isActive();
     }
 
 }

@@ -78,7 +78,7 @@ public final class VeinMinerClient implements ClientModInitializer {
         HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, PatternWheelHudElement.ID, patternWheelRenderComponent);
         HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, VeinMiningIconHudElement.ID, new VeinMiningIconHudElement(this));
 
-        LevelRenderEvents.END_MAIN.register(wireframeShapeRenderer::render);
+        LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, _) -> wireframeShapeRenderer.render(context));
     }
 
     /**
