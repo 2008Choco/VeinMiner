@@ -165,7 +165,8 @@ public final class BreakBlockListener implements Listener {
         // Actually destroying the allocated blocks
         int maxDurability = item.getType().getMaxDurability();
         if (category.getConfiguration().isRepairFriendly()) {
-            maxDurability -= 2; // Make sure tools still have enough durability to mine the current block AND other blocks in the vein
+            maxDurability -= 1; // Make sure the tool has enough durability to mine the current block
+            maxDurability -= category.getConfiguration().getRepairFriendlyDurability(); // Then account for the durability config option
         }
 
         float hungerModifier = plugin.getConfiguration().getHungerModifier() * 0.025F;

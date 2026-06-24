@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.profiling.Profiler;
@@ -28,7 +28,7 @@ public final class VeinMiningIconHudElement extends VeinMinerHudElement {
     }
 
     @Override
-    public void render(@NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
+    public void render(@NotNull FabricServerState serverState, @NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta) {
         Profiler.get().push("veinMiningIcon");
 
         Window window = Minecraft.getInstance().getWindow();
@@ -41,7 +41,7 @@ public final class VeinMiningIconHudElement extends VeinMinerHudElement {
 
     @Override
     public boolean shouldRender(@NotNull FabricServerState serverState) {
-        return serverState.getConfig().isAllowActivationKeybind() && Minecraft.renderNames() && serverState.isActive();
+        return serverState.getConfig().isAllowActivationKeybind() && !Minecraft.getInstance().gui.hud.isHidden() && serverState.isActive();
     }
 
 }

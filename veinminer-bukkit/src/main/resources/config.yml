@@ -13,9 +13,10 @@ Jobs:
   NerfExpGain: false
   NerfCurrencyGain: false
 
-# "RepairFriendly", "MaxVeinSize", "Cost", and "DisabledWorlds" may be
-# defined per-category in the categories.yml file
+# "RepairFriendly", "RepairFriendlyDurability", "MaxVeinSize", "Cost", and "DisabledWorlds"
+# may be defined per-category in the categories.yml file
 RepairFriendly: false
+RepairFriendlyDurability: 1
 MaxVeinSize: 64
 Cost: 0.0
 DisabledWorlds:

@@ -40,6 +40,7 @@ final class ConfigKeys {
 
     // VeinMiningConfiguration
     static final String KEY_REPAIR_FRIENDLY = "RepairFriendly";
+    static final String KEY_REPAIR_FRIENDLY_DURABILITY = "RepairFriendlyDurability";
     static final String KEY_MAX_VEIN_SIZE = "MaxVeinSize";
     static final String KEY_COST = "Cost";
     static final String KEY_DISABLED_WORLDS = "DisabledWorlds";

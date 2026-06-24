@@ -38,11 +38,7 @@ public final class BlockLookUpdateHandler {
      * @param minecraft the minecraft instance
      */
     public void tick(@NotNull Minecraft minecraft) {
-        if (!client.hasServerState()) {
-            return;
-        }
-
-        if (!(minecraft.hitResult instanceof BlockHitResult hit)) {
+        if (!client.hasServerState() || !(minecraft.hitResult instanceof BlockHitResult hit)) {
             return;
         }
 
@@ -54,7 +50,7 @@ public final class BlockLookUpdateHandler {
         this.updateWireframeIfNecessary(serverState, lookingAtPos, lookingAtFace, lookingAtState);
 
         // Updating the new last looked at position
-        if (minecraft.player != null && minecraft.player.level() != null && !minecraft.player.level().isEmptyBlock(lookingAtPos)) {
+        if (minecraft.player != null && !minecraft.player.level().isEmptyBlock(lookingAtPos)) {
             this.lastLookedAtBlockPos = lookingAtPos;
             this.lastLookedAtBlockFace = lookingAtFace;
             this.lastLookedAtBlockState = lookingAtState;

@@ -26,6 +26,7 @@
 #
 # ExampleCategory:
 #   RepairFriendly: true
+#   RepairFriendlyDurability: 1
 #   MaxVeinSize: 32
 #   Cost: 100.0
 #   DisabledWorlds:

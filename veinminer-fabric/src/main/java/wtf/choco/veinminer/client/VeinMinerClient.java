@@ -4,11 +4,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 
@@ -66,19 +66,19 @@ public final class VeinMinerClient implements ClientModInitializer {
             this.patternWheelRenderComponent.tick();
         });
 
-        ClientPlayConnectionEvents.INIT.register((handler, client) -> serverState = new FabricServerState(this, client));
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+        ClientPlayConnectionEvents.INIT.register((_, client) -> serverState = new FabricServerState(this, client));
+        ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> {
             this.serverState = null;
             this.blockLookUpdateHandler.reset();
         });
 
         // Once joined, we're going to send a handshake packet to let the server know we have the client mod installed
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion())));
+        ClientPlayConnectionEvents.JOIN.register((_, _, _) -> serverState.sendMessage(new ServerboundHandshake(VeinMiner.PROTOCOL.getVersion())));
 
         HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, PatternWheelHudElement.ID, patternWheelRenderComponent);
         HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, VeinMiningIconHudElement.ID, new VeinMiningIconHudElement(this));
 
-        WorldRenderEvents.END_MAIN.register(wireframeShapeRenderer::render);
+        LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, _) -> wireframeShapeRenderer.render(context));
     }
 
     /**
@@ -129,7 +129,7 @@ public final class VeinMinerClient implements ClientModInitializer {
     }
 
     private static KeyMapping registerKeyMapping(String id, int key) {
-        return KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        return KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.veinminer_companion." + id,
             InputConstants.Type.KEYSYM,
             key,

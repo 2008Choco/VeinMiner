@@ -49,6 +49,11 @@ public final class StandardToolCategoryConfiguration implements ToolCategoryConf
     }
 
     @Override
+    public int getRepairFriendlyDurability() {
+        return Math.max(getCategoryConfig().getInt(KEY_REPAIR_FRIENDLY_DURABILITY, parent.getRepairFriendlyDurability()), 1);
+    }
+
+    @Override
     public int getMaxVeinSize() {
         return getCategoryConfig().getInt(KEY_MAX_VEIN_SIZE, parent.getMaxVeinSize());
     }

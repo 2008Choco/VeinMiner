@@ -1,6 +1,7 @@
 package wtf.choco.veinminer;
 
 import com.google.common.base.Preconditions;
+import com.tcoded.folialib.FoliaLib;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -92,6 +93,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
     private final UpdateChecker updateChecker = new SpigotMCUpdateChecker(this, 12038);
     private final List<AntiCheatHook> anticheatHooks = new ArrayList<>();
+    private final FoliaLib foliaLib = new FoliaLib(this);
 
     private LanguageFile language;
     private ConfigWrapper categoriesConfig;
@@ -403,6 +405,15 @@ public final class VeinMinerPlugin extends JavaPlugin {
     @UnmodifiableView
     public List<AntiCheatHook> getAnticheatHooks() {
         return Collections.unmodifiableList(anticheatHooks);
+    }
+
+    /**
+     * Get VeinMiner's FoliaLib instance.
+     *
+     * @return the FoliaLib instance
+     */
+    public FoliaLib getFoliaLib() {
+        return foliaLib;
     }
 
     /**

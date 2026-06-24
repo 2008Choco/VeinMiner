@@ -100,6 +100,15 @@ public interface ToolCategoryConfiguration extends VeinMiningConfiguration {
      * {@inheritDoc}.
      * <p>
      * If this category configuration does not explicitly set a value, it will default to the
+     * global value as set by {@link VeinMinerConfiguration#getRepairFriendlyDurability()}.
+     */
+    @Override
+    public int getRepairFriendlyDurability();
+
+    /**
+     * {@inheritDoc}.
+     * <p>
+     * If this category configuration does not explicitly set a value, it will default to the
      * global value as set by {@link VeinMinerConfiguration#getMaxVeinSize()}.
      */
     @Override

@@ -20,12 +20,21 @@ public interface VeinMiningConfiguration {
      * Get the "repair friendly" value.
      * <p>
      * If vein mining is repair friendly, it signifies that vein mining should stop if
-     * the tool reaches a durability of 1 so that it may be repaired. If not repair
-     * friendly, vein miner will continue mining until the tool in hand breaks.
+     * the tool reaches a durability of {@link #getRepairFriendlyDurability()} so that
+     * it may be repaired. If not repair friendly, vein miner will continue mining until
+     * the tool in hand breaks.
      *
      * @return true if repair friendly, false otherwise
      */
     public boolean isRepairFriendly();
+
+    /**
+     * Get the durability required by the "repair friendly" option. Will always be at
+     * least 1.
+     *
+     * @return the repair friendly durability
+     */
+    public int getRepairFriendlyDurability();
 
     /**
      * Get the maximum amount of blocks allowed to be mined in a single vein.

@@ -24,7 +24,7 @@ public final class BlockDropCollectionListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void onDropVeinMinedItem(BlockDropItemEvent event) {
         Block block = event.getBlock();
         if (!block.hasMetadata(VMConstants.METADATA_KEY_TO_BE_VEINMINED)) {
@@ -41,7 +41,7 @@ public final class BlockDropCollectionListener implements Listener {
         }
 
         Location sourceFinal = source.clone().add(0.5, 0.5, 0.5);
-        event.getItems().forEach(item -> item.teleport(sourceFinal));
+        plugin.getFoliaLib().getScheduler().runAtLocation(sourceFinal, wrappedTask -> event.getItems().forEach(item -> plugin.getFoliaLib().getScheduler().teleportAsync(item, sourceFinal)));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

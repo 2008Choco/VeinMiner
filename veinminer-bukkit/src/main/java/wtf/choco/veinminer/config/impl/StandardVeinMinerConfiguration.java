@@ -121,6 +121,11 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
     }
 
     @Override
+    public int getRepairFriendlyDurability() {
+        return Math.max(plugin.getConfig().getInt(KEY_REPAIR_FRIENDLY_DURABILITY, 1), 1);
+    }
+
+    @Override
     public int getMaxVeinSize() {
         return plugin.getConfig().getInt(KEY_MAX_VEIN_SIZE, 64);
     }

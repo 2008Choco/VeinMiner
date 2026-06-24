@@ -2,7 +2,7 @@ package wtf.choco.veinminer.client.render.layer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,13 +18,13 @@ public abstract class VeinMinerHudElement implements HudElement {
     }
 
     @Override
-    public void render(GuiGraphics graphics, DeltaTracker delta) {
+    public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta) {
         if (shouldRender()) {
             this.render(client.getServerState(), graphics, delta);
         }
     }
 
-    public abstract void render(@NotNull FabricServerState state, @NotNull GuiGraphics graphics, @NotNull DeltaTracker delta);
+    public abstract void render(@NotNull FabricServerState state, @NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta);
 
     private boolean shouldRender() {
         if (!client.hasServerState()) {

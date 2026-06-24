@@ -1,7 +1,10 @@
 package wtf.choco.veinminer.client.render;
 
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.platform.CompareOp;
 
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.LayeringTransform;
@@ -14,17 +17,15 @@ public final class VeinMinerRenderType {
 
     private static final RenderPipeline PIPELINE_WIREFRAME = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
             .withLocation(Identifier.fromNamespaceAndPath("veinminer_companion", "pipeline/wireframe"))
-            .withColorWrite(true)
-            .withDepthWrite(false)
+            .withColorTargetState(ColorTargetState.DEFAULT) // ARGB
             .withCull(false)
             .build());
 
     private static final RenderPipeline PIPELINE_WIREFRAME_TRANSPARENT = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
             .withLocation(Identifier.fromNamespaceAndPath("veinminer_companion", "pipeline/wireframe_transparent"))
-            .withColorWrite(true)
-            .withDepthWrite(true)
+            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT)) // ARGB
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, true))
             .withCull(false)
-            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .build());
 
     private static final RenderType WIREFRAME = RenderType.create("veinminer_companion:wireframe", RenderSetup.builder(PIPELINE_WIREFRAME)

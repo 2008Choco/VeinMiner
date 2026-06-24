@@ -5,6 +5,7 @@ description: Mine multiple blocks of the same type in quick succession.
 author: Choco
 website: https://www.spigotmc.org/resources/12038
 api-version: 1.21.3
+folia-supported: true
 softdepend:
 # anti cheats
 - AAC5

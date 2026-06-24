@@ -3,21 +3,28 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-version = "2.4.0"
-
 dependencies {
     api(project(":veinminer-common"))
     shadow(project(":veinminer-common"))
-    modApi(libs.choco.networking.fabric)
+    api(libs.choco.networking.fabric)
+    shadow(libs.choco.networking.fabric)
 
     minecraft(libs.minecraft.get())
-    mappings(loom.officialMojangMappings())
-    modImplementation(libs.fabric.loader)
+    implementation(libs.fabric.loader)
+    implementation(libs.fabric.api)
+}
 
-    modImplementation(libs.fabric.api)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
 }
 
 tasks {
+    withType<JavaCompile> {
+        options.release = 25
+    }
+
     processResources {
         outputs.upToDateWhen { false } // Always process resource properties
 
@@ -28,13 +35,16 @@ tasks {
     }
 
     jar {
+        dependsOn("shadowJar")
+        mustRunAfter("shadowJar")
+
         from("LICENSE") {
             rename { "${it}_${project.name}" }
         }
     }
 
     shadowJar {
-        configurations = listOf(project.configurations["shadow"], project.configurations["modApi"])
+        configurations.addAll(project.configurations["shadow"])
         exclude("META-INF")
 
         dependencies {
@@ -42,11 +52,5 @@ tasks {
             include(dependency(libs.choco.networking.common.get()))
             include(dependency(libs.choco.networking.fabric.get()))
         }
-    }
-
-    remapJar {
-        dependsOn("shadowJar")
-        mustRunAfter("shadowJar")
-        inputFile.set(shadowJar.get().archiveFile)
     }
 }

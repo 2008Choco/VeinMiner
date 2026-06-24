@@ -1,6 +1,6 @@
 [versions]
 # (common)
-choco-networking = "0.1.3"
+choco-networking = "0.1.4"
 jetbrains-annotations = "24.1.0"
 junit = "5.13.4"
 
@@ -23,15 +23,16 @@ placeholder-api = "2.11.5"
 spigot-api = "1.21.3-R0.1-SNAPSHOT"
 vault-api = "1.7"
 worldguard = "7.0.9"
+folialib = "0.5.1"
 
 # (fabric)
-fabric-api = "0.140.0+1.21.11"
-fabric-loader = "0.18.3"
-minecraft = "1.21.11"
+fabric-api = "0.152.0+26.2"
+fabric-loader = "0.19.3"
+minecraft = "26.2"
 
 # plugins
-fabric-loom = "1.13-SNAPSHOT"
-shadow = "9.2.0"
+fabric-loom = "1.17-SNAPSHOT"
+shadow = "9.4.0"
 
 [libraries]
 # (common)
@@ -60,6 +61,7 @@ placeholder-api = { module = "me.clip:placeholderapi", version.ref = "placeholde
 spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot-api" }
 vault-api = { module = "net.milkbowl.vault:VaultAPI", version.ref = "vault-api" }
 worldguard = { module = "com.sk89q.worldguard:worldguard-bukkit", version.ref = "worldguard" }
+folialib = { module = "com.tcoded:FoliaLib", version.ref = "folialib" }
 
 # (fabric)
 choco-networking-fabric = { module = "wtf.choco:networking-fabric", version.ref = "choco-networking" }
@@ -68,5 +70,5 @@ fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-l
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 
 [plugins]
-fabric-loom = { id = "fabric-loom", version.ref = "fabric-loom" }
+fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric-loom" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

@@ -2,10 +2,10 @@ package wtf.choco.veinminer.client.render.layer;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.profiling.Profiler;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,25 +32,10 @@ public final class PatternWheelHudElement extends VeinMinerHudElement {
     }
 
     @Override
-    public void render(@NotNull FabricServerState serverState, @NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
+    public void render(@NotNull FabricServerState serverState, @NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta) {
         Profiler.get().push("veinminerPatternWheel");
 
-        float actualRemainingMs = remainingTicks - delta.getGameTimeDeltaTicks();
-
-        // Calculate alpha based on progress of fade in/out times
-        float alpha = 255.0F;
-        if (remainingTicks >= (STAY_TICKS + FADE_TICKS)) { // Fade in
-            float elapsed = TOTAL_TICKS - actualRemainingMs;
-            alpha = Math.min((int) (elapsed * 255.0F / FADE_TICKS), 255);
-        }
-        else if (remainingTicks < FADE_TICKS) { // Fade out
-            alpha = Math.min((int) (actualRemainingMs * 255.0F / FADE_TICKS), 255);
-        }
-
-        // Final colour with alpha included
-        int finalAlpha = (Mth.floor(alpha) << 24) & 0xFF000000;
-        int colour = 0xFFFFFF | finalAlpha;
-
+        int colour = ARGB.color(calculateAlpha(delta), 0xFFFFFF);
         String before = serverState.getPreviousPattern().toString();
         String selected = serverState.getSelectedPattern().toString();
         String after = serverState.getNextPattern().toString();
@@ -59,14 +44,29 @@ public final class PatternWheelHudElement extends VeinMinerHudElement {
         Matrix3x2fStack stack = graphics.pose();
         stack.pushMatrix();
         stack.scale(1.1F);
-        graphics.drawString(minecraft.font, Component.literal(selected), 4, minecraft.font.lineHeight, colour);
+        graphics.text(minecraft.font, Component.literal(selected), 4, minecraft.font.lineHeight, colour);
 
         stack.scale(0.6F);
-        graphics.drawString(minecraft.font, Component.literal(before), 7, 4, colour);
-        graphics.drawString(minecraft.font, Component.literal(after), 7, 5 + (minecraft.font.lineHeight * 3), colour);
+        graphics.text(minecraft.font, Component.literal(before), 7, 4, colour);
+        graphics.text(minecraft.font, Component.literal(after), 7, 5 + (minecraft.font.lineHeight * 3), colour);
         stack.popMatrix();
 
         Profiler.get().pop();
+    }
+
+    private int calculateAlpha(@NotNull DeltaTracker delta) {
+        float actualRemainingMs = (remainingTicks - delta.getGameTimeDeltaPartialTick(false));
+
+        // Calculate alpha based on progress of fade in/out times
+        int alpha = 255;
+        if (remainingTicks >= (STAY_TICKS + FADE_TICKS)) { // Fade in
+            float elapsed = TOTAL_TICKS - actualRemainingMs;
+            alpha = (int) (elapsed * 255.0F / (float) FADE_TICKS);
+        } else if (remainingTicks <= FADE_TICKS) { // Fade out
+            alpha = (int) (actualRemainingMs * 255.0F / (float) FADE_TICKS);
+        }
+
+        return Math.clamp(alpha, 0, 255);
     }
 
     @Override
