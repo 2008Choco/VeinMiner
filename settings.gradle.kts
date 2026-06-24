@@ -8,4 +8,4 @@ pluginManagement {
 
 rootProject.name = "VeinMiner"
 
-include("veinminer-common", "veinminer-bukkit", "veinminer-fabric", "veinminer-folia")
+include("veinminer-common", "veinminer-bukkit", "veinminer-fabric")
