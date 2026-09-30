@@ -1,7 +1,9 @@
 package wtf.choco.veinminer.pattern;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -24,8 +26,6 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
     private static final VeinMiningPattern INSTANCE = new VeinMiningPatternDefault();
     private static final NamespacedKey KEY = VeinMinerPlugin.key("default");
 
-    private final List<Block> buffer = new ArrayList<>(32), recent = new ArrayList<>(32);
-
     private VeinMiningPatternDefault() { }
 
     @NotNull
@@ -38,16 +38,21 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
     @Override
     public List<Block> allocateBlocks(@NotNull Block origin, @NotNull BlockFace destroyedFace, @NotNull VeinMinerBlock block, @NotNull VeinMiningConfiguration config, @Nullable BlockList aliasList) {
         List<Block> blocks = new ArrayList<>();
-
-        this.recent.add(origin); // For first iteration
+        List<Block> frontier = new ArrayList<>(32);
+        List<Block> nextFrontier = new ArrayList<>(32);
+        Set<Block> visited = new HashSet<>();
+        frontier.add(origin);
+        visited.add(origin);
 
         int maxVeinSize = config.getMaxVeinSize();
         BlockData originBlockData = origin.getBlockData();
 
         // Such loops, much wow! I promise, this is as efficient as it can be
         while (blocks.size() < maxVeinSize) {
-            recentSearch:
-            for (Block current : recent) {
+            nextFrontier.clear();
+
+            blockSearch:
+            for (Block current : frontier) {
                 for (int x = -1; x <= 1; x++) {
                     for (int y = -1; y <= 1; y++) {
                         for (int z = -1; z <= 1; z++) {
@@ -57,7 +62,7 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
                             }
 
                             Block relative = current.getRelative(x, y, z);
-                            if (blocks.contains(relative) || buffer.contains(relative)) {
+                            if (!visited.add(relative)) {
                                 continue;
                             }
 
@@ -65,29 +70,26 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
                                 continue;
                             }
 
-                            if (blocks.size() + buffer.size() >= maxVeinSize) {
-                                break recentSearch;
+                            if (blocks.size() + nextFrontier.size() >= maxVeinSize) {
+                                break blockSearch;
                             }
 
-                            this.buffer.add(relative);
+                            nextFrontier.add(relative);
                         }
                     }
                 }
             }
 
             // No more blocks to allocate :D
-            if (buffer.isEmpty()) {
+            if (nextFrontier.isEmpty()) {
                 break;
             }
 
-            this.recent.clear();
-            this.recent.addAll(buffer);
-            blocks.addAll(buffer);
-
-            this.buffer.clear();
+            blocks.addAll(nextFrontier);
+            List<Block> previousFrontier = frontier;
+            frontier = nextFrontier;
+            nextFrontier = previousFrontier;
         }
-
-        this.recent.clear();
 
         return blocks;
     }
