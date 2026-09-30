@@ -98,7 +98,7 @@ public final class CommandVeinMiner implements TabExecutor {
             sender.sendMessage(getVersionLine(language));
             language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_DEVELOPER, description.getAuthors().get(0));
             language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_WEBSITE, description.getWebsite());
-            language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_WEBSITE, "https://github.com/2008Choco/VeinMiner");
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_SOURCE_CODE, "https://github.com/2008Choco/VeinMiner");
             sender.sendMessage("");
             sender.sendMessage(headerFooter);
             return true;
