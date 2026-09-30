@@ -103,17 +103,18 @@ public final class BreakBlockListener implements Listener {
             return;
         }
 
-        // Economy check
+        // Check the player's balance only after confirming a vein mine can proceed
         double cost = category.getConfiguration().getCost();
+        SimpleEconomy economy = null;
         if (cost > 0) {
-            SimpleEconomy economy = plugin.getEconomy();
+            economy = plugin.getEconomy();
             if (economy.shouldCharge(player)) {
                 if (!economy.hasSufficientBalance(player, cost)) {
                     language.send(player, LanguageKeys.VEINMINER_INSUFFICIENT_FUNDS, cost);
                     return;
                 }
-
-                economy.withdraw(player, cost);
+            } else {
+                economy = null;
             }
         }
 
@@ -176,6 +177,7 @@ public final class BreakBlockListener implements Listener {
 
         boolean isHandCategory = category instanceof VeinMinerToolCategoryHand;
         boolean shouldApplyHunger = !player.hasPermission(VMConstants.PERMISSION_FREE_HUNGER);
+        boolean minedAnyBlock = false;
 
         for (Block block : blocks) {
             // Apply hunger
@@ -205,7 +207,10 @@ public final class BreakBlockListener implements Listener {
 
             // Break the block
             Material blockType = block.getType();
-            if (block.equals(origin) || player.breakBlock(block)) {
+            if (block.equals(origin)) {
+                StatTracker.incrementMinedBlock(blockType);
+            } else if (player.breakBlock(block)) {
+                minedAnyBlock = true;
                 StatTracker.incrementMinedBlock(blockType);
             }
         }
@@ -228,6 +233,10 @@ public final class BreakBlockListener implements Listener {
 
         // Unexempt from anticheats
         hooks.stream().filter(h -> h.shouldUnexempt(player)).forEach(h -> h.unexempt(player));
+
+        if (minedAnyBlock && economy != null) {
+            economy.withdraw(player, cost);
+        }
     }
 
     // Modified version of https://github.com/portablejim/VeinMiner/blob/1.9/src/main/java/portablejim/veinminer/core/MinerInstance.java#L231-L254
