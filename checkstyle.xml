@@ -61,14 +61,6 @@
         <module name="AvoidStarImport">
             <property name="allowStaticMemberImports" value="true"/>
         </module>
-        <module name="ImportOrder">
-            <property name="option" value="bottom"/>
-            <property name="groups" value="/^co\./, com, /^java\./, javax, me, net, org, tk, wtf"/>
-            <property name="ordered" value="true"/>
-            <property name="separated" value="true"/>
-            <property name="separatedStaticGroups" value="true"/>
-            <property name="sortStaticImportsAlphabetically" value="true"/>
-        </module>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
