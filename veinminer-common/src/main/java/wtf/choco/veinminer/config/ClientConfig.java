@@ -1,9 +1,9 @@
 package wtf.choco.veinminer.config;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 import java.util.function.Consumer;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a simple configuration that determines a client's ability to perform certain

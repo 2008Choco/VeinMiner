@@ -2,9 +2,6 @@ package wtf.choco.veinminer.client.render;
 
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import java.util.function.Supplier;
-
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -16,11 +13,11 @@ import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.client.VeinMinerClient;
 import wtf.choco.veinminer.client.network.FabricServerState;
+
+import java.util.function.Supplier;
 
 /**
  * A renderer for wireframed voxel shapes.

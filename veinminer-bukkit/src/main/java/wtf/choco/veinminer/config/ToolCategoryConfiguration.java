@@ -1,18 +1,17 @@
 package wtf.choco.veinminer.config;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A configuration contract for a {@link VeinMinerToolCategory}'s configurable values.

@@ -1,6 +1,20 @@
 package wtf.choco.veinminer.tool;
 
 import com.google.common.base.Predicates;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.block.BlockList;
+import wtf.choco.veinminer.config.ToolCategoryConfiguration;
+import wtf.choco.veinminer.config.VeinMinerConfiguration;
+import wtf.choco.veinminer.util.ItemStackUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,22 +25,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.plugin.PluginManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.config.ToolCategoryConfiguration;
-import wtf.choco.veinminer.config.VeinMinerConfiguration;
-import wtf.choco.veinminer.util.ItemStackUtil;
 
 /**
  * A registry to which {@link VeinMinerToolCategory VeinMinerToolCategories} may be registered.

@@ -2,17 +2,14 @@ package wtf.choco.veinminer.economy;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Suppliers;
-
-import java.util.function.Supplier;
-
 import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.util.VMConstants;
+
+import java.util.function.Supplier;
 
 /**
  * An implementation of {@link SimpleEconomy} to make use of a Vault-supported

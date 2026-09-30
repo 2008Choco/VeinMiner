@@ -1,15 +1,14 @@
 package wtf.choco.veinminer.data;
 
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.config.VeinMinerConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.config.VeinMinerConfiguration;
 
 /**
  * A type of persistent data storage.

@@ -1,5 +1,9 @@
 package wtf.choco.veinminer.documentation;
 
+import wtf.choco.network.MessageDirection;
+import wtf.choco.network.MessageProtocol;
+import wtf.choco.veinminer.VeinMiner;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -7,10 +11,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import wtf.choco.network.MessageDirection;
-import wtf.choco.network.MessageProtocol;
-import wtf.choco.veinminer.VeinMiner;
 
 /**
  * A program that will generate documentation in markdown format (and HTML tables) for VeinMiner's

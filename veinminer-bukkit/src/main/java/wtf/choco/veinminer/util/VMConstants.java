@@ -1,11 +1,10 @@
 package wtf.choco.veinminer.util;
 
-import java.util.function.Function;
-
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+
+import java.util.function.Function;
 
 /**
  * General purpose constants used throughout VeinMiner.

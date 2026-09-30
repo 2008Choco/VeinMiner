@@ -1,10 +1,10 @@
 package wtf.choco.veinminer.language;
 
-import java.nio.file.Path;
-import java.util.logging.Logger;
-
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
+
+import java.nio.file.Path;
+import java.util.logging.Logger;
 
 /**
  * Represents a file-backed language definition.

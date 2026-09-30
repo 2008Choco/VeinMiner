@@ -1,19 +1,18 @@
 package wtf.choco.veinminer.pattern;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A staircase {@link VeinMiningPattern} that digs a 1x3 column either upwards or downwards.

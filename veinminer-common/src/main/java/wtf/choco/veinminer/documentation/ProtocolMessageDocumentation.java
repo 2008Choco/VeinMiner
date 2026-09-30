@@ -1,10 +1,10 @@
 package wtf.choco.veinminer.documentation;
 
+import wtf.choco.network.MessageDirection;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import wtf.choco.network.MessageDirection;
 
 /**
  * Represents documentation for a protocol message.

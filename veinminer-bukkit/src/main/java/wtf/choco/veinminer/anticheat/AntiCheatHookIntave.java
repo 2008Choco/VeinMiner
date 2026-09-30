@@ -1,17 +1,16 @@
 package wtf.choco.veinminer.anticheat;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
+import de.jpx3.intave.access.check.Check;
+import de.jpx3.intave.access.check.event.IntaveViolationEvent;
+import de.jpx3.intave.access.check.event.IntaveViolationEvent.Reaction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import de.jpx3.intave.access.check.Check;
-import de.jpx3.intave.access.check.event.IntaveViolationEvent;
-import de.jpx3.intave.access.check.event.IntaveViolationEvent.Reaction;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * The default Intave AntiCheat hook implementation.

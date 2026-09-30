@@ -4,20 +4,12 @@ import com.google.common.base.Enums;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.config.AliasDefinition;
 import wtf.choco.veinminer.config.ClientConfig;
@@ -30,7 +22,43 @@ import wtf.choco.veinminer.pattern.VeinMiningPatternDefault;
 import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.util.VMConstants;
 
-import static wtf.choco.veinminer.config.impl.ConfigKeys.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_ALIASES;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_BLOCK_LIST;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_CLIENT_ALLOW_ACTIVATION_KEYBIND;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_CLIENT_ALLOW_PATTERN_SWITCHING_KEYBIND;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_CLIENT_ALLOW_WIREFRAME_RENDERING;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_COLLECT_EXPERIENCE_AT_SOURCE;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_COLLECT_ITEMS_AT_SOURCE;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_COST;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_DEFAULT_ACTIVATION_STRATEGY;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_DEFAULT_VEIN_MINING_PATTERN;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_DISABLED_GAME_MODES;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_DISABLED_WORLDS;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_HUNGER_HUNGER_MODIFIER;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_HUNGER_MINIMUM_FOOD_LEVEL;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_JOBS_NERF_CURRENCY_GAIN;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_JOBS_NERF_EXPERIENCE_GAIN;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_MAX_VEIN_SIZE;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_METRICS_ENABLED;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_NERF_MCMMO;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_ONLY_DAMAGE_ON_FIRST_BLOCK;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_PERFORM_UPDATE_CHECKS;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_REPAIR_FRIENDLY;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_REPAIR_FRIENDLY_DURABILITY;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_STORAGE_JSON_DIRECTORY;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_STORAGE_MYSQL_DATABASE;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_STORAGE_MYSQL_HOST;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_STORAGE_MYSQL_PASSWORD;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_STORAGE_MYSQL_PORT;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_STORAGE_MYSQL_TABLE_PREFIX;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_STORAGE_MYSQL_USERNAME;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_STORAGE_TYPE;
 
 /**
  * A standard {@link VeinMinerConfiguration} implementation.

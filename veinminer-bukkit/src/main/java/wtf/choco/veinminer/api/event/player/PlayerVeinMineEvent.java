@@ -1,7 +1,5 @@
 package wtf.choco.veinminer.api.event.player;
 
-import java.util.List;
-
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -10,10 +8,11 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+
+import java.util.List;
 
 /**
  * Called when a player uses vein miner.

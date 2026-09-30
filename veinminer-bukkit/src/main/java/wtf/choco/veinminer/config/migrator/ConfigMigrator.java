@@ -1,11 +1,10 @@
 package wtf.choco.veinminer.config.migrator;
 
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.VeinMinerPlugin;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
  * An object capable of migrating configuration files in a sequence of steps.

@@ -1,13 +1,12 @@
 package wtf.choco.veinminer.config.migrator;
 
-import java.util.List;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.config.ConfigWrapper;
+
+import java.util.List;
 
 public final class MigrationStepBlockListsToCategoriesFile implements MigrationStep {
 

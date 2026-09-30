@@ -1,19 +1,18 @@
 package wtf.choco.veinminer.config;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Set;
-
 import org.bukkit.GameMode;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-
 import wtf.choco.veinminer.data.PersistentStorageType;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.player.ActivationStrategy;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * A configuration contract for all of VeinMiner's configurable values.

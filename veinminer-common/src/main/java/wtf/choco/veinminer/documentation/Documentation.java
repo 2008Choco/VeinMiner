@@ -1,12 +1,12 @@
 package wtf.choco.veinminer.documentation;
 
+import wtf.choco.network.Message;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import wtf.choco.network.Message;
 
 /**
  * A method annotation to denote the documentation method of a plugin message.

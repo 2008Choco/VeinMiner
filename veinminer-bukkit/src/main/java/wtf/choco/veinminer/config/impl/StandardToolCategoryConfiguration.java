@@ -2,24 +2,30 @@ package wtf.choco.veinminer.config.impl;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.ConfigWrapper;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 
-import static wtf.choco.veinminer.config.impl.ConfigKeys.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_BLOCK_LIST;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_COST;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_DISABLED_WORLDS;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_ITEMS;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_MAX_VEIN_SIZE;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_NBT;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_PRIORITY;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_REPAIR_FRIENDLY;
+import static wtf.choco.veinminer.config.impl.ConfigKeys.KEY_REPAIR_FRIENDLY_DURABILITY;
 
 /**
  * A standard {@link ToolCategoryConfiguration} implementation.

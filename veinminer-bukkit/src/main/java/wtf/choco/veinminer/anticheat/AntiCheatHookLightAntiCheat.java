@@ -2,17 +2,15 @@ package wtf.choco.veinminer.anticheat;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import me.vekster.lightanticheat.api.CheckType;
+import me.vekster.lightanticheat.api.DetectionStatus;
+import me.vekster.lightanticheat.api.LACApi;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import me.vekster.lightanticheat.api.CheckType;
-import me.vekster.lightanticheat.api.DetectionStatus;
-import me.vekster.lightanticheat.api.LACApi;
-
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The default LightAntiCheat hook implementation.

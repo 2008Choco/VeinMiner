@@ -1,10 +1,9 @@
 package wtf.choco.veinminer.player;
 
 import com.google.common.base.Predicates;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a different method of activating vein miner.

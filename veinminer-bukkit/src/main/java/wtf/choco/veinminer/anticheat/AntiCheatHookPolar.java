@@ -1,21 +1,18 @@
 package wtf.choco.veinminer.anticheat;
 
 import com.google.common.collect.Sets;
-
-import java.util.Set;
-import java.util.UUID;
-
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
-
 import top.polar.api.PolarApi;
 import top.polar.api.PolarApiAccessor;
 import top.polar.api.exception.PolarNotLoadedException;
 import top.polar.api.loader.LoaderApi;
 import top.polar.api.user.event.DetectionAlertEvent;
 import top.polar.api.user.event.type.CheckType;
+import wtf.choco.veinminer.VeinMinerPlugin;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * The default Polar AntiCheat hook implementation.

@@ -1,19 +1,13 @@
 package wtf.choco.veinminer.client.network;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.network.Message;
 import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.network.fabric.FabricMessageReceiver;
@@ -30,6 +24,10 @@ import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSyncRegistere
 import wtf.choco.veinminer.network.protocol.clientbound.ClientboundVeinMineResults;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundSelectPattern;
 import wtf.choco.veinminer.util.BlockPosition;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The client's state on a connected server.

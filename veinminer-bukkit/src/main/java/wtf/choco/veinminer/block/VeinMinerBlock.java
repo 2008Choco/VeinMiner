@@ -1,7 +1,5 @@
 package wtf.choco.veinminer.block;
 
-import java.util.regex.Matcher;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -9,8 +7,9 @@ import org.bukkit.Tag;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.veinminer.VeinMiner;
+
+import java.util.regex.Matcher;
 
 /**
  * Represents a block understood by vein miner.

@@ -1,19 +1,17 @@
 package wtf.choco.veinminer.client;
 
-import java.util.Objects;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.veinminer.client.network.FabricServerState;
 import wtf.choco.veinminer.config.ClientConfig;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
+
+import java.util.Objects;
 
 /**
  * A class handling the logic for when a player moves from tile to tile, requesting the

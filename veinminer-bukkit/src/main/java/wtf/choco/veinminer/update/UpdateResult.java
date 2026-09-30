@@ -1,8 +1,8 @@
 package wtf.choco.veinminer.update;
 
-import java.util.Optional;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 /**
  * Represents a result of an update check from the {@link UpdateChecker}.

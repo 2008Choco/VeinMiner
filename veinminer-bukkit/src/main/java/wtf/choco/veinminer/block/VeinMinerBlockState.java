@@ -1,10 +1,10 @@
 package wtf.choco.veinminer.block;
 
-import java.util.Objects;
-
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * A type of {@link VeinMinerBlock} backed by a {@link BlockData}.

@@ -1,8 +1,5 @@
 package wtf.choco.veinminer.listener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -23,7 +20,6 @@ import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.api.event.player.PlayerVeinMineEvent;
@@ -42,6 +38,9 @@ import wtf.choco.veinminer.tool.VeinMinerToolCategoryHand;
 import wtf.choco.veinminer.util.AttributeUtil;
 import wtf.choco.veinminer.util.VMConstants;
 import wtf.choco.veinminer.util.VMEventFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class BreakBlockListener implements Listener {
 

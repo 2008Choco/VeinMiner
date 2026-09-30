@@ -1,9 +1,9 @@
 package wtf.choco.veinminer.data;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Data storage that can have legacy data imported.

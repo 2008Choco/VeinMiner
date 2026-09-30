@@ -1,14 +1,13 @@
 package wtf.choco.veinminer.data;
 
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.VeinMinerPlugin;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.function.IntFunction;
-
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
  * An implementation of {@link PersistentDataStorage} for MySQL servers.

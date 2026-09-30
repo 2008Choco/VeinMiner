@@ -1,17 +1,15 @@
 package wtf.choco.veinminer.anticheat;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import me.vagdedes.spartan.api.PlayerViolationEvent;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * The default Spartan hook implementation.

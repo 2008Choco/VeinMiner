@@ -1,17 +1,9 @@
 package wtf.choco.veinminer.player;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
-
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
-
 import wtf.choco.network.Message;
 import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.network.receiver.MessageReceiver;
@@ -25,6 +17,13 @@ import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetConfig;
 import wtf.choco.veinminer.network.protocol.clientbound.ClientboundSetPattern;
 import wtf.choco.veinminer.pattern.VeinMiningPattern;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * A {@link Player} wrapper holding all VeinMiner-related data for an online player.

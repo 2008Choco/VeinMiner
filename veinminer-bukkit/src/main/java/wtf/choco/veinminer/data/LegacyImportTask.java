@@ -5,6 +5,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus.Internal;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.language.LanguageFile;
+import wtf.choco.veinminer.language.LanguageKeys;
+import wtf.choco.veinminer.player.ActivationStrategy;
+import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,15 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.ApiStatus.Internal;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.language.LanguageFile;
-import wtf.choco.veinminer.language.LanguageKeys;
-import wtf.choco.veinminer.player.ActivationStrategy;
-import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
  * A {@link Runnable} task that will read VeinMiner's playerdata directory and import it

@@ -1,5 +1,10 @@
 package wtf.choco.veinminer.block;
 
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -11,11 +16,6 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-
-import org.bukkit.Material;
-import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A list of {@link VeinMinerBlock VeinMinerBlocks}.

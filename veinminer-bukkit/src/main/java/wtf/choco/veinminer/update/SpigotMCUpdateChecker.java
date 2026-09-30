@@ -2,6 +2,8 @@ package wtf.choco.veinminer.update;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -11,9 +13,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * An {@link UpdateChecker} implementation that queries the SpigotMC API.

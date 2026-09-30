@@ -1,12 +1,11 @@
 package wtf.choco.veinminer.data;
 
-import java.util.List;
-import java.util.UUID;
-
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.player.ActivationStrategy;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents simple legacy player data for the {@link LegacyImportTask}.

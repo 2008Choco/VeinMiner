@@ -1,11 +1,7 @@
 package wtf.choco.veinminer.network.protocol.clientbound;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.network.Message;
 import wtf.choco.network.MessageByteBuffer;
 import wtf.choco.network.data.NamespacedKey;
@@ -13,6 +9,9 @@ import wtf.choco.veinminer.documentation.Documentation;
 import wtf.choco.veinminer.documentation.MessageField;
 import wtf.choco.veinminer.documentation.ProtocolMessageDocumentation;
 import wtf.choco.veinminer.network.protocol.VeinMinerClientboundMessageListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A client bound {@link Message} including the following data:

@@ -1,11 +1,11 @@
 package wtf.choco.veinminer.config;
 
-import java.util.Set;
-
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.Set;
 
 /**
  * A configuration object holding values for the vein mining process.

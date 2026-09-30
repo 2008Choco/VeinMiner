@@ -5,17 +5,15 @@ import ac.grim.grimac.api.GrimAPIProvider;
 import ac.grim.grimac.api.GrimUser;
 import ac.grim.grimac.api.event.events.FlagEvent;
 import ac.grim.grimac.api.plugin.GrimPlugin;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.VeinMinerPlugin;
 
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
  * The default Grim AntiCheat hook implementation.

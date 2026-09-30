@@ -1,19 +1,18 @@
 package wtf.choco.veinminer.pattern;
 
-import java.util.List;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfiguration;
 import wtf.choco.veinminer.util.BreadthFirstExpansion;
+
+import java.util.List;
 
 /**
  * The default {@link VeinMiningPattern} that mines as many blocks in an arbitrary pattern

@@ -1,12 +1,11 @@
 package wtf.choco.veinminer.data;
 
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.player.VeinMinerPlayer;
 
 /**
  * A means of storing persistent {@link VeinMinerPlayer} data.

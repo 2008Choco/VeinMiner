@@ -1,13 +1,12 @@
 package wtf.choco.veinminer.data;
 
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.player.VeinMinerPlayer;
 
 /**
  * An implementation of {@link PersistentDataStorage} that performs no save or load

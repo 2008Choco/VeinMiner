@@ -1,7 +1,5 @@
 package wtf.choco.veinminer;
 
-import java.util.regex.Pattern;
-
 import wtf.choco.network.MessageProtocol;
 import wtf.choco.network.data.NamespacedKey;
 import wtf.choco.veinminer.network.VeinMinerProtocolConfiguration;
@@ -16,6 +14,8 @@ import wtf.choco.veinminer.network.protocol.serverbound.ServerboundHandshake;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundRequestVeinMine;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundSelectPattern;
 import wtf.choco.veinminer.network.protocol.serverbound.ServerboundToggleVeinMiner;
+
+import java.util.regex.Pattern;
 
 /**
  * A class holding VeinMiner's core common functionality.

@@ -1,15 +1,14 @@
 package wtf.choco.veinminer.anticheat;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import me.frep.vulcan.api.event.VulcanFlagEvent;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class AntiCheatHookVulcan implements AntiCheatHook, Listener {
 

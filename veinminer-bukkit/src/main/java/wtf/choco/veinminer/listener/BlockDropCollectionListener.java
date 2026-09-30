@@ -1,7 +1,5 @@
 package wtf.choco.veinminer.listener;
 
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -12,9 +10,10 @@ import org.bukkit.event.block.BlockExpEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.util.VMConstants;
+
+import java.util.List;
 
 public final class BlockDropCollectionListener implements Listener {
 

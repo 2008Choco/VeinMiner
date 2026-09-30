@@ -4,6 +4,8 @@ import com.google.common.base.Enums;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.bukkit.ChatColor;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,9 +18,6 @@ import java.util.Map.Entry;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
-import org.bukkit.ChatColor;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A {@link LanguageFile} backed by a JSON file.

@@ -2,12 +2,11 @@ package wtf.choco.veinminer.network;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
-
-import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A utility class to convert between common Networking and Bukkit types.

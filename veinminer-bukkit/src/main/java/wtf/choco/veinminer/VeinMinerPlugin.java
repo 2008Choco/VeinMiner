@@ -2,13 +2,6 @@ package wtf.choco.veinminer;
 
 import com.google.common.base.Preconditions;
 import com.tcoded.folialib.FoliaLib;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
@@ -22,7 +15,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
-
 import wtf.choco.network.bukkit.BukkitProtocolConfiguration;
 import wtf.choco.veinminer.anticheat.AntiCheatHook;
 import wtf.choco.veinminer.anticheat.AntiCheatHookAAC;
@@ -75,6 +67,12 @@ import wtf.choco.veinminer.tool.ToolCategoryRegistry;
 import wtf.choco.veinminer.update.SpigotMCUpdateChecker;
 import wtf.choco.veinminer.update.StandardVersionSchemes;
 import wtf.choco.veinminer.update.UpdateChecker;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * The VeinMiner {@link JavaPlugin} class.

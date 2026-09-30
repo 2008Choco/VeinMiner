@@ -1,14 +1,13 @@
 package wtf.choco.veinminer.listener;
 
 import com.google.common.base.Preconditions;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.ExperienceOrb;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple class tracking experience values to later spawn them at a specific {@link Location}.

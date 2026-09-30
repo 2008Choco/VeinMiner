@@ -1,5 +1,18 @@
 package wtf.choco.veinminer.integration;
 
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.util.RayTraceResult;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
+import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+import wtf.choco.veinminer.util.AttributeUtil;
+import wtf.choco.veinminer.util.StringUtil;
+import wtf.choco.veinminer.util.VMConstants;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -7,21 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.util.RayTraceResult;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.player.VeinMinerPlayer;
-import wtf.choco.veinminer.tool.VeinMinerToolCategory;
-import wtf.choco.veinminer.util.AttributeUtil;
-import wtf.choco.veinminer.util.StringUtil;
-import wtf.choco.veinminer.util.VMConstants;
 
 /**
  * A {@link PlaceholderExpansion PlaceholderAPI expansion} for VeinMiner's placeholders.

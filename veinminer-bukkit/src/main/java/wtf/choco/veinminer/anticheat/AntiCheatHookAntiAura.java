@@ -1,15 +1,14 @@
 package wtf.choco.veinminer.anticheat;
 
+import org.apache.commons.lang.reflect.MethodUtils;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.VeinMinerPlugin;
+
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
-import org.apache.commons.lang.reflect.MethodUtils;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
 
 /**
  * The default AntiAura hook implementation.

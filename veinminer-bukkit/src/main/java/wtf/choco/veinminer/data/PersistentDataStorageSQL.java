@@ -1,6 +1,12 @@
 package wtf.choco.veinminer.data;
 
 import com.google.common.base.Enums;
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.pattern.VeinMiningPattern;
+import wtf.choco.veinminer.player.ActivationStrategy;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
+import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,14 +19,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
-
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.pattern.VeinMiningPattern;
-import wtf.choco.veinminer.player.ActivationStrategy;
-import wtf.choco.veinminer.player.VeinMinerPlayer;
-import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
  * A general abstract implementation of SQL-based {@link PersistentDataStorage}.

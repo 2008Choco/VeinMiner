@@ -1,9 +1,9 @@
 package wtf.choco.veinminer.update;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a simple update checker.

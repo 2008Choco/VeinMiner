@@ -1,21 +1,19 @@
 package wtf.choco.veinminer.manager;
 
 import com.sk89q.worldedit.world.block.BlockType;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.AliasDefinition;
 import wtf.choco.veinminer.config.VeinMinerConfiguration;
 import wtf.choco.veinminer.tool.VeinMinerToolCategory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A manager for VeinMiner's general configurable values.

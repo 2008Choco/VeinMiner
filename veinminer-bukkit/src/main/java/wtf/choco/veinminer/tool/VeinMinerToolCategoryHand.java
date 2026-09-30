@@ -1,12 +1,11 @@
 package wtf.choco.veinminer.tool;
 
-import java.util.Collections;
-
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
-
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.config.ToolCategoryConfiguration;
+
+import java.util.Collections;
 
 /**
  * A more specific type of {@link VeinMinerToolCategory} that represents the hand category.

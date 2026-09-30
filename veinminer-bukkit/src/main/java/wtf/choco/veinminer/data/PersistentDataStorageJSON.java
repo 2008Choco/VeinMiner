@@ -5,6 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import org.jetbrains.annotations.NotNull;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.player.ActivationStrategy;
+import wtf.choco.veinminer.player.VeinMinerPlayer;
+import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,13 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-
-import org.jetbrains.annotations.NotNull;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.player.ActivationStrategy;
-import wtf.choco.veinminer.player.VeinMinerPlayer;
-import wtf.choco.veinminer.tool.VeinMinerToolCategory;
 
 /**
  * An implementation of {@link PersistentDataStorage} for JSON files in a directory.

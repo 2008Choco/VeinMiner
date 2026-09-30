@@ -1,24 +1,22 @@
 package wtf.choco.veinminer.tool;
 
 import com.google.common.base.Preconditions;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
+import wtf.choco.veinminer.VeinMinerPlugin;
+import wtf.choco.veinminer.block.BlockList;
+import wtf.choco.veinminer.config.ToolCategoryConfiguration;
+import wtf.choco.veinminer.util.ItemStackUtil;
+import wtf.choco.veinminer.util.VMConstants;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
-
-import wtf.choco.veinminer.VeinMinerPlugin;
-import wtf.choco.veinminer.block.BlockList;
-import wtf.choco.veinminer.config.ToolCategoryConfiguration;
-import wtf.choco.veinminer.util.ItemStackUtil;
-import wtf.choco.veinminer.util.VMConstants;
 
 /**
  * Represents a category of tools.
