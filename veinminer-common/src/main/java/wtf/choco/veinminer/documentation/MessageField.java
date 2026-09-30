@@ -83,7 +83,7 @@ public record MessageField(String expectedType, String name, String description)
      *
      * @return the bitmask table
      */
-    public static final String bitmask(String... descriptions) {
+    public static String bitmask(String... descriptions) {
         StringBuilder builder = new StringBuilder("""
                 <table>
                 <thead>

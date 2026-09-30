@@ -37,6 +37,10 @@ final class VeinMinerBlockWildcard implements VeinMinerBlock {
 
     @Override
     public int compareTo(@Nullable VeinMinerBlock other) {
+        if (other instanceof VeinMinerBlockWildcard) {
+            return 0;
+        }
+
         return -1; // Always at the top
     }
 

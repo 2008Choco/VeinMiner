@@ -96,7 +96,7 @@ public final class CommandVeinMiner implements TabExecutor {
             sender.sendMessage(headerFooter);
             sender.sendMessage("");
             sender.sendMessage(getVersionLine(language));
-            language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_DEVELOPER, description.getAuthors().get(0));
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_DEVELOPER, description.getAuthors().getFirst());
             language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_WEBSITE, description.getWebsite());
             language.send(sender, LanguageKeys.COMMAND_VEINMINER_VERSION_SOURCE_CODE, "https://github.com/2008Choco/VeinMiner");
             sender.sendMessage("");
@@ -110,7 +110,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            if (!canVeinMine(player) || !player.hasPermission(VMConstants.PERMISSION_COMMAND_TOGGLE)) {
+            if (isNotAllowedToVeinMiner(player) || !player.hasPermission(VMConstants.PERMISSION_COMMAND_TOGGLE)) {
                 language.send(sender, LanguageKeys.COMMAND_INSUFFICIENT_PERMISSIONS);
                 return true;
             }
@@ -153,7 +153,7 @@ public final class CommandVeinMiner implements TabExecutor {
                 return true;
             }
 
-            if (!canVeinMine(player) || !player.hasPermission(VMConstants.PERMISSION_COMMAND_MODE)) {
+            if (isNotAllowedToVeinMiner(player) || !player.hasPermission(VMConstants.PERMISSION_COMMAND_MODE)) {
                 language.send(sender, LanguageKeys.COMMAND_INSUFFICIENT_PERMISSIONS);
                 return true;
             }
@@ -462,14 +462,14 @@ public final class CommandVeinMiner implements TabExecutor {
         }
     }
 
-    private boolean canVeinMine(Player player) {
+    private boolean isNotAllowedToVeinMiner(Player player) {
         for (VeinMinerToolCategory category : plugin.getToolCategoryRegistry().getAll()) {
             if (player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(category))) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     private String getVersionLine(LanguageFile language) {

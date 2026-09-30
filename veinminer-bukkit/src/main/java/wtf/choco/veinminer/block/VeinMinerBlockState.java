@@ -29,7 +29,7 @@ final class VeinMinerBlockState implements VeinMinerBlock {
 
     @Override
     public boolean matchesState(@NotNull BlockData state, boolean exact) {
-        return state != null && (exact ? state.equals(this.state) : state.matches(this.state));
+        return exact ? state.equals(this.state) : state.matches(this.state);
     }
 
     @NotNull

@@ -65,9 +65,9 @@ public final class BreakBlockListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
 
-        VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(item, cat -> player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(cat)));
+        VeinMinerToolCategory category = plugin.getToolCategoryRegistry().get(itemStack, cat -> player.hasPermission(VMConstants.PERMISSION_VEINMINE.apply(cat)));
         if (category == null) {
             return;
         }
@@ -140,7 +140,7 @@ public final class BreakBlockListener implements Listener {
         }
 
         // Fire a new PlayerVeinMineEvent
-        PlayerVeinMineEvent veinmineEvent = VMEventFactory.callPlayerVeinMineEvent(player, origin, originVeinMinerBlock, item, category, blocks, pattern);
+        PlayerVeinMineEvent veinmineEvent = VMEventFactory.callPlayerVeinMineEvent(player, origin, originVeinMinerBlock, itemStack, category, blocks, pattern);
         if (veinmineEvent.isCancelled() || blocks.isEmpty()) {
             return;
         }
@@ -163,7 +163,7 @@ public final class BreakBlockListener implements Listener {
         hooks.forEach(h -> h.exempt(player));
 
         // Actually destroying the allocated blocks
-        int maxDurability = item.getType().getMaxDurability();
+        int maxDurability = itemStack.getType().getMaxDurability();
         if (category.getConfiguration().isRepairFriendly()) {
             maxDurability -= 1; // Make sure the tool has enough durability to mine the current block
             maxDurability -= category.getConfiguration().getRepairFriendlyDurability(); // Then account for the durability config option
@@ -194,11 +194,11 @@ public final class BreakBlockListener implements Listener {
 
             // Check for tool damage
             if (maxDurability > 0 && !isHandCategory) {
-                if (item == null || item.getType().isAir()) {
+                if (itemStack.getType().isAir()) {
                     break;
                 }
 
-                ItemMeta meta = item.getItemMeta();
+                ItemMeta meta = itemStack.getItemMeta();
                 if (meta == null || ((Damageable) meta).getDamage() >= maxDurability) {
                     break;
                 }

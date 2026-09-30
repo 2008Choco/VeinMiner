@@ -72,7 +72,13 @@ public final class LegacyImportTask implements Runnable {
 
         language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_FOUND, jsonStorageDirectory.getName());
 
-        for (File file : jsonStorageDirectory.listFiles((dir, name) -> name.endsWith(".json"))) {
+        File[] files = jsonStorageDirectory.listFiles((dir, name) -> name.endsWith(".json"));
+        if (files == null) {
+            language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_NO_DATA);
+            return;
+        }
+
+        for (File file : files) {
             String fileName = file.getName();
             UUID playerUUID;
 
@@ -107,7 +113,6 @@ public final class LegacyImportTask implements Runnable {
             } catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
                 failed.incrementAndGet();
                 language.send(sender, LanguageKeys.COMMAND_VEINMINER_IMPORT_FAIL_PLAYER, playerUUID.toString());
-                continue;
             }
         }
 

@@ -9,7 +9,7 @@ import java.util.Optional;
  */
 public final class UpdateResult {
 
-    private Optional<Throwable> exception = Optional.empty();
+    private Throwable exception;
 
     private final String currentVersion, newestVersion;
     private final VersionScheme versionScheme;
@@ -25,7 +25,7 @@ public final class UpdateResult {
 
     private UpdateResult(@NotNull String currentVersion, @NotNull VersionScheme versionScheme, @NotNull Throwable exception) {
         this(currentVersion, currentVersion, versionScheme, false, false);
-        this.exception = Optional.ofNullable(exception);
+        this.exception = exception;
     }
 
     /**
@@ -83,7 +83,7 @@ public final class UpdateResult {
      * @return true if the check failed, false if it completed normally
      */
     public boolean isFailed() {
-        return exception.isPresent();
+        return exception != null;
     }
 
     /**
@@ -93,7 +93,7 @@ public final class UpdateResult {
      */
     @NotNull
     public Optional<Throwable> getException() {
-        return exception;
+        return Optional.ofNullable(exception);
     }
 
     /**

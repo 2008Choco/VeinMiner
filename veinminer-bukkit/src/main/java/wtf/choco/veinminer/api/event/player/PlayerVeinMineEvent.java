@@ -80,7 +80,7 @@ public class PlayerVeinMineEvent extends PlayerEvent implements Cancellable {
      */
     @Nullable
     public ItemStack getItem() {
-        return itemStack.clone();
+        return (itemStack != null) ? itemStack.clone() : null;
     }
 
     /**

@@ -1,7 +1,6 @@
 package wtf.choco.veinminer.config.impl;
 
 import com.google.common.base.Enums;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.GameMode;
@@ -73,7 +72,6 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
      * @param plugin the plugin instance
      */
     public StandardVeinMinerConfiguration(@NotNull VeinMinerPlugin plugin) {
-        Preconditions.checkArgument(plugin != null, "plugin must not be null");
         this.plugin = plugin;
     }
 
@@ -254,8 +252,7 @@ public final class StandardVeinMinerConfiguration implements VeinMinerConfigurat
             return PersistentStorageType.SQLITE;
         }
 
-        PersistentStorageType type = PersistentStorageType.getByName(typeString.toLowerCase());
-        return type != null ? type : PersistentStorageType.NONE;
+        return PersistentStorageType.getByName(typeString.toLowerCase());
     }
 
     @Nullable

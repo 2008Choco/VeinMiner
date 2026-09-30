@@ -81,10 +81,10 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
     private static VeinMinerPlugin instance;
 
-    private VeinMinerManager veinMinerManager = new VeinMinerManager(this);
-    private VeinMinerPlayerManager playerManager = new VeinMinerPlayerManager();
-    private ToolCategoryRegistry toolCategoryRegistry = new ToolCategoryRegistry(this);
-    private PatternRegistry patternRegistry = new PatternRegistry();
+    private final VeinMinerManager veinMinerManager = new VeinMinerManager(this);
+    private final VeinMinerPlayerManager playerManager = new VeinMinerPlayerManager();
+    private final ToolCategoryRegistry toolCategoryRegistry = new ToolCategoryRegistry(this);
+    private final PatternRegistry patternRegistry = new PatternRegistry();
 
     private SimpleEconomy economy = EmptyEconomy.INSTANCE;
     private PersistentDataStorage storage = PersistentStorageType.NONE.createStorage(this);
@@ -154,7 +154,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
 
             this.updateChecker.checkForUpdates(StandardVersionSchemes.DECIMAL).thenAccept(result -> {
                 result.getException().ifPresentOrElse(
-                    e -> this.getLogger().info("Could not check for an update. Reason: ".formatted(e.getMessage())),
+                    e -> this.getLogger().info("Could not check for an update. Reason: " + e.getMessage()),
                     () -> {
                         if (result.isUpdateAvailable()) {
                             this.getLogger().info("Your version of VeinMiner is out of date! Version %s is available for download.".formatted(result.getNewestVersion()));
@@ -309,7 +309,6 @@ public final class VeinMinerPlugin extends JavaPlugin {
      * @param economy the economy
      */
     public void setEconomy(@NotNull SimpleEconomy economy) {
-        Preconditions.checkArgument(economy != null, "economy must not be null");
         this.economy = economy;
     }
 
@@ -435,7 +434,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         command.setExecutor(executor);
     }
 
-    private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginId, @NotNull String pluginDisplayName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
+    private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginId, @NotNull String pluginDisplayName, @NotNull Supplier<? extends AntiCheatHook> hookSupplier) {
         if (!manager.isPluginEnabled(pluginId)) {
             return;
         }
@@ -458,7 +457,7 @@ public final class VeinMinerPlugin extends JavaPlugin {
         }
     }
 
-    private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<@NotNull ? extends AntiCheatHook> hookSupplier) {
+    private void registerAntiCheatHookIfEnabled(@NotNull PluginManager manager, @NotNull String pluginName, @NotNull Supplier<? extends AntiCheatHook> hookSupplier) {
         this.registerAntiCheatHookIfEnabled(manager, pluginName, pluginName, hookSupplier);
     }
 

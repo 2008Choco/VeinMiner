@@ -1,11 +1,14 @@
 package wtf.choco.veinminer.update;
 
+import java.io.Serial;
+
 /**
  * An exception thrown when an unexpected HTTP status code was returned when performing
  * an update check and no other exception is applicable.
  */
 public class UpdateFailException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1021908815845998294L;
 
     private final int statusCode;

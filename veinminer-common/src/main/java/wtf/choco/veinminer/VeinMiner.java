@@ -30,7 +30,7 @@ public final class VeinMiner {
      * </ul>
      */
     //                                                                    namespace    :key (optional)   [key=value,state=true]
-    public static final Pattern PATTERN_BLOCK_STATE = Pattern.compile("^([a-z0-9._-]+(?::[a-z0-9/._-]+)*)(?:\\[(.+=.+)*\\])*$");
+    public static final Pattern PATTERN_BLOCK_STATE = Pattern.compile("^([a-z0-9._-]+(?::[a-z0-9/._-]+)*)(?:\\[(.+=.+)*])*$");
 
     /**
      * The {@link NamespacedKey} of the VeinMiner messaging channel.

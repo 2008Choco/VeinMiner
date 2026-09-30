@@ -51,11 +51,7 @@ final class PersistentDataStorageSQLite extends PersistentDataStorageSQL {
 
         Path databaseFilePath = directoryPath.resolve(fileName);
         if (Files.notExists(databaseFilePath)) {
-            try {
-                Files.createFile(databaseFilePath);
-            } catch (IOException e) {
-                throw e;
-            }
+            Files.createFile(databaseFilePath);
         }
 
         this.connectionURL = "jdbc:sqlite:" + databaseFilePath.toAbsolutePath();

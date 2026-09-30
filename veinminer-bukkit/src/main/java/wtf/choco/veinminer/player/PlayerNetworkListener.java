@@ -1,6 +1,5 @@
 package wtf.choco.veinminer.player;
 
-import com.google.common.base.Preconditions;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -52,12 +51,11 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
     private boolean clientReady = false;
     private boolean usingClientMod = false;
     private boolean clientKeyPressed = false;
-    private Queue<Runnable> onClientReadyTasks = new ConcurrentLinkedQueue<>();
+    private final Queue<Runnable> onClientReadyTasks = new ConcurrentLinkedQueue<>();
 
     private final VeinMinerPlayer player;
 
     PlayerNetworkListener(@NotNull VeinMinerPlayer player) {
-        Preconditions.checkArgument(player != null, "player must not be null");
         this.player = player;
     }
 
@@ -99,7 +97,6 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
      * @param task the task
      */
     public void addOnClientReadyTask(@NotNull Runnable task) {
-        Preconditions.checkArgument(task != null, "task must not be null");
         this.onClientReadyTasks.add(task);
     }
 
@@ -139,7 +136,7 @@ public final class PlayerNetworkListener implements VeinMinerServerboundMessageL
             // Move the default pattern to the start if it wasn't already there
             NamespacedKey defaultPatternKey = defaultPattern.getKey();
             if (patternKeys.size() > 1 && patternKeys.remove(defaultPatternKey)) {
-                patternKeys.add(0, defaultPatternKey);
+                patternKeys.addFirst(defaultPatternKey);
             }
 
             // Don't send any patterns to which the player does not have access

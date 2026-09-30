@@ -1,5 +1,6 @@
 package wtf.choco.veinminer.documentation;
 
+import org.jetbrains.annotations.ApiStatus;
 import wtf.choco.network.MessageDirection;
 import wtf.choco.network.MessageProtocol;
 import wtf.choco.veinminer.VeinMiner;
@@ -45,7 +46,7 @@ public final class Main {
 
                 """);
 
-        serverboundDocumentation.forEach(documentation -> buffer.append(documentation.generateMessageMarkdown() + "\n"));
+        serverboundDocumentation.forEach(documentation -> buffer.append(documentation.generateMessageMarkdown()).append('\n'));
 
         buffer.append("""
                 ## Clientbound
@@ -54,7 +55,7 @@ public final class Main {
 
                 """);
 
-        clientboundDocumentation.forEach(documentation -> buffer.append(documentation.generateMessageMarkdown() + "\n"));
+        clientboundDocumentation.forEach(documentation -> buffer.append(documentation.generateMessageMarkdown()).append('\n'));
 
         if (args.length >= 1) {
             File outputFile = new File(args[0]);

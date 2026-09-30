@@ -26,7 +26,7 @@ public final class JobsIntegrationListener implements Listener {
             return;
         }
 
-        if (!plugin.getConfiguration().isNerfJobsExperienceGain() || !isVeinMining(event.getPlayer().getPlayer())) {
+        if (!plugin.getConfiguration().isNerfJobsExperienceGain() || isNotVeinMining(event.getPlayer().getPlayer())) {
             return;
         }
 
@@ -39,20 +39,20 @@ public final class JobsIntegrationListener implements Listener {
             return;
         }
 
-        if (!plugin.getConfiguration().isNerfJobsCurrencyGain() || !isVeinMining(event.getPlayer().getPlayer())) {
+        if (!plugin.getConfiguration().isNerfJobsCurrencyGain() || isNotVeinMining(event.getPlayer().getPlayer())) {
             return;
         }
 
         event.setCancelled(true);
     }
 
-    private boolean isVeinMining(@Nullable Player player) {
+    private boolean isNotVeinMining(@Nullable Player player) {
         if (player == null) {
-            return false;
+            return true;
         }
 
         VeinMinerPlayer veinMinerPlayer = plugin.getPlayerManager().get(player);
-        return veinMinerPlayer != null && veinMinerPlayer.isVeinMining();
+        return veinMinerPlayer == null || !veinMinerPlayer.isVeinMining();
     }
 
 }

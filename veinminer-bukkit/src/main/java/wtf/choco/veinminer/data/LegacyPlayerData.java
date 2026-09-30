@@ -14,4 +14,4 @@ import java.util.UUID;
  * @param activationStrategy the activation strategy
  * @param disabledCategories the disabled categories
  */
-record LegacyPlayerData(@NotNull UUID playerUUID, @NotNull ActivationStrategy activationStrategy, @NotNull List<VeinMinerToolCategory> disabledCategories) { }
+public record LegacyPlayerData(@NotNull UUID playerUUID, @NotNull ActivationStrategy activationStrategy, @NotNull List<VeinMinerToolCategory> disabledCategories) { }

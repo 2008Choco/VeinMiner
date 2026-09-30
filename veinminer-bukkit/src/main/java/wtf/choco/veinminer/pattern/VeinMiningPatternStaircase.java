@@ -71,7 +71,7 @@ public final class VeinMiningPatternStaircase implements VeinMiningPattern {
     }
 
     private boolean calculateStairSegment(List<Block> positions, BlockData originBlockData, Block current, VeinMinerBlock block, BlockList aliasList, int maxVeinSize) {
-        boolean changed = false, interrupted = false;
+        boolean changed = false;
 
         for (int y = -1; y <= 1; y++) {
             Block relative = current.getRelative(0, y, 0);
@@ -79,24 +79,19 @@ public final class VeinMiningPatternStaircase implements VeinMiningPattern {
                 continue;
             }
 
-            boolean success = positions.add(relative);
-            changed |= success;
-            if (!success) {
-                interrupted = true;
-            }
-
+            changed = true;
             if (positions.size() >= maxVeinSize) {
                 return false;
             }
         }
 
-        return changed && !interrupted;
+        return changed;
     }
 
     /**
      * Represents the direction in which a {@link VeinMiningPatternStaircase} may mine.
      */
-    public static enum Direction {
+    public enum Direction {
 
         /**
          * Upwards staircase.

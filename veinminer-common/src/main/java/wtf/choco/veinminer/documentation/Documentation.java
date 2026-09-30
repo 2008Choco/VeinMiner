@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
  * <p>
  * An example method may look like the following:
  * <pre>
- * public final class PluginMessageClientboundCustomData implements PluginMessage{@literal<ClientboundPluginMessageListener>} {
+ * public final class PluginMessageClientboundCustomData implements PluginMessage{@literal <ClientboundPluginMessageListener>} {
  *
  *     // The actual plugin message implementation, etc.
  *

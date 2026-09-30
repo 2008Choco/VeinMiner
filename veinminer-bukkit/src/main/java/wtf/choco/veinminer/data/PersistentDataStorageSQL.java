@@ -83,7 +83,7 @@ abstract sealed class PersistentDataStorageSQL implements PersistentDataStorage,
     @NotNull
     @Override
     public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull Collection<? extends VeinMinerPlayer> players) {
-        if (players.isEmpty() || players.stream().allMatch(player -> !player.isDirty())) {
+        if (players.isEmpty() || players.stream().noneMatch(VeinMinerPlayer::isDirty)) {
             return CompletableFuture.completedFuture(new ArrayList<>(players));
         }
 
@@ -261,7 +261,7 @@ abstract sealed class PersistentDataStorageSQL implements PersistentDataStorage,
         this.writeToSaveStatement(statement, data.playerUUID(), data.activationStrategy(), data.disabledCategories(), null);
     }
 
-    private VeinMinerPlayer handleResultSet(VeinMinerPlayer player, ResultSet result) throws SQLException {
+    private void handleResultSet(VeinMinerPlayer player, ResultSet result) throws SQLException {
         String activationStrategyId = result.getString("activation_strategy_id");
         String disabledCategories = result.getString("disabled_categories");
         String veinMiningPatternId = result.getString("vein_mining_pattern_id");
@@ -290,7 +290,6 @@ abstract sealed class PersistentDataStorageSQL implements PersistentDataStorage,
         }
 
         player.setDirty(false); // They are no longer dirty. We just loaded them
-        return player;
     }
 
 }

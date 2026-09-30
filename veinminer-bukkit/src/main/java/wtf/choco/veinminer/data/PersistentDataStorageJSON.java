@@ -61,7 +61,7 @@ final class PersistentDataStorageJSON implements PersistentDataStorage {
     @NotNull
     @Override
     public CompletableFuture<List<VeinMinerPlayer>> save(@NotNull Collection<? extends VeinMinerPlayer> players) {
-        if (players.isEmpty() || players.stream().allMatch(player -> !player.isDirty())) {
+        if (players.isEmpty() || players.stream().noneMatch(VeinMinerPlayer::isDirty)) {
             return CompletableFuture.completedFuture(new ArrayList<>(players));
         }
 
@@ -105,7 +105,7 @@ final class PersistentDataStorageJSON implements PersistentDataStorage {
             player.getDisabledCategories().forEach(category -> disabledCategoriesArray.add(category.getId()));
             root.add("disabled_categories", disabledCategoriesArray);
 
-            Files.write(playerFile.toPath(), gson.toJson(root).getBytes(StandardCharsets.UTF_8));
+            Files.writeString(playerFile.toPath(), gson.toJson(root), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new CompletionException(e);
         }

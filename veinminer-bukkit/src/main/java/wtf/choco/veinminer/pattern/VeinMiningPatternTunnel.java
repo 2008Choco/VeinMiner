@@ -84,7 +84,6 @@ public final class VeinMiningPatternTunnel implements VeinMiningPattern {
         return positions;
     }
 
-    @Nullable
     @Override
     public String getPermission() {
         return "veinminer.pattern.tunnel";

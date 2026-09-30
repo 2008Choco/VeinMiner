@@ -240,7 +240,7 @@ public final class ToolCategoryRegistry {
 
             Collection<String> blockStateStrings = categoryConfig.getBlockListKeys();
             BlockList blocklist = BlockList.parseBlockList(blockStateStrings, plugin.getLogger());
-            if (blocklist.size() == 0) {
+            if (blocklist.isEmpty()) {
                 this.plugin.getLogger().warning(String.format("No block list configured for category with id \"%s\"! Is this intentional?", categoryId));
             }
 

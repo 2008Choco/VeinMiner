@@ -27,7 +27,7 @@ final class VeinMinerBlockType implements VeinMinerBlock {
 
     @Override
     public boolean matchesState(@NotNull BlockData state, boolean exact) {
-        return state != null && state.getMaterial().equals(type);
+        return state.getMaterial().equals(type);
     }
 
     @NotNull

@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.language.LanguageFile;
 import wtf.choco.veinminer.language.LanguageKeys;
@@ -135,7 +134,6 @@ public final class CommandToollist implements TabExecutor {
         return false;
     }
 
-    @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (args.length == 1) {

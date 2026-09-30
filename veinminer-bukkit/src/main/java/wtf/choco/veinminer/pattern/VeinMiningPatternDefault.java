@@ -54,7 +54,6 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
         }, candidate -> PatternUtils.typeMatches(block, aliasList, originBlockData, candidate.getBlockData()));
     }
 
-    @Nullable
     @Override
     public String getPermission() {
         return "veinminer.pattern.default";

@@ -28,8 +28,6 @@ public class SimpleVaultEconomy implements SimpleEconomy {
      * @param plugin the plugin instance
      */
     public SimpleVaultEconomy(@NotNull Plugin plugin) {
-        Preconditions.checkArgument(plugin != null, "plugin must not be null");
-
         this.plugin = plugin;
         this.economy = Suppliers.memoize(this::getEconomy);
     }

@@ -172,7 +172,6 @@ public sealed class VeinMinerToolCategory implements Comparable<VeinMinerToolCat
      */
     @NotNull
     public ItemStack createItemStack(@NotNull Material material, int amount) {
-        Preconditions.checkArgument(material != null, "material must not be null");
         Preconditions.checkArgument(items.contains(material), "material must be an item in this category's item list");
         Preconditions.checkArgument(amount >= 1, "amount must be >= 1");
 

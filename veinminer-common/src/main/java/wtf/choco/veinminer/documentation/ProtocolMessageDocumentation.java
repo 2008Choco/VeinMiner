@@ -78,13 +78,9 @@ public final class ProtocolMessageDocumentation {
      * @return the message Markdown
      */
     public String generateMessageMarkdown() {
-        StringBuilder builder = new StringBuilder("### ");
-
-        builder.append(name).append("\n\n");
-        builder.append(description).append("\n");
-        builder.append(generateMessageHTMLTable());
-
-        return builder.toString();
+        return "### " + name + "\n\n" +
+                description + "\n" +
+                generateMessageHTMLTable();
     }
 
     /**
@@ -119,7 +115,7 @@ public final class ProtocolMessageDocumentation {
                </thead>
                <tbody>
                    <tr>
-                """);
+               """);
 
         /*
          * Generate the first two columns of <td>, the message id and direction. These are only defined once.
@@ -183,7 +179,7 @@ public final class ProtocolMessageDocumentation {
 
         private String name;
         private String description;
-        private List<MessageField> fields = new ArrayList<>();
+        private final List<MessageField> fields = new ArrayList<>();
 
         private final MessageDirection direction;
         private final int id;

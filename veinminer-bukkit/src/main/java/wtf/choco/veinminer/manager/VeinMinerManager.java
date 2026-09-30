@@ -21,7 +21,7 @@ import java.util.List;
 public final class VeinMinerManager {
 
     private BlockList globalBlockList = new BlockList();
-    private List<BlockList> aliases = new ArrayList<>(); // There has to be a better way to implement aliases... I just can't think of one
+    private final List<BlockList> aliases = new ArrayList<>(); // There has to be a better way to implement aliases... I just can't think of one
 
     private final VeinMinerPlugin plugin;
 
