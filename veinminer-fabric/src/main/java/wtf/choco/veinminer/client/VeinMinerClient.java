@@ -131,7 +131,6 @@ public final class VeinMinerClient implements ClientModInitializer {
     private static KeyMapping registerKeyMapping(String id, int key) {
         return KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.veinminer_companion." + id,
-            InputConstants.Type.KEYSYM,
             key,
             VEINMINER_KEY_MAPPING_CATEGORY
         ));
