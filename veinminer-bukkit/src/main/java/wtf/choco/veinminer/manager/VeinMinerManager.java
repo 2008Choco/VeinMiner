@@ -244,7 +244,12 @@ public final class VeinMinerManager {
         int aliasesAdded = 0;
         for (AliasDefinition alias : config.getAliases()) {
             List<String> entries = alias.entries();
-            if (entries.size() <= 1 && !entries.get(0).startsWith("#")) {
+            if (entries.isEmpty()) {
+                this.plugin.getLogger().warning("Alias \"%s\" is empty. You should probably remove this. Ignoring...".formatted(alias.key()));
+                continue;
+            }
+
+            if (entries.size() == 1 && !entries.getFirst().startsWith("#")) {
                 this.plugin.getLogger().warning("Alias \"%s\" contains %d entries but must have at least 2, or be a tag. Ignoring...".formatted(alias.key(), entries.size()));
                 continue;
             }
