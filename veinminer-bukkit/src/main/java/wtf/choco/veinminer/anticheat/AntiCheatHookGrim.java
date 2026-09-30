@@ -1,17 +1,21 @@
 package wtf.choco.veinminer.anticheat;
 
+import ac.grim.grimac.api.AbstractCheck;
+import ac.grim.grimac.api.GrimAPIProvider;
+import ac.grim.grimac.api.GrimUser;
+import ac.grim.grimac.api.event.events.FlagEvent;
+import ac.grim.grimac.api.plugin.GrimPlugin;
+
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.veinminer.VeinMinerPlugin;
-
-import ac.grim.grimac.api.event.events.FlagEvent;
 
 /**
  * The default Grim AntiCheat hook implementation.
@@ -25,10 +29,10 @@ public final class AntiCheatHookGrim implements AntiCheatHook, Listener {
 
     public AntiCheatHookGrim(@NotNull VeinMinerPlugin plugin) {
         try {
-            Class.forName("ac.grim.grimac.api.event.events.FlagEvent");
+            GrimPlugin grimPlugin = GrimAPIProvider.get().getGrimPlugin(plugin);
+            GrimAPIProvider.get().getEventBus().get(FlagEvent.class).onFlagSupplier(grimPlugin, this::onFlag);
             this.supported = true;
-        } catch (ReflectiveOperationException e) {
-            plugin.getLogger().severe("The version of GrimAC on this server is incompatible with Veinminer. Please post information on the spigot resource discussion page.");
+        } catch (Throwable e) {
             this.supported = false;
         }
     }
@@ -53,13 +57,12 @@ public final class AntiCheatHookGrim implements AntiCheatHook, Listener {
         return supported;
     }
 
-    @EventHandler(ignoreCancelled = true)
-    private void onFlag(FlagEvent event) {
-        if (!exempt.contains(event.getPlayer().getUniqueId())) {
-            return;
+    private boolean onFlag(GrimUser user, AbstractCheck check, Supplier<String> verbose, boolean currentlyCancelled) {
+        if (exempt.contains(user.getUniqueId())) {
+            return true; // Don't process Grim flag while exempt
         }
 
-        event.setCancelled(true);
+        return currentlyCancelled;
     }
 
 }
