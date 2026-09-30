@@ -81,7 +81,7 @@ public final class ToolCategoryRegistry {
             }
 
             // If the category's priority is lower than the currently returnable category, ignore it
-            if (resultCategory != null && category.compareTo(category) <= 0) {
+            if (resultCategory != null && category.compareTo(resultCategory) <= 0) {
                 continue;
             }
 
