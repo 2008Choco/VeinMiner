@@ -1,9 +1,6 @@
 package wtf.choco.veinminer.pattern;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -16,6 +13,7 @@ import wtf.choco.veinminer.VeinMinerPlugin;
 import wtf.choco.veinminer.block.BlockList;
 import wtf.choco.veinminer.block.VeinMinerBlock;
 import wtf.choco.veinminer.config.VeinMiningConfiguration;
+import wtf.choco.veinminer.util.BreadthFirstExpansion;
 
 /**
  * The default {@link VeinMiningPattern} that mines as many blocks in an arbitrary pattern
@@ -37,61 +35,24 @@ public final class VeinMiningPatternDefault implements VeinMiningPattern {
     @NotNull
     @Override
     public List<Block> allocateBlocks(@NotNull Block origin, @NotNull BlockFace destroyedFace, @NotNull VeinMinerBlock block, @NotNull VeinMiningConfiguration config, @Nullable BlockList aliasList) {
-        List<Block> blocks = new ArrayList<>();
-        List<Block> frontier = new ArrayList<>(32);
-        List<Block> nextFrontier = new ArrayList<>(32);
-        Set<Block> visited = new HashSet<>();
-        frontier.add(origin);
-        visited.add(origin);
-
         int maxVeinSize = config.getMaxVeinSize();
         BlockData originBlockData = origin.getBlockData();
 
-        // Such loops, much wow! I promise, this is as efficient as it can be
-        while (blocks.size() < maxVeinSize) {
-            nextFrontier.clear();
+        return BreadthFirstExpansion.expand(origin, maxVeinSize, (current, visitor) -> {
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    for (int z = -1; z <= 1; z++) {
+                        if (x == 0 && y == 0 && z == 0) {
+                            continue;
+                        }
 
-            blockSearch:
-            for (Block current : frontier) {
-                for (int x = -1; x <= 1; x++) {
-                    for (int y = -1; y <= 1; y++) {
-                        for (int z = -1; z <= 1; z++) {
-                            // Ignore self
-                            if (x == 0 && y == 0 && z == 0) {
-                                continue;
-                            }
-
-                            Block relative = current.getRelative(x, y, z);
-                            if (!visited.add(relative)) {
-                                continue;
-                            }
-
-                            if (!PatternUtils.typeMatches(block, aliasList, originBlockData, relative.getBlockData())) {
-                                continue;
-                            }
-
-                            if (blocks.size() + nextFrontier.size() >= maxVeinSize) {
-                                break blockSearch;
-                            }
-
-                            nextFrontier.add(relative);
+                        if (!visitor.test(current.getRelative(x, y, z))) {
+                            return;
                         }
                     }
                 }
             }
-
-            // No more blocks to allocate :D
-            if (nextFrontier.isEmpty()) {
-                break;
-            }
-
-            blocks.addAll(nextFrontier);
-            List<Block> previousFrontier = frontier;
-            frontier = nextFrontier;
-            nextFrontier = previousFrontier;
-        }
-
-        return blocks;
+        }, candidate -> PatternUtils.typeMatches(block, aliasList, originBlockData, candidate.getBlockData()));
     }
 
     @Nullable
