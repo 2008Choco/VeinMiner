@@ -78,9 +78,9 @@ public final class ProtocolMessageDocumentation {
      * @return the message Markdown
      */
     public String generateMessageMarkdown() {
-        return "### " + name + "\n\n" +
-                description + "\n" +
-                generateMessageHTMLTable();
+        return "### " + name + "\n\n"
+                + description + "\n"
+                + generateMessageHTMLTable();
     }
 
     /**

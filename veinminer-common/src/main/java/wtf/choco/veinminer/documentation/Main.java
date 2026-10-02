@@ -1,6 +1,5 @@
 package wtf.choco.veinminer.documentation;
 
-import org.jetbrains.annotations.ApiStatus;
 import wtf.choco.network.MessageDirection;
 import wtf.choco.network.MessageProtocol;
 import wtf.choco.veinminer.VeinMiner;
