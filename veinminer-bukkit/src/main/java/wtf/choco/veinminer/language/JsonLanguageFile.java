@@ -78,7 +78,7 @@ public final class JsonLanguageFile implements LanguageFile {
         // TODO: If there are keys in the default messages.json, add them to the one saved on disk!
 
         try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
-            JsonElement root = new JsonParser().parse(reader);
+            JsonElement root = JsonParser.parseReader(reader);
             if (!root.isJsonObject()) {
                 this.warning(logger, () -> "Can't read " + filePath.getFileName() + ". Expected JSON object but got " + root.getClass().getName());
                 return;
