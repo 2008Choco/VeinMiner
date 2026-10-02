@@ -96,6 +96,9 @@ Aliases:
   pale_oak_wood:
   - 'minecraft:pale_oak_log'
   - 'minecraft:pale_oak_wood'
+  poplar_wood:
+  - 'minecraft:poplar_log'
+  - 'minecraft:poplar_wood'
   pumpkins:
   - 'minecraft:carved_pumpkin'
   - 'minecraft:pumpkin'
