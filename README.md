@@ -7,9 +7,6 @@
 <a href="http://choco.wtf/javadocs/veinminer" alt="Javadocs">
     <img src="https://img.shields.io/badge/Javadocs-Regularly_updated-brightgreen" alt="Javadocs"/>
 </a>
-<a href="https://twitter.com/intent/follow?screen_name=2008Choco_" alt="Follow on Twitter">
-    <img src="https://img.shields.io/twitter/follow/2008Choco_?style=social&logo=twitter" alt="Follow on Twitter">
-</a>
 
 # VeinMiner
 
@@ -25,6 +22,6 @@ The companion mod is an optional client-sided mod to provide a more rich user-ex
 
 # Messaging Protocol
 
-VeinMiner communicates with the Minecraft client via its [custom payload packet](https://wiki.vg/Protocol#Plugin_Message_.28clientbound.29). While VeinMiner does have its own client-sided companion mod, other client mods are capable of listening to these channels and intercepting messages. Additionally, while VeinMiner supplies API to communicate with the client, servers also have the option of listening to the raw message contents.
+VeinMiner communicates with the Minecraft client via its [custom payload packet](https://minecraft.wiki/w/Java_Edition_protocol/Packets#Plugin_Message_(clientbound)). While VeinMiner does have its own client-sided companion mod, other client mods are capable of listening to these channels and intercepting messages. Additionally, while VeinMiner supplies API to communicate with the client, servers also have the option of listening to the raw message contents.
 
 For details on VeinMiner's messaging protocol, see the [Client Server Mod Protocol wiki](https://github.com/2008Choco/VeinMiner/wiki/Client-Server-Mod-Protocol).
